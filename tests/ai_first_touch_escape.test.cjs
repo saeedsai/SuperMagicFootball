@@ -137,7 +137,9 @@ test('CPU interception of a pressured targeted low through-ball takes a safe fir
  for(const team of [0,1]){
   const s=prepareInterceptGame(ENGINE,{team});
   const target=s.interceptor.aiFirstTouchTarget;
-  assert.equal(s.interceptor.firstTouchControlTimer,.24);
+  assert.equal(s.interceptor.firstTouchControlTimer,s.interceptor.firstTouchControlDuration);
+  assert(s.interceptor.firstTouchControlDuration>=.18&&s.interceptor.firstTouchControlDuration<=.30);
+  assert(Math.abs(s.interceptor.firstTouchOutletReadTimer-(s.interceptor.firstTouchControlDuration+.68))<1e-9);
   assert.ok(s.interceptor.firstTouchPressure>0);
   assert.ok(target,JSON.stringify({team,target,pressure:s.interceptor.firstTouchPressure}));
   assert.ok(s.dir*(target.x-s.x)>=35,'first touch must move forward for the intercepting team');
@@ -191,7 +193,7 @@ test('CPU first-touch outlet prefers an open forward teammate over a blocked lan
  }
 });
 
-test('CPU interception uses the safe post-touch outlet while preserving the 0.24-second control touch',async()=>{
+test('CPU interception uses the safe post-touch outlet after its skill-and-pace-scaled control touch',async()=>{
  const {ENGINE}=await loadModules();
  for(const team of [0,1]){
   const s=prepareInterceptGame(ENGINE,{team}),{game,interceptor,dir,x,y}=s;
@@ -209,7 +211,7 @@ test('CPU interception uses the safe post-touch outlet while preserving the 0.24
    game.driveAI(interceptor,.016);
    assert.equal(game.ball.owner,interceptor,'the CPU must finish its settling touch before passing');
    assert.deepEqual(game.events.slice(firstStart).filter(e=>e.type==='passIntent'),[],
-    'no pass is allowed inside the 0.24-second first-touch window');
+    'no pass is allowed before the scaled first-touch window completes');
    game.clock=10.25;interceptor.firstTouchControlTimer=0;interceptor.aiTimer=0;
    const outletStart=game.events.length;
    game.driveAI(interceptor,.016);

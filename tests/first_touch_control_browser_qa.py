@@ -26,7 +26,7 @@ JS=r"""() => {
   const liveEventCount=g.events.length;
   g.take(target);
   if(g.ball.owner!==target||!(target.firstTouchControlTimer>0))throw Error('pressure first touch did not activate');
-  const pressure=target.firstTouchPressure,timer=target.firstTouchControlTimer;
+  const pressure=target.firstTouchPressure,timer=target.firstTouchControlTimer,duration=target.firstTouchControlDuration;
   // Compare actual movement method, with only input target state cloned.
   const base={...target,x:target.x,y:target.y,moveVX:0,moveVY:0};
   const fast={...base,firstTouchControlTimer:0};
@@ -37,7 +37,7 @@ JS=r"""() => {
   const events=g.events.slice(liveEventCount).filter(e=>e.type==='passReceived');
   // One controlled player can shoot immediately despite first-touch pressure.
   const immediate=g.shoot(target,false);
-  return {pressure,timer,slow:slow.x-base.x,fast:fast.x-base.x,immediate,
+  return {pressure,timer,duration,slow:slow.x-base.x,fast:fast.x-base.x,immediate,
    passReceived:events.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
    scoreUnchanged:JSON.stringify(g.score)===original.score,
    identityUnchanged:JSON.stringify(g.teamIds)===original.teams&&JSON.stringify(g.formation)===original.formation,
@@ -82,7 +82,7 @@ INTERCEPTION_JS=r"""() => {
   g.driveAI(interceptor,1/60);
   outletIntent=g.events.slice(outletStart).find(e=>e.type==='passIntent')||null;
  }finally{Math.random=originalRandom;}
- return {x,y,dir,timer:initialTouchTimer,pressure:interceptor.firstTouchPressure,
+ return {x,y,dir,timer:initialTouchTimer,duration:interceptor.firstTouchControlDuration,pressure:interceptor.firstTouchPressure,
   owner:firstTouchOwner,target:intent,actual,prematureReleases,
   outletTarget:outletIntent?.target||null,expectedOutlet:safeOutlet.src.id,
   outletOwner:g.ball.owner===interceptor,
@@ -102,13 +102,13 @@ with sync_playwright() as pw:
   for action in ('navQuick','navOnDevice','quick','kickoff'):
    page.locator(f'[data-action="{action}"]').first.click()
   r=page.evaluate(JS)
-  assert r['pressure']>.5 and r['timer']==.24,(device,r)
+  assert r['pressure']>.5 and .18<=r['duration']<=.30 and abs(r['timer']-r['duration'])<1e-9,(device,r)
   assert r['fast']>r['slow']>0,(device,r)
   assert r['passReceived']==1 and r['immediate'],(device,r)
   assert r['buttons']==r['originalButtons']==4 and r['scoreUnchanged'] and r['identityUnchanged'],(device,r)
   assert not errors,(device,errors)
   intercepted=page.evaluate(INTERCEPTION_JS)
-  assert intercepted['owner'] and intercepted['timer']==.24 and intercepted['pressure']>0,(device,intercepted)
+  assert intercepted['owner'] and .18<=intercepted['duration']<=.30 and abs(intercepted['timer']-intercepted['duration'])<1e-9 and intercepted['pressure']>0,(device,intercepted)
   assert intercepted['prematureReleases']==[],(device,intercepted)
   assert intercepted['target'] and intercepted['actual'],(device,intercepted)
   assert intercepted['dir']*(intercepted['target']['x']-intercepted['x'])>=35,(device,intercepted)

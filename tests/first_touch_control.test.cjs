@@ -11,8 +11,11 @@ const get=(begin,end,context={})=>{
 const scaleStart=src.indexOf('function firstTouchControlScale('),scaleEnd=src.indexOf('\n}',scaleStart);
 assert(scaleStart>=0&&scaleEnd>scaleStart);
 const firstTouchControlScale=vm.runInNewContext('('+src.slice(scaleStart,scaleEnd+2)+')',{clamp});
+const durationStart=src.indexOf('function firstTouchControlDuration('),durationEnd=src.indexOf('\n}',durationStart);
+assert(durationStart>=0&&durationEnd>durationStart);
+const firstTouchControlDuration=vm.runInNewContext('('+src.slice(durationStart,durationEnd+2)+')',{clamp});
 const moveAgile=get(' moveAgile(p,dx,dy,maxSpeed,dt){',' staminaTick(p,dt', {Math,stat:(p,k)=>p.src[k],firstTouchControlScale});
-const take=get(' take(p){',' // Goalkeepers hold a clean catch', {Math,clamp,distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),keeperParryRebounds:new WeakMap()});
+const take=get(' take(p){',' // Goalkeepers hold a clean catch', {Math,clamp,distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),firstTouchControlDuration,keeperParryRebounds:new WeakMap()});
 function fixture(){
  const p={t:0,i:2,keeper:false,stun:0,x:220,y:300,face:1,src:{id:'recv',dribbling:35,agility:65},moveVX:0,moveVY:0};
  const far={t:1,keeper:false,stun:0,x:700,y:700,src:{id:'far'}};
@@ -23,20 +26,29 @@ function fixture(){
  return {g,p,far,near,ball,events,recv:()=>take.call(g,p)};
 }
 test('control scale is neutral for no pressure or expired trap, bounded for weak/elite touch',()=>{
- for(const s of [1,30,60,100])for(const t of [0,.05,.15,.24,1]){
-  assert.equal(firstTouchControlScale(t,0,s),1);
-  assert.equal(firstTouchControlScale(0,1,s),1);
-  const value=firstTouchControlScale(t,1,s);
+ for(const s of [1,30,60,100])for(const t of [0,.05,.15,.24,.30,1]){
+  assert.equal(firstTouchControlScale(t,0,s,.30),1);
+  assert.equal(firstTouchControlScale(0,1,s,.30),1);
+  const value=firstTouchControlScale(t,1,s,.30);
   assert(value>=.68&&value<=1,JSON.stringify({s,t,value}));
  }
- assert(firstTouchControlScale(.24,1,15)<firstTouchControlScale(.24,1,95));
+ assert(firstTouchControlScale(.24,1,15,.30)<firstTouchControlScale(.24,1,95,.30));
  for(const bad of [NaN,Infinity,-Infinity,undefined])assert(Number.isFinite(firstTouchControlScale(bad,bad,bad)));
+});
+test('faster passes lengthen the touch while better Dribbling shortens it',()=>{
+ const gentle=firstTouchControlDuration(300,60),fast=firstTouchControlDuration(850,60);
+ const weak=firstTouchControlDuration(500,25),skilled=firstTouchControlDuration(500,95);
+ assert(fast>gentle,JSON.stringify({gentle,fast}));
+ assert(weak>skilled,JSON.stringify({weak,skilled}));
+ for(const value of [gentle,fast,weak,skilled])assert(value>=.18&&value<=.30,value);
+ for(const bad of [NaN,Infinity,-Infinity,undefined])assert(Number.isFinite(firstTouchControlDuration(bad,bad)));
 });
 test('friendly ground reception under defender pressure triggers timed control, preserves pass event',()=>{
  const {g,p,near,events,recv}=fixture();g.players.push(near);
  recv();
  assert.equal(g.ball.owner,p);assert.equal(g.ball.pass,false);assert.equal(p.action,'receive');
- assert.equal(p.firstTouchControlTimer,.24);
+ assert.equal(p.firstTouchControlDuration,firstTouchControlDuration(430,35));
+ assert.equal(p.firstTouchControlTimer,p.firstTouchControlDuration);
  assert(p.firstTouchPressure>.8);
  assert.equal(events.filter(e=>e.type==='passReceived').length,1);
  assert.equal(events[0].friendly,true);
@@ -54,22 +66,22 @@ test('open pass, enemy interception, aerial pass and keeper catch never trigger 
 });
 test('actual moveAgile preserves normal speed in open space and temporarily reduces pressured carrier speed',()=>{
  const {g,p}=fixture();
- p.firstTouchControlTimer=.24;p.firstTouchPressure=1;
+ p.firstTouchControlTimer=.24;p.firstTouchControlDuration=.24;p.firstTouchPressure=1;
  g.ball.owner=p;
  moveAgile.call(g,p,1,0,210,.016);
  const slowed=p.x-220;assert(slowed>0);
  const orig={...p,x:220,moveVX:0,moveVY:0,firstTouchControlTimer:0};
  g.ball.owner=orig;moveAgile.call(g,orig,1,0,210,.016);
  assert(slowed<orig.x-220,JSON.stringify({slow:slowed,normal:orig.x-220}));
- p.firstTouchControlTimer=0;assert.equal(firstTouchControlScale(0,1,35),1);
+ p.firstTouchControlTimer=0;assert.equal(firstTouchControlScale(0,1,35,.24),1);
  g.ball.owner=null;
- const loose={...p,x:220,moveVX:0,moveVY:0,firstTouchControlTimer:.24};
+ const loose={...p,x:220,moveVX:0,moveVY:0,firstTouchControlTimer:.24,firstTouchControlDuration:.24};
  moveAgile.call(g,loose,1,0,210,.016);
  assert(Math.abs(loose.x-orig.x)<1e-9,'loose ball must cancel settling');
 });
 test('source runs timer down and resets on substitution without restricting four inputs or shot',()=>{
  assert.match(src,/p\.firstTouchControlTimer=Math\.max\(0,\(p\.firstTouchControlTimer\|\|0\)-dt\)/);
- assert.match(src,/p\.firstTouchControlTimer=0;p\.firstTouchPressure=0;/);
+ assert.match(src,/p\.firstTouchControlTimer=0;p\.firstTouchControlDuration=0;p\.firstTouchPressure=0;/);
  assert.match(src,/if\(this\.ball\.owner===p&&!p\.keeper&&\(p\.firstTouchControlTimer\|\|0\)>0\)/);
  const start=src.indexOf('function firstTouchControlScale('),end=src.indexOf('\n}',start);
  assert.doesNotMatch(src.slice(start,end+2),/\.vx\s*=|\.vy\s*=|Math\.random\(/);

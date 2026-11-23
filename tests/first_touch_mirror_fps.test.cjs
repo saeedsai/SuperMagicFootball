@@ -12,11 +12,14 @@ function extract(begin,end,context){
 const a=source.indexOf('function firstTouchControlScale('),b=source.indexOf('\n}',a);
 assert(a>=0&&b>a);
 const scale=vm.runInNewContext('('+source.slice(a,b+2)+')',{clamp});
+const durationStart=source.indexOf('function firstTouchControlDuration('),durationEnd=source.indexOf('\n}',durationStart);
+assert(durationStart>=0&&durationEnd>durationStart);
+const durationFor=vm.runInNewContext('('+source.slice(durationStart,durationEnd+2)+')',{clamp});
 const move=extract(' moveAgile(p,dx,dy,maxSpeed,dt){',' staminaTick(p,dt',{Math,stat:(p,k)=>p.src[k],firstTouchControlScale:scale});
 const take=extract(' take(p){',' // Goalkeepers hold a clean catch',{Math,clamp,distance:(p,q)=>Math.hypot(p.x-q.x,p.y-q.y),
  // This suite isolates the existing speed-only first-touch contract; AI lane selection has its own integration suite.
- attackingFirstTouchEscape:()=>null,keeperParryRebounds:new WeakMap(),F:{x:0,y:0,w:1000,h:600}});
-function sample({team=0,fps=60,skill=55,pressure=true,mode='ground'}={}){
+ attackingFirstTouchEscape:()=>null,firstTouchControlDuration:durationFor,keeperParryRebounds:new WeakMap(),F:{x:0,y:0,w:1000,h:600}});
+function sample({team=0,fps=60,skill=55,pressure=true,mode='ground',speed=500}={}){
  const x=team===0?520:2200,face=team===0?1:-1;
  const player={t:team,i:3,keeper:mode==='keeper',stun:mode==='stunned'?1:0,
   x,y:500,face,src:{id:'recipient',dribbling:skill,agility:65},
@@ -24,19 +27,19 @@ function sample({team=0,fps=60,skill=55,pressure=true,mode='ground'}={}){
  const enemy={t:1-team,keeper:false,stun:0,x:x+19,y:500,src:{id:'def'}};
  if(!pressure){enemy.x=x+900;enemy.y=1200;}
  const ball={owner:null,pass:true,passFrom:'sender',passTeam:mode==='opposing'?1-team:team,
-  passTarget:'recipient',x,y:500,z:mode==='aerial'?60:14,vx:500,vy:0,strike:null};
+  passTarget:'recipient',x,y:500,z:mode==='aerial'?60:14,vx:team===0?speed:-speed,vy:0,strike:null};
  const events=[],game={players:[player,enemy],ball,controlled:[3,3],
   inControl:()=>false,_auditTake(){},emit:(type,data)=>events.push({type,...data})};
  take.call(game,player);
- const activated=player.firstTouchControlTimer>0;
+ const activated=player.firstTouchControlTimer>0,duration=player.firstTouchControlDuration||0;
  let elapsed=0;
- while(elapsed<.24-1e-8){
-  const dt=Math.min(1/fps,.24-elapsed);
+ while(elapsed<.30-1e-8){
+  const dt=Math.min(1/fps,.30-elapsed);
   // Real GameEngine.updatePlayers reduces the timer before moving the carrier.
   player.firstTouchControlTimer=Math.max(0,(player.firstTouchControlTimer||0)-dt);
   move.call(game,player,face,0,230,dt);elapsed+=dt;
  }
- return {team,fps,skill,pressure,mode,activated,travel:Math.abs(player.x-x),timer:player.firstTouchControlTimer,
+ return {team,fps,skill,pressure,mode,speed,activated,duration,travel:Math.abs(player.x-x),timer:player.firstTouchControlTimer,
   events,owns:ball.owner===player};
 }
 test('two teams and 30/60/120 Hz: pressured ground receiver settles, then recovers',()=>{
@@ -64,7 +67,13 @@ test('short-window displacement stays within a bounded FPS variance',()=>{
 test('better ball control cushions pressured first touch for both sides at all FPS',()=>{
  for(const team of [0,1])for(const fps of [30,60,120]){
   const low=sample({team,fps,skill:25}),high=sample({team,fps,skill:95});
-  assert(high.travel>low.travel,JSON.stringify({team,fps,low,high}));
+  assert(high.duration<low.duration&&high.travel>low.travel,JSON.stringify({team,fps,low,high}));
+ }
+});
+test('faster incoming passes need more settling time than gentle passes',()=>{
+ for(const team of [0,1])for(const fps of [30,60,120]){
+  const gentle=sample({team,fps,skill:60,speed:300}),fast=sample({team,fps,skill:60,speed:850});
+  assert(fast.duration>gentle.duration&&fast.travel<gentle.travel,JSON.stringify({team,fps,gentle,fast}));
  }
 });
 test('no slowdown for keeper, opponent interception, airborne pass, or stunned receiver',()=>{
@@ -78,8 +87,9 @@ test('no slowdown for keeper, opponent interception, airborne pass, or stunned r
 });
 test('ball, pass, physics, and about-version sources remain independent of acceptance suite',()=>{
  const a=source.indexOf('function firstTouchControlScale('),b=source.indexOf('\n}',a);
- const helper=source.slice(a,b+2);
+ const helper=source.slice(a,b+2),durationA=source.indexOf('function firstTouchControlDuration('),durationB=source.indexOf('\n}',durationA);
  assert.doesNotMatch(helper,/Math\.random|\.ball\.vx\s*=|\.ball\.vy\s*=/);
+ assert.doesNotMatch(source.slice(durationA,durationB+2),/Math\.random|\.ball\.vx\s*=|\.ball\.vy\s*=/);
  assert.match(source,/p\.firstTouchControlTimer=Math\.max\(0,\(p\.firstTouchControlTimer\|\|0\)-dt\)/);
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
  assert.match(ui,/version:RELEASE\.version,game/); assert.doesNotMatch(ui,/api\.github\.com\/repos\/saeedsai\/SuperMagicFootball\/commits\/dev/);
