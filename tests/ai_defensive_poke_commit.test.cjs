@@ -184,3 +184,23 @@ test('a ball-side-qualified CPU slide aims through the exposed live ball, not th
  assert.ok(shielded.y<.01,JSON.stringify(shielded));
  assert.ok(mismatched.y<.01,JSON.stringify(mismatched));
 });
+
+
+test('ground PASS pokes and SHOOT slides reject airborne or invalid-height carried balls',()=>{
+ const defender=player(0,1000,700,{dx:1,dy:0,face:1,moveVX:240,moveVY:0});
+ const carrier=player(1,1055,700,{moveVX:340,moveVY:0});
+ const closeCarrier=player(1,1088,700,{moveVX:-240,moveVY:0});
+ const ballFor=(target,z)=>({owner:target,x:target.x-17,y:target.y+12,z});
+ const grounded=ballFor(carrier,19.99);
+ assert.equal(ballSide(defender,carrier,grounded),true,'the last grounded unit remains contestable');
+ assert.equal(slideBallSide(defender,carrier,grounded),true,'grounded exposed ball remains slide-eligible');
+ assert.equal(commit(defender,closeCarrier,ballFor(closeCarrier,19.99)),true,
+  'the existing early PASS window remains available at the grounded boundary');
+ for(const z of [20,45,NaN,Infinity,undefined]){
+  const aerial=ballFor(carrier,z),closeAerial=ballFor(closeCarrier,z);
+  assert.equal(ballSide(defender,carrier,aerial),false,`ball height ${String(z)} cannot authorize a ground challenge`);
+  assert.equal(slideBallSide(defender,carrier,aerial),false,`ball height ${String(z)} cannot authorize a SHOOT slide`);
+  assert.equal(commit(defender,closeCarrier,closeAerial),false,
+   `ball height ${String(z)} cannot authorize an early PASS poke`);
+ }
+});

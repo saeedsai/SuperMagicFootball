@@ -430,8 +430,9 @@ function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4)
  return clamp(base+read*span+skillBias-fatiguePenalty,.12,.76);
 }
 function defensivePokeBallSideRead(defender,carrier,ball){
- // A close PASS poke must touch the live ball, not merely the carrier's body.
- // The ball must still belong to this grounded opponent and sit on the defender-facing side.
+ // Ground PASS pokes and SHOOT slides must touch a low, live ball, not merely the carrier's body.
+ // The carrier and ball must both be grounded, owned and on the defender-facing side.
+ // Aerial interception remains the separate JUMP counterplay path.
  if(!defender||!carrier||!ball||defender===carrier||defender.t===carrier.t||
   defender.keeper||carrier.keeper||defender.down||carrier.down||
   !Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
@@ -439,7 +440,8 @@ function defensivePokeBallSideRead(defender,carrier,ball){
   Number(defender.stun)>0||Number(carrier.stun)>0||Number(carrier.invuln)>0||
   carrier.action==='shotDown'||carrier.action==='shotGetUp'||
   (carrier.z!=null&&(!Number.isFinite(Number(carrier.z))||Number(carrier.z)>=20)))return false;
- if(ball.owner!==carrier||!Number.isFinite(ball.x)||!Number.isFinite(ball.y))return false;
+ if(ball.owner!==carrier||!Number.isFinite(ball.x)||!Number.isFinite(ball.y)||
+  !Number.isFinite(ball.z)||ball.z>=20)return false;
  const dx=carrier.x-defender.x,dy=carrier.y-defender.y,range=Math.hypot(dx,dy);
  if(!Number.isFinite(range)||range<=0)return false;
  const offsetX=ball.x-carrier.x,offsetY=ball.y-carrier.y;

@@ -55,6 +55,14 @@ with sync_playwright() as pw:
             const leftDefender=player(1,1088,700,{dx:-1,dy:0,face:-1});
             const leftExposedBallRead=game.defensivePokeCommitWindow(leftDefender,leftExposedCarrier,leftExposedBall);
             const leftShieldedBallRead=game.defensivePokeCommitWindow(leftDefender,leftShieldedCarrier,leftShieldedBall);
+            const heightDefender=player(0,1000,700,{dx:1,dy:0,face:1,moveVX:240,moveVY:0});
+            const heightCarrier=player(1,1055,700,{moveVX:340,moveVY:0});
+            const heightBall=z=>({owner:heightCarrier,x:heightCarrier.x-17,y:heightCarrier.y+12,z});
+            const ballHeightRows=[19.99,20,45,NaN,Infinity].map(z=>({
+                heightLabel:String(z),
+                poke:game.defensivePokeBallSideRead(heightDefender,heightCarrier,heightBall(z)),
+                slide:game.defensiveTackleSlideBallSideRead(heightDefender,heightCarrier,heightBall(z),320)
+            }));
             const closeBallSideRows=[];
             for(const defendingTeam of [0,1]){
                 const dir=defendingTeam===0?1:-1;
@@ -66,7 +74,7 @@ with sync_playwright() as pw:
                     exposed:game.defensivePokeBallSideRead(defender,carrier,exposed),
                     shielded:game.defensivePokeBallSideRead(defender,carrier,shielded)});
             }
-            const runCloseContactPoke=(defendingTeam,exposed)=>{
+            const runCloseContactPoke=(defendingTeam,exposed,ballZ=12)=>{
                 const dir=defendingTeam===0?1:-1;
                 game.init({home:0,away:1,mode:'quick',humans:0});
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
@@ -75,7 +83,7 @@ with sync_playwright() as pw:
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,aiTarget:null,aiDetour:null,
                     action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0});
                 Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
-                Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:12,
+                Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:ballZ,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
                 const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who===defender,slide,
@@ -87,7 +95,7 @@ with sync_playwright() as pw:
             const closeContactEngineRows=[];
             for(const defendingTeam of [0,1])closeContactEngineRows.push({team:defendingTeam,
                 exposed:runCloseContactPoke(defendingTeam,true),shielded:runCloseContactPoke(defendingTeam,false)});
-            const runCpuSlide=(defendingTeam,exposed,range=55,firstTouch=false)=>{
+            const runCpuSlide=(defendingTeam,exposed,range=55,firstTouch=false,ballZ=12)=>{
                 const dir=defendingTeam===0?1:-1;
                 game.init({home:0,away:1,mode:'quick',humans:0});
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
@@ -98,7 +106,7 @@ with sync_playwright() as pw:
                 Object.assign(carrier,{x:carrierX,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
                     moveVX:dir*(firstTouch?100:340),moveVY:0,
                     firstTouchControlTimer:firstTouch ? .16 : 0,firstTouchPressure:firstTouch ? .8 : 0});
-                Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:12,
+                Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:ballZ,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
                 const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who===defender,slide,
@@ -112,11 +120,18 @@ with sync_playwright() as pw:
                 closeContactSlideRows.push({team,exposed:runCpuSlide(team,true,55,false),shielded:runCpuSlide(team,false,55,false)});
                 firstTouchSlideRows.push({team,exposed:runCpuSlide(team,true,85,true),shielded:runCpuSlide(team,false,85,true)});
             }
+            const airborneGroundChallengeRows=[];
+            for(const team of [0,1])airborneGroundChallengeRows.push({team,
+                closeContact20:runCloseContactPoke(team,true,20),
+                closeContact45:runCloseContactPoke(team,true,45),
+                ordinarySlide20:runCpuSlide(team,true,55,false,20),
+                firstTouchSlide20:runCpuSlide(team,true,85,true,20)});
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
-                closeBallSideRows,closeContactEngineRows,closeContactSlideRows,firstTouchSlideRows,
+                closeBallSideRows,ballHeightRows,closeContactEngineRows,closeContactSlideRows,firstTouchSlideRows,
+                airborneGroundChallengeRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -128,6 +143,9 @@ with sync_playwright() as pw:
         assert result['leftExposedBallRead'] and not result['leftShieldedBallRead'],(kind,result)
         for row in result['closeBallSideRows']:
             assert row['exposed'] and not row['shielded'],(kind,row)
+        for row in result['ballHeightRows']:
+            expected=row['heightLabel']=='19.99'
+            assert row['poke']==expected and row['slide']==expected,(kind,row)
         for row in result['closeContactEngineRows']:
             assert row['exposed'] and all(call['same'] and not call['slide'] for call in row['exposed']),(kind,row)
             assert row['shielded']==[],(kind,row)
@@ -137,8 +155,11 @@ with sync_playwright() as pw:
         for row in result['firstTouchSlideRows']:
             assert len(row['exposed'])==1 and row['exposed'][0]['same'] and row['exposed'][0]['slide'] and row['exposed'][0]['liveBall'],(kind,row)
             assert row['shielded']==[],(kind,row)
+        for row in result['airborneGroundChallengeRows']:
+            assert row['closeContact20']==[] and row['closeContact45']==[],(kind,row)
+            assert row['ordinarySlide20']==[] and row['firstTouchSlide20']==[],(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'adaptive poke, exposed-ball slide and first-touch reads, shielded-carrier counterplay, 223 teams and four actions',flush=True)
+        print('PASS',kind,'adaptive poke, exposed-ball slide and first-touch reads, airborne ground-challenge rejection, shielded-carrier counterplay, 223 teams and four actions',flush=True)
         ctx.close()
     browser.close()
