@@ -77,7 +77,7 @@ with sync_playwright() as pw:
    const profileRows=[];
    for(const team of [0,1]){
     const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax,goalY=765;
-    const target={x:ownGoalX+dir*265,y:goalY+78};
+    const target={x:ownGoalX+dir*265,y:goalY+35};
     const profiles=[
      {name:'skill-only',skill:100,diving:50,fatigue:0,expected:true},
      {name:'diving-only',skill:50,diving:100,fatigue:0,expected:true},

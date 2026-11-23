@@ -154,7 +154,7 @@ test('high-cross claim reach scales with GK Skill, GK Diving and fatigue while p
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){
   const f=fixture(ENGINE,team),dir=f.dir;
-  f.target={x:f.ownGoalX+dir*265,y:f.goalY+78};
+  f.target={x:f.ownGoalX+dir*265,y:f.goalY+35};
   Object.assign(f.keeper,{x:f.ownGoalX+dir*25,fatigue:0});
   Object.assign(f.receiver,{x:f.target.x+dir*215,y:f.target.y+10});
   Object.assign(f.ball,{x:f.target.x+dir*160,y:f.target.y-40,z:170,vx:-dir*190,vy:48,vz:10});
