@@ -217,6 +217,35 @@ function throughBallKeeperFixture(team){
  return {team,dir,carrier,runner,supportRun};
 }
 
+test('through-ball lead scales with estimated pass flight time on both attacking sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=throughBallKeeperFixture(team);
+  const optionFor=laneX=>{
+   const supportRun={runner:f.runner,target:{x:f.carrier.x+f.dir*laneX,y:488}};
+   return {supportRun,option:AI.attackingThroughBall([f.carrier,f.runner],team,f.carrier,supportRun)};
+  };
+  const short=optionFor(160),long=optionFor(280);
+  assert.ok(short.option,'short through-ball fixture must remain eligible');
+  assert.ok(long.option,'long through-ball fixture must remain eligible');
+  const expectedLead=({supportRun})=>{
+   const point=supportRun.target,dx=point.x-f.runner.x,dy=point.y-f.runner.y;
+   const gap=Math.hypot(dx,dy);
+   const runSpeed=(f.runner.moveVX*dx+f.runner.moveVY*dy)/gap;
+   const flightSeconds=Math.max(.12,Math.min(.35,
+    Math.hypot(point.x-f.carrier.x,point.y-f.carrier.y)/1400));
+   return Math.max(48,Math.min(100,Math.min(gap-16,runSpeed*flightSeconds)));
+  };
+  const actualLead=option=>Math.hypot(option.target.x-f.runner.x,option.target.y-f.runner.y);
+  assert.ok(Math.abs(actualLead(short.option)-expectedLead(short))<1e-9,
+   'short-pass lead must match its estimated arrival window');
+  assert.ok(Math.abs(actualLead(long.option)-expectedLead(long))<1e-9,
+   'long-pass lead must match its estimated arrival window');
+  assert.ok(actualLead(long.option)>actualLead(short.option)+5,
+   'a longer flight gives the committed runner more time to advance');
+ }
+});
+
 test('through-ball selection respects goalkeeper collection reach, skill, fatigue and recovery on both sides',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){

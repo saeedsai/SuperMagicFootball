@@ -3,34 +3,24 @@
 **Updated:** 2026-11-23
 
 ## Mission
-Prioritize player-facing gameplay, then existing-player animation/graphics, goalkeeper, Player Studio and Career/Cup. Never substitute audits or test-only work. Preserve four actions, canonical rosters, compatible saves and offline play.
+Deliver bounded player-facing gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Never substitute audits or test-only iterations. Preserve four actions, canonical rosters, compatible saves and offline play.
 
-## Current candidate
-- **0.12.81.214 — AI-THROUGH-BALL-GOALKEEPER-CLAIM-READ-01:** through-ball safety now projects an active opposing keeper into the bounded arrival window and uses a 90–110-unit collection pocket scaled by GK Skill, GK Diving and fatigue. High-reach keepers can stop a speculative lead; weak/tired keepers may not. Recovery/catch states do not falsely block. The existing safe support-run PASS remains the fallback. Outfield reach, ball physics and four actions are unchanged.
-- Mirrored Node regressions cover both goals, skill/fatigue, outfield baseline, recovery and closing/retreating keeper motion. New desktop/simulated-touch browser acceptance drives the actual engine and checks throughBall vs supportRun fallback.
-- Candidate committed to existing dev; exact-head Modular QA and Full Regression Census are pending. No local Node/Chromium result is claimed.
+## Current checkpoint
+- **0.12.81.215 — AI-THROUGH-BALL-ARRIVAL-LEAD-01:** CPU through-ball lead now scales with estimated pass flight time (0.12–0.35s), rather than a fixed 0.28s. Short passes avoid over-leading; longer passes give the runner a proportionally larger lead within the existing 48–100-unit cap. GK collection reach, defender safety, PASS trajectory, four actions, saves, rosters, persistence and offline play remain unchanged.
+- Added mirrored Node coverage for short/long arrival windows and updated desktop/simulated-touch real-engine keeper acceptance to use the same bounded estimate. Exact-head gates pending; no local Node/Chromium result is claimed.
+- **.214 gate diagnosis:** Modular QA #45116568036 and Full Census #45116568001 failed at the Node contract because this checkpoint lacked the required `## Current checkpoint` heading. Source/data prechecks passed; no production gameplay failure was established. The required headings are restored here.
 
-## Previous verified baseline
-- 0.12.81.213 exact dev/main baseline: `7455a4de94fc4c4f17fe120afab4d5a2ef6eb86e`.
-- Modular QA #45109382597 and Full Regression Census #45109382674 passed at .213. Main Census #45110306675 and Pages deployment #45110298723 passed. Hosted verification applies to .213, not .214.
-- Main and dev were equal at .213. GitHub reported `protected=false` for both branches; issue #87 remains a real security issue.
-- #86 Render commit-trigger drift, #48 physical two-phone acceptance, #10 graphics scope and #3 Android double-tap remain open. Do not close #48 or claim physical certification. No routine LAN/P2P work.
-
-## Next five product improvements
-1. Improve first-touch responsiveness, intelligent passing and fair interception/tackle decisions without adding controls.
-2. Continue source-faithful existing-player eight-view Studio graphics after graphics scope is available; require game-scale desktop/touch screenshot acceptance and retain procedural fallback.
-3. Improve goalkeeper dive/catch reactions and second-ball recovery where a reproducible gap remains.
-4. Improve Player Studio live preview and directional customization.
-5. Deepen Career/Cup progression and match presentation.
+## Next smallest action
+Inspect .215 exact-head Modular QA and all four Node/four Chromium Census shards. Fix only confirmed failures, then continue with first-touch/defensive interception intelligence or another unblocked player-facing backlog item.
 
 ## Ownership and exclusions
-Only this checkpoint. Preserve 223 teams, 2,676 players, exact ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied art. Authenticated online hosting still needs owner resources. Do not expose Git SHA in player UI.
+Only this checkpoint. Preserve 223 teams, 2,676 players, exact ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied art. Do not change routine LAN/P2P; physical two-phone #48 stays open. Render #86 and main protection #87 stay open. Authenticated online hosting needs owner resources. Never expose Git SHA in player UI.
 
 ## Evidence
-- .213 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45109382597
-- .213 Full Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45109382674
-- .213 Main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45110306675
+- .214 Modular QA failure: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45116568036
+- .214 Full Census failure: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45116568001
+- .213 verified baseline: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45109382674
 - .213 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45110298723
 
 ## Cleanup
-Keep this checkpoint below 4 KiB; never bypass required CI, branch protection or QA promotion.
+Keep this file below 4 KiB. Read and edit only this assigned checkpoint. Never bypass required CI, security or QA promotion.

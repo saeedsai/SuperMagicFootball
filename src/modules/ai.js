@@ -637,7 +637,8 @@ function attackingSupportPass(players,team,carrier,supportRun){
   const vx=movementVelocity(runner,'x'),vy=movementVelocity(runner,'y');
   const runSpeed=(vx*dx+vy*dy)/gap;
   if(!Number.isFinite(runSpeed)||runSpeed<110||vx*dir<65)return null;
-  const leadDistance=clampValue(Math.min(gap-16,runSpeed*.28),48,100);
+  const estimatedFlightSeconds=clampValue(Math.hypot(point.x-carrier.x,point.y-carrier.y)/1400,.12,.35);
+  const leadDistance=clampValue(Math.min(gap-16,runSpeed*estimatedFlightSeconds),48,100);
   const target={x:runner.x+dx/gap*leadDistance,y:runner.y+dy/gap*leadDistance};
   const passDistance=Math.hypot(target.x-carrier.x,target.y-carrier.y);
   if(passDistance<110||passDistance>920)return null;
