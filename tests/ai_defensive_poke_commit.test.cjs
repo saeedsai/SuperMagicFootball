@@ -17,6 +17,9 @@ function commit(defender,carrier,ball=null){
 function ballSide(defender,carrier,ball){
  return ENGINE.GameEngine.prototype.defensivePokeBallSideRead.call({},defender,carrier,ball);
 }
+function slideBallSide(defender,carrier,ball,baseSpeed=320){
+ return ENGINE.GameEngine.prototype.defensiveTackleSlideBallSideRead.call({},defender,carrier,ball,baseSpeed);
+}
 
 test('closing grounded carriers open the bounded early PASS-poke window in both directions',()=>{
  const rightDefender=player(0,1000,700,{dx:1,dy:0,face:1});
@@ -126,6 +129,24 @@ test('early PASS poke requires the live ball to be exposed toward the approachin
  assert.equal(commit(leftDefender,leftShielded,leftShieldedBall),false,'left-side carrier can shield the far foot');
 });
 
+test('CPU SHOOT slide selection requires an exposed live ball in both directions',()=>{
+ for(const defendingTeam of [0,1]){
+  const dir=defendingTeam===0?1:-1;
+  const defender=player(defendingTeam,1000,700,{dx:dir,dy:0,face:dir,moveVX:dir*240,moveVY:0});
+  const carrier=player(1-defendingTeam,1000+dir*55,700,{moveVX:dir*340,moveVY:0});
+  const exposed={owner:carrier,x:carrier.x-dir*17,y:carrier.y+12,z:12};
+  const shielded={owner:carrier,x:carrier.x+dir*17,y:carrier.y+12,z:12};
+  assert.equal(slideBallSide(defender,carrier,exposed),true);
+  assert.equal(slideBallSide(defender,carrier,shielded),false);
+  assert.equal(slideBallSide(defender,carrier,{...exposed,owner:defender}),false);
+  assert.equal(slideBallSide(defender,carrier,{...exposed,x:carrier.x-dir*40}),false);
+  assert.equal(slideBallSide(defender,carrier,{...exposed,x:Infinity}),false);
+  assert.equal(slideBallSide(defender,carrier,null),false);
+  assert.equal(slideBallSide({...defender,moveVX:0},carrier,exposed),false);
+  assert.equal(slideBallSide({...defender,dx:-dir,face:-dir,moveVX:-dir*240},carrier,exposed),false);
+ }
+});
+
 test('ordinary and primary close-contact non-slide pokes respect ball shielding while physical slides remain available',()=>{
  const source=fs.readFileSync('src/modules/engine.js','utf8');
  assert.ok(source.includes('const closeContact=!!(owner&&owner.t!==t&&distance(p,owner)<68);'));
@@ -133,6 +154,9 @@ test('ordinary and primary close-contact non-slide pokes respect ball shielding 
  assert.ok(source.includes('if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);'));
  assert.ok(source.includes('if(ball!==null&&!defensivePokeBallSideRead(defender,carrier,ball))return false;'));
  assert.ok(source.includes('GameEngine.prototype.defensivePokeBallSideRead=defensivePokeBallSideRead;'));
+ assert.equal((source.match(/defensiveTackleSlideBallSideRead\(p,owner,liveBall,this\.playerSpeed\(p\)\)/g)||[]).length,2);
+ assert.ok(source.includes('else if(carrierDistance<=98&&defensivePokeBallSideRead(p,owner,liveBall)&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p)))'));
+ assert.ok(source.includes('GameEngine.prototype.defensiveTackleSlideBallSideRead=defensiveTackleSlideBallSideRead;'));
  assert.ok(source.includes('if(carrierDistance<74){'),
   'the primary presser retains its dedicated close-contact window');
 });

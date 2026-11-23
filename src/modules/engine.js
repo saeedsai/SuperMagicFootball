@@ -448,6 +448,13 @@ function defensivePokeBallSideRead(defender,carrier,ball){
  const exposure=offsetX*(-dx/range)+offsetY*(-dy/range);
  return Number.isFinite(exposure)&&exposure>=-2;
 }
+function defensiveTackleSlideBallSideRead(defender,carrier,ball,baseSpeed=0){
+ // A CPU SHOOT slide must contest the live ball, not just the carrier's body.
+ // Reuse the same exposed-ball predicate as PASS pokes so far-side shielding
+ // cannot trigger a body-only slide commitment.
+ if(!defensivePokeBallSideRead(defender,carrier,ball))return false;
+ return defensiveTackleSlide(defender,carrier,baseSpeed);
+}
 function defensivePokeCommitWindow(defender,carrier,ball=null){
  // Predict the existing short PASS poke exactly: 55 ms of carrier lead,
  // capped at 12 units per axis, followed by the 16-unit forward step.
@@ -3022,7 +3029,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
      (closeContact||this.defensivePokeCommitWindow(p,owner,liveBall))&&
      Math.random()<ai.tackleRate*tactical.press){
       const slideRoll=Math.random();
-      const slide=defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.24,.4);
+      const slide=defensiveTackleSlideBallSideRead(p,owner,liveBall,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.24,.4);
       if(!closeContact||slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);
     }
    }
@@ -3048,9 +3055,9 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     const carrierDistance=distance(p,owner);
     if(carrierDistance<74){
      const slideRoll=Math.random();
-     const slide=defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.17,.35);
+     const slide=defensiveTackleSlideBallSideRead(p,owner,liveBall,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.17,.35);
      if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);
-    }else if(carrierDistance<=98&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))){
+    }else if(carrierDistance<=98&&defensivePokeBallSideRead(p,owner,liveBall)&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))){
      // Higher anticipation and tackle skill can read the short control window;
      // even Expert remains probabilistic and the existing slide still resolves contact.
      const pressScale=Number.isFinite(tactical.press)?Math.max(0,Math.min(1.25,tactical.press)):1;
@@ -3434,6 +3441,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
 GameEngine.prototype.cpuTackleSlideChance=cpuTackleSlideChance;
 GameEngine.prototype.defensiveCarrierLeadTarget=defensiveCarrierLeadTarget;
 GameEngine.prototype.defensivePokeBallSideRead=defensivePokeBallSideRead;
+GameEngine.prototype.defensiveTackleSlideBallSideRead=defensiveTackleSlideBallSideRead;
 GameEngine.prototype.defensiveCarrierSupportCoverTarget=defensiveCarrierSupportCoverTarget;
 GameEngine.prototype.defensivePokeCommitWindow=defensivePokeCommitWindow;
 return {GameEngine,WORLD};})();
