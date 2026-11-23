@@ -429,6 +429,25 @@ function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4)
  const fatiguePenalty=fatigue*.075;
  return clamp(base+read*span+skillBias-fatiguePenalty,.12,.76);
 }
+function defensivePokeBallSideRead(defender,carrier,ball){
+ // A close PASS poke must touch the live ball, not merely the carrier's body.
+ // The ball must still belong to this grounded opponent and sit on the defender-facing side.
+ if(!defender||!carrier||!ball||defender===carrier||defender.t===carrier.t||
+  defender.keeper||carrier.keeper||defender.down||carrier.down||
+  !Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||
+  Number(defender.stun)>0||Number(carrier.stun)>0||Number(carrier.invuln)>0||
+  carrier.action==='shotDown'||carrier.action==='shotGetUp'||
+  (carrier.z!=null&&(!Number.isFinite(Number(carrier.z))||Number(carrier.z)>=20)))return false;
+ if(ball.owner!==carrier||!Number.isFinite(ball.x)||!Number.isFinite(ball.y))return false;
+ const dx=carrier.x-defender.x,dy=carrier.y-defender.y,range=Math.hypot(dx,dy);
+ if(!Number.isFinite(range)||range<=0)return false;
+ const offsetX=ball.x-carrier.x,offsetY=ball.y-carrier.y;
+ const offsetLength=Math.hypot(offsetX,offsetY);
+ if(!Number.isFinite(offsetLength)||offsetLength>36)return false;
+ const exposure=offsetX*(-dx/range)+offsetY*(-dy/range);
+ return Number.isFinite(exposure)&&exposure>=-2;
+}
 function defensivePokeCommitWindow(defender,carrier,ball=null){
  // Predict the existing short PASS poke exactly: 55 ms of carrier lead,
  // capped at 12 units per axis, followed by the 16-unit forward step.
@@ -445,14 +464,7 @@ function defensivePokeCommitWindow(defender,carrier,ball=null){
  // A defender may anticipate the short poke only when the live ball is not
  // shielded behind the carrier relative to this approach. Close-contact pokes
  // retain their separate existing path in driveAI.
- if(ball!==null){
-  if(ball.owner!==carrier||!Number.isFinite(ball.x)||!Number.isFinite(ball.y))return false;
-  const offsetX=ball.x-carrier.x,offsetY=ball.y-carrier.y;
-  const offsetLength=Math.hypot(offsetX,offsetY);
-  if(!Number.isFinite(offsetLength)||offsetLength>36)return false;
-  const exposure=offsetX*(-dx/range)+offsetY*(-dy/range);
-  if(!Number.isFinite(exposure)||exposure< -2)return false;
- }
+ if(ball!==null&&!defensivePokeBallSideRead(defender,carrier,ball))return false;
  const inputX=Number.isFinite(defender.dx)?defender.dx:0;
  const inputY=Number.isFinite(defender.dy)?defender.dy:0;
  const inputLength=Math.hypot(inputX,inputY);
@@ -3005,11 +3017,13 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     if(owner&&owner.t!==t&&p.cd<=0&&fieldAbility(p.src)&&Math.random()<ai.tackleRate*.17*tactical.press){
       this.activateDefence(p);
     }
+    const closeContact=!!(owner&&owner.t!==t&&distance(p,owner)<68);
     if(owner&&owner.t!==t&&p.cd<=0&&!(Number(p.magicReadCounterpressTimer)>0)&&
-     (distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner,this.ball))&&
+     (closeContact||this.defensivePokeCommitWindow(p,owner,liveBall))&&
      Math.random()<ai.tackleRate*tactical.press){
       const slideRoll=Math.random();
-      this.tackle(p,defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.24,.4));
+      const slide=defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.24,.4);
+      if(!closeContact||slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);
     }
    }
    p.aiTarget={x:tx,y:ty};
@@ -3034,7 +3048,8 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     const carrierDistance=distance(p,owner);
     if(carrierDistance<74){
      const slideRoll=Math.random();
-     this.tackle(p,defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.17,.35));
+     const slide=defensiveTackleSlide(p,owner,this.playerSpeed(p))&&slideRoll<this.cpuTackleSlideChance(p,ai.anticipation,.17,.35);
+     if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);
     }else if(carrierDistance<=98&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))){
      // Higher anticipation and tackle skill can read the short control window;
      // even Expert remains probabilistic and the existing slide still resolves contact.
@@ -3413,6 +3428,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
  }
 }
 GameEngine.prototype.cpuTackleSlideChance=cpuTackleSlideChance;
+GameEngine.prototype.defensivePokeBallSideRead=defensivePokeBallSideRead;
 GameEngine.prototype.defensivePokeCommitWindow=defensivePokeCommitWindow;
 return {GameEngine,WORLD};})();
 // v0.8.25: BPW character-specific animation profiles. Editorial arcade gestures, not historical motion capture.

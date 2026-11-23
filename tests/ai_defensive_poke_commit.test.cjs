@@ -14,6 +14,9 @@ const player=(t,x,y,extra={})=>({t,x,y,keeper:false,down:false,stun:0,invuln:0,z
 function commit(defender,carrier,ball=null){
  return ENGINE.GameEngine.prototype.defensivePokeCommitWindow.call({},defender,carrier,ball);
 }
+function ballSide(defender,carrier,ball){
+ return ENGINE.GameEngine.prototype.defensivePokeBallSideRead.call({},defender,carrier,ball);
+}
 
 test('closing grounded carriers open the bounded early PASS-poke window in both directions',()=>{
  const rightDefender=player(0,1000,700,{dx:1,dy:0,face:1});
@@ -47,6 +50,23 @@ test('Defence skill scales the closing-speed read while the average baseline sta
  const mirroredElite=player(1,1083,700,{dx:-1,dy:0,face:-1,src:{defence:95}});
  assert.equal(commit(mirroredElite,player(0,1000,700,{moveVX:110,moveVY:0})),true,
   'the skill read mirrors when defending the opposite goal');
+});
+
+
+test('close-contact PASS poke reads the exposed ball and respects far-side shielding in both directions',()=>{
+ for(const defendingTeam of [0,1]){
+  const dir=defendingTeam===0?1:-1;
+  const defender=player(defendingTeam,1000,700,{dx:dir,dy:0,face:dir});
+  const carrier=player(1-defendingTeam,1000+dir*52,700,{moveVX:0,moveVY:0});
+  const exposed={owner:carrier,x:carrier.x-dir*17,y:carrier.y+12,z:12};
+  const shielded={owner:carrier,x:carrier.x+dir*17,y:carrier.y+12,z:12};
+  assert.equal(ballSide(defender,carrier,exposed),true,JSON.stringify({defendingTeam,exposed}));
+  assert.equal(ballSide(defender,carrier,shielded),false,JSON.stringify({defendingTeam,shielded}));
+  assert.equal(ballSide(defender,carrier,{...exposed,owner:defender}),false,'mismatched ownership fails closed');
+  assert.equal(ballSide(defender,carrier,{...exposed,x:carrier.x-dir*40}),false,'stale ball positions fail closed');
+  assert.equal(ballSide(defender,carrier,{...exposed,x:Infinity}),false,'invalid ball coordinates fail closed');
+  assert.equal(ballSide(defender,carrier,null),false,'missing live ball cannot authorize a close poke');
+ }
 });
 
 test('the early window follows the existing poke lead and 16-unit step contact budget',()=>{
@@ -111,9 +131,13 @@ test('early PASS poke requires the live ball to be exposed toward the approachin
  assert.equal(commit(leftDefender,leftShielded,leftShieldedBall),false,'left-side carrier can shield the far foot');
 });
 
-test('ordinary AI passes the live ball to the early poke read without changing close contact',()=>{
+test('ordinary and primary close-contact non-slide pokes respect ball shielding while physical slides remain available',()=>{
  const source=fs.readFileSync('src/modules/engine.js','utf8');
- assert.ok(source.includes('(distance(p,owner)<68||this.defensivePokeCommitWindow(p,owner,this.ball))'));
+ assert.ok(source.includes('const closeContact=!!(owner&&owner.t!==t&&distance(p,owner)<68);'));
+ assert.ok(source.includes('if(!closeContact||slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);'));
+ assert.ok(source.includes('if(slide||this.defensivePokeBallSideRead(p,owner,liveBall))this.tackle(p,slide);'));
+ assert.ok(source.includes('if(ball!==null&&!defensivePokeBallSideRead(defender,carrier,ball))return false;'));
+ assert.ok(source.includes('GameEngine.prototype.defensivePokeBallSideRead=defensivePokeBallSideRead;'));
  assert.ok(source.includes('if(carrierDistance<74){'),
-  'the primary presser keeps its separate close-contact tackle window');
+  'the primary presser retains its dedicated close-contact window');
 });
