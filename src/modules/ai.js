@@ -582,6 +582,7 @@ function attackingSupportPass(players,team,carrier,supportRun){
  const forward=dx*dir,range=Math.hypot(dx,dy);
  if(forward<80||forward>760||range<120||range>900||
   Math.hypot(point.x-runner.x,point.y-runner.y)>145)return null;
+ const clampValue=(value,min,max)=>Math.max(min,Math.min(max,value));
  const arrivalSeconds=Math.min(.35,Math.max(.12,range/1400));
  const receiverLeadX=Number.isFinite(runner.moveVX)?clampValue(runner.moveVX*arrivalSeconds,-65,65):
   (Number.isFinite(runner.dx)?runner.dx:0)*90;
