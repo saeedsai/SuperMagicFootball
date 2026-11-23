@@ -87,13 +87,20 @@ test('the read cue decays in simulation time and is rendered as steady reduced-f
  assert.equal(updateCounterpress.call({},reader,.16),true);assert.ok(Math.abs(reader.magicReadCounterpressTimer-.26)<1e-9);
  assert.equal(updateCounterpress.call({},reader,.3),false);assert.equal(reader.magicReadCounterpressTimer,0);
  assert.match(render,/function drawMagicReadCue\(ctx,p,reducedFlash=false,logicalScale=1,viewSide=1\)/);
- const cueCall=render.match(/drawMagicReadCue\(ctx,p,!!game\.options\?\.reducedFlash,([^;]+);/);
- assert.ok(cueCall,'production renderer calls the READ! cue');
- assert.match(cueCall[1],/Math\.max\(\.12,Math\.min\(3,/);
- assert.match(cueCall[1],/Number\(this\.scale\)\|\|1/);
- assert.match(cueCall[1],/Number\(this\.dpr\)\|\|1/);
- assert.match(cueCall[1],/Number\(this\.cameraZoom\)\|\|1/);
- assert.match(cueCall[1],/view\.side/);
+ const playerRenderer=render.slice(render.indexOf(' drawPlayer(ctx,p,game){'),render.indexOf(' drawPenaltyPlayers(ctx,g){'));
+ const cueIndex=playerRenderer.indexOf('drawMagicReadCue(ctx,p,');
+ assert.ok(cueIndex>0,'production renderer calls the READ! cue');
+ const cuePrefix=playerRenderer.slice(Math.max(0,cueIndex-600),cueIndex);
+ const finalRestore=cuePrefix.lastIndexOf('ctx.restore();');
+ const worldTranslate=cuePrefix.indexOf('ctx.translate(p.x,p.y-',finalRestore);
+ assert.ok(finalRestore>=0&&worldTranslate>finalRestore,'cue is anchored after character-local transforms in world coordinates');
+ const cueCall=playerRenderer.slice(cueIndex,playerRenderer.indexOf(';',cueIndex)+1);
+ assert.match(cueCall,/Math\.max\(\.12,Math\.min\(3,/);
+ assert.match(cueCall,/Number\(this\.scale\)\|\|1/);
+ assert.match(cueCall,/Number\(this\.dpr\)\|\|1/);
+ assert.match(cueCall,/Number\(this\.cameraZoom\)\|\|1/);
+ assert.match(cueCall,/,\s*1\)$/,'world-space label must not inherit character mirroring');
+ assert.doesNotMatch(cueCall,/view\.side/);
  assert.match(render,/strokeText\('READ!',0,-130\)/);
 });
 test('the real named Magic Trick resolver applies the screen read, while ordinary Dribble Styles keep their own odds',async()=>{

@@ -262,11 +262,18 @@ function defensiveTackleSlide(defender,carrier,baseSpeed=0){
  const ux=dx/range,uy=dy/range;
  // Match the exact forward arc used by GameEngine.tackle: a run-up from
  // behind or side-on cannot select a SHOOT slide that cannot see its target.
- const moveX=Number.isFinite(defender.dx)?defender.dx:0;
- const moveY=Number.isFinite(defender.dy)?defender.dy:0;
- const moveLength=Math.hypot(moveX,moveY);
- const headingX=moveLength>.15?moveX/moveLength:(defender.face===-1?-1:1);
- const headingY=moveLength>.15?moveY/moveLength:0;
+ // Prefer actual momentum over a stale direction input: the AI must not
+ // commit to a forward slide while its body is still travelling backwards.
+ // Input direction is retained for a charged dash with negligible velocity.
+ const movementSpeed=Math.hypot(defenderVX,defenderVY);
+ const inputX=Number.isFinite(defender.dx)?defender.dx:0;
+ const inputY=Number.isFinite(defender.dy)?defender.dy:0;
+ const inputLength=Math.hypot(inputX,inputY);
+ const useMomentum=movementSpeed>24,useInput=!useMomentum&&inputLength>.15;
+ const headingX=useMomentum?defenderVX/movementSpeed:
+  useInput?inputX/inputLength:(defender.face===-1?-1:1);
+ const headingY=useMomentum?defenderVY/movementSpeed:
+  useInput?inputY/inputLength:0;
  if(headingX*ux+headingY*uy<.25)return false;
  const relativeX=carrierVX-defenderVX,relativeY=carrierVY-defenderVY;
  const escaping=relativeX*ux+relativeY*uy;

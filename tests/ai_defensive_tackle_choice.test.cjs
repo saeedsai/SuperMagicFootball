@@ -45,6 +45,18 @@ test('retreating and side-on run-ups keep the short poke; a diagonal forward run
  assert.equal(AI.defensiveTackleSlide(facingFallback,carrier,250),true);
 });
 
+test('slide alignment follows actual momentum when direction input or facing is stale',()=>{
+ const retreatingMomentum=player(0,1000,700,{moveVX:-220,moveVY:0,dx:1,dy:0,face:1});
+ const forwardCarrier=player(1,1060,700,{moveVX:300,moveVY:0});
+ assert.equal(AI.defensiveTackleSlide(retreatingMomentum,forwardCarrier,250),false,
+  'forward input and facing cannot override actual retreating momentum');
+
+ const diagonalMomentum=player(0,1000,700,{moveVX:160,moveVY:120,dx:0,dy:0,face:-1});
+ const diagonalCarrier=player(1,1048,736,{moveVX:300,moveVY:225});
+ assert.equal(AI.defensiveTackleSlide(diagonalMomentum,diagonalCarrier,250),true,
+  'actual diagonal run-up is eligible even when input and facing are stale');
+});
+
 test('standing defenders, very close contact and invalid or unavailable carriers keep the poke',()=>{
  const running=player(0,1000,700,{moveVX:240,moveVY:0,dx:1,dy:0,face:1});
  const escaping=player(1,1060,700,{moveVX:320,moveVY:0});

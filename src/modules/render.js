@@ -1579,8 +1579,16 @@ class Renderer{
   if(!p.preview&&(p.mudTrickFx||0)>0)this.drawFieldTrick(ctx,'mud',p.mudTrickFx,!!game.options?.reducedFlash);
   if(!p.preview&&p.shotImpactConfusedTimer>0)drawShotImpactCue(ctx,p,this.time,!!game.options?.reducedFlash);
   if(!p.preview&&!(p.shotImpactConfusedTimer>0))drawShotWeaknessCue(ctx,p,!!game.options?.reducedFlash);
-  if(!p.preview&&(p.magicReadCueTimer||0)>0)drawMagicReadCue(ctx,p,!!game.options?.reducedFlash,Math.max(.12,Math.min(3,(Number(this.scale)||1)/(Number(this.dpr)||1)*(Number(this.cameraZoom)||1))),view.side);
   ctx.restore();
+  // Keep the counter-read feedback in world space, independent of character
+  // body scaling and mirrored pose transforms, so it stays legible on phones.
+  if(!p.preview&&(p.magicReadCueTimer||0)>0){
+   ctx.save();
+   ctx.translate(p.x,p.y-(Number(p.z)||0)-(Number(p.rideVisualZ)||0));
+   drawMagicReadCue(ctx,p,!!game.options?.reducedFlash,
+    Math.max(.12,Math.min(3,(Number(this.scale)||1)/(Number(this.dpr)||1)*(Number(this.cameraZoom)||1))),1);
+   ctx.restore();
+  }
  }
  drawPenaltyPlayers(ctx,g){let pk=g.pk;if(!pk)return;
   const cy=(WORLD.goalTop+WORLD.goalBottom)/2,at=Number.isInteger(pk.inMatchTeam)?pk.inMatchTeam:pk.turn%2,keeper=1-at;
