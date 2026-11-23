@@ -15,7 +15,7 @@ const restart=vm.runInNewContext('({'+source.slice(restartStart,restartEnd).repl
  clamp:(value,min,max)=>Math.max(min,Math.min(max,value))
 });
 const slideStart=source.indexOf(' slideContact(p){');
-const slideEnd=source.indexOf('\n tackle(p,slide=false){',slideStart);
+const slideEnd=source.indexOf('\n tackle(p,slide=false,slideBall=null){',slideStart);
 assert(slideStart>=0&&slideEnd>slideStart,'slide contact method must exist in GameEngine');
 const slide=vm.runInNewContext('({'+source.slice(slideStart,slideEnd)+'})',{
  distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),
@@ -78,7 +78,7 @@ test('front or lateral slide contact retains the existing tackle outcome',()=>{
 });
 
 test('live slide-contact path never emits a foul or launches a free kick',()=>{
- const method=source.slice(source.indexOf(' slideContact(p){'),source.indexOf('\n tackle(p,slide=false){',source.indexOf(' slideContact(p){')));
+ const method=source.slice(source.indexOf(' slideContact(p){'),source.indexOf('\n tackle(p,slide=false,slideBall=null){',source.indexOf(' slideContact(p){')));
  assert.doesNotMatch(method,/this\.emit\('foul'/);
  assert.doesNotMatch(method,/startFreeKick|startPK/);
  assert.match(method,/tackleHit/);

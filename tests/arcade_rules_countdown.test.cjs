@@ -30,7 +30,7 @@ test('initialization and second-half transition enable countdown only for UI-sta
 });
 test('continuous play handles endline misses without a restart or foul',()=>{
  const ball=engine.slice(engine.indexOf(' // Scoring: ball must cross'),engine.indexOf(' if(b.canCollect>0)return;',engine.indexOf(' // Scoring: ball must cross')));
- const slide=engine.slice(engine.indexOf(' slideContact(p){'),engine.indexOf(' tackle(p,slide=false){'));
+ const slide=engine.slice(engine.indexOf(' slideContact(p){'),engine.indexOf(' tackle(p,slide=false,slideBall=null){'));
  assert.match(ball,/if\(b\.y>WORLD\.goalTop&&b\.y<WORLD\.goalBottom&&b\.z<125\)\{scoring\(/);
  assert.match(ball,/b\.vx\*=-\.72/);
  assert.doesNotMatch(ball,/handleEndlineRestart\(\)/);

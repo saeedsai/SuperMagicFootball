@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('src/modules/engine.js','utf8');
-const methodStart=source.indexOf(' tackle(p,slide=false){');
+const methodStart=source.indexOf(' tackle(p,slide=false,slideBall=null){');
 const selectStart=source.indexOf('  const canSlideTarget=',methodStart);
 const selectEnd=source.indexOf('  // Lead a moving ball carrier',selectStart);
 assert.ok(methodStart>=0&&selectStart>methodStart&&selectEnd>selectStart,'locate production tackle target selection');

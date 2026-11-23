@@ -8,10 +8,11 @@ const begin=engine.indexOf('  const leadSeconds=slide ?');
 const end=engine.indexOf('  if(slide){',begin);
 assert.ok(begin>0&&end>begin,'read production tackle targeting expression');
 const fragment=engine.slice(begin,end);
-const calculate=(slide,target,p)=>vm.runInNewContext(
-  '(function(slide,target,p,clamp,norm){'+fragment+'return dir;})',
-  {}
-)(slide,target,p,(v,a,b)=>Math.min(b,Math.max(a,v)),(x,y)=>{const d=Math.hypot(x,y)||1;return {x:x/d,y:y/d};});
+const calculate=(slide,target,p,slideBall=null)=>vm.runInNewContext(
+  '(function(slide,target,p,slideBall,clamp,norm){'+fragment+'return dir;})',
+  {defensivePokeBallSideRead:()=>false}
+).call({ball:{owner:target}},slide,target,p,slideBall,
+  (v,a,b)=>Math.min(b,Math.max(a,v)),(x,y)=>{const d=Math.hypot(x,y)||1;return {x:x/d,y:y/d};});
 test('TACKLE-MOVING-CARRIER-LEAD-01: PASS poke and SHOOT slide anticipate lateral runners with different lead strength',()=>{
  const p={x:0,y:0,dx:1,dy:0,face:1};
  const moving={x:100,y:0,moveVX:0,moveVY:240};
