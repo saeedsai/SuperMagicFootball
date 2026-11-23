@@ -450,10 +450,8 @@ function defensivePokeCommitWindow(defender,carrier){
  const ux=dx/range,uy=dy/range;
  // Keep the same forward arc as GameEngine.tackle; no backward auto-pokes.
  if(headingX*ux+headingY*uy<.25)return false;
- const vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:
-  Number.isFinite(carrier.vx)?carrier.vx:0;
- const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:
-  Number.isFinite(carrier.vy)?carrier.vy:0;
+ const vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:0;
+ const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:0;
  const closing=-(vx*ux+vy*uy);
  if(!Number.isFinite(closing)||closing<120)return false;
  const leadX=clamp(vx*.055,-12,12),leadY=clamp(vy*.055,-12,12);

@@ -30,6 +30,8 @@ test('retreating, lateral and insufficiently closing carriers keep the existing 
  assert.equal(commit(defender,player(1,1088,700,{moveVX:0,moveVY:240})),false);
  assert.equal(commit(defender,player(1,1088,700,{moveVX:-80,moveVY:0})),false);
  assert.equal(commit(defender,player(1,1088,700)),false);
+ assert.equal(commit(defender,player(1,1088,700,{moveVX:NaN,moveVY:NaN,vx:-300,vy:0})),false,
+  'legacy velocity must not override the zero-motion fallback used by the actual poke');
 });
 
 test('the early window follows the existing poke lead and 16-unit step contact budget',()=>{

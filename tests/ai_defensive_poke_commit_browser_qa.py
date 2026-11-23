@@ -34,17 +34,18 @@ with sync_playwright() as pw:
             const left=game.defensivePokeCommitWindow(player(1,1088,700,{dx:-1,face:-1}),player(0,1000,700,{moveVX:240,moveVY:0}));
             const retreat=game.defensivePokeCommitWindow(player(0,1000,700),player(1,1088,700,{moveVX:240,moveVY:0}));
             const lateral=game.defensivePokeCommitWindow(player(0,1000,700),player(1,1088,700,{moveVX:0,moveVY:240}));
+            const staleVelocity=game.defensivePokeCommitWindow(player(0,1000,700),player(1,1088,700,{moveVX:NaN,moveVY:NaN,vx:-300,vy:0}));
             const low=game.defensivePokeCommitWindow(player(0,1000,700),player(1,1089,700,{moveVX:-240,moveVY:0}));
             const high=game.defensivePokeCommitWindow(player(0,1000,700),player(1,1090,700,{moveVX:-240,moveVY:0}));
             const sideOn=game.defensivePokeCommitWindow(player(0,1000,700,{dx:0,dy:1}),player(1,1088,700,{moveVX:-240,moveVY:0}));
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
-            return {right,left,retreat,lateral,low,high,sideOn,
+            return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
         assert result['right'] and result['left'],(kind,result)
-        assert not result['retreat'] and not result['lateral'] and not result['sideOn'],(kind,result)
+        assert not result['retreat'] and not result['lateral'] and not result['sideOn'] and not result['staleVelocity'],(kind,result)
         assert result['low'] and not result['high'],(kind,result)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
