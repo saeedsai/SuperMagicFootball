@@ -1128,8 +1128,11 @@ class GameEngine{
   p.y=clamp(p.y+clamp(dy,-64,64),F.y+12,F.y+F.h-12);
   const sign=p.t===0?1:-1;
   const force=Math.hypot(b.vx,b.vy)/50+(b.power||0),saveQuality=24+skill*.55+diving*.28;
-  // Even a strong shot can be deflected; high-quality keepers catch slower shots.
-  if(force<saveQuality*.62){this.keeperCollect(p,'dive');this.emit('save',{player:p,saveType:'dive'});}
+  const fatigue=clamp(Number.isFinite(p.fatigue)?p.fatigue:0,0,1);
+  // Fatigue only changes borderline handling: rested keepers retain the exact catch baseline,
+  // while a fully exhausted keeper is up to 10% more likely to parry a forceful shot.
+  const catchThreshold=saveQuality*.62*(1-.10*fatigue);
+  if(force<catchThreshold){this.keeperCollect(p,'dive');this.emit('save',{player:p,saveType:'dive'});}
   else {p.diveCooldown=keeperParryRecoverySeconds(p);keeperParryRebounds.set(b,{team:p.t,expires:(Number.isFinite(this.clock)?this.clock:0)+1.65});b.owner=null;b.shot=null;b.strike=null;b.ordinaryShot=false;b.vx=sign*(290+skill*4.1);b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4);b.vz=150+diving*.6;b.power=0;b.attacker=p.t;b.lastTouchTeam=p.t;b.age=0;b.trail=[];b.canCollect=.32;this.emit('save',{player:p,saveType:'dive',deflected:true});}
   this.spendStamina(p,'keeperDive');this.burst(p.x,p.y,'#ccf9ff',16);
   this.emit('keeperDive',{team:p.t,player:p.src.name,manual});return true;
