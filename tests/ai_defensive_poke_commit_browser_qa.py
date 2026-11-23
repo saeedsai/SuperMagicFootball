@@ -96,7 +96,7 @@ with sync_playwright() as pw:
                     action:'idle',actionTimer:0,moveVX:dir*240,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0});
                 Object.assign(carrier,{x:carrierX,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
                     moveVX:dir*(firstTouch?100:340),moveVY:0,
-                    firstTouchControlTimer:firstTouch?.16:0,firstTouchPressure:firstTouch?.8:0});
+                    firstTouchControlTimer:firstTouch ? .16 : 0,firstTouchPressure:firstTouch ? .8 : 0});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
@@ -129,10 +129,10 @@ with sync_playwright() as pw:
         for row in result['closeContactEngineRows']:
             assert row['exposed'] and all(call['same'] and not call['slide'] for call in row['exposed']),(kind,row)
             assert row['shielded']==[],(kind,row)
-        for(const row of result['closeContactSlideRows']):
+        for row in result['closeContactSlideRows']:
             assert len(row['exposed'])==1 and row['exposed'][0]['same'] and row['exposed'][0]['slide'],(kind,row)
             assert row['shielded']==[],(kind,row)
-        for(const row of result['firstTouchSlideRows']):
+        for row in result['firstTouchSlideRows']:
             assert len(row['exposed'])==1 and row['exposed'][0]['same'] and row['exposed'][0]['slide'],(kind,row)
             assert row['shielded']==[],(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
