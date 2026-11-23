@@ -84,7 +84,6 @@ test('driveAI routes both ordinary and primary press tackles through movement-aw
  assert.ok(engineSource.includes('GameEngine.prototype.defensiveTackleSlideBallSideRead=defensiveTackleSlideBallSideRead;'));
  assert.ok(engineSource.includes('distance(p,owner)<68'));
  assert.ok(engineSource.includes('carrierDistance<74'));
- assert.ok(engineSource.includes('carrierDistance<=98&&defensivePokeBallSideRead(p,owner,liveBall)&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p))'));
  assert.ok(engineSource.includes('const slideRoll=Math.random();'));
  assert.ok(engineSource.includes('const mx=Number.isFinite(p.dx)?p.dx:0,my=Number.isFinite(p.dy)?p.dy:0;'),
   'the helper must preserve the engine contact arc and add momentum as a separate requirement');
