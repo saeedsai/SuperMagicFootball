@@ -225,8 +225,15 @@ function defensiveThirdManRunnerTarget(team,carrier,players,bounds,primary,suppo
    const gap=Math.hypot(defender.x-target.x,defender.y-target.y);
    const carrierGap=Math.hypot(defender.x-carrier.x,defender.y-carrier.y);
    if(gap>205||carrierGap<105||carrierGap>440)continue;
+   // Prefer the defender already arriving at the mark, but keep this a small
+   // 120 ms tie-breaker so lane quality and carrier safety remain dominant.
+   const projectedGap=Math.hypot(
+    defender.x+clampTo(velocity(defender,'x')*.12,-24,24)-target.x,
+    defender.y+clampTo(velocity(defender,'y')*.12,-24,24)-target.y
+   );
+   const arrivalTieBreak=clampTo(projectedGap-gap,-12,12);
    const score=gap+lateral*.12+runnerDepth*.04-
-    Math.min(180,advance)*.06+Math.max(0,carrierGap-260)*.12;
+    Math.min(180,advance)*.06+Math.max(0,carrierGap-260)*.12+arrivalTieBreak;
    if(!best||score<best.score)best={defender,runner,target,score};
   }
  }

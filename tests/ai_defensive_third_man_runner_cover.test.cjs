@@ -16,17 +16,18 @@ function makeFixture(AI,ENGINE,team){
  const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
  const field=ENGINE.WORLD.field,bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
  const ownGoalX=team===0?bounds.xMin:bounds.xMax,attackTeam=1-team,attackDir=attackTeam===0?1:-1,centerY=(bounds.yMin+bounds.yMax)/2;
- const carrier=game.player(attackTeam,3),runner=game.player(attackTeam,4),primary=game.player(team,3),support=game.player(team,4),third=game.player(team,5);
- for(const q of game.players)if(![carrier,runner,primary,support,third].includes(q)&&!q.keeper){q.down=true;q.stun=1;}
+ const carrier=game.player(attackTeam,3),runner=game.player(attackTeam,4),primary=game.player(team,3),support=game.player(team,4),third=game.player(team,5),alternate=game.player(team,6);
+ for(const q of game.players)if(![carrier,runner,primary,support,third,alternate].includes(q)&&!q.keeper){q.down=true;q.stun=1;}
  const carrierX=ownGoalX-attackDir*390,runnerX=ownGoalX-attackDir*175,runnerY=centerY+24;
  active(carrier,{x:carrierX,y:centerY});active(runner,{x:runnerX,y:runnerY,moveVX:attackDir*80});
  active(primary,{x:carrierX+attackDir*70,y:centerY+65});active(support,{x:carrierX+attackDir*40,y:centerY-130});
  const targetX=runnerX+attackDir*(80*.12+34),targetY=runnerY+(centerY-runnerY)*.12;
  active(third,{x:targetX-attackDir*70,y:targetY+10});
+ active(alternate,{down:true,x:targetX-attackDir*82,y:targetY+10});
  Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,attacker:attackTeam,lastTouchTeam:attackTeam,age:0,shot:null,strike:null,ordinaryShot:false,hideBallTimer:0});
  game.clock=2;const pressers=AI.defensivePressers(game.players,team,carrier);
  const assignment=AI.defensiveThirdManRunnerTarget(team,carrier,game.players,bounds,pressers.primary,pressers.support);
- return {game,field,bounds,team,attackDir,ownGoalX,centerY,carrier,runner,primary,support,third,pressers,assignment,targetX,targetY};
+ return {game,field,bounds,team,attackDir,ownGoalX,centerY,carrier,runner,primary,support,third,alternate,pressers,assignment,targetX,targetY};
 }
 test('third CPU defender marks an unassigned central runner on both goal sides',async()=>{
  const {AI,ENGINE}=await loadModules();
@@ -46,6 +47,32 @@ test('third CPU defender marks an unassigned central runner on both goal sides',
   assert.equal(f.game.ball.owner,f.carrier,'cover assignment does not alter possession');
  }
 });
+test('third-man marking prefers a bounded projected arrival over a slightly nearer defender moving away',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=makeFixture(AI,ENGINE,team);
+  f.third.moveVX=-f.attackDir*200;
+  active(f.alternate,{x:f.targetX-f.attackDir*82,y:f.targetY+10,moveVX:f.attackDir*200,moveVY:0});
+  const assignment=AI.defensiveThirdManRunnerTarget(team,f.carrier,f.game.players,f.bounds,f.primary,f.support);
+  assert.ok(Math.hypot(f.third.x-f.targetX,f.third.y-f.targetY)<Math.hypot(f.alternate.x-f.targetX,f.alternate.y-f.targetY),
+   'the moving-away defender is currently closer');
+  assert.equal(assignment?.defender,f.alternate,'the defender projected into the mark should win');
+  f.game.driveAI(f.alternate,.016);
+  assert.ok(Math.abs(f.alternate.aiTarget.x-assignment.target.x)<1e-6);
+  assert.ok(Math.abs(f.alternate.aiTarget.y-assignment.target.y)<1e-6);
+  assert.equal(f.game.ball.owner,f.carrier,'arrival selection must not alter possession');
+
+  const bounded=makeFixture(AI,ENGINE,team);
+  bounded.third.moveVX=-bounded.attackDir*200;
+  active(bounded.alternate,{x:bounded.targetX-bounded.attackDir*110,y:bounded.targetY+10,
+   moveVX:bounded.attackDir*200,moveVY:0});
+  const boundedAssignment=AI.defensiveThirdManRunnerTarget(team,bounded.carrier,bounded.game.players,
+   bounded.bounds,bounded.primary,bounded.support);
+  assert.equal(boundedAssignment?.defender,bounded.third,
+   'a materially closer marker must remain preferred beyond the capped arrival tie-break');
+ }
+});
+
 test('third-man mark rejects distant carriers, non-central or retreating runners and covered threats',async()=>{
  const {AI,ENGINE}=await loadModules();
  const cases=[
