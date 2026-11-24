@@ -74,6 +74,29 @@ with sync_playwright() as pw:
      expected:{x:Math.max(bounds.xMin+22,Math.min(bounds.xMax-22,g.ball.x+g.ball.vx*flight)),
       y:Math.max(bounds.yMin+23,Math.min(bounds.yMax-23,g.ball.y+g.ball.vy*flight))}});
    }
+   const arrivalRows=[];
+   for(const team of [0,1])for(const profile of [
+    {name:'closing',direction:-1,expected:false},
+    {name:'retreating',direction:1,expected:true},
+    {name:'stationary',direction:0,expected:true}
+   ]){
+    const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax,goalY=765;
+    const target={x:ownGoalX+dir*190,y:goalY+78};
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+    const keeper=g.player(team,0),receiver=g.player(1-team,3);
+    for(const q of g.players)if(q!==keeper&&q!==receiver&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(keeper,{x:ownGoalX+dir*40,y:goalY,z:0,stun:0,down:false,action:'idle',
+     actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,aiKeeperClaimTargetActive:false,
+     aiParryReboundTarget:false,moveVX:0,moveVY:0});
+    Object.assign(receiver,{x:target.x+dir*155,y:target.y+10,z:0,stun:0,down:false,
+     action:'idle',actionTimer:0,slideTimer:0,moveVX:dir*85*profile.direction,moveVY:0});
+    Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,pass:true,
+     passTarget:receiver.src.id,x:target.x+dir*118,y:target.y-30,z:90,
+     vx:-dir*190,vy:48,vz:10,age:.15,canCollect:0,shot:null,strike:null,ordinaryShot:false});
+    g.clock=.2;g.driveAI(keeper,.016);
+    arrivalRows.push({team,name:profile.name,expected:profile.expected,
+     claimActive:keeper.aiKeeperClaimTargetActive===true});
+   }
    const profileRows=[];
    for(const team of [0,1]){
     const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax,goalY=765;
@@ -107,7 +130,7 @@ with sync_playwright() as pw:
       target:keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null});
     }
    }
-   return {rows,aerialRows,profileRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+   return {rows,aerialRows,arrivalRows,profileRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -128,6 +151,9 @@ with sync_playwright() as pw:
    else:
     assert row['claimActive'] is True,(kind,row)
     assert row['claim'] is not None and abs(row['claim']['x']-row['expected']['x'])<2 and abs(row['claim']['y']-row['expected']['y'])<2,(kind,row)
+  assert len(result['arrivalRows'])==6,(kind,result['arrivalRows'])
+  for row in result['arrivalRows']:
+   assert row['claimActive'] is row['expected'],(kind,row)
   assert len(result['profileRows'])==18,(kind,result['profileRows'])
   for row in result['profileRows']:
    assert row['claimActive'] is row['expected'],(kind,row)
