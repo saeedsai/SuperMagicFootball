@@ -8,7 +8,7 @@ Deliver real player-facing football gameplay first, then existing-player graphic
 ## Current checkpoint
 - **0.12.81.245 — AI-GROUND-TRAP-JUMP-COUNTER-01:** CPU outfielders now use the existing JUMP when an armed enemy Banana Peel or Ice Patch is immediately in their path and a safe SHOOT-slide sweep is unavailable. A live first-frame JUMP counts as airborne before z reaches 20; CPU jumpers continue moving away while airborne. Carrying possession is retained; safe slide disarms remain preferred.
 - Retained .244 goalkeeper fatigue catch threshold (rested baseline unchanged, maximum 10% reduction at full fatigue). Repaired the confirmed stale .244 keeper_parry_lane source assertion.
-- Added Node and actual-engine desktop/simulated-touch Chromium regressions for both trap types, both teams, possession retention, active/expired JUMP and 30/60/120-Hz behavior. Exact-head .245 gates pending.
+- Added Node and actual-engine desktop/simulated-touch Chromium regressions for both trap types, both teams, possession retention, active/expired JUMP and 30/60/120-Hz behavior. First .245 Node run found a test-fixture ReferenceError (`carrier`/`field` undefined); fixed the fixture and updated the specialist contract. New exact-head gates pending.
 - **.243 is main-promoted and independently verified:** Modular QA #45277794491 and dev Census #45277794208 passed; Pages #45279545316 and independent main Census #45279561456 passed, including hosted smoke and all four Node/Chromium shards.
 
 ## Next smallest action

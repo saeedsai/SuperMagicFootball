@@ -123,9 +123,12 @@ test('CPU uses the existing JUMP when carrying or when a safe trap-clearing slid
 
 test('an active first-frame JUMP counters Banana and Ice before vertical lift reaches 20',async()=>{
  const model=await hazardModelPromise;
+ const carrier={x:300,y:300,t:0,dx:1,dy:0,face:1};
+ const field={x:0,y:0,w:600,h:600};
  for(const kind of ['banana','ice']){
   const active=kind==='banana'?model.placeBananaPeel([],carrier,field):model.placeIcePatch([],carrier,field);
-  const jumper={...rival,z:10,action:'jump',actionTimer:.5,jumpCount:1};
+  const trap=active[0];
+  const jumper={t:1,x:trap.x,y:trap.y,keeper:false,stun:0,z:10,action:'jump',actionTimer:.5,jumpCount:1};
   const result=kind==='banana'?model.advanceBananaPeels(active,[jumper],.4):model.advanceIcePatches(active,[jumper],.4);
   assert.equal(result.slips.length,0,kind+' active JUMP must evade on its first lift frame');
   assert.equal(result.hazards.length,1,kind+' trap remains available after the dodge');
