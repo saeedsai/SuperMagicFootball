@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desktop and simulated-touch acceptance for high-ball and low-spill second-defender cover."""
+"""Desktop and simulated-touch acceptance for coordinated primary/support landing reads."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
@@ -60,7 +60,7 @@ with sync_playwright() as pw:
                     game.driveAI(primary,.016);game.driveAI(support,.016);
                     rows.push({team,dir,name:scenario.name,expected,landing,
                         primary:primary.aiTarget,support:support.aiTarget,
-                        primaryUsesLanding:scenario.name==='moving'||scenario.name==='vertical'});
+                        primaryUsesLanding:true});
                 }
             }
             return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
@@ -81,6 +81,6 @@ with sync_playwright() as pw:
             else:
                 assert gap>.5,(kind,row)
         assert not errors,(kind,errors)
-        print('PASS',kind,'high-ball, tackle-spill and rolling second-ball cover, four actions and no JavaScript errors',flush=True)
+        print('PASS',kind,'primary/support high-ball and ground-spill landing coordination, four actions and no JavaScript errors',flush=True)
         ctx.close()
     browser.close()
