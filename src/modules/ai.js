@@ -1971,12 +1971,11 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   });
   const direct=scored.find(option=>option.side===0);
   const best=scored.filter(option=>option.side!==0).sort((a,b)=>b.score-a.score)[0];
-  const directSafe=!!direct&&Number.isFinite(direct.score)&&direct.score>=38&&
-   (!slideThreats.length||(Number.isFinite(direct.slideGap)&&direct.slideGap>=18));
+  const directSafe=!!direct&&Number.isFinite(direct.score)&&direct.score>=150&&!slideThreats.length;
   const bestSafe=!!best&&Number.isFinite(best.score)&&best.score>=38&&
    (!slideThreats.length||(Number.isFinite(best.slideGap)&&best.slideGap>=18));
-  // Keep a straight lane when it is safe; only make the sharper diagonal cut
-  // when it buys a meaningful (18-point) clearance advantage.
+  // Keep a straight lane only with strong clearance and no active slide; a
+  // diagonal must buy a meaningful (18-point) advantage over that safe lane.
   if(directSafe&&(!bestSafe||best.score<direct.score+18))
    return {x:direct.target.x,y:direct.target.y};
   if(!bestSafe)return null;
