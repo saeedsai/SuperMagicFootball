@@ -365,7 +365,7 @@ test('actual CPU interception first touch chooses the open side of an active sli
    slideTimer:.24,slideRemaining:30,slideSpeed:500,slideDX:-dir*.35,slideDY:.936657,
    moveVX:0,moveVY:0});
   Object.assign(game.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:1-team,
-   passTarget:interceptor.src.id,attacker:1-team,lastTouchTeam:1-team,
+   passTarget:intended.src.id,attacker:1-team,lastTouchTeam:1-team,
    x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,ordinaryShot:false,canCollect:0});
   game.clock=10;game.take(interceptor);
   const expected=interceptor.aiFirstTouchTarget&&{x:interceptor.aiFirstTouchTarget.x,y:interceptor.aiFirstTouchTarget.y};

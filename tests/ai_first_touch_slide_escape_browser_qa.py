@@ -48,7 +48,7 @@ with sync_playwright() as pw:
                     slideTimer:.24,slideRemaining:30,slideSpeed:500,slideDX:-dir*.35,slideDY:.936657,
                     moveVX:0,moveVY:0});
                 Object.assign(game.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:1-team,
-                    passTarget:carrier.src.id,attacker:1-team,lastTouchTeam:1-team,
+                    passTarget:intended.src.id,attacker:1-team,lastTouchTeam:1-team,
                     x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,ordinaryShot:false,canCollect:0});
                 game.clock=10;game.take(carrier);
                 const expected=carrier.aiFirstTouchTarget&&{x:carrier.aiFirstTouchTarget.x,y:carrier.aiFirstTouchTarget.y};
