@@ -29,12 +29,13 @@ with sync_playwright() as pw:
         page.wait_for_function('!!window.SupermagicFootball?.game')
         result=page.evaluate("""() => {
             const game=SupermagicFootball.game;
+            const field={x:150,y:155,w:2260.8,h:1220};
             const targetY=(team,wing,mode)=>{
                 game.init({home:0,away:1,mode:'quick',humans:0});
                 const keeper=game.players.find(p=>p.t===team&&p.keeper);
                 const attacking=1-team,attackDir=team===0?-1:1;
-                const ownGoalX=team===0?game.world.field.x:game.world.field.x+game.world.field.w;
-                const centerY=game.world.field.y+game.world.field.h/2;
+                const ownGoalX=team===0?field.x:field.x+field.w;
+                const centerY=field.y+field.h/2;
                 const carrier=game.players.find(p=>p.t===attacking&&p.i===3);
                 const runner=game.players.find(p=>p.t===attacking&&p.i===4);
                 const runner2=game.players.find(p=>p.t===attacking&&p.i===5);
