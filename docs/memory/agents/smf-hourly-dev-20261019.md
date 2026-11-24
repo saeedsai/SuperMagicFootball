@@ -6,20 +6,21 @@
 Deliver real player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.254 — AI-MAGIC-TRICK-MOMENTUM-CLOSING-READ-01:** a nearby defender can counter a named Magic Trick after directional input returns to neutral if real 2D movement momentum still carries them toward the carrier. Current dx/dy wins; moveVX/moveVY is the fallback. A stationary face-only defender and a retreating defender cannot claim a closing read.
-- The movement-only predicate now lives inside `tryMagicTrick` so existing extracted-resolver VM tests execute it without an undeclared dependency. Mirrored GameEngine Node and actual-engine desktop/simulated-touch Chromium regressions cover both teams, diagonal approach, retreat, stationary facing, unchanged costs and possession.
-- First .254 exact-head Modular QA #45338428497 and Census #45338428354 exposed a test-harness integration failure: extracted Magic Trick resolvers could not see a module-level helper. No gameplay assertion failure was established. The predicate has been moved into the resolver scope; fresh exact-head gates are pending.
-- **0.12.81.253 main-promoted:** Modular QA #45336413881 and four-Node/four-Chromium Census #45336413773 passed on SHA `59dde78350b655f206ed00ee9bcebe6f2d6b4e08`; Pages #45337591023 succeeded. Independent main Census #45337599476 had hosted smoke and preflight passed, with browser shards still running at last check.
+- **0.12.81.255 — AI-MAGIC-TRICK-SECOND-DEFENDER-DIRECT-READ-01:** direct named Magic Trick counters now search every active in-range defender, not only the nearest rival. The closest defender whose current 2D input or residual movement points toward the carrier and whose Defence meets/exceeds carrier Dribbling cancels the trick and receives the existing READ! cue. Retreating, stationary, low-Defence and out-of-range defenders do not qualify.
+- The first-touch probabilistic screen read, Lightning timing, nearest-target non-counter effects, cooldown/fatigue, possession, four actions, saves, rosters, persistence and offline play are unchanged. Focused mirrored Node and actual-engine desktop/simulated-touch Chromium regressions cover both teams, skill and range boundaries.
+- **0.12.81.254 main-promoted:** Modular QA #45338748981 passed 2,843/2,843; exact-head Full Regression Census #45338748933 passed all four Node and four Chromium shards. QA-gated promotion advanced main/dev to `4c95f4f5f92ca42dfe9ff35918b5dadb8c56ba53`. Main Census #45339991189 hosted Pages smoke, preflight, preview and all Node shards passed; one browser shard had a historical LAN auto-discovery timeout, and failed-job-only retry is running.
+- GitHub Pages hosted-byte smoke passed for .254. The main Census retry is still required before calling main regression fully green.
 
 ## Next smallest action
-Rerun exact-head .254 Modular QA and Full Regression Census; fix any confirmed source or fixture failure. Promote only the green exact dev SHA through the existing QA-gated pipeline, then independently verify main Census, Pages and hosted bytes.
+Inspect .255 exact-head Modular QA and Full Regression Census. Fix confirmed failures only; promote only the exact green dev SHA through the existing QA-gated pipeline, then verify Pages deployment, main Census and hosted bytes independently.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical #48, Render drift #86 and main protection #87 remain open. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
 
 ## Evidence
-- .253 Modular QA, exact-head four-Node/four-Chromium Census and QA-gated promotion passed; Pages deployment passed.
-- .254 gameplay source, focused Node/browser regressions and synchronized About/release/offline metadata are committed; the first exact-head Node preflight failure has a targeted scope correction; reruns pending.
+- .254 Modular QA and exact-head four-Node/four-Chromium Census passed; QA-gated promotion succeeded.
+- .254 main hosted smoke passed; one historical LAN browser timeout is under failed-job-only retry.
+- .255 gameplay source, focused Node/browser regressions and synchronized About/release/offline metadata are prepared for exact-head CI.
 
 ## Cleanup
 Keep this file below 4 KiB with all required headings and exact Agent ID. Do not read/edit another agent's private checkpoint. Never bypass CI, security or QA promotion.
