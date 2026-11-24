@@ -55,9 +55,12 @@ with sync_playwright() as pw:
                     const horizon=scenario.rolling ? .18 :
                         (scenario.vz+Math.sqrt(scenario.vz*scenario.vz+1000*scenario.z))/500;
                     const clamp=value=>Math.max(-scenario.cap,Math.min(scenario.cap,value));
-                    const expected={x:x+clamp(scenario.vx*horizon)-dir*26,y:y+clamp(scenario.vy*horizon)};
+                    const landing={x:x+clamp(scenario.vx*horizon),y:y+clamp(scenario.vy*horizon)};
+                    const expected={x:landing.x-dir*26,y:landing.y};
                     game.driveAI(primary,.016);game.driveAI(support,.016);
-                    rows.push({team,dir,name:scenario.name,expected,primary:primary.aiTarget,support:support.aiTarget});
+                    rows.push({team,dir,name:scenario.name,expected,landing,
+                        primary:primary.aiTarget,support:support.aiTarget,
+                        primaryUsesLanding:scenario.name==='moving'||scenario.name==='vertical'});
                 }
             }
             return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
@@ -71,9 +74,12 @@ with sync_playwright() as pw:
             assert row['primary'],(kind,row)
             gap=((row['primary']['x']-row['support']['x'])**2+
                 (row['primary']['y']-row['support']['y'])**2)**.5
-            if row['name']=='vertical': assert abs(gap-26)<1e-6,(kind,row)
-            elif row['name']=='moving': assert gap>40,(kind,row)
-            else: assert gap>.5,(kind,row)
+            if row['primaryUsesLanding']:
+                assert abs(row['primary']['x']-row['landing']['x'])<1e-6,(kind,row)
+                assert abs(row['primary']['y']-row['landing']['y'])<1e-6,(kind,row)
+                assert abs(gap-26)<1e-6,(kind,row)
+            else:
+                assert gap>.5,(kind,row)
         assert not errors,(kind,errors)
         print('PASS',kind,'high-ball, tackle-spill and rolling second-ball cover, four actions and no JavaScript errors',flush=True)
         ctx.close()

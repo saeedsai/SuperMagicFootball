@@ -1379,7 +1379,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    return true;
   }
 
-  function defensiveLooseBallCoverTarget(team,ball,bounds){
+  function defensiveLooseBallLandingTarget(team,ball,bounds,goalSideOffset=0){
    if((team!==0&&team!==1)||!ball||ball.owner||ball.pass||ball.shot||ball.strike||
     ball.ordinaryShot||![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz].every(Number.isFinite)||
     ball.z<32||ball.z>175||ball.vz>35||ball.vz< -320)return null;
@@ -1391,14 +1391,27 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    if(!Number.isFinite(flightSeconds)||flightSeconds<.12||flightSeconds>.62)return null;
    if(Number.isFinite(ball.canCollect)&&ball.canCollect>flightSeconds+.12)return null;
    const dir=team===0?1:-1;
+   const offset=clampTo(Number.isFinite(goalSideOffset)?goalSideOffset:0,0,26);
    const landingX=ball.x+clampTo(ball.vx*flightSeconds,-260,260);
    const landingY=ball.y+clampTo(ball.vy*flightSeconds,-260,260);
    const target={
-    x:clampTo(landingX-dir*26,xMin+22,xMax-22),
+    x:clampTo(landingX-dir*offset,xMin+22,xMax-22),
     y:clampTo(landingY,yMin+23,yMax-23)
    };
    if(!Number.isFinite(target.x)||!Number.isFinite(target.y))return null;
    return target;
+  }
+
+  // The primary presser meets the descending ball at its landing point while
+  // the support defender holds the existing 26-unit goal-side cover pocket.
+  // Both assignments share one flight estimate so they do not chase stale,
+  // divergent projections or collapse onto the same side of the landing point.
+  function defensiveLooseBallPrimaryTarget(team,ball,bounds){
+   return defensiveLooseBallLandingTarget(team,ball,bounds,0);
+  }
+
+  function defensiveLooseBallCoverTarget(team,ball,bounds){
+   return defensiveLooseBallLandingTarget(team,ball,bounds,26);
   }
 
 
@@ -2316,6 +2329,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
 
 export {AI};

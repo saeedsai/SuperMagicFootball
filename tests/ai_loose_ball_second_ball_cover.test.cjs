@@ -24,6 +24,28 @@ test('second defender covers the descending loose-ball landing point in both dir
  assert.ok(teamZero.x<teamOne.x,'each defending side holds its own goal-side margin');
 });
 
+test('primary landing target meets the same descending ball without the support defender goal-side offset',async()=>{
+ const {AI}=await loadModules(),ball=looseBall();
+ const flight=(-40+Math.sqrt(40*40+1000*54))/500;
+ const landingX=420+260*flight,landingY=300-80*flight;
+ for(const team of [0,1]){
+  const primary=AI.defensiveLooseBallPrimaryTarget(team,ball,bounds);
+  const support=AI.defensiveLooseBallCoverTarget(team,ball,bounds);
+  assert.ok(primary&&support);
+  assert.ok(Math.abs(primary.x-landingX)<1e-9);
+  assert.ok(Math.abs(primary.y-landingY)<1e-9);
+  assert.ok(Math.abs(Math.hypot(primary.x-support.x,primary.y-support.y)-26)<1e-9);
+ }
+ const invalid=[
+  {owner:{t:0}},{pass:true},{shot:{behavior:'normal'}},{strike:{power:1}},
+  {ordinaryShot:true},{z:31.99},{z:175.01},{vz:35.01},{vz:-320.01},
+  {x:NaN},{vy:Infinity}
+ ];
+ for(const patch of invalid)
+  assert.equal(AI.defensiveLooseBallPrimaryTarget(0,{...ball,...patch},bounds),null,
+   'primary must fail closed for '+Object.keys(patch).join(','));
+});
+
 test('second-ball cover rejects possession, active passes/shots, rising or grounded balls and delayed collection',async()=>{
  const {AI}=await loadModules(),base=looseBall();
  const invalid=[
@@ -78,9 +100,12 @@ test('driveAI sends the second CPU presser to the landing cover while the primar
   assert.ok(expected);
   game.driveAI(primary,.016);
   game.driveAI(support,.016);
-  assert.deepEqual(support.aiTarget,expected,'the support defender protects the predicted landing pocket');
-  assert.ok(Math.hypot(primary.aiTarget.x-expected.x,primary.aiTarget.y-expected.y)>40,
-   'the primary presser continues toward the live ball instead of duplicating cover');
+  const primaryExpected=AI.defensiveLooseBallPrimaryTarget(team,game.ball,
+   {xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24});
+  assert.deepEqual(primary.aiTarget,primaryExpected,'the primary meets the actual predicted landing point');
+  assert.deepEqual(support.aiTarget,expected,'the support defender protects the goal-side landing pocket');
+  assert.ok(Math.abs(Math.hypot(primary.aiTarget.x-expected.x,primary.aiTarget.y-expected.y)-26)<1e-6,
+   'the two defenders split the landing point and its 26-unit goal-side cover');
  }
 });
 
