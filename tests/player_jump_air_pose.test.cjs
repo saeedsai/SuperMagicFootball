@@ -25,12 +25,17 @@ test('normal and double jump phases produce bounded takeoff, apex tuck, and desc
   const rising=pose(38,220,action==='jump'?1:2,action,.18);
   const apex=pose(action==='jump'?82:148,0,action==='jump'?1:2,'idle',0);
   const descent=pose(36,-300,action==='jump'?1:2,'idle',0);
+  const landing=pose(8,-360,action==='jump'?1:2,'idle',0);
   assert.ok(takeoff.weight>0&&takeoff.weight<rising.weight,action+' begins on takeoff and blends in');
   assert.ok(rising.weight<apex.weight,'pose weight follows the jump height');
   assert.ok(apex.tuck>rising.tuck&&apex.tuck>descent.tuck,'knees tuck most clearly near apex');
   assert.ok(descent.extend>0&&descent.armDrop>0,'descent extends the legs and lowers the hands');
-  for(const sample of [takeoff,rising,apex,descent])for(const key of ['weight','tuck','extend','armOpen','armLift','armDrop'])
+  assert.ok(landing.landingBrace>descent.landingBrace,'the final descending approach adds a stronger landing brace');
+  assert.equal(rising.landingBrace,0,'rising players do not brace early');
+  assert.equal(apex.landingBrace,0,'the apex remains an airborne tuck');
+  for(const sample of [takeoff,rising,apex,descent,landing])for(const key of ['weight','tuck','extend','armOpen','armLift','armDrop','landingBrace'])
    assert.ok(Number.isFinite(sample[key])&&sample[key]>=0&&sample[key]<=10,action+' '+key+' bounded');
+  assert.ok(landing.landingBrace<=1,'landing brace remains normalized');
  }
 });
 
@@ -51,13 +56,16 @@ test('air pose changes articulated limbs, blends away run swing, and stays deter
   art.draw(c,player,appearance,team,{kind:view,side},{run:.85,locomotion:false,reducedFlash,jumpAirPose});
   return JSON.stringify(events);
  }
- const poses={ground:{},rise:{action:'jump',z:38,vz:220,jumpCount:1,actionTimer:.18},apex:{action:'idle',z:82,vz:0,jumpCount:1,actionTimer:0},fall:{action:'idle',z:36,vz:-300,jumpCount:1,actionTimer:0}};
- for(const view of ['front','quarterFront','side'])for(const side of [-1,1]){
-  const baseline=draw(poses.ground,view,side),rise=draw(poses.rise,view,side),apex=draw(poses.apex,view,side),fall=draw(poses.fall,view,side);
+ const poses={ground:{},rise:{action:'jump',z:38,vz:220,jumpCount:1,actionTimer:.18},apex:{action:'idle',z:82,vz:0,jumpCount:1,actionTimer:0},fall:{action:'idle',z:36,vz:-300,jumpCount:1,actionTimer:0},landing:{action:'idle',z:8,vz:-360,jumpCount:1,actionTimer:0}};
+ const views=[['front',1],['quarterFront',1],['side',1],['quarterBack',1],['back',1],['quarterBack',-1],['side',-1],['quarterFront',-1]];
+ for(const [view,side] of views){
+  const baseline=draw(poses.ground,view,side),rise=draw(poses.rise,view,side),apex=draw(poses.apex,view,side),fall=draw(poses.fall,view,side),landing=draw(poses.landing,view,side);
   assert.notEqual(rise,baseline,view+' rise limbs differ from grounded');
   assert.notEqual(apex,rise,view+' apex tuck differs from rise');
   assert.notEqual(fall,apex,view+' descent extension differs from apex');
-  assert.equal(draw(poses.apex,view,side,true),apex,'reduced flash holds deterministic pose');
+  assert.notEqual(landing,fall,view+' final landing brace differs from ordinary descent');
+  assert.equal(draw(poses.apex,view,side,true),apex,'reduced flash holds deterministic apex pose');
+  assert.equal(draw(poses.landing,view,side,true),landing,'reduced flash holds deterministic landing pose');
  }
 });
 

@@ -403,19 +403,24 @@ const CHARACTER_ART=(()=>{
  function jumpAirPose(z,vz,jumpCount,action,actionTimer=0){
   const height=Number(z),rise=Number(vz),count=Number(jumpCount),timer=Number(actionTimer);
   const allowed=action==='jump'||action==='doubleJump'||action==='idle';
-  if(!allowed||!Number.isFinite(height)||height<=0||!Number.isFinite(count)||count<1)return {weight:0,tuck:0,extend:0,armOpen:0,armLift:0,armDrop:0};
+  if(!allowed||!Number.isFinite(height)||height<=0||!Number.isFinite(count)||count<1)return {weight:0,tuck:0,extend:0,armOpen:0,armLift:0,armDrop:0,landingBrace:0};
   const riseSpeed=Number.isFinite(rise)?rise:0;
   const heightBlend=clamp(height/70,0,1),takeoff=clamp(Number.isFinite(timer)?timer/.5:0,0,1)*.28;
   const weight=clamp(Math.max(heightBlend,takeoff),0,1);
   const apex=1-clamp(Math.abs(riseSpeed)/420,0,1),descent=clamp(-riseSpeed/360,0,1);
   const tuck=weight*(.42+.58*apex)*(1-.22*descent);
+  // A short, render-only brace grows only during the final descending approach
+  // to the turf. It prepares both knees and arms without changing jump timing.
+  const landingHeight=clamp((52-height)/52,0,1);
+  const landingSpeed=clamp((-riseSpeed-80)/340,0,1);
+  const landingBrace=landingHeight*landingSpeed;
   return {weight,tuck,extend:weight*descent,armOpen:weight*(2.5+2*apex),
-   armLift:weight*(2+7*apex)*(1-.2*descent),armDrop:weight*descent*3.5};
+   armLift:weight*(2+7*apex)*(1-.2*descent),armDrop:weight*descent*3.5,landingBrace};
  }
  function drawLeg(c,sign,k,p,colors,opt,near,facingSign=1,airPose=null){
   const side=k==='side',quarter=k.startsWith('quarter');
   const spread=side?5:quarter?9:13,rawRun=Number(opt.run)||0;
-  const airWeight=airPose?.weight||0,tuck=airPose?.tuck||0,extend=airPose?.extend||0;
+  const airWeight=airPose?.weight||0,tuck=airPose?.tuck||0,extend=airPose?.extend||0,landingBrace=airPose?.landingBrace||0;
   const run=rawRun*(1-airWeight);
   const gait=run*(sign===1?1:-1),strike=opt.kick&&sign===1;
   const launch=clamp(Number(opt.shotLaunchPose?.armSpread)||0,0,1);
@@ -430,7 +435,7 @@ const CHARACTER_ART=(()=>{
   // a push from the turf instead of a rigid torso rotation; paint only.
   const recoveryBrace=shotRecoveryBrace(p.action,p.actionTimer);
   const plantedLeg=sign===1?recoveryBrace:recoveryBrace*.14;
-  const thighX=sign*spread,knee=[thighX+travel*.48-sign*10*plantedLeg-sign*tuck*spread*.24,-11-raise*.43-11*plantedLeg+launchFold*4-tuck*7],ankle=[thighX+travel-sign*18*plantedLeg+sign*tuck*spread*.12,-2-raise+launchFold*11-tuck*2+extend*5];
+  const thighX=sign*spread,knee=[thighX+travel*.48-sign*10*plantedLeg-sign*tuck*spread*.24-sign*landingBrace*2.6,-11-raise*.43-11*plantedLeg+launchFold*4-tuck*7+landingBrace*3.4],ankle=[thighX+travel-sign*18*plantedLeg+sign*tuck*spread*.12-sign*landingBrace*1.4,-2-raise+launchFold*11-tuck*2+extend*5+landingBrace*2.1];
   const bright=near?colors.skin:blend(colors.skin,-.15);
   stroke(c,[[thighX,-19],[knee[0],knee[1]]],bright,10.6,dark);
   oval(c,knee[0],knee[1],5.1,5,bright,dark,1.15);
@@ -490,7 +495,7 @@ const CHARACTER_ART=(()=>{
  }
  function arm(c,sign,k,p,col,opt,near,airPose=null){
   const side=k==='side',quarter=k.startsWith('quarter'),sh=sign*(side?14:quarter?18:23);
-  const airWeight=airPose?.weight||0;
+  const airWeight=airPose?.weight||0,landingBrace=airPose?.landingBrace||0;
   const run=(Number(opt.run)||0)*(1-airWeight),sw=(runArmSwing(run,sign)+(opt.signatureMotion?.armSwing||0)*sign*.40)*(1-airWeight);
   const dive=p.keeper&&['keeperDive','keeperDiveCatch','keeperSuper'].includes(p.action),holding=p.keeper&&['keeperCatch','keeperHold'].includes(p.action);
   const diveReach=dive?keeperArmReach(p.action,p.diveElapsed):0;
@@ -581,7 +586,7 @@ const CHARACTER_ART=(()=>{
    ?[sh+sign*(12+Math.sin(macePhase*Math.PI)*8),-47-Math.sin(macePhase*Math.PI)*7]
    :gettingUp?[sh+sign*((near?13:10)-5*recoveryBrace),-41+sw*.40+(near?10:6)*recoveryBrace]
    :launch>0?(launchGuard?[sh-sign*launch*5,-43-launch*8]:[sh+sign*(12+launch*15),-43-launch*7]):airWeight>0
-    ?[sh+sign*((near?13:10)+airPose.armOpen),-41-airPose.armLift*(near?1:.75)]:[sh+sign*(near?13:10),-41+sw*.40]));
+    ?[sh+sign*((near?13:10)+airPose.armOpen*(1-landingBrace*.45)),-41-airPose.armLift*(near?1:.75)+landingBrace*4.5]:[sh+sign*(near?13:10),-41+sw*.40]));
   const hand=holding?[elbow[0]-sign*5,-59]:(cheerPose?.hand||(dive?[elbow[0]+sign*(5+13*diveReach),-58-16*diveReach]:bumperImpactPhase!==null
    ?sign>0?[elbow[0]+sign*(10+12*bumperImpact),-37-7*bumperImpact]:[elbow[0]+sign*(5+4*bumperImpact),-50+4*bumperImpact]:bumperPhase!==null
    ?[elbow[0]+sign*(8+bumperPhase*7),-30-bumperPhase*18]
@@ -589,7 +594,7 @@ const CHARACTER_ART=(()=>{
    ?[elbow[0]+(opt.defenceSweepDirection||1)*(5+15*macePhase),-40+21*macePhase]
    :gettingUp?[elbow[0]+sign*5,-24+sw+(near?5:13)*recoveryBrace]
    :launch>0?(launchGuard?[sh-sign*(6+launch*10),-24-launch*28+sw]:[elbow[0]+sign*(5+launch*15),-24-launch*17+sw]):airWeight>0
-    ?[elbow[0]+sign*(5+airPose.armOpen*.55),-24-airPose.armLift-airPose.armDrop*(near?.35:.65)]:[elbow[0]+sign*5,-24+sw]));
+    ?[elbow[0]+sign*(5+airPose.armOpen*.55*(1-landingBrace*.45)),-24-airPose.armLift*(1-landingBrace*.6)-airPose.armDrop*(near?.35:.65)+landingBrace*3.5]:[elbow[0]+sign*5,-24+sw]));
   const kit=near?grad(c,sh-20,-57,sh+18,-38,[[0,blend(col.main,.34)],[.44,col.main],[1,blend(col.main,-.32)]]):blend(col.main,-.33);
   stroke(c,[[sh,-51],[elbow[0],elbow[1]]],kit,15,dark);
   stroke(c,[[elbow[0]-sign*5,elbow[1]],[elbow[0]+sign*5,elbow[1]+.5]],col.gold,2.5);
@@ -716,6 +721,8 @@ const CHARACTER_ART=(()=>{
   // Counter-rotate the connected upper-body group around the waist pivot.
   // Legs/shorts stay planted and the existing root-facing transition is untouched.
   if(turnLean){c.translate(0,-24);c.rotate(turnLean);c.translate(0,24)}
+  // Compress the upper body slightly around the waist as the feet prepare to land.
+  if(airPose?.landingBrace>0){c.translate(0,-24);c.scale(1,1-airPose.landingBrace*.035);c.translate(0,24)}
   if(breathPhase>0){c.translate(0,-breathPhase*2.2);c.translate(0,-22);c.scale(1,1+breathPhase*.022);c.translate(0,22)}
   stroke(c,[[0,-59],[0,-49]],blend(colors.skin,-.25),17,dark);
   stroke(c,[[-3,-59],[-3,-53]],ink('#ffffff',.26),3.3);
