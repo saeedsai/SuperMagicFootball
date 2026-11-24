@@ -524,7 +524,7 @@ AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omnis
 
 # SuperMagicFootball — master plan and backlog
 
-**Canonical plan and status ledger.** Updated 24 November 2026 for current candidate **0.12.81.246**; main is independently verified at .245 on SHA 6567281f762da462983a1cb72353cc07bad95d1c after Modular QA #45295409477, dev Full Regression Census #45295409642, Pages deployment #45296742349 and independent main Census #45296751680 passed. Candidate .244 was superseded before certification after one stale source-contract assertion; .245 is now main-promoted and independently verified. Candidate .246 adds multi-trap path prioritization to the existing CPU Banana/Ice avoidance, preserving immediate-trap handling and nearest fallback when no lane threat exists. The historical plan and owner/device/online gates remain tracked below.
+**Canonical plan and status ledger.** Updated 24 November 2026 for current candidate **0.12.81.247**; main is independently verified at .246 on SHA `2a04b67f313700dc3040b0f4b929989ecfdd2be6` after Modular QA #45302839796, dev Full Regression Census #45302839739, Pages deployment #45304190113 and independent main Census #45304200011 passed. Candidate .247 adds a bounded CPU carrier read of an active incoming slide-tackle lane, choosing an existing forward diagonal only when its projected path is safer; human controls and tackle physics remain unchanged. The historical plan and owner/device/online gates remain tracked below.
 
 ## Owner priorities and invariants
 

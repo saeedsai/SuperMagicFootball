@@ -1868,6 +1868,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const dir=team===0?1:-1;
   const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
   const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+  const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.14,.08,.18);
   const active=p=>p&&p.t!==team&&!p.keeper&&!p.down&&timerClear(p.stun)&&
    timerClear(p.slideTimer)&&timerClear(p.shotImpactKnockdownPending)&&
    timerClear(p.shotImpactKnockdownTimer)&&timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
@@ -1875,13 +1876,35 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
    !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
    Number.isFinite(p.x)&&Number.isFinite(p.y);
-  const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.14,.08,.18);
   const nearby=players.filter(active).map(q=>({
    q,x:q.x+clampTo((Number.isFinite(q.moveVX)?q.moveVX:0)*horizon,-28,28),
    y:q.y+clampTo((Number.isFinite(q.moveVY)?q.moveVY:0)*horizon,-28,28)
   })).filter(q=>Math.hypot(q.x-carrier.x,q.y-carrier.y)<=230);
+  // An active slide is not a stationary marker: project its real swept lane,
+  // but only when it is still moving toward the carrier and can reach nearby.
+  const slideThreats=players.filter(q=>q&&q.t!==team&&!q.keeper&&!q.down&&
+   timerClear(q.stun)&&grounded(q)&&q.action==='slide'&&
+   Number.isFinite(q.actionTimer)&&q.actionTimer>0&&
+   Number.isFinite(q.slideTimer)&&q.slideTimer>0&&
+   Number.isFinite(q.slideRemaining)&&q.slideRemaining>0&&
+   Number.isFinite(q.slideSpeed)&&q.slideSpeed>=200&&
+   Number.isFinite(q.slideDX)&&Number.isFinite(q.slideDY)&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y))
+   .map(q=>{
+    const directionLength=Math.hypot(q.slideDX,q.slideDY);
+    if(directionLength<.5)return null;
+    const ux=q.slideDX/directionLength,uy=q.slideDY/directionLength;
+    const rx=carrier.x-q.x,ry=carrier.y-q.y;
+    const along=rx*ux+ry*uy,across=Math.abs(rx*uy-ry*ux);
+    const speed=clampTo(q.slideSpeed,200,720);
+    const remaining=Math.min(q.slideRemaining,q.slideTimer*speed);
+    const travelWindow=Math.min(remaining,speed*.24);
+    if(along<24||along>travelWindow||across>88)return null;
+    const travel=Math.min(remaining,speed*.24);
+    return {start:{x:q.x,y:q.y},end:{x:q.x+ux*travel,y:q.y+uy*travel}};
+   }).filter(Boolean);
   const pressure=nearby.some(q=>dir*(q.x-carrier.x)>=-24&&
-   dir*(q.x-carrier.x)<=170&&Math.abs(q.y-carrier.y)<=150);
+   dir*(q.x-carrier.x)<=170&&Math.abs(q.y-carrier.y)<=150)||slideThreats.length>0;
   if(!pressure)return null;
   const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.down&&
    timerClear(q.stun)&&grounded(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y));
@@ -1907,30 +1930,41 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const scored=candidates.map(candidate=>{
    const target={x:clampTo(candidate.x,xMin+24,xMax-24),y:clampTo(candidate.y,yMin+24,yMax-24)};
    const forward=dir*(target.x-carrier.x),lateral=Math.abs(target.y-carrier.y);
-   if(forward<44||lateral<34)return {side:candidate.side,target,score:-Infinity};
-   let nearest=Infinity,corridor=Infinity,pressurePenalty=0;
+   if(forward<44||lateral<34)return {side:candidate.side,target,score:-Infinity,slideGap:0};
+   let nearest=nearby.length?Infinity:230,corridor=nearby.length?Infinity:230,pressurePenalty=0;
    for(const defender of nearby){
     const endGap=Math.hypot(defender.x-target.x,defender.y-target.y);
     const pathGap=segmentGap(defender,{x:carrier.x,y:carrier.y},target);
     nearest=Math.min(nearest,endGap);corridor=Math.min(corridor,pathGap);
     pressurePenalty+=Math.max(0,78-endGap)*.42+Math.max(0,38-pathGap)*1.1;
    }
+   const routeLength=Math.hypot(target.x-carrier.x,target.y-carrier.y);
+   let slideGap=Infinity;
+   if(slideThreats.length&&routeLength>0){
+    const escapeDistance=clampTo(220*horizon,18,40);
+    const projectedCarrier={
+     x:carrier.x+clampTo(carrierVX*horizon*.2,-10,10)+(target.x-carrier.x)/routeLength*escapeDistance,
+     y:carrier.y+clampTo(carrierVY*horizon*.2,-10,10)+(target.y-carrier.y)/routeLength*escapeDistance
+    };
+    for(const threat of slideThreats)slideGap=Math.min(slideGap,segmentGap(projectedCarrier,threat.start,threat.end));
+   }
+   const slideSafetyBonus=Number.isFinite(slideGap)?clampTo(slideGap,0,72)*1.6:0;
    let teammateCrowding=0;
    for(const teammate of allies){
     const gap=Math.hypot(teammate.x-target.x,teammate.y-target.y);
     if(gap<95)teammateCrowding+=(95-gap)*.58;
    }
-   const routeLength=Math.hypot(target.x-carrier.x,target.y-carrier.y);
    const headingAlignment=momentumWeight>0&&routeLength>0?
     (carrierVX*(target.x-carrier.x)+carrierVY*(target.y-carrier.y))/(carrierSpeed*routeLength):0;
    const momentumBonus=momentumWeight*clampTo(headingAlignment,-1,1);
-   const score=nearest+corridor*.65+forward*.14-lateral*.09-pressurePenalty-teammateCrowding+momentumBonus;
-   return {side:candidate.side,target,score};
+   const score=nearest+corridor*.65+forward*.14-lateral*.09-pressurePenalty-teammateCrowding+momentumBonus+slideSafetyBonus;
+   return {side:candidate.side,target,score,slideGap};
   });
   const direct=scored.find(option=>option.side===0);
   const best=scored.filter(option=>option.side!==0).sort((a,b)=>b.score-a.score)[0];
   if(!direct||!best||!Number.isFinite(best.score)||best.score<38||
-   best.score<direct.score+18)return null;
+   best.score<direct.score+18||
+   (slideThreats.length&&(!Number.isFinite(best.slideGap)||best.slideGap<18)))return null;
   return {x:best.target.x,y:best.target.y};
  }
 

@@ -55,6 +55,39 @@ test('open space, rear pressure, blocked diagonals, unavailable defenders and fi
  carrier.firstTouchControlTimer=.24;
  assert.equal(AI.attackingCarryEscapeTarget([carrier,player('first-touch-marker',1,765,500)],0,carrier,bounds),null);
 });
+test('CPU carrier sidesteps an active incoming SHOOT slide on both sides and chooses the open diagonal',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,carrier=player('slide-carrier-'+team,team,team===0?700:1300,500);
+  const straight=player('straight-slide-'+team,1-team,carrier.x-dir*80,carrier.y,{
+   action:'slide',actionTimer:.36,slideTimer:.24,slideRemaining:148,slideSpeed:585,
+   slideDX:dir,slideDY:0,moveVX:dir*585
+  });
+  const target=AI.attackingCarryEscapeTarget([carrier,straight],team,carrier,bounds);
+  assert.ok(target,JSON.stringify({team,target}));
+  assert.ok(Math.abs(target.y-carrier.y)>=34,'the carrier should leave the straight slide lane');
+  const diagonal=player('diagonal-slide-'+team,1-team,carrier.x-dir*80,carrier.y-80,{
+   action:'slide',actionTimer:.36,slideTimer:.24,slideRemaining:148,slideSpeed:585,
+   slideDX:dir*Math.SQRT1_2,slideDY:Math.SQRT1_2,moveVX:dir*Math.SQRT1_2*585,moveVY:Math.SQRT1_2*585
+  });
+  const openSide=AI.attackingCarryEscapeTarget([carrier,diagonal],team,carrier,bounds);
+  assert.ok(openSide,JSON.stringify({team,openSide}));
+  assert.ok(openSide.y<carrier.y,'a slide arriving from the upper lane must be avoided through the upper open diagonal');
+ }
+});
+test('expired, receding, too-short and out-of-lane slides do not trigger a carry escape',async()=>{
+ const {AI}=await loadModules(),carrier=player('carrier',0,700,500);
+ const base={action:'slide',actionTimer:.36,slideTimer:.24,slideRemaining:148,slideSpeed:585,slideDX:1,slideDY:0};
+ for(const [name,extra] of [
+  ['expired',{actionTimer:0,slideTimer:0}],
+  ['receding',{slideDX:-1}],
+  ['too-short',{slideRemaining:12}],
+  ['out-of-lane',{y:630}]
+ ]){
+  const marker=player(name,1,620,name==='out-of-lane'?630:500,{...base,...extra});
+  assert.equal(AI.attackingCarryEscapeTarget([carrier,marker],0,carrier,bounds),null,name);
+ }
+});
 function prepareCarrierGame(ENGINE,team){
  const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,humans:0,mode:'quick'});
  const carrier=game.player(team,3),marker=game.player(1-team,3),field=ENGINE.WORLD.field,dir=team===0?1:-1;
@@ -71,5 +104,19 @@ test('engine applies the escape as actual CPU carrier movement in both attack di
   try{Math.random=()=>.99;game.driveAI(carrier,.016);}finally{Math.random=originalRandom;}
   assert.ok(carrier.moveVY>0&&carrier.dy>0,'CPU carry movement should preserve the selected lower diagonal');
   assert.ok((team===0?1:-1)*(carrier.x-(ENGINE.WORLD.field.x+ENGINE.WORLD.field.w*.5))>=0,'carrier must not reverse');
+ }
+});
+test('engine carrier movement evades a live incoming slide in both attack directions',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const {game,carrier}=prepareCarrierGame(ENGINE,team),marker=game.player(1-team,3),dir=team===0?1:-1;
+  const x=carrier.x,y=carrier.y,originalRandom=Math.random;
+  Object.assign(marker,{x:x-dir*80,y,down:false,stun:0,z:0,action:'slide',actionTimer:.36,
+   slideTimer:.24,slideRemaining:148,slideSpeed:585,slideDX:dir,slideDY:0,moveVX:dir*585,moveVY:0});
+  try{
+   Math.random=()=>.99;
+   for(let step=0;step<36;step++){carrier.x=x;carrier.y=y;game.clock=1+step*.016;game.driveAI(carrier,.016);}
+  }finally{Math.random=originalRandom;}
+  assert.ok(Math.abs(carrier.dy)>.3,'actual driveAI movement must leave the incoming slide lane');
  }
 });
