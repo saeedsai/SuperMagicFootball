@@ -225,3 +225,24 @@ test('keeper yields a high-cross claim to a grounded runner who can arrive durin
    'a stationary receiver must preserve the neutral claim baseline');
  }
 });
+
+test('keeper yields to a teammate who can reach the high-cross landing during the bounded flight window',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),flight=(f.ball.vz+Math.sqrt(f.ball.vz*f.ball.vz+1000*f.ball.z))/500;
+  const target={x:f.ball.x+f.ball.vx*flight,y:f.ball.y+f.ball.vy*flight};
+  const keeperGap=Math.hypot(target.x-f.keeper.x,target.y-f.keeper.y);
+  const speed=150,shortHorizon=Math.min(.22,flight),arrivalHorizon=Math.min(.42,flight);
+  const teammate=player('closing-teammate-'+team,team,target.x+f.dir*180,target.y+10,
+   {moveVX:-f.dir*speed});
+  const shortGap=Math.hypot(teammate.x-f.dir*speed*shortHorizon-target.x,teammate.y-target.y);
+  const arrivalGap=Math.hypot(teammate.x-f.dir*speed*arrivalHorizon-target.x,teammate.y-target.y);
+  assert.ok(shortGap+48>=keeperGap,'the old short snapshot must not yield to the teammate');
+  assert.ok(arrivalGap+48<keeperGap,'the longer bounded arrival read must recognize the teammate');
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,teammate],f.bounds),null,
+   'a teammate projected to arrive before the keeper must own the landing pocket');
+  teammate.moveVX=f.dir*speed;
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,teammate],f.bounds),
+   'a retreating teammate must not suppress a safe keeper claim');
+ }
+});
