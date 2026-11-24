@@ -133,19 +133,19 @@ test('the real named Magic Trick resolver applies the screen read, while ordinar
  const trickSource=extract(' tryMagicTrick(p){',' updateSpinBumpFx(p,dt){','live named Magic Trick resolver');
  const dribbleSource=extract(' tryDribbleTrick(p,byAI=false){',' // Safety is evaluated at release time;','ordinary Dribble Style resolver');
  assert.doesNotMatch(dribbleSource,/defensiveMagicTrickReadTarget|readBonus/);
- function attempt(screenAvailable,ballSide='exposed'){
+ function attempt(screenAvailable,ballSide='exposed',dribbling=90,defence=92,randomValue=.1){
   const p=carrier();
-  p.src={id:'carrier',name:'Carrier',magicTrick:'hideBall',dribbling:90};
+  p.src={id:'carrier',name:'Carrier',magicTrick:'hideBall',dribbling};
   p.magicReadyAt=0;p.fatigue=0;p.keeper=false;p.stun=0;p.z=0;
   const nearest=defender({x:55,face:-1,dx:0});
   nearest.src={id:'nearest',name:'Nearest',defence:20};
   const screen=defender({x:165,face:-1,dx:0,defence:92});
-  screen.src={id:'screen',name:'Screen',defence:92};
+  screen.src={id:'screen',name:'Screen',defence};
   if(!screenAvailable){screen.down=true;screen.stun=1;}
   const ballOffset=ballSide==='shielded'?-17:17;
   const game={ball:{owner:p,x:p.x+ballOffset,y:p.y+12},players:[p,nearest,screen],clock:2,magicHazards:[],fatigueLedger:[{},{}],events:[],
    burst(){},emit(type,payload){this.events.push({type,...payload});}};
-  const deterministicMath=Object.create(Math);deterministicMath.random=()=>.1;
+  const deterministicMath=Object.create(Math);deterministicMath.random=()=>randomValue;
   const resolve=vm.runInNewContext('({'+trickSource+'})',{
    F:mechanics.world.field,
    distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),
@@ -161,6 +161,27 @@ test('the real named Magic Trick resolver applies the screen read, while ordinar
   return {player:p,game,event:game.events.at(-1),reader:screen};
  }
  const open=attempt(false),screened=attempt(true),shielded=attempt(true,'shielded');
+ const lowSkill=attempt(true,'exposed',1,92,.22);
+ const averageSkill=attempt(true,'exposed',50,92,.22);
+ const eliteSkill=attempt(true,'exposed',100,92,.22);
+ const minimumChance=attempt(true,'exposed',100,1,.039);
+ const belowMinimumChance=attempt(true,'exposed',100,1,.041);
+ const maximumChance=attempt(true,'exposed',1,100,.279);
+ const aboveMaximumChance=attempt(true,'exposed',1,100,.281);
+ assert.equal(lowSkill.event.countered,true,'low Dribbling makes the named trick more readable');
+ assert.equal(averageSkill.event.countered,true,'neutral Dribbling preserves the established defender-based chance');
+ assert.equal(eliteSkill.event.countered,false,'elite Dribbling resists the same screen-read roll');
+ assert.equal(lowSkill.reader.magicReadCueTimer,.48);
+ assert.equal(averageSkill.reader.magicReadCueTimer,.48);
+ assert.equal(eliteSkill.reader.magicReadCueTimer||0,0);
+ assert.equal(lowSkill.player.magicReadyAt,averageSkill.player.magicReadyAt);
+ assert.equal(averageSkill.player.magicReadyAt,eliteSkill.player.magicReadyAt);
+ assert.equal(lowSkill.player.fatigue,averageSkill.player.fatigue);
+ assert.equal(averageSkill.player.fatigue,eliteSkill.player.fatigue);
+ assert.equal(minimumChance.event.countered,true,'the 4% lower bound remains inclusive');
+ assert.equal(belowMinimumChance.event.countered,false,'the 4% lower bound rejects a roll just above it');
+ assert.equal(maximumChance.event.countered,true,'the 28% upper bound remains inclusive');
+ assert.equal(aboveMaximumChance.event.countered,false,'the 28% upper bound rejects a roll just above it');
  assert.equal(open.event.countered,false,'a turned-away nearest marker alone does not read Hide Ball');
  assert.equal(open.player.hideBallTimer,.65,'unread Magic Trick still activates');
  assert.equal(open.reader.magicReadCueTimer||0,0,'a turned-away nearest marker alone gets no read cue');
@@ -216,6 +237,42 @@ test('real engine grants the screen counter only when the live ball is exposed, 
   }
  }
 });
+test('the real Magic Trick screen read is a bounded Defence-versus-Dribbling contest on both teams',async()=>{
+ const ENGINE=await loadEngine();
+ const profiles=[
+  {name:'low Dribbling',dribbling:1,roll:.22,countered:true},
+  {name:'neutral Dribbling',dribbling:50,roll:.22,countered:true},
+  {name:'elite Dribbling',dribbling:100,roll:.22,countered:false}
+ ];
+ for(const team of [0,1])for(const profile of profiles){
+  const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,humans:0,mode:'quick'});
+  const defending=1-team,dir=team===0?1:-1,field=ENGINE.WORLD.field,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  const carrier=game.player(team,3),primary=game.player(defending,3),screen=game.player(defending,4);
+  for(const q of game.players)if(q!==carrier&&q!==primary&&q!==screen&&!q.keeper){q.down=true;q.stun=1;}
+  Object.assign(carrier,{x,y,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+   dx:dir,dy:0,moveVX:dir*180,moveVY:0,face:dir,firstTouchOutletReadTimer:.8,
+   firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0,magicReadyAt:0,
+   magicReadCueTimer:0,magicReadCounterpressTimer:0,fatigue:0,aiTimer:0,aiTarget:null,cd:1});
+  Object.assign(carrier.src,{magicTrick:'hideBall',dribbling:profile.dribbling});
+  Object.assign(primary,{x:x-dir*30,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   dx:0,dy:0,moveVX:0,moveVY:0,face:dir,aiTimer:0,aiTarget:null,cd:1});
+  Object.assign(screen,{x:x+dir*70,y:y+18,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   dx:0,dy:0,moveVX:0,moveVY:0,face:-dir,aiTimer:0,aiTarget:null,cd:1});
+  Object.assign(screen.src,{defence:92});
+  game.ball.owner=carrier;game.ball.x=x+dir*17;game.ball.y=y+12;game.ball.z=0;game.ball.lastTouchTeam=team;
+  game.clock=10;
+  const oldRandom=Math.random;Math.random=()=>profile.roll;
+  try{assert.equal(game.tryMagicTrick(carrier),true);}finally{Math.random=oldRandom;}
+  assert.equal(game.events.at(-1)?.countered,profile.countered,JSON.stringify({team,profile,event:game.events.at(-1)}));
+  assert.equal(screen.magicReadCueTimer||0,profile.countered ? .48 : 0);
+  assert.equal(screen.magicReadCounterpressTimer||0,profile.countered ? .42 : 0);
+  assert.equal(carrier.hideBallTimer||0,profile.countered ? 0 : .65);
+  assert.equal(carrier.magicReadyAt,16,'the caster always pays the same cooldown');
+  assert.equal(carrier.fatigue,.035,'the caster always pays the same fatigue');
+  assert.equal(game.ball.owner,carrier,'a probabilistic screen read does not award possession');
+ }
+});
+
 test('primary named Magic Trick and delayed Lightning counters read the defender\'s actual 2D heading on both teams',async()=>{
  const ENGINE=await loadEngine();
  for(const team of [0,1]){

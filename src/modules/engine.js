@@ -1924,7 +1924,14 @@ class GameEngine{
   // counterable named Magic Trick during the pressured first-touch window.
   // This is one bounded skill-based chance; ordinary Dribble Styles are separate.
   const counterRead=typeof defensiveMagicTrickReadTarget==='function'?defensiveMagicTrickReadTarget(p,rivals,true,this.ball):null;
-  const screenReadChance=counterRead?.screened?Math.min(.24,.07+stat(counterRead.defender,'defence')*.0017):0;
+  // Defence improves the reader's baseline, while the carrier's Dribbling resists a visible screen read.
+  // Dribbling 50 preserves the established chance; the skill contest is bounded and never bypasses the screen geometry.
+  const screenReadChance=counterRead?.screened?(()=>{
+   const defenderRead=clamp(.07+stat(counterRead.defender,'defence')*.0017,.07,.24);
+   const attackerDribbling=clamp(stat(p,'dribbling'),1,100);
+   const dribblingResistance=(attackerDribbling-50)*.0012;
+   return clamp(defenderRead-dribblingResistance,.04,.28);
+  })():0;
   const screenRead=id!=='lightning'&&screenReadChance>0&&Math.random()<screenReadChance;
   if(screenRead&&counterRead?.defender){
    counterRead.defender.magicReadCueTimer=Math.max(Number(counterRead.defender.magicReadCueTimer)||0,.48);

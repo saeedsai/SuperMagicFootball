@@ -6,21 +6,20 @@
 Deliver real player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.251 — AI-FIRST-TOUCH-DRIBBLING-CUT-01:** CPU pressured first-touch escape now scales its diagonal settling geometry with the receiver's Dribbling rating. Neutral 50 preserves 72-forward/78-lateral; low skill favors 78/66 and elite skill 66/90. Human direction and existing first-touch timing remain unchanged.
-- **0.12.81.250 main-promoted:** strong-clearance straight-forward pressure escape, with diagonal/slide safety retained. Modular QA #45325809560 passed 2,838/2,838; exact-head Census #45325809486 passed all four Node and four Chromium shards. Main SHA is 35536ed236246ef682f7ea492c489fd89fe337d6; Pages #45327024959 succeeded; independent main Census #45327033894 is still running.
-- .251 adds mirrored helper, actual GameEngine.take and desktop/simulated-touch Chromium regressions for both teams, low/neutral/high ratings and missing/invalid fallback.
-- .247 was the previous verified main release; .250 is now the latest deployed release.
+- **0.12.81.252 — AI-MAGIC-TRICK-SCREEN-SKILL-CONTEST-01:** the existing second-defender READ! counter for named Magic Tricks now weighs defender Defence against carrier Dribbling. Dribbling 50 preserves the previous 7–24% defender-based chance; low skill raises it by up to 5.9 percentage points, elite skill lowers it by up to 6, and the final chance is bounded to 4–28%. Only a valid exposed-ball forward screen during the pressured first-touch window is affected.
+- Focused Node coverage checks low/neutral/elite profiles, 4%/28% probability boundaries, mirrored actual-engine counter results, unchanged cooldown/fatigue/possession and ordinary Dribble Style separation. Desktop/simulated-touch Chromium checks the same actual engine.
+- **0.12.81.251 main-promoted and Pages deployed:** Modular QA #45328041721 and exact-head Census #45328041706 passed on SHA `4353f36d12fb24f46cb74ce9ed6ca071a2b509ee`; QA-gated promotion succeeded. Pages #45329263712 and independent main Census #45329277069 passed, including hosted-pages smoke and all four Node/Chromium shards.
 
 ## Next smallest action
-Inspect exact-head .251 Modular QA and Full Regression Census. Fix any confirmed failures, then allow only a green exact SHA through the existing QA-gated promotion pipeline. Independently verify main Census, hosted bytes and deployment after promotion.
+Inspect exact-head .252 Modular QA and Full Regression Census. Fix any confirmed source or fixture failure, then allow only the green exact SHA through the existing QA-gated promotion pipeline. Independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
-Edit only this checkpoint. Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical #48, Render drift #86 and main protection #87 remain open. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
+Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical #48, Render drift #86 and main protection #87 remain open. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
 
 ## Evidence
-- .250 Modular QA #45325809560 passed 2,838/2,838 Node tests. Dev Census #45325809486 passed preflight, preview and all four Node/four Chromium shards; QA-gated promotion and Pages deployment succeeded.
-- .251 exact-head Modular QA #45327863441 and Full Regression Census #45327863488 were in progress at last observation; no .251 test result is claimed yet.
-- Independent .250 main Census #45327033894 passed preflight, preview and hosted-pages smoke; two Node and four Chromium shards were still running at last observation.
+- .251 dev Census: preflight, preview, four Node shards and four Chromium shards passed; promotion succeeded.
+- .251 main Census: preflight, preview, hosted-pages smoke, four Node shards and four Chromium shards passed.
+- .252 source and focused regressions are committed; exact-head CI results pending.
 
 ## Cleanup
 Keep this file below 4 KiB with all required headings and exact Agent ID. Do not read/edit another agent's private checkpoint. Never bypass CI, security or QA promotion.
