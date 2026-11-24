@@ -151,7 +151,7 @@ with sync_playwright() as pw:
             const relativeApproachRows=[
                 {name:'approach',...runApproachCommit(0,220,0,88)},
                 {name:'mirrored',...runApproachCommit(1,220,0,88)},
-                {name:'net-threshold',...runApproachCommit(0,220,100,88)},
+                {name:'net-threshold',...runApproachCommit(0,220,100,78)},
                 {name:'below-net-threshold',...runApproachCommit(0,220,110,88)},
                 {name:'contact-boundary',...runApproachCommit(0,220,0,90)}
             ];
