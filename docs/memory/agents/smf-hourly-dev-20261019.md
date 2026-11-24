@@ -1,26 +1,26 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** `smf-hourly-dev-20261019`
+**Agent ID:** smf-hourly-dev-20261019
 **Updated:** 2026-11-24
 
 ## Mission
 Deliver player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.273 — AI-FIRST-TOUCH-OUTLET-SETTLING-EXCLUSION-01:** CPU pressured-interception outlet selection skips teammates still inside their own first-touch control window and chooses the next ready, unblocked receiver. If no safe outlet exists, existing possession retention remains.
-- Production change in `src/modules/ai.js`; mirrored helper and actual-engine Node tests plus desktop/simulated-touch Chromium acceptance cover both teams.
-- .272's focused helper Node tests passed, but its exact-head Census failed one browser assertion because the browser fixture placed all movement profiles outside the early-reach window; the fixture now derives its position from the active CPU profile.
+- **0.12.81.274 — AI-FIRST-TOUCH-SLIDE-SWEEP-AVOIDANCE-01:** CPU first-touch escape evaluates active slide trajectories as swept lanes and favors the diagonal with less immediate exposure. Retreating, expired, invalid and out-of-reach slides do not create false threats.
+- Production change in src/modules/ai.js; mirrored helper, actual-engine Node and desktop/simulated-touch Chromium regressions cover both teams, possession retention and no premature release.
+- .273 passed exact-head Modular QA #45468630881 and dev Census #45468630743, was promoted through the existing pipeline, and Pages deployment #45470529269 succeeded. Independent main Census #45470542080 failed only the asynchronous marketplace loader assertion in browser shard 3; a wait-aware test correction is included in .274.
 
 ## Next smallest action
-Run exact-head Modular QA and the four-Node/four-Chromium Full Regression Census for .273. Repair confirmed failures, then allow only the existing QA-gated promotion. Independently verify Pages, main Census and hosted bytes before claiming release.
+Run exact-head Modular QA and the four-Node/four-Chromium Full Regression Census for .274. Repair confirmed failures, then allow only the existing QA-gated promotion. Independently verify Pages, main Census and hosted bytes before claiming release.
 
 ## Ownership and exclusions
 Preserve 223 original teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No new concept heroes or copied graphics. New Studio art requires provenance, game-scale QA and owner acceptance. Physical two-phone #48 and Render drift #86 remain open; do not claim device or hosting acceptance.
 
 ## Evidence
-- .272 Modular QA #45457059560 passed; .272 Full Regression Census #45457059541 failed only `ai_pass_receiver_cover_browser_qa.py` in browser shard 2; other seven regression shards and preflight/preview passed.
-- Main .271 Pages deployment #45449015218 succeeded; independent main Census #45449032183 attempt 2 failed only historical `lan_auto_two_browser_qa.py` (10-second wait).
-- Before .273, dev SHA was `86ed3214858d369f24634294e1e330b04e69d1c3`; main SHA was `004d82892131ffd95ab73006fdba4c125c03a5ad`.
-- REST reports `main.protected=false` and `dev.protected=false`; repository rulesets are empty and #87 remains open. No manual promotion or protection bypass.
+- Before .274, dev and main both pointed to .273 SHA f1fc56e829d4d05ee5dffe508550e9f479e3de86.
+- .273 Modular QA #45468630881 passed; dev Census #45468630743 passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion succeeded.
+- .273 Pages deployment #45470529269 succeeded. Independent main Census #45470542080 passed hosted smoke, preflight, preview, four Node shards and browser shards 0–2; browser shard 3 failed only online_account_ui_browser_qa.py delayed marketplace loading assertion, now wait-aware.
+- REST reports main.protected=false and dev.protected=false; repository rulesets are empty and #87 remains open. No manual promotion or protection bypass.
 - Physical two-phone #48, Render drift #86 and authenticated online hosting remain unverified/open.
 
 ## Cleanup

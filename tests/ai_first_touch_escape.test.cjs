@@ -309,3 +309,74 @@ test('actual CPU interception passes to the next ready outlet when its preferred
   }finally{Math.random=originalRandom;}
  }
 });
+
+
+test('CPU first-touch escape avoids a live slide sweep across the direct and lower lanes on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?500:1500,y=300;
+  const carrier=player('slide-carrier-'+team,team,x,y);
+  const slider=player('sweeping-slide-'+team,1-team,x+dir*80,y,{
+   action:'slide',actionTimer:.24,slideTimer:.24,slideRemaining:30,slideSpeed:500,
+   slideDX:-dir*.35,slideDY:.936657
+  });
+  const target=AI.attackingFirstTouchEscape([carrier,slider],team,carrier,bounds);
+  assert.ok(target,JSON.stringify({team,target,slider}));
+  assert.ok(target.y<carrier.y,'the CPU should escape above the active sweep');
+  assert.ok(dir*(target.x-carrier.x)>=35);
+ }
+});
+
+test('CPU first-touch escape does not treat a retreating or invalid active slide as a reachable sweep',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?500:1500,y=300;
+  const carrier=player('slide-carrier-'+team,team,x,y);
+  const slider=player('retreating-slide-'+team,1-team,x+dir*80,y,{
+   action:'slide',actionTimer:.24,slideTimer:.24,slideRemaining:30,slideSpeed:500,
+   slideDX:dir,slideDY:0
+  });
+  assert.equal(AI.attackingFirstTouchEscape([carrier,slider],team,carrier,bounds),null,
+   'a slide moving away from the receiver must not create a false escape');
+  slider.slideDX=0;slider.slideDY=0;
+  assert.equal(AI.attackingFirstTouchEscape([carrier,slider],team,carrier,bounds),null,
+   'a zero-direction slide has no valid swept lane');
+ }
+});
+
+test('actual CPU interception first touch chooses the open side of an active slide sweep',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const dir=team===0?1:-1,field=ENGINE.WORLD.field;
+  const x=field.x+field.w*.5,y=field.y+field.h*.5;
+  const interceptor=game.player(team,3),passer=game.player(1-team,3),
+   intended=game.player(1-team,4),slider=game.player(1-team,2);
+  const keep=new Set([interceptor,passer,intended,slider]);
+  for(const q of game.players)if(!keep.has(q)){
+   q.down=true;q.stun=0;q.z=0;q.action='idle';q.actionTimer=0;
+  }
+  Object.assign(interceptor,{x,y,face:dir,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,firstTouchControlTimer:0,firstTouchPressure:0});
+  Object.assign(passer,{x:x+dir*240,y:y+300,down:true,stun:0,z:0,action:'idle',actionTimer:0});
+  Object.assign(intended,{x:x-dir*210,y:y+300,down:true,stun:0,z:0,action:'idle',actionTimer:0});
+  Object.assign(slider,{x:x+dir*80,y,down:false,stun:0,z:0,action:'slide',actionTimer:.24,
+   slideTimer:.24,slideRemaining:30,slideSpeed:500,slideDX:-dir*.35,slideDY:.936657,
+   moveVX:0,moveVY:0});
+  Object.assign(game.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:1-team,
+   passTarget:interceptor.src.id,attacker:1-team,lastTouchTeam:1-team,
+   x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,ordinaryShot:false,canCollect:0});
+  game.clock=10;game.take(interceptor);
+  const expected=interceptor.aiFirstTouchTarget&&{x:interceptor.aiFirstTouchTarget.x,y:interceptor.aiFirstTouchTarget.y};
+  assert.ok(interceptor.firstTouchControlTimer>0&&interceptor.firstTouchPressure>0,
+   JSON.stringify({team,pressure:interceptor.firstTouchPressure,timer:interceptor.firstTouchControlTimer}));
+  assert.ok(expected&&expected.y<y,JSON.stringify({team,expected,slider}));
+  const start=game.events.length;
+  game.driveAI(interceptor,.016);
+  assert.equal(game.ball.owner,interceptor);
+  assert.ok(Math.abs(interceptor.aiTarget.x-expected.x)<1&&Math.abs(interceptor.aiTarget.y-expected.y)<1,
+   JSON.stringify({team,expected,actual:interceptor.aiTarget}));
+  assert.deepEqual(game.events.slice(start).filter(event=>['passIntent','shotRelease','dribbleTrick'].includes(event.type)),[]);
+ }
+});

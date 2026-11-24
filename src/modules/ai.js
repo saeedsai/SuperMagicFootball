@@ -1802,17 +1802,35 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
  const dir=team===0?1:-1;
  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
  const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
+ const activeSlide=p=>p&&p.action==='slide'&&Number.isFinite(p.actionTimer)&&p.actionTimer>0&&
+  Number.isFinite(p.slideTimer)&&p.slideTimer>0&&Number.isFinite(p.slideRemaining)&&p.slideRemaining>0&&
+  Number.isFinite(p.slideSpeed)&&p.slideSpeed>=200&&Number.isFinite(p.slideDX)&&Number.isFinite(p.slideDY);
  const ready=p=>p&&p.t!==team&&!p.keeper&&!p.down&&timerClear(p.stun)&&grounded(p)&&
   timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
   timerClear(p.shotImpactRiseTimer)&&p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+  !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
   !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&Number.isFinite(p.x)&&Number.isFinite(p.y);
  const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.16,.08,.20);
- const defenders=players.filter(ready).map(q=>({
+ // A live slide has its own swept direction/speed; do not freeze it at moveVX/moveVY.
+ const defenders=players.filter(p=>ready(p)&&!activeSlide(p)).map(q=>({
   q,x:q.x+clampTo((Number.isFinite(q.moveVX)?q.moveVX:0)*horizon,-36,36),
   y:q.y+clampTo((Number.isFinite(q.moveVY)?q.moveVY:0)*horizon,-36,36)
  }));
  const nearby=defenders.filter(q=>Math.hypot(q.x-carrier.x,q.y-carrier.y)<=155);
- if(!nearby.length||!nearby.some(q=>dir*(q.x-carrier.x)>=-28))return null;
+ const slideThreats=players.filter(q=>q&&q.t!==team&&!q.keeper&&!q.down&&timerClear(q.stun)&&
+  grounded(q)&&activeSlide(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y)).map(q=>{
+   const directionLength=Math.hypot(q.slideDX,q.slideDY);
+   if(directionLength<.5)return null;
+   const ux=q.slideDX/directionLength,uy=q.slideDY/directionLength;
+   const rx=carrier.x-q.x,ry=carrier.y-q.y;
+   const along=rx*ux+ry*uy,across=Math.abs(rx*uy-ry*ux);
+   const speed=clampTo(q.slideSpeed,200,720);
+   const remaining=Math.min(q.slideRemaining,q.slideTimer*speed);
+   const travel=Math.min(remaining,speed*horizon);
+   if(along<24||along>travel+1||across>88)return null;
+   return {start:{x:q.x,y:q.y},end:{x:q.x+ux*travel,y:q.y+uy*travel}};
+  }).filter(Boolean);
+ if((!nearby.some(q=>dir*(q.x-carrier.x)>=-28))&&!slideThreats.length)return null;
  const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.down&&
   timerClear(q.stun)&&grounded(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y));
  // Dribbling skill shapes the settling touch, not its control duration or physics.
@@ -1834,15 +1852,31 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const along=length>1e-9?clampTo(((point.x-start.x)*dx+(point.y-start.y)*dy)/length,0,1):0;
   return Math.hypot(point.x-(start.x+dx*along),point.y-(start.y+dy*along));
  };
+ const slidePathGap=(threat,start,end)=>{
+  let gap=Infinity;
+  for(let sample=0;sample<=6;sample++){
+   const ratio=sample/6;
+   gap=Math.min(gap,segmentGap({
+    x:threat.start.x+(threat.end.x-threat.start.x)*ratio,
+    y:threat.start.y+(threat.end.y-threat.start.y)*ratio
+   },start,end));
+  }
+  return gap;
+ };
  const scored=candidates.map(candidate=>{
   const target={x:clampTo(candidate.x,xMin+24,xMax-24),y:clampTo(candidate.y,yMin+24,yMax-24)};
   if(Math.hypot(target.x-carrier.x,target.y-carrier.y)<42)return {side:candidate.side,target,score:-Infinity};
-  let nearest=Infinity,corridor=Infinity,pressurePenalty=0;
+  let nearest=nearby.length?Infinity:155,corridor=nearby.length?Infinity:120,pressurePenalty=0;
   for(const defender of nearby){
    const endGap=Math.hypot(defender.x-target.x,defender.y-target.y);
    const pathGap=segmentGap(defender,carrier,target);
    nearest=Math.min(nearest,endGap);corridor=Math.min(corridor,pathGap);
    pressurePenalty+=Math.max(0,84-endGap)*.34+Math.max(0,42-pathGap)*.92;
+  }
+  let slidePenalty=0;
+  for(const threat of slideThreats){
+   const gap=slidePathGap(threat,carrier,target);
+   slidePenalty=Math.min(180,slidePenalty+Math.max(0,72-gap)*1.9);
   }
   let teammateCrowding=0;
   for(const teammate of allies){
@@ -1850,7 +1884,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    if(gap<82)teammateCrowding+=(82-gap)*.55;
   }
   const forward=dir*(target.x-carrier.x),lateral=Math.abs(target.y-carrier.y);
-  const score=nearest+corridor*.55+forward*.18-lateral*.10-pressurePenalty-teammateCrowding;
+  const score=nearest+corridor*.55+forward*.18-lateral*.10-pressurePenalty-slidePenalty-teammateCrowding;
   return {side:candidate.side,target,score};
  });
  const direct=scored.find(option=>option.side===0);
@@ -1860,11 +1894,6 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
  return {x:best.target.x,y:best.target.y};
 }
 
-
-
- // After a CPU interception's settling touch, prefer a short forward outlet only
- // when both its pass corridor and the receiver's projected pocket remain open.
- // This is a temporary decision hint; it never changes the receiver's movement.
  function attackingFirstTouchOutlet(players,team,carrier,bounds,horizonSeconds=.16){
   if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
    carrier.keeper||carrier.down||Number(carrier.stun)>0||Number(carrier.z)>18||

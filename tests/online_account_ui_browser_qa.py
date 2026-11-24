@@ -684,6 +684,8 @@ with tempfile.TemporaryDirectory(prefix='smf-online-ui-') as temp:
         page.locator('[data-action="onlineSignIn_ultimate"]').click()
         page.wait_for_function("document.querySelector('.heading')?.textContent==='ONLINE ULTIMATE TEAM'",timeout=30000)
         wait_for_deferred(market_owner,2)
+        page.wait_for_function("document.querySelector('#onlineUtCatalogStatus')?.textContent.includes('Loading server catalog and collection')",timeout=5000)
+        page.wait_for_function("document.querySelector('#onlineUtCatalogStatus')?.textContent.includes('Loading server catalog and collection')",timeout=5000)
         assert 'Loading server catalog and collection' in page.locator('#onlineUtCatalogStatus').inner_text()
         assert len(resolve_deferred(stale_market_owner))==2
         page.wait_for_timeout(150)
