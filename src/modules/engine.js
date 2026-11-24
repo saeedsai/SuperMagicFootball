@@ -63,6 +63,21 @@ function defenderFacesCarrier2D(defender,carrier){
  if(Math.hypot(towardX,towardY)<=1)return false;
  return headingX*towardX+headingY*towardY>0;
 }
+function defenderMovesTowardCarrier2D(defender,carrier){
+ if(!defender||!carrier||!Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+  !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return false;
+ const towardX=carrier.x-defender.x,towardY=carrier.y-defender.y;
+ if(Math.hypot(towardX,towardY)<=1)return false;
+ let headingX=Number.isFinite(defender.dx)?defender.dx:0;
+ let headingY=Number.isFinite(defender.dy)?defender.dy:0;
+ let headingLength=Math.hypot(headingX,headingY);
+ if(headingLength<=.1){
+  headingX=Number.isFinite(defender.moveVX)?defender.moveVX:0;
+  headingY=Number.isFinite(defender.moveVY)?defender.moveVY:0;
+  headingLength=Math.hypot(headingX,headingY);
+ }
+ return headingLength>.1&&headingX*towardX+headingY*towardY>0;
+}
 // A receiving outfielder briefly settles a pressured low ground pass. Faster
 // incoming balls add a little settling time; Dribbling skill removes it. Only
 // movement speed is affected, so direction, kicks, tackles and ball flight stay live.
@@ -1919,7 +1934,7 @@ class GameEngine{
   if(id==='lightning'&&!inRange)return false;
   // A defender who moves toward and faces the carrier can counter the spell.
   const facing=inRange&&(typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(rival,p):((rival.face||1)*(p.x-rival.x))>0);
-  const closing=inRange&&((rival.dx||0)*(p.x-rival.x)+(rival.dy||0)*(p.y-rival.y))>0;
+  const closing=inRange&&defenderMovesTowardCarrier2D(rival,p);
   // A second defender visibly screening the forward carry lane can read a
   // counterable named Magic Trick during the pressured first-touch window.
   // This is one bounded skill-based chance; ordinary Dribble Styles are separate.

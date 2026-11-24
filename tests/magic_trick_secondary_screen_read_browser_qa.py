@@ -46,11 +46,32 @@ with sync_playwright() as pw:
      readerFace:screen.face,readerTimer:screen.magicReadCounterpressTimer,
      humans:g.humans,awayInControl:g.inControl(1),carrierHideBallTimer:carrier.hideBallTimer};
    }
+   function attemptMomentum(team,mode){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
+    const dir=team===0?1:-1,carrier=g.player(team,3),defender=g.player(1-team,3);
+    for(const q of g.players)if(q!==carrier&&q!==defender&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(carrier,{x:1200,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     face:dir,dx:dir,dy:0,moveVX:dir*180,moveVY:0,firstTouchOutletReadTimer:0,
+     firstTouchControlTimer:0,firstTouchPressure:0,hideBallTimer:0,magicReadyAt:0,fatigue:0});
+    Object.assign(carrier.src,{dribbling:50,magicTrick:'hideBall'});
+    const motion=mode==='approach'?{moveVX:dir*144,moveVY:-108}:
+     mode==='retreat'?{moveVX:-dir*144,moveVY:108}:{moveVX:0,moveVY:0};
+    Object.assign(defender,{x:1200-dir*50,y:795,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     face:dir,dx:0,dy:0,...motion});
+    Object.assign(defender.src,{defence:95});
+    Object.assign(g.ball,{owner:carrier,x:1200+dir*12,y:765,z:0,pass:false,passTarget:null,
+     attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+    g.tryMagicTrick(carrier);
+    return {team,mode,hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,
+     cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue};
+   }
+   const momentum=[];
+   for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])momentum.push(attemptMomentum(team,mode));
    return {baseline:attempt(false),screened:attempt(true),shielded:attempt(true,'shielded'),
     lowSkill:attempt(true,'exposed',1,.22),neutralSkill:attempt(true,'exposed',50,.22),eliteSkill:attempt(true,'exposed',100,.22),
     perpendicular:attempt(true,'exposed',95,.1,'perpendicular',0),
     perpendicularMirrored:attempt(true,'exposed',95,.1,'perpendicular',1),
-    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),
+    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),momentum,
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -64,6 +85,11 @@ with sync_playwright() as pw:
   assert result['lowSkill']['hidden'] is False and result['lowSkill']['readerCue']>0,(kind,result['lowSkill'])
   assert result['neutralSkill']['hidden'] is False and result['neutralSkill']['readerCue']>0,(kind,result['neutralSkill'])
   assert result['eliteSkill']['hidden'] is True and result['eliteSkill']['readerCue']==0,(kind,result['eliteSkill'])
+  assert len(result['momentum'])==6,(kind,result)
+  for row in result['momentum']:
+   assert row['owner'] is True,(kind,row)
+   assert row['cooldown']>2 and row['fatigue']>0,(kind,row)
+   assert row['hidden'] is (row['mode']!='approach'),(kind,'residual approach should counter, retreat/stationary should not',row)
   for key in ('perpendicular','perpendicularMirrored','movementPerpendicular'):
    assert result[key]['hidden'] is True,(kind,key,result[key])
    assert result[key]['readerCue']==0 and result[key]['counterpressTimer']==0,(kind,key,result[key])
@@ -126,6 +152,6 @@ with sync_playwright() as pw:
   assert changed and changed[2]-changed[0]>=12 and changed[3]-changed[1]>=6,(kind,'READ! cue not visible in game-scale screenshot',changed)
   print('SCREEN_READ_CUE_SCREENSHOT',kind,str(cue_path.relative_to(ROOT)),cue_image.size,changed,flush=True)
   assert not errors,(kind,errors)
-  print('PASS',kind,'secondary first-touch screen reads the named Magic Trick while a turned-away nearest marker alone does not',flush=True)
+  print('PASS',kind,'secondary screen reads and residual-momentum direct Magic Trick counters behave correctly',flush=True)
   ctx.close()
  browser.close()
