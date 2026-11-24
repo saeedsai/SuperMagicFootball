@@ -103,6 +103,7 @@ with sync_playwright() as pw:
     errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
     page.set_content(fixture.read_text(encoding='utf-8'),wait_until='load')
     page.wait_for_function('!!window.SupermagicFootball?.renderer?.drawPlayer && !!window.SupermagicFootball?.game?.players?.length',timeout=30000)
+    page.evaluate('() => document.fonts.ready')
     report=page.evaluate(script)
     report['browserErrors']=errors
     if errors:raise AssertionError(errors)
