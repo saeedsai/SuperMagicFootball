@@ -4,6 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const mechanics=JSON.parse(fs.readFileSync('data/mechanics/gameplay.json','utf8'));
+const hazardModelPromise=import('../src/modules/magic-hazards.js');
 const engine=fs.readFileSync('src/modules/engine.js','utf8');
 function method(name,next,globals={}){
  const a=engine.indexOf(`\n ${name}(`),b=engine.indexOf(`\n ${next}(`,a);
@@ -15,10 +16,11 @@ const aiTuning=value=>mechanics.aiLevels[Math.max(0,Math.min(4,Math.trunc(value)
 const react=method('reactToMagicHazard','tryBicycleShot',{norm,aiTuning});
 function setup(side=0,kind='ice'){
  const radius=kind==='ice'?35:27;
- const cpu={t:side,x:radius+5,y:0,keeper:false,z:0,stun:0,action:'run',actionTimer:0,jumpHold:0,
+ const cpu={t:side,x:radius+5,y:0,keeper:false,z:0,stun:0,action:'run',actionTimer:0,jumpHold:0,jumpCount:0,
   src:{speedRating:60},breath:100,morale:55,aiHazardKey:null,aiHazardReaction:0,aiHazardEvading:false};
  const game={players:[cpu],ball:{owner:null},magicHazards:[{kind,team:1-side,x:0,y:0,life:2.5,arm:0}],cpuLevel:()=>2,playerSpeed:()=>300,
-  moveAgile(p,x,y,speed,dt){p.x+=x*speed*dt;p.y+=y*speed*dt;},staminaTick(){}};
+  moveAgile(p,x,y,speed,dt){p.x+=x*speed*dt;p.y+=y*speed*dt;},
+  jump(p){p.z=10;p.vz=420;p.jumpCount=1;p.action='jump';p.actionTimer=.5;return true;},staminaTick(){}};
  return{game,cpu};
 }
 
@@ -41,7 +43,7 @@ test('CPU hazard avoidance ignores allied, unarmed, expired and distant traps, k
   const state=setup();Object.assign(state.game.magicHazards[0],patch);
   assert.equal(react.call(state.game,state.cpu,.02,.09),false,JSON.stringify(patch));
  }
- for(const patch of [{keeper:true},{z:30},{action:'slide',actionTimer:.2}]){
+ for(const patch of [{keeper:true},{z:30},{action:'slide',actionTimer:.2},{z:10,action:'jump',actionTimer:.2,jumpCount:1}]){
   const state=setup(0,'banana');Object.assign(state.cpu,patch);
   assert.equal(react.call(state.game,state.cpu,.02,.09),false,JSON.stringify(patch));
  }
@@ -99,17 +101,39 @@ test('CPU waits for its reaction delay before sweeping a trap in its path',()=>{
  assert.equal(slides,1);
 });
 
-test('CPU avoids rather than sweeping while carrying, facing an opponent, or when a teammate already sweeps',()=>{
+test('CPU uses the existing JUMP when carrying or when a safe trap-clearing slide is blocked',()=>{
  for(const mode of ['carrying','opponent','teammate']){
   const {game,cpu}=setup(0,'banana');
   cpu.dx=-1;cpu.dy=0;cpu.face=-1;cpu.cd=0;cpu.fatigue=.1;
   if(mode==='carrying')game.ball.owner=cpu;
   if(mode==='opponent')game.players.push({t:1,x:cpu.x-20,y:0,z:0,stun:0,invuln:0,keeper:false,action:'run'});
   if(mode==='teammate')game.players.push({t:0,x:cpu.x+2,y:0,z:0,stun:0,keeper:false,action:'slide',actionTimer:.25});
-  let slides=0;game.tackle=()=>{slides++;return true;};
-  const start=cpu.x;
+  let slides=0,jumps=0;game.tackle=()=>{slides++;return true;};
+  const baseJump=game.jump;game.jump=p=>{jumps++;return baseJump(p);};
   assert.equal(react.call(game,cpu,.016,0),true,mode);
   assert.equal(slides,0,mode+' must not commit a clearing slide');
-  assert.ok(cpu.x>start,mode+' retains the safe avoidance fallback');
+  assert.equal(jumps,1,mode+' uses the existing JUMP counter');
+  assert.equal(cpu.action,'jump');
+  assert.equal(cpu.jumpCount,1);
+  assert.equal(cpu.aiHazardEvading,true);
+  assert.equal(game.ball.owner===cpu,mode==='carrying','the carrier keeps possession through the hop');
+ }
+});
+
+
+test('an active first-frame JUMP counters Banana and Ice before vertical lift reaches 20',async()=>{
+ const model=await hazardModelPromise;
+ for(const kind of ['banana','ice']){
+  const active=kind==='banana'?model.placeBananaPeel([],carrier,field):model.placeIcePatch([],carrier,field);
+  const jumper={...rival,z:10,action:'jump',actionTimer:.5,jumpCount:1};
+  const result=kind==='banana'?model.advanceBananaPeels(active,[jumper],.4):model.advanceIcePatches(active,[jumper],.4);
+  assert.equal(result.slips.length,0,kind+' active JUMP must evade on its first lift frame');
+  assert.equal(result.hazards.length,1,kind+' trap remains available after the dodge');
+  const expired={...jumper,actionTimer:0};
+  const expiredResult=kind==='banana'?model.advanceBananaPeels(active,[expired],.4):model.advanceIcePatches(active,[expired],.4);
+  assert.equal(expiredResult.slips.length,1,kind+' expired JUMP is not a counter');
+  const notJumping={...jumper,jumpCount:0};
+  const groundedResult=kind==='banana'?model.advanceBananaPeels(active,[notJumping],.4):model.advanceIcePatches(active,[notJumping],.4);
+  assert.equal(groundedResult.slips.length,1,kind+' missing jump count is not a counter');
  }
 });

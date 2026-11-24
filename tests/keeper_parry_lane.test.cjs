@@ -64,5 +64,6 @@ test('no-pressure rebound preserves the original shot-angle direction and magnit
 test('actual dive deflection uses the selected side without changing outward speed or catch threshold',()=>{
  assert.ok(source.includes('b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4)'));
  assert.ok(source.includes('b.vx=sign*(290+skill*4.1)'));
- assert.ok(source.includes('if(force<saveQuality*.62)'));
+ assert.ok(source.includes('const catchThreshold=saveQuality*.62*(1-.10*fatigue)'));
+ assert.ok(source.includes('if(force<catchThreshold)'));
 });

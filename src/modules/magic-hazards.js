@@ -1,5 +1,9 @@
 // Bounded, deterministic on-pitch Magic Trick hazard; no new controls or save schema.
 const BANANA_LIFETIME=3, BANANA_ARM_TIME=.25, BANANA_RADIUS=27, MAX_BANANA_PEELS=6;
+function activeJumpCounter(p){
+ return (p?.action==='jump'||p?.action==='doubleJump')&&Number.isFinite(p.actionTimer)&&p.actionTimer>0&&Number.isFinite(p.jumpCount)&&p.jumpCount>0;
+}
+function canTriggerGroundHazard(p){return p?.z<20&&!activeJumpCounter(p);}
 function placeBananaPeel(active,carrier,field){
  if(!Array.isArray(active)||!carrier||!field||!Number.isFinite(carrier.x)||!Number.isFinite(carrier.y)||![0,1].includes(carrier.t))throw new TypeError('Invalid banana peel placement');
  const moveX=Number(carrier.dx)||0,moveY=Number(carrier.dy)||0;
@@ -20,7 +24,7 @@ function advanceBananaPeels(active,players,dt){
   if(peel.kind!=='banana')continue;
   const life=peel.life-dt,arm=Math.max(0,peel.arm-dt);
   if(life<=0)continue;
-  const victim=arm===0?players.find(p=>!seen.has(p)&&p.t!==peel.team&&!p.keeper&&p.stun<=0&&p.z<20&&Math.hypot(p.x-peel.x,p.y-peel.y)<=BANANA_RADIUS):null;
+  const victim=arm===0?players.find(p=>!seen.has(p)&&p.t!==peel.team&&!p.keeper&&p.stun<=0&&canTriggerGroundHazard(p)&&Math.hypot(p.x-peel.x,p.y-peel.y)<=BANANA_RADIUS):null;
   if(victim){if(!seen.has(victim)){slips.push(victim);seen.add(victim);}continue;}
   hazards.push({...peel,life,arm});
  }
@@ -52,7 +56,7 @@ function advanceIcePatches(active,players,dt,excludedVictims=[]){
   if(patch.kind!=='ice')continue;
   const life=patch.life-dt,arm=Math.max(0,patch.arm-dt);
   if(life<=0)continue;
-  const victim=arm===0?players.find(p=>!seen.has(p)&&p.t!==patch.team&&!p.keeper&&p.stun<=0&&p.z<20&&Math.hypot(p.x-patch.x,p.y-patch.y)<=ICE_RADIUS):null;
+  const victim=arm===0?players.find(p=>!seen.has(p)&&p.t!==patch.team&&!p.keeper&&p.stun<=0&&canTriggerGroundHazard(p)&&Math.hypot(p.x-patch.x,p.y-patch.y)<=ICE_RADIUS):null;
   if(victim){if(!seen.has(victim)){slips.push(victim);seen.add(victim);}continue;}
   hazards.push({...patch,life,arm});
  }

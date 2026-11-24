@@ -1708,7 +1708,18 @@ class GameEngine{
   if(!hazard||hazard.d>=hazard.radius+60){p.aiHazardKey=null;p.aiHazardReaction=0;p.aiHazardEvading=false;return false;}
   const key=`${hazard.h.kind}:${hazard.h.team}:${hazard.h.x}:${hazard.h.y}`;
   if(p.aiHazardKey!==key){p.aiHazardKey=key;p.aiHazardReaction=hazard.d<=hazard.radius+20?0:Math.max(0,Number(reactionSeconds)||0);p.aiHazardEvading=false;}
-  if(p.z>=20||(p.action==='slide'&&(p.actionTimer||0)>0))return false;
+  if(p.action==='slide'&&(p.actionTimer||0)>0)return false;
+  const activeJump=(p.action==='jump'||p.action==='doubleJump')&&
+   Number.isFinite(p.actionTimer)&&p.actionTimer>0&&Number.isFinite(p.jumpCount)&&p.jumpCount>0;
+  if(p.z>=20||activeJump){
+   if(!p.aiHazardEvading)return false;
+   const away=norm(p.x-hazard.h.x||(p.t===0?-1:1),p.y-hazard.h.y);
+   const speed=this.playerSpeed(p)*aiTuning(this.cpuLevel(p)).speed*(p.jumpHold>.12?1.37:1);
+   this.moveAgile(p,away.x,away.y,speed,Math.max(0,dt||0));
+   this.staminaTick(p,Math.max(0,dt||0),p.jumpHold>.12?.7:.46);
+   return true;
+  }
+  if(hazard.d<=hazard.radius+20)p.aiHazardReaction=0;
   if(!p.aiHazardEvading){
    p.aiHazardReaction=Math.max(0,(p.aiHazardReaction||0)-Math.max(0,dt||0));
    if(p.aiHazardReaction>1e-9)return false;
@@ -1745,6 +1756,12 @@ class GameEngine{
    p.dx=heading.x||((p.face===-1)?-.001:.001);p.dy=heading.y;
    if(Math.abs(heading.x)>.05)p.face=heading.x>0?1:-1;
    if(this.tackle(p,true)){p.aiHazardEvading=false;p.aiHazardReaction=Infinity;return true;}
+  }
+  // If a trap is imminent and a safe slide cannot clear it, use the existing JUMP.
+  const jumpLane=ahead>=-4&&across<=hazard.radius+8;
+  const immediateJump=hazard.d<=hazard.radius+34&&(jumpLane||hazard.d<=hazard.radius+8);
+  if(immediateJump&&Number(p.stun||0)<=0&&!['hurt','shotDown','shotGetUp'].includes(p.action)&&this.jump(p)){
+   p.aiHazardEvading=true;p.aiHazardReaction=0;return true;
   }
   const away=norm(p.x-hazard.h.x||(p.t===0?-1:1),p.y-hazard.h.y);
   const speed=this.playerSpeed(p)*aiTuning(this.cpuLevel(p)).speed*(p.jumpHold>.12?1.37:1);
