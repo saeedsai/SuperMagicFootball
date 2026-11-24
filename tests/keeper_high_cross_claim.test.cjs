@@ -201,3 +201,27 @@ test('high-cross claim reach follows keeper approach momentum but not retreat, w
    'full fatigue halves the approach bonus and keeps this marginal claim out of reach');
  }
 });
+
+test('keeper yields a high-cross claim to a grounded runner who can arrive during the bounded flight window',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  const flight=(f.ball.vz+Math.sqrt(f.ball.vz*f.ball.vz+1000*f.ball.z))/500;
+  const target={x:f.ball.x+f.ball.vx*flight,y:f.ball.y+f.ball.vy*flight};
+  const keeperGap=Math.hypot(target.x-f.keeper.x,target.y-f.keeper.y);
+  const speed=85,shortHorizon=Math.min(.22,flight),arrivalHorizon=Math.min(.42,flight);
+  const shortGap=Math.hypot(f.receiver.x-f.dir*speed*shortHorizon-target.x,f.receiver.y-target.y);
+  const arrivalGap=Math.hypot(f.receiver.x-f.dir*speed*arrivalHorizon-target.x,f.receiver.y-target.y);
+  assert.ok(shortGap+34>=keeperGap,'the old short snapshot must not yet yield the claim');
+  assert.ok(arrivalGap+34<keeperGap,'the longer bounded arrival read must recognize the closing runner');
+  f.receiver.moveVX=-f.dir*speed;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'a grounded receiver projected to arrive before the keeper must win the landing race');
+  f.receiver.moveVX=f.dir*speed;
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),
+   'a retreating receiver must not suppress a safe keeper claim');
+  f.receiver.moveVX=0;
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),
+   'a stationary receiver must preserve the neutral claim baseline');
+ }
+});
