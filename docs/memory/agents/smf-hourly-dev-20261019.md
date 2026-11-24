@@ -9,7 +9,8 @@ Deliver player-facing football gameplay first, then existing-player graphics/ani
 - **0.12.81.275 — AI-FIRST-TOUCH-OUTLET-SLIDE-SWEEP-READ-01:** pressured CPU first-touch outlet selection checks live slide direction and remaining sweep against the timed pass path and receiver pocket. It selects a clear alternate teammate or retains possession if every outlet is threatened.
 - Production change in src/modules/ai.js; mirrored helper, actual-engine Node and desktop/simulated-touch Chromium regressions cover both teams, alternate selection and safe fallback.
 - .274 Modular QA #45480378625 passed. Full Regression Census #45480378471 passed preflight, preview, all four Node shards and three Chromium shards; browser shard 3 failed only the external Render/PAGES hosted test with a 45-second wait_for_function timeout. Failed-job-only retry requested; no gameplay failure identified.
-- .273 passed exact-head QA/Census, was promoted through the existing pipeline, and Pages deployment #45470529269 succeeded. Independent main Census #45470542080 had a separate asynchronous marketplace loader timeout; wait-aware correction is in .274.
+- .275 first Modular QA #45483684178 and Census #45483684174 exposed one Node fixture-only failure: the expired-slide fixture left an upright defender in the preferred outlet pocket, so ordinary proximity correctly selected the alternate. The fixture now marks that expired slider down; no production gameplay failure was observed. Rerun exact-head gates after this correction.
+- .273 passed exact-head QA/Census and Pages deployment #45470529269 succeeded; main remains at the verified .273 SHA pending independent .274 promotion.
 
 ## Next smallest action
 Complete .275 exact-head Modular QA and four-Node/four-Chromium Census; fix confirmed failures, then allow only the existing QA-gated promotion. Independently verify main Census, Pages deployment and hosted bytes.

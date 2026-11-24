@@ -409,7 +409,7 @@ test('CPU first-touch outlet avoids a time-aligned slide sweep and selects the c
 
 test('CPU first-touch outlet does not reject retreating, expired, invalid or off-lane slides',async()=>{
  const {AI}=await loadModules();
- const variants=[{slideDY:1},{actionTimer:0,slideTimer:0},{slideDX:0,slideDY:0},{slideDX:1,slideDY:0},{slideSpeed:120}];
+ const variants=[{slideDY:1},{actionTimer:0,slideTimer:0,down:true},{slideDX:0,slideDY:0},{slideDX:1,slideDY:0},{slideSpeed:120}];
  for(const team of [0,1])for(const variant of variants){
   const f=makeOutletSlideFixture(team);Object.assign(f.slider,variant);
   const selected=AI.attackingFirstTouchOutlet([f.carrier,f.marker,f.preferred,f.alternate,f.slider],team,f.carrier,bounds);
