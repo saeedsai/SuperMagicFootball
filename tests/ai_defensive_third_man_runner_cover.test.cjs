@@ -88,6 +88,26 @@ test('third-man mark rejects distant carriers, non-central or retreating runners
   assert.equal(AI.defensiveThirdManRunnerTarget(team,f.carrier,f.game.players,f.bounds,f.primary,f.support),null,label+' (team '+team+')');
  }
 });
+test('third-man coverage follows projected marker arrival instead of static proximity',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const away=makeFixture(AI,ENGINE,team);
+  active(away.support,{x:away.runner.x+away.attackDir*40,y:away.runner.y+76,moveVY:200});
+  const uncovered=AI.defensiveThirdManRunnerTarget(team,away.carrier,away.game.players,
+   away.bounds,away.primary,away.support);
+  assert.ok(Math.hypot(away.support.x-away.runner.x,away.support.y-away.runner.y)<92,
+   'the existing support is currently within the legacy coverage radius');
+  assert.ok(uncovered,'a support defender moving away must not count as an effective mark');
+  assert.equal(uncovered.defender,away.third,'the available third defender should cover the exposed runner');
+
+  const closing=makeFixture(AI,ENGINE,team);
+  active(closing.support,{x:closing.runner.x+closing.attackDir*40,y:closing.runner.y+76,moveVY:-200});
+  const covered=AI.defensiveThirdManRunnerTarget(team,closing.carrier,closing.game.players,
+   closing.bounds,closing.primary,closing.support);
+  assert.equal(covered,null,'a support defender projected into the runner lane must retain the mark');
+ }
+});
+
 test('third-man assignment yields to unavailable, human-controlled and committed defenders',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1])for(const mode of ['down','human','assist','give-and-go','first-touch']){

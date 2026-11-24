@@ -208,9 +208,16 @@ function defensiveThirdManRunnerTarget(team,carrier,players,bounds,primary,suppo
   if(runnerDepth<35||runnerDepth>360||advance<40||advance>260||lateral>centralLimit)continue;
   const towardGoal=Math.sign(ownGoalX-runner.x);
   if(!towardGoal||vx*towardGoal< -85)continue;
+  // Existing press/cover counts as a mark only if its short movement projection
+  // still closes on the runner's projected lane. A nearby defender moving away
+  // must not suppress an available third-man cover assignment.
+  const projectedCoverageGap=marker=>Math.hypot(
+   marker.x+clampTo(velocity(marker,'x')*.12,-24,24)-projectedX,
+   marker.y+clampTo(velocity(marker,'y')*.12,-24,24)-projectedY
+  );
   const alreadyMarked=Math.min(
-   Math.hypot(primary.x-runner.x,primary.y-runner.y),
-   Math.hypot(support.x-runner.x,support.y-runner.y)
+   projectedCoverageGap(primary),
+   projectedCoverageGap(support)
   );
   if(alreadyMarked<92)continue;
   const target={
