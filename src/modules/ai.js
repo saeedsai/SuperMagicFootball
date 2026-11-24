@@ -2454,12 +2454,22 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
   keeperGap<24||keeperGap>Math.min(claimReach,260*flight+32))return null;
  const receiverGap=Math.hypot(receiver.x-target.x,receiver.y-target.y);
  if(receiverGap>260)return null;
+ // Grounded runners need a longer arrival read than the separate 0.22-second
+ // airborne-body overlap check. Bound both time and total projected travel so
+ // a closing attacker can win a genuine landing race without extrapolation
+ // through the whole lofted flight.
+ const contestHorizon=Math.min(.42,flight);
+ const projectedOutfielder=q=>{
+  let dx=(Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0)*contestHorizon;
+  let dy=(Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0)*contestHorizon;
+  const lead=Math.hypot(dx,dy);
+  if(lead>110){const scale=110/lead;dx*=scale;dy*=scale;}
+  return {x:q.x+dx,y:q.y+dy};
+ };
  for(const q of players){
   if(q===keeper||!activeOutfielder(q))continue;
-  const vx=Number.isFinite(q.moveVX)?q.moveVX:0,vy=Number.isFinite(q.moveVY)?q.moveVY:0;
-  const futureX=q.x+clampTo(vx*horizon,-52,52);
-  const futureY=q.y+clampTo(vy*horizon,-52,52);
-  const gap=Math.hypot(futureX-target.x,futureY-target.y);
+  const future=projectedOutfielder(q);
+  const gap=Math.hypot(future.x-target.x,future.y-target.y);
   if(q.t!==keeper.t&&gap+34<keeperGap)return null;
   if(q.t===keeper.t&&gap+48<keeperGap)return null;
  }
