@@ -137,6 +137,25 @@ test('a real parry makes the CPU keeper move toward its safe rebound on both sid
 });
 
 
+test('keeper discounts cross-track momentum but retains aligned parry-rebound approach',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=helperFixture(ENGINE,team);
+  f.ball.x=f.keeper.x+f.dir*100;
+  f.keeper.src={agility:50,gkSkill:50};f.keeper.fatigue=0;
+  const neutral=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300);
+  assert.ok(neutral,JSON.stringify({team,neutral}));
+  const dx=neutral.x-f.keeper.x,dy=neutral.y-f.keeper.y,gap=Math.hypot(dx,dy);
+  f.keeper.moveVX=-dy/gap*200;f.keeper.moveVY=dx/gap*200;
+  assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),null,
+   'cross-track momentum must consume part of the bounded collection margin');
+  f.keeper.moveVX=dx/gap*200;f.keeper.moveVY=dy/gap*200;
+  const aligned=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300);
+  assert.ok(aligned,'momentum directly toward the rebound must remain helpful');
+  assert.deepEqual(aligned,neutral,'aligned momentum must not move the predicted rebound target');
+ }
+});
+
 test('GK Skill improves parry-rebound reorientation while fatigue slows it without changing neutral baseline',async()=>{
  const {AI,ENGINE}=await loadModules(),f=helperFixture(ENGINE,0);
  f.ball.x=f.keeper.x+100;

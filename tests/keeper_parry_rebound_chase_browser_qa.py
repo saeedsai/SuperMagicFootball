@@ -83,7 +83,7 @@ with sync_playwright() as pw:
    }
    const reactionRows=[];
    for(const side of [0,1]){
-    const run=(skill,fatigue)=>{
+    const run=(skill,fatigue,motion='stationary')=>{
      g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
      g.matchState='paused';g.cooldown=0;g.clock=0;
      const k=g.player(side,0),b=g.ball,dir=side===0?1:-1,goalY=765;
@@ -110,11 +110,19 @@ with sync_playwright() as pw:
      Object.assign(b,{owner:null,attacker:side,lastTouchTeam:side,
       x:k.x+dir*100,y:goalY+38,z:60,vx:dir*260,vy:30,vz:-110,
       ordinaryShot:false,shot:null,strike:null,pass:false,age:.6,canCollect:0});
+     if(motion==='cross-track'){
+      const flight=(b.vz+Math.sqrt(b.vz*b.vz+1000*b.z))/500;
+      const horizon=Math.max(.12,Math.min(.60,flight));
+      const targetX=b.x+Math.max(-110,Math.min(110,b.vx*horizon*.58));
+      const targetY=b.y+Math.max(-100,Math.min(100,b.vy*horizon*.58));
+      const dx=targetX-k.x,dy=targetY-k.y,gap=Math.hypot(dx,dy);
+      k.moveVX=-dy/gap*200;k.moveVY=dx/gap*200;
+     }
      g.clock=.2;g.cpuLevel=()=>2;g.playerSpeed=()=>300/.86;
      g.driveAI(k,.016);
-     return {parried,chase:k.aiParryReboundTarget===true};
+     return {parried,chase:k.aiParryReboundTarget===true,motion};
     };
-    reactionRows.push({side,neutral:run(50,0),low:run(0,0),elite:run(100,0),tired:run(50,1)});
+    reactionRows.push({side,neutral:run(50,0),low:run(0,0),elite:run(100,0),tired:run(50,1),crossTrack:run(50,0,'cross-track')});
    }
    return {rows,reactionRows,teams:SupermagicFootball.teams.length};
   }""")
@@ -127,6 +135,7 @@ with sync_playwright() as pw:
    assert row['low']['parried'] and not row['low']['chase'],(kind,row)
    assert row['elite']['parried'] and row['elite']['chase'],(kind,row)
    assert row['tired']['parried'] and not row['tired']['chase'],(kind,row)
+   assert row['crossTrack']['parried'] and not row['crossTrack']['chase'],(kind,row)
   for row in result['rows']:
    assert row['parried'] and row['chase'] and row['moving'] and row['yieldedToClosingRunner'] and row['cleared'],(kind,row)
    assert row['target'] is not None,(kind,row)

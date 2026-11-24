@@ -2187,10 +2187,17 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   const turnRate=clampTo(3+agility*.13+(keeperSkill-50)*.025-fatigue*1.1,4.5,16.5);
   const velocityX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
   const velocityY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
-  const initialTowardSpeed=clampTo((velocityX*(target.x-keeper.x)+velocityY*(target.y-keeper.y))/Math.max(1,keeperGap),-moveSpeed,moveSpeed);
+  const targetDx=target.x-keeper.x,targetDy=target.y-keeper.y;
+  const initialTowardSpeed=clampTo((velocityX*targetDx+velocityY*targetDy)/Math.max(1,keeperGap),-moveSpeed,moveSpeed);
+  const lateralSpeed=Math.abs((velocityX*targetDy-velocityY*targetDx)/Math.max(1,keeperGap));
   const accelerationWindow=(1-Math.exp(-turnRate*pursuitSeconds))/turnRate;
   const reachableTravel=Math.max(0,moveSpeed*pursuitSeconds+(initialTowardSpeed-moveSpeed)*accelerationWindow);
-  if(keeperGap>reachableTravel+44)return null;
+  // Cross-track momentum must be cancelled before the keeper can settle on the rebound.
+  // Reserve part of the existing collection margin for that turn, without changing
+  // the stationary/aligned baseline or making the 44-unit buffer disappear.
+  const lateralTurnCost=Math.min(18,lateralSpeed/turnRate*.45);
+  const arrivalBuffer=Math.max(26,44-lateralTurnCost);
+  if(keeperGap>reachableTravel+arrivalBuffer)return null;
   const activeOutfielder=q=>q&&q!==keeper&&!q.keeper&&!q.down&&
    (q.stun==null||Number(q.stun)<=0)&&(q.z==null||Number(q.z)<=18)&&
    Number.isFinite(q.x)&&Number.isFinite(q.y)&&
