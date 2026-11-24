@@ -1939,7 +1939,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const scored=candidates.map(candidate=>{
    const target={x:clampTo(candidate.x,xMin+24,xMax-24),y:clampTo(candidate.y,yMin+24,yMax-24)};
    const forward=dir*(target.x-carrier.x),lateral=Math.abs(target.y-carrier.y);
-   if(forward<44||lateral<34)return {side:candidate.side,target,score:-Infinity,slideGap:0};
+   if(forward<44||(candidate.side!==0&&lateral<34))return {side:candidate.side,target,score:-Infinity,slideGap:0};
    let nearest=nearby.length?Infinity:230,corridor=nearby.length?Infinity:230,pressurePenalty=0;
    for(const defender of nearby){
     const endGap=Math.hypot(defender.x-target.x,defender.y-target.y);
@@ -1971,9 +1971,15 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   });
   const direct=scored.find(option=>option.side===0);
   const best=scored.filter(option=>option.side!==0).sort((a,b)=>b.score-a.score)[0];
-  if(!direct||!best||!Number.isFinite(best.score)||best.score<38||
-   best.score<direct.score+18||
-   (slideThreats.length&&(!Number.isFinite(best.slideGap)||best.slideGap<18)))return null;
+  const directSafe=!!direct&&Number.isFinite(direct.score)&&direct.score>=38&&
+   (!slideThreats.length||(Number.isFinite(direct.slideGap)&&direct.slideGap>=18));
+  const bestSafe=!!best&&Number.isFinite(best.score)&&best.score>=38&&
+   (!slideThreats.length||(Number.isFinite(best.slideGap)&&best.slideGap>=18));
+  // Keep a straight lane when it is safe; only make the sharper diagonal cut
+  // when it buys a meaningful (18-point) clearance advantage.
+  if(directSafe&&(!bestSafe||best.score<direct.score+18))
+   return {x:direct.target.x,y:direct.target.y};
+  if(!bestSafe)return null;
   return {x:best.target.x,y:best.target.y};
  }
 

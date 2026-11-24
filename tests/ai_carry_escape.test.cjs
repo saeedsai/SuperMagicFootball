@@ -42,6 +42,20 @@ test('Dribbling skill shapes the carry escape cut while neutral and invalid stat
   assert.ok(lowLateral>=34&&highLateral<=100,'skill-scaled cuts must remain bounded');
  }
 });
+test('CPU carrier keeps a safe straight-forward lane when pressure occupies both diagonal cuts on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?700:1300,y=500;
+  const carrier=player('direct-carrier-'+team,team,x,y);
+  const upper=player('upper-cut-marker-'+team,1-team,x+dir*60,y-80);
+  const lower=player('lower-cut-marker-'+team,1-team,x+dir*60,y+80);
+  const target=AI.attackingCarryEscapeTarget([carrier,upper,lower],team,carrier,bounds);
+  assert.ok(target,JSON.stringify({team,target}));
+  assert.ok(dir*(target.x-carrier.x)>=100,'safe direct route should retain full forward progress');
+  assert.equal(target.y,carrier.y,'carrier should stay on the clear forward lane between diagonal blockers');
+ }
+});
+
 test('when both diagonals are safe, carrier momentum breaks the tie without changing attack direction',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){
