@@ -21,6 +21,60 @@ function slideBallSide(defender,carrier,ball,baseSpeed=320){
  return ENGINE.GameEngine.prototype.defensiveTackleSlideBallSideRead.call({},defender,carrier,ball,baseSpeed);
 }
 
+test('relative closing lets an advancing defender open the bounded early PASS-poke window',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const qualifies=(defenderSpeed,carrierSpeed=0,range=78,defence=50,extra={})=>{
+   const defender=player(team,1000,700,{dx:0,dy:0,face:-dir,
+    moveVX:dir*defenderSpeed,moveVY:0,src:{defence},...extra});
+   const carrier=player(1-team,1000+dir*range,700,{moveVX:dir*carrierSpeed,moveVY:0});
+   const ball={owner:carrier,x:carrier.x-dir*17,y:carrier.y+12,z:12};
+   return commit(defender,carrier,ball);
+  };
+  assert.equal(qualifies(120),true,'average Defence recognizes 120 units/s of relative closing');
+  assert.equal(qualifies(119.9),false,'the existing average closing threshold remains exact');
+  assert.equal(qualifies(220,0,89),true,'bounded defender movement lead opens the 89-unit edge');
+  assert.equal(qualifies(220,0,90),false,'the predicted post-step 62-unit gap remains exclusive');
+  assert.equal(qualifies(220,100),true,'a retreating carrier can still be met when net closing reaches 120');
+  assert.equal(qualifies(220,110),false,'a faster retreat keeps net closing below threshold');
+  assert.equal(qualifies(0),false,'stationary facing alone never opens the early window');
+  assert.equal(qualifies(-220),false,'a defender moving away cannot manufacture closing speed');
+  assert.equal(qualifies(106.5,0,78,95),true,'elite Defence keeps its 106.5 threshold');
+  assert.equal(qualifies(106.4,0,78,95),false);
+  assert.equal(qualifies(129,0,78,20),true,'low Defence keeps its 129 threshold');
+  assert.equal(qualifies(128.9,0,78,20),false);
+  assert.equal(qualifies(220,0,78,50,{moveVY:220,moveVX:0}),false,
+   'lateral movement cannot be mistaken for approach');
+  assert.equal(qualifies(220,0,78,50,{dx:-dir,dy:0}),false,
+   'explicit input facing away overrides residual approach momentum');
+ }
+});
+
+test('driveAI commits the early poke from defender residual approach in both directions',()=>{
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+  const dir=team===0?1:-1,defender=game.player(team,3),carrier=game.player(1-team,3);
+  const field=ENGINE.WORLD.field,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  for(const q of game.players){
+   q.down=true;q.stun=1;q.aiTarget=null;q.aiTimer=0;q.aiAssistTarget=null;q.aiGiveAndGoRun=null;
+  }
+  Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,aiTarget:null,
+   aiDetour:null,action:'idle',actionTimer:0,moveVX:dir*220,moveVY:0,dx:0,dy:0,face:-dir,
+   sprintCharge:0,dashTimer:0,magicReadCounterpressTimer:0});
+  Object.assign(carrier,{x:x+dir*88,y,z:0,down:false,stun:0,invuln:0,action:'idle',
+   actionTimer:0,moveVX:0,moveVY:0});
+  Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,vx:0,vy:0,vz:0,
+   pass:false,shot:null,strike:null,ordinaryShot:false});
+  game.clock=5;game.activateDefence=()=>false;
+  const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({who,slide,slideBall});who.cd=.5;return true;};
+  const originalRandom=Math.random;Math.random=()=>0;
+  try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
+  assert.equal(calls.length,1,'team '+team+' should make one early poke');
+  assert.equal(calls[0].who,defender);
+ }
+});
+
 test('closing grounded carriers open the bounded early PASS-poke window in both directions',()=>{
  const rightDefender=player(0,1000,700,{dx:1,dy:0,face:1});
  const rightCarrier=player(1,1088,700,{moveVX:-240,moveVY:0});

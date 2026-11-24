@@ -477,20 +477,31 @@ function defensivePokeCommitWindow(defender,carrier,ball=null){
  const inputX=Number.isFinite(defender.dx)?defender.dx:0;
  const inputY=Number.isFinite(defender.dy)?defender.dy:0;
  const inputLength=Math.hypot(inputX,inputY);
- const headingX=inputLength>.15?inputX/inputLength:(defender.face===-1?-1:1);
- const headingY=inputLength>.15?inputY/inputLength:0;
+ const rawDefenderVX=Number.isFinite(defender.moveVX)?defender.moveVX:0;
+ const rawDefenderVY=Number.isFinite(defender.moveVY)?defender.moveVY:0;
+ const rawDefenderSpeed=Math.hypot(rawDefenderVX,rawDefenderVY);
+ const defenderScale=rawDefenderSpeed>360?360/rawDefenderSpeed:1;
+ const defenderVX=rawDefenderVX*defenderScale,defenderVY=rawDefenderVY*defenderScale;
+ const defenderSpeed=Math.hypot(defenderVX,defenderVY);
+ const headingX=inputLength>.15?inputX/inputLength:
+  defenderSpeed>.15?defenderVX/defenderSpeed:(defender.face===-1?-1:1);
+ const headingY=inputLength>.15?inputY/inputLength:
+  defenderSpeed>.15?defenderVY/defenderSpeed:0;
  const ux=dx/range,uy=dy/range;
  // Keep the same forward arc as GameEngine.tackle; no backward auto-pokes.
  if(headingX*ux+headingY*uy<.25)return false;
  const vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:0;
  const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:0;
- const closing=-(vx*ux+vy*uy);
+ // Relative closing includes a defender already accelerating into the carrier.
+ // Cap the defender's contribution to one plausible player-speed envelope.
+ const relativeVX=vx-defenderVX,relativeVY=vy-defenderVY;
+ const closing=-(relativeVX*ux+relativeVY*uy);
  const rawDefence=stat(defender,'defence');
  const defence=Number.isFinite(rawDefence)?clamp(rawDefence,1,100):50;
- // Better defenders recognize a closing carrier earlier; average players keep 120.
+ // Better defenders recognize a closing pair earlier; average players keep 120.
  const closingThreshold=clamp(120-(defence-50)*.3,105,135);
  if(!Number.isFinite(closing)||closing<closingThreshold)return false;
- const leadX=clamp(vx*.055,-12,12),leadY=clamp(vy*.055,-12,12);
+ const leadX=clamp(relativeVX*.055,-12,12),leadY=clamp(relativeVY*.055,-12,12);
  const predictedGap=Math.hypot(dx+leadX,dy+leadY)-16;
  return Number.isFinite(predictedGap)&&predictedGap<62;
 }

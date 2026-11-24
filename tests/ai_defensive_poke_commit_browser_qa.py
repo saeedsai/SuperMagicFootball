@@ -126,15 +126,49 @@ with sync_playwright() as pw:
                 closeContact45:runCloseContactPoke(team,true,45),
                 ordinarySlide20:runCpuSlide(team,true,55,false,20),
                 firstTouchSlide20:runCpuSlide(team,true,85,true,20)});
+            const runApproachCommit=(defendingTeam,defenderSpeed,carrierSpeed=0,range=88)=>{
+                const dir=defendingTeam===0?1:-1;
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+                const x=1000,y=700;
+                for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+                Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,
+                    aiTarget:null,aiDetour:null,action:'idle',actionTimer:0,moveVX:dir*defenderSpeed,
+                    moveVY:0,dx:0,dy:0,face:-dir,sprintCharge:0,dashTimer:0,magicReadCounterpressTimer:0});
+                Object.assign(carrier,{x:x+dir*range,y,z:0,down:false,stun:0,invuln:0,
+                    action:'idle',actionTimer:0,moveVX:dir*carrierSpeed,moveVY:0});
+                Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,
+                    vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+                game.clock=.5;game.activateDefence=()=>false;
+                const calls=[];game.tackle=(who,slide,slideBall)=>{
+                    calls.push({same:who===defender,slide,liveBall:!!slideBall&&slideBall.owner===carrier});
+                    who.cd=.5;return true;
+                };
+                const originalRandom=Math.random;Math.random=()=>0;
+                try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
+                return {team:defendingTeam,defenderSpeed,carrierSpeed,range,calls};
+            };
+            const relativeApproachRows=[
+                {name:'approach',...runApproachCommit(0,220,0,88)},
+                {name:'mirrored',...runApproachCommit(1,220,0,88)},
+                {name:'net-threshold',...runApproachCommit(0,220,100,88)},
+                {name:'below-net-threshold',...runApproachCommit(0,220,110,88)},
+                {name:'contact-boundary',...runApproachCommit(0,220,0,90)}
+            ];
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
-            return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,
+            return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
                 closeBallSideRows,ballHeightRows,closeContactEngineRows,closeContactSlideRows,firstTouchSlideRows,
                 airborneGroundChallengeRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
+        for row in result['relativeApproachRows']:
+            expected=row['name'] in ('approach','mirrored','net-threshold')
+            assert len(row['calls'])==(1 if expected else 0),(kind,row)
+            if expected:
+                assert row['calls'][0]['same'],(kind,row)
         assert result['right'] and result['left'],(kind,result)
         assert not result['retreat'] and not result['lateral'] and not result['sideOn'] and not result['staleVelocity'],(kind,result)
         assert result['low'] and not result['high'],(kind,result)
