@@ -65,6 +65,25 @@ INTERCEPTION_JS=r"""() => {
  Object.assign(blockedOutlet,{x:x+dir*280,y:y-160,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:dir*20,moveVY:0,aiAssistTarget:null});
  Object.assign(g.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:0,passTarget:intended.src.id,
   attacker:0,lastTouchTeam:0,x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,ordinaryShot:false,canCollect:0});
+ const originalDribbling=interceptor.src.dribbling;
+ safeOutlet.down=true;blockedOutlet.down=true;
+ const captureSkill=(label,rating,missing=false)=>{
+  if(missing)delete interceptor.src.dribbling;else interceptor.src.dribbling=rating;
+  Object.assign(g.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:0,passTarget:intended.src.id,
+   attacker:0,lastTouchTeam:0,x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,
+   ordinaryShot:false,canCollect:0});
+  g.clock=12;g.take(interceptor);
+  const target=interceptor.aiFirstTouchTarget;
+  return target?{label,forward:dir*(target.x-x),lateral:Math.abs(target.y-y),
+   target:{x:target.x,y:target.y}}:null;
+ };
+ const skillRows=[captureSkill('low',1),captureSkill('neutral',50),captureSkill('high',100),
+  captureSkill('missing',null,true),captureSkill('invalid','elite')];
+ interceptor.src.dribbling=originalDribbling;
+ safeOutlet.down=false;blockedOutlet.down=false;
+ Object.assign(g.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:0,passTarget:intended.src.id,
+  attacker:0,lastTouchTeam:0,x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,shot:null,strike:null,
+  ordinaryShot:false,canCollect:0});
  g.clock=12;g.take(interceptor);
  const intent=interceptor.aiFirstTouchTarget&&{x:interceptor.aiFirstTouchTarget.x,y:interceptor.aiFirstTouchTarget.y};
  const initialTouchTimer=interceptor.firstTouchControlTimer;
@@ -82,7 +101,7 @@ INTERCEPTION_JS=r"""() => {
   g.driveAI(interceptor,1/60);
   outletIntent=g.events.slice(outletStart).find(e=>e.type==='passIntent')||null;
  }finally{Math.random=originalRandom;}
- return {x,y,dir,timer:initialTouchTimer,duration:interceptor.firstTouchControlDuration,pressure:interceptor.firstTouchPressure,
+ return {x,y,dir,skillRows,timer:initialTouchTimer,duration:interceptor.firstTouchControlDuration,pressure:interceptor.firstTouchPressure,
   owner:firstTouchOwner,target:intent,actual,prematureReleases,
   outletTarget:outletIntent?.target||null,expectedOutlet:safeOutlet.src.id,
   outletOwner:g.ball.owner===interceptor,
@@ -108,6 +127,13 @@ with sync_playwright() as pw:
   assert r['buttons']==r['originalButtons']==4 and r['scoreUnchanged'] and r['identityUnchanged'],(device,r)
   assert not errors,(device,errors)
   intercepted=page.evaluate(INTERCEPTION_JS)
+  skill={row['label']:row for row in intercepted['skillRows']}
+  assert set(skill)=={'low','neutral','high','missing','invalid'},(device,intercepted)
+  assert skill['low']['forward']>skill['neutral']['forward']>skill['high']['forward'],(device,skill)
+  assert skill['low']['lateral']<skill['neutral']['lateral']<skill['high']['lateral'],(device,skill)
+  assert abs(skill['neutral']['forward']-72)<1 and abs(skill['neutral']['lateral']-78)<1,(device,skill)
+  assert skill['missing']['target']==skill['neutral']['target'],(device,skill)
+  assert skill['invalid']['target']==skill['neutral']['target'],(device,skill)
   assert intercepted['owner'] and .18<=intercepted['duration']<=.30 and abs(intercepted['timer']-intercepted['duration'])<1e-9 and intercepted['pressure']>0,(device,intercepted)
   assert intercepted['prematureReleases']==[],(device,intercepted)
   assert intercepted['target'] and intercepted['actual'],(device,intercepted)
@@ -116,7 +142,7 @@ with sync_playwright() as pw:
   assert intercepted['target']==intercepted['actual'],(device,intercepted)
   assert intercepted['outletTarget']==intercepted['expectedOutlet'] and not intercepted['outletOwner'],(device,intercepted)
   assert intercepted['buttons']==4 and intercepted['scoreUnchanged'] and intercepted['identityUnchanged'],(device,intercepted)
-  print('AI_INTERCEPT_FIRST_TOUCH_PASS',device,'CPU interception takes safe counter-control without changing controls',flush=True)
+  print('AI_INTERCEPT_FIRST_TOUCH_PASS',device,'CPU interception takes skill-shaped safe counter-control without changing controls',flush=True)
   print('FIRST_TOUCH_CONTROL_PASS',device,'real match teammate pass, pressure, immediate shot, untouched controls',flush=True)
   ctx.close()
  browser.close()

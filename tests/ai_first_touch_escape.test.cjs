@@ -32,6 +32,31 @@ test('CPU first touch chooses a bounded forward escape lane on both attacking si
  }
 });
 
+test('CPU first-touch escape angle scales with Dribbling while neutral and invalid ratings preserve the baseline',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?500:1500,y=300;
+  const targetFor=(name,dribbling,mode='rating')=>{
+   const src=mode==='missing'?{id:name}:{id:name,dribbling};
+   const carrier=player(name,team,x,y,{src});
+   const marker=player('marker-'+team,1-team,x+dir*55,y,{moveVX:-dir*35});
+   const target=AI.attackingFirstTouchEscape([carrier,marker],team,carrier,bounds);
+   return {carrier,target};
+  };
+  const low=targetFor('low-'+team,1),neutral=targetFor('neutral-'+team,50),
+   high=targetFor('high-'+team,100),missing=targetFor('missing-'+team,undefined,'missing'),
+   invalid=targetFor('invalid-'+team,'elite');
+  for(const row of [low,neutral,high,missing,invalid])assert.ok(row.target,JSON.stringify({team,row}));
+  assert.deepEqual(missing.target,neutral.target,'missing Dribbling must preserve neutral first-touch geometry');
+  assert.deepEqual(invalid.target,neutral.target,'invalid Dribbling must fail safely to neutral geometry');
+  const metrics=row=>({forward:dir*(row.target.x-row.carrier.x),lateral:Math.abs(row.target.y-row.carrier.y)});
+  const l=metrics(low),n=metrics(neutral),h=metrics(high);
+  assert.ok(l.forward>n.forward&&n.forward>h.forward,JSON.stringify({team,l,n,h}));
+  assert.ok(l.lateral<n.lateral&&n.lateral<h.lateral,JSON.stringify({team,l,n,h}));
+  assert.ok(l.forward>=35&&h.forward>=35&&h.lateral<=90,JSON.stringify({team,l,n,h}));
+ }
+});
+
 test('CPU first touch chooses the unblocked diagonal when a defender occupies the other side',async()=>{
  const {AI}=await loadModules();
  const carrier=player('carrier',0,500,300);
@@ -105,7 +130,7 @@ test('human-controlled receivers keep the existing directional first-touch behav
 });
 
 
-function prepareInterceptGame(ENGINE,{team=0,humans=0,markerSide='front',height=8,speed=600,targeted=true}={}){
+function prepareInterceptGame(ENGINE,{team=0,humans=0,markerSide='front',height=8,speed=600,targeted=true,dribbling=undefined}={}){
  const game=new ENGINE.GameEngine({halfSeconds:120});
  game.init({home:0,away:1,mode:'quick',humans});game.weather='Clear';game.magicHazards=[];game.magicWalls=[];game.supernova=null;
  const dir=team===0?1:-1;
@@ -128,7 +153,10 @@ function prepareInterceptGame(ENGINE,{team=0,humans=0,markerSide='front',height=
   x,y,z:height,vx:-dir*speed,vy:0,vz:0,age:.18,shot:null,strike:null,
   ordinaryShot:false,canCollect:0});
  game.clock=10;
+ const originalDribbling=interceptor.src.dribbling;
+ if(dribbling!==undefined)interceptor.src.dribbling=dribbling;
  game.take(interceptor);
+ if(dribbling!==undefined)interceptor.src.dribbling=originalDribbling;
  return {game,interceptor,passer,intended,marker,dir,x,y};
 }
 
@@ -152,6 +180,22 @@ test('CPU interception of a pressured targeted low through-ball takes a safe fir
    'CPU must not release or spend a trick before completing the first touch');
   assert.ok(Math.abs(s.interceptor.aiTarget.x-target.x)<1,JSON.stringify({team,target,actual:s.interceptor.aiTarget,owner:s.game.ball.owner===s.interceptor,clock:s.game.clock,expires:s.interceptor.aiFirstTouchTarget?.expires,timer:s.interceptor.firstTouchControlTimer,aiTimer:s.interceptor.aiTimer,assist:s.interceptor.aiAssistTarget}));
   assert.ok(Math.abs(s.interceptor.aiTarget.y-target.y)<1,JSON.stringify({team,target,actual:s.interceptor.aiTarget,owner:s.game.ball.owner===s.interceptor,clock:s.game.clock,expires:s.interceptor.aiFirstTouchTarget?.expires,timer:s.interceptor.firstTouchControlTimer,aiTimer:s.interceptor.aiTimer,assist:s.interceptor.aiAssistTarget}));
+ }
+});
+
+test('actual CPU interception first-touch route reflects Dribbling skill on both attacking sides',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const sample=rating=>{
+   const s=prepareInterceptGame(ENGINE,{team,dribbling:rating});
+   const target=s.interceptor.aiFirstTouchTarget;
+   assert.ok(target,JSON.stringify({team,rating,target}));
+   return {forward:s.dir*(target.x-s.x),lateral:Math.abs(target.y-s.y)};
+  };
+  const low=sample(1),neutral=sample(50),high=sample(100);
+  assert.ok(low.forward>neutral.forward&&neutral.forward>high.forward,JSON.stringify({team,low,neutral,high}));
+  assert.ok(low.lateral<neutral.lateral&&neutral.lateral<high.lateral,JSON.stringify({team,low,neutral,high}));
+  assert.ok(Math.abs(neutral.forward-72)<1&&Math.abs(neutral.lateral-78)<1,JSON.stringify({team,neutral}));
  }
 });
 

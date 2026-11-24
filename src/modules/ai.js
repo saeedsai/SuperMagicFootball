@@ -1733,10 +1733,19 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
  if(!nearby.length||!nearby.some(q=>dir*(q.x-carrier.x)>=-28))return null;
  const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.down&&
   timerClear(q.stun)&&grounded(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y));
+ // Dribbling skill shapes the settling touch, not its control duration or physics.
+ // Neutral 50 keeps the established geometry; low skill stays more forward,
+ // while elite control can cushion farther laterally into a clear pocket.
+ const rawDribbling=carrier.src?.dribbling;
+ const dribbling=rawDribbling!==null&&rawDribbling!==undefined&&String(rawDribbling).trim()!==''&&
+  Number.isFinite(Number(rawDribbling))?clampTo(Number(rawDribbling),1,100):50;
+ const dribbleBlend=(dribbling-50)/50;
+ const diagonalForward=clampTo(72-dribbleBlend*6,66,78);
+ const diagonalLateral=clampTo(78+dribbleBlend*12,66,90);
  const candidates=[
   {side:0,x:carrier.x+dir*88,y:carrier.y},
-  {side:-1,x:carrier.x+dir*72,y:carrier.y-78},
-  {side:1,x:carrier.x+dir*72,y:carrier.y+78}
+  {side:-1,x:carrier.x+dir*diagonalForward,y:carrier.y-diagonalLateral},
+  {side:1,x:carrier.x+dir*diagonalForward,y:carrier.y+diagonalLateral}
  ];
  const segmentGap=(point,start,end)=>{
   const dx=end.x-start.x,dy=end.y-start.y,length=dx*dx+dy*dy;
