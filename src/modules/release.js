@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.272',
+ version:'0.12.81.273',
  date:'2026-11-24',
  notes:Object.freeze([
   "AI-FIRST-TOUCH-OUTLET-SETTLING-EXCLUSION-01: after a CPU's pressured interception touch, its short safe-outlet search now skips teammates still inside their own first-touch control window. It chooses the next ready teammate only when that receiver's projected pocket and pass corridor remain open; if no safe outlet exists, the existing possession-retention and carry-escape path remains. Existing pressure/read-window duration, receiver movement, pass trajectory, player physics, trick counters, four actions, saves, rosters, persistence and offline play remain unchanged. Mirrored helper and actual-engine Node plus desktop/simulated-touch Chromium regressions verify both teams and no-ready-outlet fallback.",
