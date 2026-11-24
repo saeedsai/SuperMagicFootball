@@ -100,6 +100,7 @@ test('keeper selects the runner projected to arrive centrally rather than the cu
  for(const keeperTeam of [0,1])for(const wing of [-1,1]){
   const configure=(f,mode)=>{
    f.carrier.y=f.centerY+wing*300;
+   f.game.ball.x=f.carrier.x;f.game.ball.y=f.carrier.y;
    f.runner.x=f.carrier.x-f.attackDir*150;
    f.runner2.x=f.runner.x;
    f.runner.y=f.centerY-wing*40;
