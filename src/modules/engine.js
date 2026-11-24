@@ -1917,18 +1917,24 @@ class GameEngine{
   const rival=rivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
   if(id==='lightning'&&!inRange)return false;
-  // A defender who moves toward and faces the carrier can counter the spell.
-  const facing=inRange&&(typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(rival,p):((rival.face||1)*(p.x-rival.x))>0);
-  const closingHeading=(()=>{
-   let x=Number.isFinite(rival?.dx)?rival.dx:0,y=Number.isFinite(rival?.dy)?rival.dy:0;
-   if(Math.hypot(x,y)<=.1){
-    x=Number.isFinite(rival?.moveVX)?rival.moveVX:0;
-    y=Number.isFinite(rival?.moveVY)?rival.moveVY:0;
+  // Any eligible nearby defender can read a named Trick, not only the nearest marker.
+  // Keep the same live 2D approach requirement and Defence-versus-Dribbling threshold.
+  const directCounterDefender=id==='lightning'?null:rivals.find(defender=>{
+   if(!(distance(p,defender)<radius))return false;
+   let headingX=Number.isFinite(defender?.dx)?defender.dx:0;
+   let headingY=Number.isFinite(defender?.dy)?defender.dy:0;
+   if(Math.hypot(headingX,headingY)<=.1){
+    headingX=Number.isFinite(defender?.moveVX)?defender.moveVX:0;
+    headingY=Number.isFinite(defender?.moveVY)?defender.moveVY:0;
    }
-   return Math.hypot(x,y)>.1?{x,y}:null;
-  })();
-  const closing=inRange&&!!closingHeading&&
-   (closingHeading.x*(p.x-rival.x)+closingHeading.y*(p.y-rival.y))>0;
+   if(Math.hypot(headingX,headingY)<=.1)return false;
+   const towardX=p.x-defender.x,towardY=p.y-defender.y;
+   return headingX*towardX+headingY*towardY>0&&
+    stat(defender,'defence')>=stat(p,'dribbling');
+  });
+  if(directCounterDefender){
+   directCounterDefender.magicReadCueTimer=Math.max(Number(directCounterDefender.magicReadCueTimer)||0,.48);
+  }
   // A second defender visibly screening the forward carry lane can read a
   // counterable named Magic Trick during the pressured first-touch window.
   // This is one bounded skill-based chance; ordinary Dribble Styles are separate.
@@ -2017,7 +2023,7 @@ class GameEngine{
   // Keep airborne defenders in the candidate pool so their JUMP is actually seen.
   const fieldTrickSlid=fieldTrick&&rivals.some(q=>distance(p,q)<radius&&q.action==='slide'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&Number.isFinite(q.z)&&q.z<20);
   const fieldTrickJumped=fieldTrick&&rivals.some(q=>distance(p,q)<radius&&q.action==='jump'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&Number.isFinite(q.z)&&q.z>=20);
-  const countered=id==='lightning'?false:!!(screenRead||jumpDodged||fireballParried||screamDodged||screamParried||freezeDodged||freezeParried||batDodged||batParried||teleportParried||teleportJumpBlocked||hideBallPoked||spinBumpSlid||spinBumpJumped||fieldTrickSlid||fieldTrickJumped||(facing&&closing&&stat(rival,'defence')>=stat(p,'dribbling')));
+  const countered=id==='lightning'?false:!!(screenRead||jumpDodged||fireballParried||screamDodged||screamParried||freezeDodged||freezeParried||batDodged||batParried||teleportParried||teleportJumpBlocked||hideBallPoked||spinBumpSlid||spinBumpJumped||fieldTrickSlid||fieldTrickJumped||!!directCounterDefender);
    // A new Trick supersedes any short-lived Teleport afterimage.
    p.teleportTrail=null;
   p.magicReadyAt=this.clock+6;
