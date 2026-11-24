@@ -3119,7 +3119,10 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
       this.activateDefence(p);
     }
     const closeContact=!!(owner&&owner.t!==t&&distance(p,owner)<68);
-    if(owner&&owner.t!==t&&p.cd<=0&&!(Number(p.magicReadCounterpressTimer)>0)&&
+    // Preserve the dedicated probabilistic first-touch slide read; a general
+    // relative-closing poke must not consume the same frame before that read.
+    const firstTouchSlideRead=!!(owner&&defensiveFirstTouchSlide(p,owner,this.playerSpeed(p)));
+    if(owner&&owner.t!==t&&p.cd<=0&&!firstTouchSlideRead&&!(Number(p.magicReadCounterpressTimer)>0)&&
      (closeContact||this.defensivePokeCommitWindow(p,owner,liveBall))&&
      Math.random()<ai.tackleRate*tactical.press){
       const slideRoll=Math.random();

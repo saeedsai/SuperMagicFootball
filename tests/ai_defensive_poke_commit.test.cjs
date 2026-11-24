@@ -258,3 +258,30 @@ test('ground PASS pokes and SHOOT slides reject airborne or invalid-height carri
    `ball height ${String(z)} cannot authorize an early PASS poke`);
  }
 });
+
+
+test('the dedicated pressured first-touch slide read takes priority over a relative early poke',()=>{
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+  const dir=team===0?1:-1,defender=game.player(team,3),carrier=game.player(1-team,3);
+  const field=ENGINE.WORLD.field,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+  Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,aiTarget:null,
+   aiDetour:null,action:'idle',actionTimer:0,moveVX:dir*240,moveVY:0,dx:dir,dy:0,face:dir,
+   sprintCharge:0,dashTimer:0,magicReadCounterpressTimer:0});
+  Object.assign(carrier,{x:x+dir*85,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+   moveVX:dir*100,moveVY:0,firstTouchControlTimer:.16,firstTouchPressure:.8});
+  Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,vx:0,vy:0,vz:0,
+   pass:false,shot:null,strike:null,ordinaryShot:false});
+  game.clock=.5;game.activateDefence=()=>false;
+  const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({who,slide,slideBall});who.cd=.5;return true;};
+  const originalRandom=Math.random;Math.random=()=>0;
+  try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
+  assert.equal(calls.length,1,'team '+team+' should make one first-touch challenge');
+  assert.equal(calls[0].who,defender);
+  assert.equal(calls[0].slide,true,'the extended first-touch read must not be consumed by an ordinary poke');
+  assert.equal(calls[0].slideBall,game.ball,'the existing live-ball slide target remains intact');
+  assert.equal(game.ball.owner,carrier,'the decision itself does not transfer possession');
+ }
+});
