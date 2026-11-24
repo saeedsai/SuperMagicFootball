@@ -90,18 +90,20 @@ test('driveAI sends the second CPU presser to the landing cover while the primar
    p.down=false;p.stun=0;p.invuln=0;p.action='idle';p.actionTimer=0;p.z=0;
    p.slideTimer=0;p.shotImpactKnockdownPending=0;p.shotImpactKnockdownTimer=0;p.shotImpactRiseTimer=0;
   }
-  Object.assign(primary,{x:x-dir*18,y,aiTimer:1});
-  Object.assign(support,{x:x+dir*50,y:y+65,aiTimer:1});
   Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
    x,y,z:54,vx:dir*260,vy:-80,vz:-40,canCollect:0,attacker:1-team,lastTouchTeam:1-team});
   game.clock=5;
-  const expected=AI.defensiveLooseBallCoverTarget(team,game.ball,
-   {xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24});
-  assert.ok(expected);
+  const pressBounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+  const expected=AI.defensiveLooseBallCoverTarget(team,game.ball,pressBounds);
+  const primaryExpected=AI.defensiveLooseBallPrimaryTarget(team,game.ball,pressBounds);
+  assert.ok(expected&&primaryExpected);
+  Object.assign(primary,{x:primaryExpected.x,y:primaryExpected.y,aiTimer:1});
+  Object.assign(support,{x:x,y:primaryExpected.y,aiTimer:1});
+  assert.ok(Math.hypot(primary.x-game.ball.x,primary.y-game.ball.y)>
+   Math.hypot(support.x-game.ball.x,support.y-game.ball.y),
+   'landing defender starts farther from the live ball');
   game.driveAI(primary,.016);
   game.driveAI(support,.016);
-  const primaryExpected=AI.defensiveLooseBallPrimaryTarget(team,game.ball,
-   {xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24});
   assert.deepEqual(primary.aiTarget,primaryExpected,'the primary meets the actual predicted landing point');
   assert.deepEqual(support.aiTarget,expected,'the support defender protects the goal-side landing pocket');
   assert.ok(Math.abs(Math.hypot(primary.aiTarget.x-expected.x,primary.aiTarget.y-expected.y)-26)<1e-6,
