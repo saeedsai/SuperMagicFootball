@@ -10,7 +10,11 @@ test('named Magic Trick resolution uses the visible first-touch screen reader; o
  assert.ok(dribbleStart>=0&&dribbleEnd>dribbleStart,'ordinary Dribble Style resolver available');
  const magic=src.slice(magicStart,magicEnd),dribble=src.slice(dribbleStart,dribbleEnd);
  assert.match(magic,/const counterRead=typeof defensiveMagicTrickReadTarget==='function'\?defensiveMagicTrickReadTarget\(p,rivals,true,this\.ball\):null/);
- assert.match(magic,/const screenReadChance=counterRead\?\.screened\?Math\.min\(\.24,\.07\+stat\(counterRead\.defender,'defence'\)\*\.0017\):0/);
+ assert.match(magic,/const defenderRead=clamp\(\.07\+stat\(counterRead\.defender,'defence'\)\*\.0017,\.07,\.24\)/);
+ assert.match(magic,/const attackerDribbling=clamp\(stat\(p,'dribbling'\),1,100\)/);
+ assert.match(magic,/const dribblingResistance=\(attackerDribbling-50\)\*\.0012/);
+ assert.match(magic,/return clamp\(defenderRead-dribblingResistance,\.04,\.28\)/);
+ assert.match(magic,/const screenRead=id!=='lightning'&&screenReadChance>0&&Math\.random\(\)<screenReadChance/);
  assert.match(magic,/screenRead/);
  assert.match(magic,/if\(screenRead&&counterRead\?\.defender\)\{\s*counterRead\.defender\.magicReadCueTimer=Math\.max\(Number\(counterRead\.defender\.magicReadCueTimer\)\|\|0,\.48\);\s*counterRead\.defender\.magicReadCounterpressTimer=Math\.max\(Number\(counterRead\.defender\.magicReadCounterpressTimer\)\|\|0,\.42\);\s*\}/);
  assert.doesNotMatch(dribble,/defensiveMagicTrickReadTarget|readBonus/);
