@@ -411,3 +411,38 @@ test('direct named Magic Trick reads search past the nearest idle marker for a c
   }
  }
 });
+
+test('delayed Lightning counters recognize residual 2D approach after input release, but not retreat or stationary facing',async()=>{
+ const ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  const cases=[
+   {mode:'approach',moveVX:dir*144,moveVY:-108,countered:true},
+   {mode:'retreat',moveVX:-dir*144,moveVY:108,countered:false},
+   {mode:'stationary',moveVX:0,moveVY:0,countered:false}
+  ];
+  for(const sample of cases){
+   const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,mode:'quick',humans:0});
+   const carrier=game.player(team,3),defender=game.player(1-team,3);
+   for(const other of game.players)if(other!==carrier&&other!==defender&&!other.keeper){other.down=true;other.stun=1;}
+   Object.assign(carrier,{x,y,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+    face:dir,dx:dir,dy:0,moveVX:dir*180,moveVY:0,
+    lightningPending:{remaining:.32,target:defender}});
+   Object.assign(carrier.src,{dribbling:50});
+   Object.assign(defender,{x:x-dir*50,y:y+30,z:0,down:false,stun:0,keeper:false,
+    action:'idle',actionTimer:0,dx:0,dy:0,moveVX:sample.moveVX,moveVY:sample.moveVY,
+    face:dir,lightningMark:.32});
+   Object.assign(defender.src,{defence:95});
+   Object.assign(game.ball,{owner:carrier,x:x+dir*12,y,z:0,pass:false,passTarget:null,
+    attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+   const hit=game.resolveLightningTrick(carrier),event=game.events.at(-1);
+   assert.equal(event?.type,'lightningTrickResolved',JSON.stringify({team,...sample,event}));
+   assert.equal(event?.countered,sample.countered,JSON.stringify({team,...sample,event}));
+   assert.equal(hit,!sample.countered,JSON.stringify({team,...sample,hit}));
+   assert.equal(defender.stun,sample.countered?0:.32,JSON.stringify({team,...sample,stun:defender.stun}));
+   assert.equal(carrier.lightningPending,null);
+   assert.equal(defender.lightningMark,0);
+   assert.equal(game.ball.owner,carrier,'Lightning countering must not transfer possession');
+  }
+ }
+});

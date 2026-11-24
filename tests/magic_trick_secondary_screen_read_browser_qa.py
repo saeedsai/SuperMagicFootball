@@ -88,15 +88,36 @@ with sync_playwright() as pw:
      cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue,readerCue:second.magicReadCueTimer||0,
      nearestCue:nearest.magicReadCueTimer||0,counterpress:second.magicReadCounterpressTimer||0};
    }
+   function attemptLightningMomentum(team,mode){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
+    const dir=team===0?1:-1,carrier=g.player(team,3),defender=g.player(1-team,3);
+    for(const q of g.players)if(q!==carrier&&q!==defender&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(carrier,{x:1200,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     face:dir,dx:dir,dy:0,moveVX:dir*180,moveVY:0});
+    Object.assign(carrier.src,{dribbling:50});
+    const motion=mode==='approach'?{moveVX:dir*144,moveVY:-108}:
+     mode==='retreat'?{moveVX:-dir*144,moveVY:108}:{moveVX:0,moveVY:0};
+    Object.assign(defender,{x:1200-dir*50,y:795,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     dx:0,dy:0,face:dir,lightningMark:.32,...motion});
+    Object.assign(defender.src,{defence:95});
+    Object.assign(g.ball,{owner:carrier,x:1200+dir*12,y:765,z:0,pass:false,passTarget:null,
+     attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+    carrier.lightningPending={remaining:.32,target:defender};
+    const hit=g.resolveLightningTrick(carrier),event=g.events.at(-1);
+    return {team,mode,hit,countered:event?.countered,stun:defender.stun,
+     owner:g.ball.owner===carrier,pending:carrier.lightningPending===null,mark:defender.lightningMark};
+   }
    const directCounters=[];
    for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])directCounters.push(attemptSecondDirectRead(team,mode));
+   const lightningMomentum=[];
+   for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])lightningMomentum.push(attemptLightningMomentum(team,mode));
    const momentum=[];
    for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])momentum.push(attemptMomentum(team,mode));
    return {baseline:attempt(false),screened:attempt(true),shielded:attempt(true,'shielded'),
     lowSkill:attempt(true,'exposed',1,.22),neutralSkill:attempt(true,'exposed',50,.22),eliteSkill:attempt(true,'exposed',100,.22),
     perpendicular:attempt(true,'exposed',95,.1,'perpendicular',0),
     perpendicularMirrored:attempt(true,'exposed',95,.1,'perpendicular',1),
-    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),momentum,directCounters,
+    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),momentum,directCounters,lightningMomentum,
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -125,6 +146,13 @@ with sync_playwright() as pw:
    else:
     assert row['hidden'] is True and row['readerCue']==0,(kind,row)
    assert row['nearestCue']==0,(kind,row)
+  assert len(result['lightningMomentum'])==6,(kind,result)
+  for row in result['lightningMomentum']:
+   expected=row['mode']=='approach'
+   assert row['countered'] is expected,(kind,'Lightning residual-momentum read mismatch',row)
+   assert row['hit'] is (not expected),(kind,'Lightning hit/counter result mismatch',row)
+   assert row['stun']==(0 if expected else .32),(kind,'Lightning target stun mismatch',row)
+   assert row['owner'] is True and row['pending'] is True and row['mark']==0,(kind,row)
   for key in ('perpendicular','perpendicularMirrored','movementPerpendicular'):
    assert result[key]['hidden'] is True,(kind,key,result[key])
    assert result[key]['readerCue']==0 and result[key]['counterpressTimer']==0,(kind,key,result[key])

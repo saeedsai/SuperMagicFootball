@@ -2114,7 +2114,15 @@ class GameEngine{
   const q=pending.target;if(q)q.lightningMark=0;
   if(!q||!this.players.includes(q)||q.t===p.t||q.keeper||q.stun>0||distance(p,q)>=95){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,hit:false,countered:false});return false;}
   const inJump=q.action==='jump'&&q.z>=20,inSlide=q.action==='slide'&&q.actionTimer>0&&q.z<20;
-  const facing=typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(q,p):(q.face||1)*(p.x-q.x)>0,closing=((q.dx||0)*(p.x-q.x)+(q.dy||0)*(p.y-q.y))>0;
+  const facing=typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(q,p):(q.face||1)*(p.x-q.x)>0;
+  // Match named-Trick counter semantics: current 2D input leads, residual movement
+  // may finish the read after release, but stationary facing alone is not closing.
+  let closingX=Number.isFinite(q.dx)?q.dx:0,closingY=Number.isFinite(q.dy)?q.dy:0;
+  if(Math.hypot(closingX,closingY)<=.1){
+   closingX=Number.isFinite(q.moveVX)?q.moveVX:0;
+   closingY=Number.isFinite(q.moveVY)?q.moveVY:0;
+  }
+  const closing=closingX*(p.x-q.x)+closingY*(p.y-q.y)>0;
   const read=facing&&closing&&stat(q,'defence')>=stat(p,'dribbling');
   if(inJump||inSlide||read){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true});return false;}
   q.stun=Math.max(q.stun,.32);q.action='hurt';q.actionTimer=Math.max(q.actionTimer||0,.32);q.lightningFx=.32;
