@@ -2179,7 +2179,12 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   const moveSpeed=maxSpeed==null?300:(Number.isFinite(rawSpeed)&&rawSpeed>=0?clampTo(rawSpeed,0,500):0);
   const rawAgility=Number(keeper.src?.agility);
   const agility=clampTo(Number.isFinite(rawAgility)?rawAgility:50,0,100);
-  const turnRate=3+agility*.13;
+  const rawKeeperSkill=keeper.src?.gkSkill;
+  const parsedKeeperSkill=typeof rawKeeperSkill==='number'?rawKeeperSkill:
+   typeof rawKeeperSkill==='string'&&rawKeeperSkill.trim()!==''?Number(rawKeeperSkill):NaN;
+  const keeperSkill=clampTo(Number.isFinite(parsedKeeperSkill)?parsedKeeperSkill:50,0,100);
+  const fatigue=clampTo(Number.isFinite(keeper.fatigue)?keeper.fatigue:0,0,1);
+  const turnRate=clampTo(3+agility*.13+(keeperSkill-50)*.025-fatigue*1.1,4.5,16.5);
   const velocityX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
   const velocityY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
   const initialTowardSpeed=clampTo((velocityX*(target.x-keeper.x)+velocityY*(target.y-keeper.y))/Math.max(1,keeperGap),-moveSpeed,moveSpeed);

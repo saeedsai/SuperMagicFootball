@@ -81,11 +81,52 @@ with sync_playwright() as pw:
     rows.push({side,parried,chase,moving,target,yieldedToClosingRunner,cleared,
       farParried,farDeclined,staysGoalSide});
    }
-   return {rows,teams:SupermagicFootball.teams.length};
+   const reactionRows=[];
+   for(const side of [0,1]){
+    const run=(skill,fatigue)=>{
+     g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+     g.matchState='paused';g.cooldown=0;g.clock=0;
+     const k=g.player(side,0),b=g.ball,dir=side===0?1:-1,goalY=765;
+     Object.assign(k,{x:side===0?205:2355,y:goalY,stun:0,down:false,z:0,
+      action:'idle',actionTimer:0,diveCooldown:0,diveIntentCooldown:0,
+      diveIntentPending:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false,
+      moveVX:0,moveVY:0,fatigue:0});
+     for(const p of g.players){
+      if(p===k||p.keeper)continue;
+      if(p.t===side)Object.assign(p,{x:side===0?1750:810,y:235+p.i*8,z:0,
+       stun:0,down:false,action:'idle',actionTimer:0});
+      else Object.assign(p,{x:side===0?1900:660,y:1285-p.i*8,z:0,
+       stun:0,down:false,action:'idle',actionTimer:0});
+     }
+     Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,
+      x:k.x+dir*24,y:goalY,z:0,vx:-dir*2500,vy:0,vz:0,power:60,
+      ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[],pass:false});
+     const parried=g.tryKeeperDive(k,false);
+     if(!parried)throw new Error('reaction fixture shot was not parried for side '+side);
+     Object.assign(k,{action:'keeperDive',actionTimer:.4,diveElapsed:.24,
+      diveIntentPending:false,z:12,stun:0,down:false,aiTimer:0,aiTarget:null,
+      aiParryReboundTarget:false,moveVX:0,moveVY:0,fatigue});
+     Object.assign(k.src,{agility:50,gkSkill:skill});
+     Object.assign(b,{owner:null,attacker:side,lastTouchTeam:side,
+      x:k.x+dir*100,y:goalY+38,z:60,vx:dir*260,vy:30,vz:-110,
+      ordinaryShot:false,shot:null,strike:null,pass:false,age:.6,canCollect:0});
+     g.clock=.2;g.cpuLevel=()=>2;g.playerSpeed=()=>300/.86;
+     g.driveAI(k,.016);
+     return {parried,chase:k.aiParryReboundTarget===true};
+    };
+    reactionRows.push({side,neutral:run(50,0),low:run(0,0),elite:run(100,0),tired:run(50,1)});
+   }
+   return {rows,reactionRows,teams:SupermagicFootball.teams.length};
   }""")
   assert not errors,(kind,errors)
   assert result['teams']>=223,(kind,result)
   assert len(result['rows'])==2,(kind,result)
+  assert len(result['reactionRows'])==2,(kind,result)
+  for row in result['reactionRows']:
+   assert row['neutral']['parried'] and row['neutral']['chase'],(kind,row)
+   assert row['low']['parried'] and not row['low']['chase'],(kind,row)
+   assert row['elite']['parried'] and row['elite']['chase'],(kind,row)
+   assert row['tired']['parried'] and not row['tired']['chase'],(kind,row)
   for row in result['rows']:
    assert row['parried'] and row['chase'] and row['moving'] and row['yieldedToClosingRunner'] and row['cleared'],(kind,row)
    assert row['target'] is not None,(kind,row)

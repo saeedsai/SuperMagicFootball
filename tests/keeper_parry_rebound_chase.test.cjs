@@ -135,3 +135,24 @@ test('a real parry makes the CPU keeper move toward its safe rebound on both sid
   assert.equal(keeper.aiTarget,null,'possession ends the keeper chase immediately');
  }
 });
+
+
+test('GK Skill improves parry-rebound reorientation while fatigue slows it without changing neutral baseline',async()=>{
+ const {AI,ENGINE}=await loadModules(),f=helperFixture(ENGINE,0);
+ f.ball.x=f.keeper.x+100;
+ f.keeper.src={agility:50,gkSkill:50};f.keeper.fatigue=0;
+ const neutral=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300);
+ assert.ok(neutral,'neutral GK Skill must preserve the previous rebound reach baseline');
+ f.keeper.src.gkSkill=0;
+ assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),null,
+  'low GK Skill must not commit to a pocket outside its acceleration-limited reach');
+ f.keeper.src.gkSkill=100;
+ assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),
+  'elite GK Skill may reach the same bounded pocket through faster reorientation');
+ f.keeper.src.gkSkill=50;f.keeper.fatigue=1;
+ assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),null,
+  'full fatigue must reduce the neutral keeper below the same arrival boundary');
+ f.keeper.fatigue=0;
+ const recovered=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300);
+ assert.deepEqual(recovered,neutral,'recovery restores the exact neutral target');
+});

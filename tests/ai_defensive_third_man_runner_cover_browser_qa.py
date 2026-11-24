@@ -61,7 +61,7 @@ with sync_playwright() as pw:
      active(primary,{x:carrierX+attackDir*70,y:centerY+65});
      active(support,{x:runnerX+attackDir*40,y:runnerY+76,moveVY:direction==='away'?200:-200});
      const targetX=runnerX+attackDir*43.6,targetY=runnerY+(centerY-runnerY)*.12;
-     active(third,{x:targetX-attackDir*110,y:targetY+170});active(alternate,{down:true,x:targetX-attackDir*82,y:targetY+10});
+     active(third,{x:ownGoalX-attackDir*26,y:targetY+174});active(alternate,{down:true,x:targetX-attackDir*82,y:targetY+10});
      Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,attacker:attackTeam,lastTouchTeam:attackTeam,age:0,shot:null,strike:null,ordinaryShot:false,hideBallTimer:0});
      game.clock=2;game.driveAI(third,.016);
      const marked=!!third.aiTarget&&Math.abs(third.aiTarget.x-targetX)<1&&Math.abs(third.aiTarget.y-targetY)<1;
