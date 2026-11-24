@@ -944,3 +944,7 @@ The first .264 Full Regression Census and its failed-job-only retry both failed 
 
 ### 2026-11-24 — .268 exact-head release-gate correction (smf-hourly-dev-20261019)
 The first .268 Modular QA #45422675967 and Full Regression Census #45422675964 stopped in Node preflight because the service-worker version comment still said .267; package, About metadata and cache key already carried .268. Updated only the comment to the current four-field version. The preceding .267 Census #45419513336 failed browser shard 1 only in the third-man arrival fixture: it expected the alternate defender even though the actual engine could select another eligible marker. The browser test now isolates the available third defender for the actual-engine dispatch check; the Node helper still verifies the moving-away-versus-arriving tie-break. No production gameplay assertion failed. Fresh exact-head Modular QA and Full Regression Census are required.
+
+
+### 2026-11-24 — .268 version-policy contract correction (smf-hourly-dev-20261019)
+The follow-up exact-head Census #45423565820 passed all but one Node preflight assertion: the visual release contract requires the version policy's current candidate line to contain the literal `About-only 0.12.81.268`. The policy line now uses that exact About-only wording. No game source or test threshold changed; all 2,855 other preflight tests passed. A fresh exact-head Modular QA and Census are required.
