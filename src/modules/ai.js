@@ -2107,12 +2107,12 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   const targetDepth=(target.x-ownGoalX)*dir,keeperGap=Math.hypot(target.x-keeper.x,target.y-keeper.y);
   if(targetDepth<26||targetDepth>210||keeperGap<22||keeperGap>235)return null;
   // Do not send a keeper on a second-ball chase it cannot physically reach.
-  // Grounded rebounds retain a short, bounded collection window; airborne
-  // rebounds also include their remaining descent. Use the same acceleration
-  // response as moveAgile, current movement momentum and the live match speed.
-  const pursuitSeconds=Math.max(landingSeconds,Math.min(.48,Math.max(0,rebound.expires-now)));
+  // Grounded and airborne rebounds share a short collection window bounded
+  // by the parry metadata expiry. The projected target still follows the ball's
+  // remaining descent; movement feasibility cannot outlive that expiry.
+  const pursuitSeconds=Math.min(.48,Math.max(0,rebound.expires-now));
   const rawSpeed=Number(maxSpeed);
-  const moveSpeed=Number.isFinite(rawSpeed)&&rawSpeed>0?clampTo(rawSpeed,0,500):300;
+  const moveSpeed=maxSpeed==null?300:(Number.isFinite(rawSpeed)&&rawSpeed>=0?clampTo(rawSpeed,0,500):0);
   const rawAgility=Number(keeper.src?.agility);
   const agility=clampTo(Number.isFinite(rawAgility)?rawAgility:50,0,100);
   const turnRate=3+agility*.13;

@@ -86,9 +86,16 @@ test('keeper only chases a parry when its acceleration-limited movement can reac
  f.keeper.moveVX=300;f.keeper.moveVY=0;
  assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),
   'existing approach momentum can make the same bounded pocket reachable');
- f.keeper.moveVX=-300;
+ f.rebound.expires=1.1;
+ assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),null,
+  'a late chase must fit inside the metadata time remaining, not outlive the rebound');
+ f.rebound.expires=2;f.keeper.moveVX=-300;
  assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),null,
   'retreating momentum must reduce rather than inflate the arrival estimate');
+ const stopped=helperFixture(ENGINE,0);
+ assert.equal(AI.keeperParryReboundTarget(stopped.keeper,stopped.ball,stopped.players,
+  stopped.bounds,1,stopped.rebound,0),null,
+  'an explicit zero movement speed must fail closed instead of using the legacy default');
 });
 function engineFixture(ENGINE,team){
  const game=new ENGINE.GameEngine({halfSeconds:120});
