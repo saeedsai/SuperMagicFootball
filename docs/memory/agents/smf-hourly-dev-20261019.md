@@ -17,7 +17,7 @@ Preserve 223 original teams, 2,676 player identities/order and 12-player ratios,
 
 ## Evidence
 - .268 Modular QA #45423934976 passed 2,856/2,856. Census #45423934902 passed preflight, preview, all four Node shards and browser shards 0/2/3; only browser shard 1's third-man fixture failed, now isolated from the support-selection window.
-- .269 adds GK Skill/fatigue to rebound turn response only; focused Node and Chromium regressions are included. Exact-head Actions pending.
+- .269 exact-head Modular QA #45435028870 and Census #45435029774 stopped in Node preflight on six README banner-contract assertions (2,851/2,857 passed); all six require the README first line to start with the version before `release candidate`. No gameplay failure was identified in those logs. README/backlog banner form is corrected; fresh exact-head Actions pending.
 - Main .266 SHA `b0b5641b88b56b7d8915e5944a2edc2455e37c53`: Pages deployment #45414997006 and independent main Census #45415010070 passed, including hosted-pages smoke and all four Node/four Chromium shards.
 - REST reports `dev.protected=false` and `main.protected=false`; #87 remains open. No protection bypass or manual promotion.
 - Local GitHub DNS is unavailable; connected GitHub source/API is used. Local Node/Chromium execution is not claimed; exact-head Actions are the verification gate.
