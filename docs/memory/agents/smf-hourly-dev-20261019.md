@@ -6,21 +6,20 @@
 Deliver player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.274 — AI-FIRST-TOUCH-SLIDE-SWEEP-AVOIDANCE-01:** CPU first-touch escape evaluates active slide trajectories as swept lanes and favors the diagonal with less immediate exposure. Retreating, expired, invalid and out-of-reach slides do not create false threats.
-- Production change in src/modules/ai.js; mirrored helper, actual-engine Node and desktop/simulated-touch Chromium regressions cover both teams, possession retention and no premature release.
-- .273 passed exact-head Modular QA #45468630881 and dev Census #45468630743, was promoted through the existing pipeline, and Pages deployment #45470529269 succeeded. .274's first QA/Census attempt stopped in Node preflight on a test fixture that marked the interceptor as the pass target, plus the checkpoint Agent ID formatting contract; both are corrected without changing production gameplay.
+- **0.12.81.275 — AI-FIRST-TOUCH-OUTLET-SLIDE-SWEEP-READ-01:** pressured CPU first-touch outlet selection checks live slide direction and remaining sweep against the timed pass path and receiver pocket. It selects a clear alternate teammate or retains possession if every outlet is threatened.
+- Production change in src/modules/ai.js; mirrored helper, actual-engine Node and desktop/simulated-touch Chromium regressions cover both teams, alternate selection and safe fallback.
+- .274 Modular QA #45480378625 passed. Full Regression Census #45480378471 passed preflight, preview, all four Node shards and three Chromium shards; browser shard 3 failed only the external Render/PAGES hosted test with a 45-second wait_for_function timeout. Failed-job-only retry requested; no gameplay failure identified.
+- .273 passed exact-head QA/Census, was promoted through the existing pipeline, and Pages deployment #45470529269 succeeded. Independent main Census #45470542080 had a separate asynchronous marketplace loader timeout; wait-aware correction is in .274.
 
 ## Next smallest action
-Run exact-head Modular QA and the four-Node/four-Chromium Full Regression Census for .274 after the fixture correction. Repair confirmed failures, then allow only the existing QA-gated promotion. Independently verify Pages, main Census and hosted bytes before claiming release.
+Complete .275 exact-head Modular QA and four-Node/four-Chromium Census; fix confirmed failures, then allow only the existing QA-gated promotion. Independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
-Preserve 223 original teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No new concept heroes or copied graphics. New Studio art requires provenance, game-scale QA and owner acceptance. Physical two-phone #48 and Render drift #86 remain open; do not claim device or hosting acceptance.
+Preserve 223 original teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No new concept heroes or copied graphics. New Studio art requires provenance, game-scale QA and owner acceptance. Physical two-phone #48 and Render drift #86 remain open; no device or hosting acceptance claimed.
 
 ## Evidence
-- Before .274, dev and main both pointed to .273 SHA f1fc56e829d4d05ee5dffe508550e9f479e3de86.
-- .273 Modular QA #45468630881 passed; dev Census #45468630743 passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion succeeded.
-- .273 Pages deployment #45470529269 succeeded. Independent main Census #45470542080 passed hosted smoke, preflight, preview, four Node shards and browser shards 0–2; browser shard 3 failed only the asynchronous marketplace loading assertion, now wait-aware in .274.
-- REST reports main.protected=false and dev.protected=false; repository rulesets are empty and #87 remains open. No manual promotion or protection bypass.
+- Before .275, dev SHA was 6dc78996b7bae4bd91dbc267fd736cd7788729f2; main SHA was f1fc56e829d4d05ee5dffe508550e9f479e3de86.
+- GitHub REST reports main.protected=false and dev.protected=false; repository rulesets are empty and #87 remains open.
 - Physical two-phone #48, Render drift #86 and authenticated online hosting remain unverified/open.
 
 ## Cleanup

@@ -1928,11 +1928,46 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    q.action!=='shotDown'&&q.action!=='shotGetUp'&&
    !(q.action==='slide'&&(Number(q.actionTimer)||0)>0)&&
    !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0));
+  // Live slides need their real trajectory, not ordinary moveVX/moveVY projection.
+  const slideThreats=players.filter(q=>q&&q.t!==team&&!q.keeper&&!q.down&&timerClear(q.stun)&&
+   timerClear(q.shotImpactKnockdownPending)&&timerClear(q.shotImpactKnockdownTimer)&&
+   timerClear(q.shotImpactRiseTimer)&&grounded(q)&&q.action==='slide'&&
+   Number.isFinite(q.actionTimer)&&q.actionTimer>0&&Number.isFinite(q.slideTimer)&&q.slideTimer>0&&
+   Number.isFinite(q.slideRemaining)&&q.slideRemaining>0&&Number.isFinite(q.slideSpeed)&&q.slideSpeed>=200&&
+   Number.isFinite(q.slideDX)&&Number.isFinite(q.slideDY)).map(q=>{
+    const length=Math.hypot(q.slideDX,q.slideDY);
+    if(length<.5)return null;
+    const speed=clampTo(q.slideSpeed,200,720);
+    const duration=Math.min(q.actionTimer,q.slideTimer,q.slideRemaining/speed);
+    if(!(duration>0))return null;
+    return {q,ux:q.slideDX/length,uy:q.slideDY/length,speed,duration};
+   }).filter(Boolean);
   const nearby=defenders.filter(q=>{
    const stun=q.stun==null?0:Number(q.stun);
    return Number.isFinite(stun)&&stun<=.24&&Math.hypot(q.x-carrier.x,q.y-carrier.y)<=190;
   });
-  if(!nearby.length||!nearby.some(q=>dir*(q.x-carrier.x)>=-28))return null;
+  const slidePressure=slideThreats.some(slide=>{
+   const rx=carrier.x-slide.q.x,ry=carrier.y-slide.q.y;
+   const along=rx*slide.ux+ry*slide.uy,across=Math.abs(rx*slide.uy-ry*slide.ux);
+   return Math.hypot(rx,ry)<=190&&along>=-28&&along<=slide.speed*slide.duration+1&&across<=88;
+  });
+  if((!nearby.length||!nearby.some(q=>dir*(q.x-carrier.x)>=-28))&&!slidePressure)return null;
+  const slideThreatensPass=(slide,target,arrival)=>{
+   const dx=target.x-carrier.x,dy=target.y-carrier.y,endTime=Math.min(arrival,slide.duration);
+   if(!(endTime>0))return false;
+   for(let sample=0;sample<=12;sample++){
+    const time=endTime*sample/12,progress=clampTo(time/arrival,0,1);
+    const ballX=carrier.x+dx*progress,ballY=carrier.y+dy*progress;
+    const slideX=slide.q.x+slide.ux*slide.speed*time,slideY=slide.q.y+slide.uy*slide.speed*time;
+    if(Math.hypot(slideX-ballX,slideY-ballY)<46)return true;
+   }
+   if(slide.duration+1e-9>=arrival){
+    const slideX=slide.q.x+slide.ux*slide.speed*arrival;
+    const slideY=slide.q.y+slide.uy*slide.speed*arrival;
+    if(Math.hypot(slideX-target.x,slideY-target.y)<82)return true;
+   }
+   return false;
+  };
   const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.aiAssistTarget&&ready(q));
   let best=null;
   for(const runner of allies){
@@ -1965,6 +2000,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
      if(lateral<44){blocked=true;break;}
     }
    }
+   if(!blocked&&slideThreats.some(slide=>slideThreatensPass(slide,target,arrival)))blocked=true;
    if(blocked)continue;
    const forwardRun=clampTo(dir*vx,-100,160);
    const score=forward*.32+Math.min(nearest,300)*.50+forwardRun*.08-range*.24;

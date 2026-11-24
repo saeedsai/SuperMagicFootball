@@ -380,3 +380,74 @@ test('actual CPU interception first touch chooses the open side of an active sli
   assert.deepEqual(game.events.slice(start).filter(event=>['passIntent','shotRelease','dribbleTrick'].includes(event.type)),[]);
  }
 });
+
+function makeOutletSlideFixture(team){
+ const dir=team===0?1:-1,x=1000,y=500;
+ const carrier=player('outlet-carrier-'+team,team,x,y,{firstTouchControlTimer:0,firstTouchPressure:.8});
+ const marker=player('outlet-marker-'+team,1-team,x+dir*50,y+150,{firstTouchControlTimer:0,slideTimer:0});
+ const preferred=player('swept-outlet-'+team,team,x+dir*400,y,{firstTouchControlTimer:0,slideTimer:0});
+ const alternate=player('clear-outlet-'+team,team,x+dir*300,y-250,{firstTouchControlTimer:0,slideTimer:0});
+ const slider=player('outlet-slider-'+team,1-team,x+dir*280,y+120,{
+  firstTouchControlTimer:0,action:'slide',actionTimer:.36,slideTimer:.36,
+  slideRemaining:180,slideSpeed:500,slideDX:0,slideDY:-1,moveVX:0,moveVY:0
+ });
+ return {carrier,marker,preferred,alternate,slider,team,dir};
+}
+
+test('CPU first-touch outlet avoids a time-aligned slide sweep and selects the clear alternate on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=makeOutletSlideFixture(team);
+  const baseline=AI.attackingFirstTouchOutlet([f.carrier,f.marker,f.preferred,f.alternate],team,f.carrier,bounds);
+  assert.equal(baseline?.runner,f.preferred,'without a slide the strongest forward outlet remains preferred');
+  const selected=AI.attackingFirstTouchOutlet([f.carrier,f.marker,f.preferred,f.alternate,f.slider],team,f.carrier,bounds);
+  assert.equal(selected?.runner,f.alternate,JSON.stringify({team,selected:selected?.runner?.name}));
+  assert.equal(AI.attackingFirstTouchOutlet([f.carrier,f.marker,f.preferred,f.slider],team,f.carrier,bounds),null,
+   'a sole outlet swept at pass time must be rejected so the carrier retains possession');
+ }
+});
+
+test('CPU first-touch outlet does not reject retreating, expired, invalid or off-lane slides',async()=>{
+ const {AI}=await loadModules();
+ const variants=[{slideDY:1},{actionTimer:0,slideTimer:0},{slideDX:0,slideDY:0},{slideDX:1,slideDY:0},{slideSpeed:120}];
+ for(const team of [0,1])for(const variant of variants){
+  const f=makeOutletSlideFixture(team);Object.assign(f.slider,variant);
+  const selected=AI.attackingFirstTouchOutlet([f.carrier,f.marker,f.preferred,f.alternate,f.slider],team,f.carrier,bounds);
+  assert.equal(selected?.runner,f.preferred,JSON.stringify({team,variant,selected:selected?.runner?.name}));
+ }
+});
+
+test('actual CPU first-touch pass chooses a receiver outside the active slide sweep on both sides',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const s=prepareInterceptGame(ENGINE,{team}),{game,interceptor,dir,x,y,marker,passer,intended}=s;
+  const preferred=game.player(team,4),alternate=game.player(team,5),slider=game.player(1-team,2);
+  const keep=new Set([interceptor,preferred,alternate,marker,slider]);
+  for(const q of game.players)if(!keep.has(q)){q.down=true;q.stun=0;q.z=0;q.action='idle';q.actionTimer=0;}
+  Object.assign(interceptor,{x,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,
+   firstTouchControlTimer:0,firstTouchPressure:.8,firstTouchOutletReadTimer:.68,
+   firstTouchControlDuration:.24,aiFirstTouchTarget:null,aiAssistTarget:null,aiGiveAndGoRun:null,
+   aiTimer:0,aiTarget:null,cd:0,trickCd:99});
+  Object.assign(marker,{x:x+dir*50,y:y+150,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,moveVX:0,moveVY:0});
+  Object.assign(preferred,{x:x+dir*400,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,firstTouchControlTimer:0,slideTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null});
+  Object.assign(alternate,{x:x+dir*300,y:y-250,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,firstTouchControlTimer:0,slideTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null});
+  Object.assign(slider,{x:x+dir*280,y:y+120,down:false,stun:0,z:0,action:'slide',actionTimer:.36,
+   slideTimer:.36,slideRemaining:180,slideSpeed:500,slideDX:0,slideDY:-1,moveVX:0,moveVY:0});
+  Object.assign(passer,{down:true});Object.assign(intended,{down:true});
+  game.clock=10.25;interceptor.aiFirstTouchOutletUntil=game.clock+.92;
+  Object.assign(game.ball,{owner:interceptor,pass:false,passTarget:null,attacker:team,lastTouchTeam:team,
+   x,y,z:0,vx:0,vy:0,vz:0,shot:null,strike:null,ordinaryShot:false,canCollect:0});
+  const originalRandom=Math.random;
+  try{
+   Math.random=()=>0;
+   const start=game.events.length;game.driveAI(interceptor,.016);
+   const intent=game.events.slice(start).find(event=>event.type==='passIntent');
+   assert.equal(intent?.target,alternate.src.id,JSON.stringify({team,intent,preferred:preferred.src.id,alternate:alternate.src.id}));
+   assert.equal(game.ball.owner,null,'the clear alternate must receive a real pass');
+  }finally{Math.random=originalRandom;}
+ }
+});
+
