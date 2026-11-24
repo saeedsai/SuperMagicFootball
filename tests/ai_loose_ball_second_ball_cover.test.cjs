@@ -172,16 +172,19 @@ test('driveAI assigns primary and support to coordinated fresh ground-spill land
     p.down=false;p.stun=0;p.invuln=0;p.action='idle';p.actionTimer=0;p.z=0;
     p.slideTimer=0;p.shotImpactKnockdownPending=0;p.shotImpactKnockdownTimer=0;p.shotImpactRiseTimer=0;
    }
-   Object.assign(primary,{x:x-dir*18,y,aiTarget:null,aiTimer:0});
-   Object.assign(support,{x:x+dir*50,y:y+65,aiTarget:null,aiTimer:0});
    Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
     x,y,z:scenario.z,vx:scenario.vx,vy:scenario.vy,vz:scenario.vz,
     canCollect:scenario.canCollect,age:scenario.age,attacker:1-team,lastTouchTeam:1-team});
    game.clock=5;
-   const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+   const bounds={xMin:field.x+24,xMax:field.x+F.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
    const primaryExpected=AI.defensiveGroundSpillPrimaryTarget(team,game.ball,bounds);
    const supportExpected=AI.defensiveGroundSpillCoverTarget(team,game.ball,bounds);
    assert.ok(primaryExpected&&supportExpected,scenario.name);
+   Object.assign(primary,{x:primaryExpected.x,y:primaryExpected.y,aiTarget:null,aiTimer:1});
+   Object.assign(support,{x:x,y:primaryExpected.y,aiTarget:null,aiTimer:1});
+   assert.ok(Math.hypot(primary.x-game.ball.x,primary.y-game.ball.y)>
+    Math.hypot(support.x-game.ball.x,support.y-game.ball.y),
+    scenario.name+' landing defender starts farther from the live ball');
    game.driveAI(primary,.016);game.driveAI(support,.016);
    assert.deepEqual(primary.aiTarget,primaryExpected,scenario.name+' primary meets predicted landing');
    assert.deepEqual(support.aiTarget,supportExpected,scenario.name+' support protects goal-side pocket');
@@ -189,4 +192,12 @@ test('driveAI assigns primary and support to coordinated fresh ground-spill land
     primary.aiTarget.y-support.aiTarget.y)-26)<1e-6,scenario.name+' keeps 26-unit separation');
   }
  }
+ const staleBall={...spill,z:23,vx:150,vy:50,vz:115,canCollect:.15,age:1.16,lastTouchTeam:1};
+ const nearBall={t:0,x:420,y:300,stun:0,down:false,z:0,action:'idle'};
+ const farther={t:0,x:512,y:330,stun:0,down:false,z:0,action:'idle'};
+ assert.equal(AI.defensiveGroundSpillPrimaryTarget(0,staleBall,bounds),null,
+  'stale spills must not supply a landing assignment');
+ assert.equal(AI.defensivePressers([nearBall,farther],0,staleBall,null).primary,nearBall,
+  'without a trusted landing estimate the existing live-ball nearest-defender fallback remains');
+
 });

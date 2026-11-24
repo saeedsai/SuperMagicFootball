@@ -2930,9 +2930,15 @@ class GameEngine{
     p.aiKeeperClaimTargetActive=true;
     p.aiTarget={x:keeperClaimTarget.x,y:keeperClaimTarget.y};
    }
-  // Always reserve a real AI defender; the human-controlled player must not
-  // swallow the team pursuit assignment. The next closest AI supplies cover.
-  const pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,owner||b,
+  const looseBallBounds={xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24};
+  const looseBallLandingTarget=!owner&&!concealed?
+   (defensiveLooseBallPrimaryTarget(t,liveBall,looseBallBounds)||
+    defensiveGroundSpillPrimaryTarget(t,liveBall,looseBallBounds)):null;
+  // Select press roles against a trusted landing point so the best-positioned
+  // defender contests the arrival; fall back to the live/known ball position
+  // when no validated landing estimate exists.
+  const pressTarget=owner||looseBallLandingTarget||b;
+  const pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,pressTarget,
    this.inControl(t)?this.controlledPlayer(t):null):null;
   const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
   const speed=this.playerSpeed(p)*ai.speed*styleSpeed*(this.terrain==='Sand'?.75:1);
@@ -3125,11 +3131,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
    const carrierLead=owner?defensiveCarrierLeadTarget(p,owner,
     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},ai.anticipation,liveBall):null;
    const lead=owner?0:ai.anticipation*.36;
-   const looseBallBounds={xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24};
-   const looseBallLanding=!owner&&!concealed?
-    (defensiveLooseBallPrimaryTarget(t,liveBall,looseBallBounds)||
-     defensiveGroundSpillPrimaryTarget(t,liveBall,looseBallBounds)):null;
-   p.aiTarget=carrierLead||looseBallLanding||{x:clamp((owner||b).x+(b.vx||0)*lead,F.x+22,F.x+F.w-22),
+   p.aiTarget=carrierLead||looseBallLandingTarget||{x:clamp((owner||b).x+(b.vx||0)*lead,F.x+22,F.x+F.w-22),
     y:clamp((owner||b).y+(b.vy||0)*lead,F.y+23,F.y+F.h-23)};
    p.aiDetour=null;
    if(owner&&owner.t!==t&&p.cd<=0&&p.stun<=0&&!(Number(p.magicReadCounterpressTimer)>0)){

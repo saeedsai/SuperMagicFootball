@@ -45,8 +45,6 @@ with sync_playwright() as pw:
                     {name:'rolling-spill',z:0,vx:dir*180,vy:-60,vz:0,canCollect:0,age:.35,lastTouchTeam:1-team,cap:150,rolling:true}
                 ];
                 for(const scenario of scenarios){
-                    Object.assign(primary,{x:x-dir*18,y,aiTarget:null,aiTimer:0});
-                    Object.assign(support,{x:x+dir*50,y:y+65,aiTarget:null,aiTimer:0});
                     Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
                         x,y,z:scenario.z,vx:scenario.vx,vy:scenario.vy,vz:scenario.vz,
                         canCollect:scenario.canCollect,age:scenario.age,lastTouchTeam:scenario.lastTouchTeam,
@@ -57,9 +55,15 @@ with sync_playwright() as pw:
                     const clamp=value=>Math.max(-scenario.cap,Math.min(scenario.cap,value));
                     const landing={x:x+clamp(scenario.vx*horizon),y:y+clamp(scenario.vy*horizon)};
                     const expected={x:landing.x-dir*26,y:landing.y};
+                    const supportX=Math.abs(landing.x-x)<1?landing.x-dir*55:x;
+                    Object.assign(primary,{x:landing.x,y:landing.y,aiTarget:null,aiTimer:1});
+                    Object.assign(support,{x:supportX,y:landing.y,aiTarget:null,aiTimer:1});
+                    const currentBallDistancePrimary=Math.hypot(primary.x-x,primary.y-y);
+                    const currentBallDistanceSupport=Math.hypot(support.x-x,support.y-y);
                     game.driveAI(primary,.016);game.driveAI(support,.016);
                     rows.push({team,dir,name:scenario.name,expected,landing,
                         primary:primary.aiTarget,support:support.aiTarget,
+                        currentBallDistancePrimary,currentBallDistanceSupport,
                         primaryUsesLanding:true});
                 }
             }
@@ -78,6 +82,8 @@ with sync_playwright() as pw:
                 assert abs(row['primary']['x']-row['landing']['x'])<1e-6,(kind,row)
                 assert abs(row['primary']['y']-row['landing']['y'])<1e-6,(kind,row)
                 assert abs(gap-26)<1e-6,(kind,row)
+                if row['name']!='vertical':
+                    assert row['currentBallDistanceSupport']<row['currentBallDistancePrimary'],(kind,row)
             else:
                 assert gap>.5,(kind,row)
         assert not errors,(kind,errors)
