@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desktop and simulated-touch Chromium acceptance for reach-aware targeted pass interception."""
+"""Desktop and simulated-touch Chromium acceptance for pass interception and first-touch outlet readiness."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
@@ -103,10 +103,19 @@ with sync_playwright() as pw:
       shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null});
      Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,attacker:attackingTeam,
       lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,shot:null,strike:null,ordinaryShot:false});
-     Object.assign(support,{x:ballX+dir*136,y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+     support.src.speedRating=100;support.src.defence=50;support.src.agility=100;
+     const levels=[{speed:.69,reaction:.78},{speed:.78,reaction:.53},{speed:.86,reaction:.32},{speed:.95,reaction:.18},{speed:1.02,reaction:.09}];
+     const level=levels[Math.max(0,Math.min(4,Math.trunc(g.cpuLevel(support))))];
+     const style=g.options.aiStyle||'Balanced',styleSpeed=defendingTeam===1?(style==='Aggressive'?1.09:style==='Defensive'?.96:1):1;
+     const speed=Math.min(440,g.playerSpeed(support)*level.speed*styleSpeed*(g.terrain==='Sand'?.75:1));
+     const turnRate=3+100*.13,rampArea=(1-Math.exp(-turnRate*.06))/turnRate;
+     const alignedReach=Math.max(0,speed*.06+(200-speed)*rampArea)*.82+12;
+     const crossReach=Math.max(0,speed*.06-speed*rampArea-200*rampArea*.45)*.82+12;
+     const responseDelay=Math.max(.04,Math.min(.12,level.reaction*.4));
+     const firstProgress=600*(responseDelay+.06)+18,gap=(alignedReach+crossReach)/2;
+     Object.assign(support,{x:ballX+dir*(firstProgress+gap),y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
       moveVX:profile.vx,moveVY:profile.vy,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
       aiAssistTarget:null,aiTimer:0,aiTarget:null,fatigue:0,breath:10,morale:55});
-     support.src.speedRating=100;support.src.defence=50;support.src.agility=100;
      g.clock=.2;g.driveAI(support,.016);
      const target=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
      momentumRows.push({defendingTeam,name:profile.name,progress:target?(target.x-ballX)*dir:null,target});
@@ -114,6 +123,52 @@ with sync_playwright() as pw:
    }
    return {rows,skillRows,reachRows,momentumRows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
+  outlet_result=page.evaluate("""() => {
+   const g=SupermagicFootball.game,rows=[],originalRandom=Math.random;
+   try {
+    Math.random=()=>0;
+    for(const team of [0,1]){
+     const dir=team===0?1:-1,x=1100,y=765;
+     g.init({home:0,away:1,mode:'quick',humans:0});
+     const interceptor=g.player(team,3),passer=g.player(1-team,3),intended=g.player(1-team,4),
+      marker=g.player(1-team,5),preferred=g.player(team,4),blocked=g.player(team,5),alternate=g.player(team,2);
+     const keep=new Set([interceptor,passer,intended,marker,preferred,blocked,alternate]);
+     for(const q of g.players)if(!keep.has(q)&&!q.keeper){q.down=true;q.stun=0;q.z=0;}
+     Object.assign(interceptor,{x,y,face:dir,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+      moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,aiAssistTarget:null,
+      aiGiveAndGoRun:null,cd:0,trickCd:1});
+     Object.assign(passer,{x:x+dir*240,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
+     Object.assign(intended,{x:x-dir*210,y,down:false,stun:0,z:0,action:'idle',actionTimer:0});
+     Object.assign(marker,{x:x+dir*55,y:y-78,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:-dir*35,moveVY:0});
+     Object.assign(g.ball,{owner:null,pass:true,passFrom:passer.src.id,passTeam:1-team,passTarget:intended.src.id,
+      attacker:1-team,lastTouchTeam:1-team,x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,canCollect:0,
+      shot:null,strike:null,ordinaryShot:false});
+     g.clock=10;g.take(interceptor);
+     Object.assign(preferred,{x:x+dir*280,y:y+160,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+      moveVX:dir*20,moveVY:0,aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:.18});
+     Object.assign(blocked,{x:x+dir*280,y:y-160,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+      moveVX:dir*20,moveVY:0,aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:0});
+     Object.assign(alternate,{x:x+dir*260,y:y+190,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+      moveVX:dir*20,moveVY:0,aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:0});
+     Object.assign(intended,{x:x+dir*145,y:y-84,z:0,down:false,stun:0,action:'idle',actionTimer:0});
+     interceptor.firstTouchControlTimer=0;interceptor.firstTouchPressure=.8;
+     interceptor.firstTouchOutletReadTimer=.68;interceptor.aiFirstTouchOutletUntil=g.clock+.92;
+     interceptor.aiFirstTouchTarget=null;interceptor.aiAssistTarget=null;interceptor.aiGiveAndGoRun=null;
+     interceptor.aiTimer=0;interceptor.aiTarget=null;
+     const start=g.events.length;g.clock=10.25;g.driveAI(interceptor,.016);
+     const intent=g.events.slice(start).find(event=>event.type==='passIntent');
+     rows.push({team,target:intent?.target,expected:alternate.src.id,preferred:preferred.src.id,
+      preferredTimer:preferred.firstTouchControlTimer,alternateTimer:alternate.firstTouchControlTimer,
+      possession:g.ball.owner===null});
+    }
+   }finally{Math.random=originalRandom;}
+   return {rows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }""")
+  assert outlet_result['teams']>=223,(kind,outlet_result)
+  assert outlet_result['buttons']==4,(kind,outlet_result)
+  for row in outlet_result['rows']:
+   assert row['target']==row['expected'] and row['target']!=row['preferred'],(kind,row)
+   assert row['preferredTimer']>0 and row['alternateTimer']==0 and row['possession'],(kind,row)
   assert result['teams']>=223,(kind,result)
   assert result['buttons']==4,(kind,result)
   for row in result['rows']:

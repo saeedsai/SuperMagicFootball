@@ -659,7 +659,7 @@ function attackingSupportPass(players,team,carrier,supportRun){
   !Number.isFinite(point.x)||!Number.isFinite(point.y))return null;
  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
  const grounded=p=>p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18);
- const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
+ const ready=p=>p&&!p.down&&timerClear(p.stun)&&timerClear(p.firstTouchControlTimer)&&timerClear(p.slideTimer)&&
   timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&
   !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&

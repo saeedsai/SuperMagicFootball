@@ -223,8 +223,8 @@ test('CPU first-touch outlet prefers an open forward teammate over a blocked lan
    {firstTouchControlTimer:0,firstTouchPressure:.42});
   const marker=player('outlet-marker-'+team,1-team,carrier.x+dir*55,carrier.y-78,{moveVX:-dir*35});
   const blocker=player('outlet-blocker-'+team,1-team,carrier.x+dir*145,carrier.y-84);
-  const safe=player('safe-outlet-'+team,team,carrier.x+dir*280,carrier.y+160,{moveVX:dir*20});
-  const blocked=player('blocked-outlet-'+team,team,carrier.x+dir*280,carrier.y-160,{moveVX:dir*20});
+  const safe=player('safe-outlet-'+team,team,carrier.x+dir*280,carrier.y+160,{moveVX:dir*20,firstTouchControlTimer:0});
+  const blocked=player('blocked-outlet-'+team,team,carrier.x+dir*280,carrier.y-160,{moveVX:dir*20,firstTouchControlTimer:0});
   const outlet=AI.attackingFirstTouchOutlet([carrier,marker,blocker,safe,blocked],team,carrier,bounds);
   assert.equal(outlet?.runner,safe,JSON.stringify({team,outlet:outlet?.runner?.name}));
   assert.ok(dir*(outlet.target.x-carrier.x)>200);
@@ -263,6 +263,49 @@ test('CPU interception uses the safe post-touch outlet after its skill-and-pace-
    assert.equal(intent?.target,safe.src.id,JSON.stringify({team,intent,expected:safe.src.id}));
    assert.equal(game.ball.owner,null,'the chosen safe outlet receives a real pass');
    assert.equal(interceptor.aiFirstTouchOutletUntil,0,'the one-shot outlet preference clears after release');
+  }finally{Math.random=originalRandom;}
+ }
+});
+
+
+test('CPU first-touch outlet skips a teammate still settling their own control touch',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?500:1500,y=300;
+  const carrier=player('settling-carrier-'+team,team,x,y,{firstTouchControlTimer:0,firstTouchPressure:.42});
+  const marker=player('settling-marker-'+team,1-team,x+dir*55,y-78);
+  const settling=player('still-settling-'+team,team,x+dir*300,y+160,{moveVX:dir*20,firstTouchControlTimer:.18});
+  const ready=player('ready-outlet-'+team,team,x+dir*260,y+190,{moveVX:dir*20,firstTouchControlTimer:0});
+  assert.equal(AI.attackingFirstTouchOutlet([carrier,marker,settling],team,carrier,bounds),null,
+   'a teammate with an active first-touch control timer is not a safe outlet');
+  const outlet=AI.attackingFirstTouchOutlet([carrier,marker,settling,ready],team,carrier,bounds);
+  assert.equal(outlet?.runner,ready,JSON.stringify({team,selected:outlet?.runner?.name}));
+ }
+});
+
+test('actual CPU interception passes to the next ready outlet when its preferred teammate is still settling',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const s=prepareInterceptGame(ENGINE,{team}),{game,interceptor,dir,x,y}=s;
+  const preferred=game.player(team,4),blocked=game.player(team,5),alternate=game.player(team,2);
+  Object.assign(preferred,{x:x+dir*280,y:y+160,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   moveVX:dir*20,moveVY:0,aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:.18});
+  Object.assign(blocked,{x:x+dir*280,y:y-160,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   moveVX:dir*20,moveVY:0,aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:0});
+  Object.assign(alternate,{x:x+dir*260,y:y+190,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   moveVX:dir*20,moveVY:0,aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:0});
+  Object.assign(s.intended,{x:x+dir*145,y:y-84,z:0,down:false,stun:0,action:'idle',actionTimer:0});
+  interceptor.firstTouchControlTimer=0;interceptor.firstTouchPressure=.8;
+  interceptor.firstTouchOutletReadTimer=.68;interceptor.aiFirstTouchOutletUntil=game.clock+.92;
+  interceptor.aiFirstTouchTarget=null;interceptor.aiAssistTarget=null;interceptor.aiGiveAndGoRun=null;
+  interceptor.aiTimer=0;interceptor.aiTarget=null;
+  const originalRandom=Math.random;
+  try{
+   Math.random=()=>0;game.clock=10.25;
+   const start=game.events.length;game.driveAI(interceptor,.016);
+   const intent=game.events.slice(start).find(event=>event.type==='passIntent');
+   assert.equal(intent?.target,alternate.src.id,JSON.stringify({team,intent,preferred:preferred.src.id,alternate:alternate.src.id}));
+   assert.equal(game.ball.owner,null,'the selected ready teammate receives the actual pass');
   }finally{Math.random=originalRandom;}
  }
 });
