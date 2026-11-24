@@ -7,7 +7,7 @@ Deliver real player-facing football gameplay first, then existing-player graphic
 
 ## Current checkpoint
 - **0.12.81.253 — AI-MAGIC-TRICK-2D-FACING-READ-01:** the second-defender forward-screen READ! now requires the defender's full 2D heading to point toward the carrier. It uses current dx/dy, then movement velocity, then the existing horizontal face as a stationary fallback. Perpendicular/away-facing markers cannot cancel a named Magic Trick merely because their horizontal sign matches.
-- Focused Node and actual-engine desktop/simulated-touch Chromium regressions cover both teams, perpendicular and diagonal headings, movement-velocity fallback, stationary face fallback, and unchanged trick/possession/counterpress behavior. Exact-head Modular QA and four-Node/four-Chromium Census pending.
+- Focused Node and actual-engine desktop/simulated-touch Chromium regressions cover both teams, perpendicular and diagonal headings, movement-velocity fallback, stationary face fallback, and unchanged trick/possession/counterpress behavior. First .253 Modular QA/Census attempt found one stale Node fixture that changed `face` while leaving a conflicting nonzero `dx`; 2,841/2,842 tests passed and the new 2D-heading regression passed. The fixture now zeros dx/dy and movement velocity to test the intended stationary face fallback. Exact-head reruns pending.
 - **0.12.81.252 main-promoted and Pages deployed:** Modular QA #45333018835 and exact-head Census #45333018761 passed on SHA `653978915b559fc1d7d70ced0afb43293f2b7d5a`; QA-gated promotion succeeded. Pages #45334513946 succeeded; independent main Census #45334521390 is in progress.
 
 ## Next smallest action

@@ -107,7 +107,8 @@ test('ordinary Magic Trick reads still require a nearby active defender closing 
  const AI=await loadAI(),p=carrier({firstTouchOutletReadTimer:0,firstTouchPressure:0}),closing=defender({x:50,dx:1,face:1});
  const read=AI.defensiveMagicTrickReadTarget(p,[closing],true);
  assert.equal(read?.defender,closing);assert.equal(read?.screened,false);
- assert.equal(AI.defensiveMagicTrickReadTarget(p,[{...closing,face:-1}],true),null);
+ assert.equal(AI.defensiveMagicTrickReadTarget(p,[{...closing,face:-1,dx:0,dy:0,moveVX:0,moveVY:0}],true),null,
+  'the stationary horizontal-facing fallback must reject a defender turned away');
  assert.equal(AI.defensiveMagicTrickReadTarget(p,[{...closing,dx:0}],true),null);
 });
 test('unavailable, airborne, recovering, hidden-ball and backwards first-touch states cannot create a lane read',async()=>{
