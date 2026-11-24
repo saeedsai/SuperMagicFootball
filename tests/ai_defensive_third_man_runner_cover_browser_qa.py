@@ -21,7 +21,7 @@ with sync_playwright() as pw:
    for(const team of [0,1]){
     game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
     const ownGoalX=team===0?bounds.xMin:bounds.xMax,attackTeam=1-team,attackDir=attackTeam===0?1:-1,centerY=(bounds.yMin+bounds.yMax)/2;
-    const carrier=game.player(attackTeam,3),runner=game.player(attackTeam,4),primary=game.player(team,3),support=game.player(team,4),third=game.player(team,5),alternate=game.player(team,6);
+    const carrier=game.player(attackTeam,3),runner=game.player(attackTeam,4),primary=game.player(team,3),support=game.player(team,4),third=game.player(team,5),alternate=game.player(team,2);
     for(const q of game.players)if(![carrier,runner,primary,support,third,alternate].includes(q)&&!q.keeper)Object.assign(q,{down:true,stun:1});
     const carrierX=ownGoalX-attackDir*390,runnerX=ownGoalX-attackDir*175,runnerY=centerY+24;
     active(carrier,{x:carrierX,y:centerY});active(runner,{x:runnerX,y:runnerY,moveVX:attackDir*80});
@@ -48,7 +48,7 @@ with sync_playwright() as pw:
   assert result['teams']>=223,(kind,result)
   assert len(result['rows'])==2,(kind,result)
   assert len(result['arrivalRows'])==2,(kind,result)
-  assert all(row['selected']==6 for row in result['arrivalRows']),(kind,result)
+  assert all(row['selected']==2 for row in result['arrivalRows']),(kind,result)
   assert all(row['buttons']==4 for row in result['rows']),(kind,result)
   assert not errors,(kind,errors)
   print('PASS',kind,'mirrored third-defender runner mark and arrival-aware support, possession, four actions and no JS errors',flush=True)

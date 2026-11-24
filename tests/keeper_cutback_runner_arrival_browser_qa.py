@@ -68,7 +68,7 @@ with sync_playwright() as pw:
                 const both=targetY(team,wing,'both');
                 rows.push({team,wing,movingOut,movingIn,both});
             }
-            return {rows,originalTeams:SupermagicFootball.teams.filter(team=>!['demo_concept_royals','crown_royals_reference'].includes(team.id)).length,
+            return {rows,originalTeams:SupermagicFootball.teams.filter(team=>!['demo_concept_royals','demo_crown_royals_reference'].includes(team.id)).length,
                 totalTeams:SupermagicFootball.teams.length,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
         }""")
