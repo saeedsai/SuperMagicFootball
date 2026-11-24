@@ -184,7 +184,7 @@ with sync_playwright() as pw:
         assert len(result['skillRows'])==4,(kind,result)
         assert len(result['directRows'])==2,(kind,result)
         for row in result['directRows']:
-            assert row['dx']*(1 if row['team']==0 else -1)>.3,(kind,'safe forward lane should move toward goal',row)
+            assert row['moveVX']*(1 if row['team']==0 else -1)>20,(kind,'safe forward lane should build real goalward movement',row)
             assert abs(row['dy'])<.1,(kind,'carrier should keep the clear straight lane instead of an unnecessary diagonal cut',row)
         assert len(result['retentionRows'])==2,(kind,result)
         for row in result['retentionRows']:

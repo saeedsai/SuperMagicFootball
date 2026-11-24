@@ -851,3 +851,7 @@ The exact-head Census #45317873538 failed two independent existing acceptance sc
 
 ### 2026-11-24 — AI-CARRY-OPEN-FORWARD-LANE-01 preflight correction (smf-hourly-dev-20261019)
 The first .250 Modular QA/Census run on a7fdeed found the new direct-lane rule too permissive: it selected a straight route in the existing both-diagonals-blocked fixture (direct score about 140) and in an active diagonal-slide fixture. The direct route now requires a stronger 150-point clearance score and is disabled whenever an active incoming slide is present; the new clear central corridor fixture scores above 150. The same run found the assigned checkpoint's Agent ID line had lost the exact backtick-wrapped marker required by project_memory_contract; e1a8cdc restores that exact identity. Fresh exact-head gates are required; the earlier run did not certify .250.
+
+
+### 2026-11-24 — .250 direct-lane Chromium acceptance calibration (smf-hourly-dev-20261019)
+The first complete .250 Census #45324568041 passed preflight, preview, all four Node shards, and browser shards 0, 2 and 3. Browser shard 1 failed only the new direct-lane movement assertion: actual desktop engine output was goalward moveVX 46.08, dy 0 and per-frame dx 0.19152; the test's dx > 0.3 threshold exceeded the valid acceleration ramp. The assertion now checks goalward movement velocity >20 and keeps the straight-lane dy≈0 check. This is a fixture threshold correction, not a production movement change. .250 remains uncertified until a fresh exact-head four-Node/four-Chromium Census passes.

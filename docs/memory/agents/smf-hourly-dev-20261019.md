@@ -13,14 +13,14 @@ Deliver real player-facing football gameplay first, then existing-player graphic
 - .247 remains the last verified deployed release on main SHA 31c24ae2a11007b7c719a97913d8821f0d7bd6e0; Pages #45307713844 and independent main Census/hosted smoke #45307721714 passed.
 
 ## Next smallest action
-Run exact-head .250 Modular QA and Full Regression Census after the direct-lane safety correction and checkpoint identity repair. Fix any confirmed failures, then allow only the green exact SHA through the existing QA-gated promotion pipeline. Independently verify main SHA, Pages deployment, main Census and hosted-byte smoke.
+Run exact-head .250 Full Regression Census after the actual-engine direct-lane movement threshold correction. Modular QA is already green at 2,838/2,838. Fix any confirmed failures, then allow only the green exact SHA through the existing QA-gated promotion pipeline. Independently verify main SHA, Pages deployment, main Census and hosted-byte smoke.
 
 ## Ownership and exclusions
 Edit only this assigned checkpoint. Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical two-phone #48 remains open; Render drift #86 remains open; main protection #87 remains unresolved. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
 
 ## Evidence
 - .249 Modular QA #45317873541 passed 2,837/2,837 Node tests; Census #45317873538 failed the two harness checks described above. .249 was not certified.
-- .250 focused Node/Chromium tests are committed; execution not yet observed.
+- Exact-head Modular QA #45324567959 passed 2,838/2,838 Node tests. Census #45324568041 passed preflight, preview, all four Node shards (166/166 each), and browser shards 0, 2 and 3 (70/70 each); browser shard 1 failed only the new direct-lane movement threshold (actual goalward moveVX 46.08, dy 0, dx 0.19152 vs test requirement dx >0.3). The browser assertion now checks goalward velocity >20 while preserving the straight-lane check; fresh exact-head Census pending.
 - .247 main release: Pages #45307713844 and independent main Census/hosted smoke #45307721714 passed.
 - #87 branch protection; #86 Render commit-trigger drift; #48 physical two-phone acceptance.
 
