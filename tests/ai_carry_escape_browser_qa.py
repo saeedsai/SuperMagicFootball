@@ -80,13 +80,41 @@ with sync_playwright() as pw:
                 }
                 return {team,diagonal,dy:carrier.dy,moveVY:carrier.moveVY};
             };
+            const skillRows=[];
+            const runSkill=(team,dribbling)=>{
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
+                const carrier=game.player(team,3),marker=game.player(1-team,3);
+                for(const q of game.players)if(q!==carrier&&q!==marker&&!q.keeper){
+                    Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0});
+                }
+                Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'run',actionTimer:0,
+                    moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,
+                    firstTouchControlTimer:0,cd:1,trickCd:1});
+                Object.assign(carrier.src,{dribbling});
+                Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0,
+                    action:'idle',actionTimer:0,moveVX:-dir*30,moveVY:0});
+                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,
+                    passTarget:null,attacker:team,lastTouchTeam:team,age:0,shot:null,strike:null,
+                    ordinaryShot:false,hideBallTimer:0});
+                const originalRandom=Math.random;
+                try{
+                    Math.random=()=>.99;
+                    for(let step=0;step<36;step++){
+                        carrier.x=x;carrier.y=y;game.clock=1+step*.016;
+                        game.driveAI(carrier,.016);
+                    }
+                }finally{Math.random=originalRandom;}
+                return {team,dribbling,dy:carrier.dy,moveVY:carrier.moveVY};
+            };
             for(const team of [0,1]){
                 rows.push(run(team,240,0));
                 rows.push(run(team,-240,-70));
                 slideRows.push(runSlide(team,false));
                 slideRows.push(runSlide(team,true));
+                skillRows.push(runSkill(team,1),runSkill(team,100));
             }
-            return {rows,slideRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            return {rows,slideRows,skillRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -100,6 +128,12 @@ with sync_playwright() as pw:
                 assert row['dy']<-.3,(kind,'carrier must choose the open upper diagonal against the upper-lane slide',row)
             else:
                 assert abs(row['dy'])>.3,(kind,'carrier must leave a straight incoming slide lane',row)
+        assert len(result['skillRows'])==4,(kind,result)
+        for team in (0,1):
+            low=next(row for row in result['skillRows'] if row['team']==team and row['dribbling']==1)
+            high=next(row for row in result['skillRows'] if row['team']==team and row['dribbling']==100)
+            assert abs(high['dy'])>abs(low['dy'])+.05,(kind,'higher Dribbling should produce the sharper actual-engine lateral cut',low,high)
+            assert high['dy']*low['dy']>0,(kind,'both profiles must preserve the same open-side choice',low,high)
         assert not errors,(kind,errors)
         print('PASS',kind,'momentum-aware escape, live-slide avoidance, mirrored engine, four actions and no JS errors',flush=True)
         ctx.close()

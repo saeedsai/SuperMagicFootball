@@ -1908,10 +1908,19 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   if(!pressure)return null;
   const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.down&&
    timerClear(q.stun)&&grounded(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y));
+  // Better dribblers can make a sharper lateral escape cut; low-rated carriers
+  // keep a more forward, shallower route. Missing/invalid stats use neutral 50,
+  // which preserves the original target geometry exactly.
+  const rawDribbling=carrier.src?.dribbling;
+  const dribbling=rawDribbling!==null&&rawDribbling!==undefined&&String(rawDribbling).trim()!==''&&
+   Number.isFinite(Number(rawDribbling))?clampTo(Number(rawDribbling),1,100):50;
+  const dribbleBlend=(dribbling-50)/50;
+  const diagonalForward=clampTo(78-dribbleBlend*8,70,86);
+  const diagonalLateral=clampTo(86+dribbleBlend*14,72,100);
   const candidates=[
    {side:0,x:carrier.x+dir*104,y:carrier.y},
-   {side:-1,x:carrier.x+dir*78,y:carrier.y-86},
-   {side:1,x:carrier.x+dir*78,y:carrier.y+86}
+   {side:-1,x:carrier.x+dir*diagonalForward,y:carrier.y-diagonalLateral},
+   {side:1,x:carrier.x+dir*diagonalForward,y:carrier.y+diagonalLateral}
   ];
   // If multiple lanes are similarly safe, preserve the carrier's live heading.
   // This is deliberately a small tie-breaker; defender/corridor safety remains dominant.

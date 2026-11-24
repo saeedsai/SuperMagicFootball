@@ -20,6 +20,28 @@ test('CPU carrier takes a bounded safer forward diagonal under front pressure on
   assert.ok(target.y>=24&&target.y<=976);
  }
 });
+test('Dribbling skill shapes the carry escape cut while neutral and invalid stats preserve the baseline',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?700:1300,y=500;
+  const make=(name,dribbling)=>player(name,team,x,y,{src:dribbling===undefined?{id:name}:{id:name,dribbling}});
+  const targetFor=dribbling=>{
+   const carrier=make('carrier-'+team+'-'+String(dribbling),dribbling);
+   const marker=player('marker-'+team,1-team,x+dir*65,y);
+   return {carrier,target:AI.attackingCarryEscapeTarget([carrier,marker],team,carrier,bounds)};
+  };
+  const fallback=targetFor(undefined),neutral=targetFor(50),low=targetFor(1),high=targetFor(100),invalid=targetFor('elite');
+  for(const row of [fallback,neutral,low,high,invalid])assert.ok(row.target,JSON.stringify({team,row}));
+  assert.deepEqual(neutral.target,fallback.target,'missing Dribbling must retain neutral route geometry');
+  assert.deepEqual(invalid.target,fallback.target,'invalid Dribbling must fail safely to neutral geometry');
+  const lowForward=dir*(low.target.x-low.carrier.x),highForward=dir*(high.target.x-high.carrier.x);
+  const lowLateral=Math.abs(low.target.y-low.carrier.y),highLateral=Math.abs(high.target.y-high.carrier.y);
+  assert.ok(lowForward>highForward,'low Dribbling should keep the more forward escape');
+  assert.ok(highLateral>lowLateral+20,'high Dribbling should execute a sharper lateral cut');
+  assert.ok(lowForward>=44&&highForward>=44,'both routes must continue toward the attacking goal');
+  assert.ok(lowLateral>=34&&highLateral<=100,'skill-scaled cuts must remain bounded');
+ }
+});
 test('when both diagonals are safe, carrier momentum breaks the tie without changing attack direction',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){
