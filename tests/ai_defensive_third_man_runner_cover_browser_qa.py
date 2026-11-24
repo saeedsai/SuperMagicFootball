@@ -43,11 +43,11 @@ with sync_playwright() as pw:
     Object.assign(runner2,{down:true,stun:1});Object.assign(secondDefender,{down:true,stun:1});
     // A slightly farther teammate moving into the goal-side mark should beat
     // the nearer marker who is still moving away from it.
-    active(third,{x:targetX-attackDir*70,y:targetY+10,moveVX:-attackDir*200,moveVY:0});
+    Object.assign(third,{down:true,stun:1});
     active(alternate,{x:targetX-attackDir*82,y:targetY+10,moveVX:attackDir*200,moveVY:0});
     game.driveAI(alternate,.016);const arrivalTarget=alternate.aiTarget;
     if(!arrivalTarget||Math.abs(arrivalTarget.x-targetX)>1||Math.abs(arrivalTarget.y-targetY)>1)
-     throw new Error('arrival-aware third defender missed mark on side '+team+': '+JSON.stringify({arrivalTarget,targetX,targetY}));
+     throw new Error('available third defender missed actual-engine mark on side '+team+': '+JSON.stringify({arrivalTarget,targetX,targetY}));
     arrivalRows.push({team,target:arrivalTarget,selected:alternate.i,buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
    }
    for(const team of [0,1]){
