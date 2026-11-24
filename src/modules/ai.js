@@ -2092,6 +2092,16 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const along=length>1e-9?clampTo(((point.x-start.x)*dx+(point.y-start.y)*dy)/length,0,1):0;
    return Math.hypot(point.x-(start.x+dx*along),point.y-(start.y+dy*along));
   };
+  const segmentSegmentGap=(a,b,c,d)=>{
+   const cross=(p,q,r)=>(q.x-p.x)*(r.y-p.y)-(q.y-p.y)*(r.x-p.x);
+   const onSegment=(p,q,r)=>Math.abs(cross(p,q,r))<=1e-9&&
+    r.x>=Math.min(p.x,q.x)-1e-9&&r.x<=Math.max(p.x,q.x)+1e-9&&
+    r.y>=Math.min(p.y,q.y)-1e-9&&r.y<=Math.max(p.y,q.y)+1e-9;
+   const abC=cross(a,b,c),abD=cross(a,b,d),cdA=cross(c,d,a),cdB=cross(c,d,b);
+   if((abC*abD<0&&cdA*cdB<0)||onSegment(a,b,c)||onSegment(a,b,d)||
+    onSegment(c,d,a)||onSegment(c,d,b))return 0;
+   return Math.min(segmentGap(a,c,d),segmentGap(b,c,d),segmentGap(c,a,b),segmentGap(d,a,b));
+  };
   const scored=candidates.map(candidate=>{
    const target={x:clampTo(candidate.x,xMin+24,xMax-24),y:clampTo(candidate.y,yMin+24,yMax-24)};
    const forward=dir*(target.x-carrier.x),lateral=Math.abs(target.y-carrier.y);
@@ -2111,7 +2121,10 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
      x:carrier.x+clampTo(carrierVX*horizon*.2,-10,10)+(target.x-carrier.x)/routeLength*escapeDistance,
      y:carrier.y+clampTo(carrierVY*horizon*.2,-10,10)+(target.y-carrier.y)/routeLength*escapeDistance
     };
-    for(const threat of slideThreats)slideGap=Math.min(slideGap,segmentGap(projectedCarrier,threat.start,threat.end));
+    // Compare the whole early escape segment with the slide sweep. A slide
+    // passing nearby but parallel to the chosen lane must not force a needless cut.
+    for(const threat of slideThreats)slideGap=Math.min(slideGap,
+     segmentSegmentGap({x:carrier.x,y:carrier.y},projectedCarrier,threat.start,threat.end));
    }
    const slideSafetyBonus=Number.isFinite(slideGap)?clampTo(slideGap,0,72)*1.6:0;
    let teammateCrowding=0;
@@ -2127,11 +2140,12 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   });
   const direct=scored.find(option=>option.side===0);
   const best=scored.filter(option=>option.side!==0).sort((a,b)=>b.score-a.score)[0];
-  const directSafe=!!direct&&Number.isFinite(direct.score)&&direct.score>=150&&!slideThreats.length;
+  const directSafe=!!direct&&Number.isFinite(direct.score)&&direct.score>=150&&
+   (!slideThreats.length||(Number.isFinite(direct.slideGap)&&direct.slideGap>=18));
   const bestSafe=!!best&&Number.isFinite(best.score)&&best.score>=38&&
    (!slideThreats.length||(Number.isFinite(best.slideGap)&&best.slideGap>=18));
-  // Keep a straight lane only with strong clearance and no active slide; a
-  // diagonal must buy a meaningful (18-point) advantage over that safe lane.
+  // Keep a straight lane when its full early path clears every active slide;
+  // a diagonal must buy a meaningful (18-point) advantage over that safe lane.
   if(directSafe&&(!bestSafe||best.score<direct.score+18))
    return {x:direct.target.x,y:direct.target.y};
   if(!bestSafe)return null;

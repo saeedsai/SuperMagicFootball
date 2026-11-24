@@ -80,6 +80,33 @@ with sync_playwright() as pw:
                 }
                 return {team,diagonal,dy:carrier.dy,moveVY:carrier.moveVY};
             };
+            const parallelSlideRows=[];
+            const runParallelSlide=(team)=>{
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
+                const carrier=game.player(team,3),marker=game.player(1-team,3);
+                for(const q of game.players)if(q!==carrier&&q!==marker&&!q.keeper){
+                    Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0});
+                }
+                Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'run',actionTimer:0,
+                    moveVX:0,moveVY:0,dx:dir,dy:0,aiTimer:0,aiTarget:null,
+                    aiFirstTouchTarget:null,firstTouchControlTimer:0,cd:1,trickCd:1});
+                Object.assign(marker,{x:x-dir*80,y:y-80,down:false,stun:0,z:0,
+                    action:'slide',actionTimer:.36,slideTimer:.24,slideRemaining:148,
+                    slideSpeed:585,slideDX:dir,slideDY:0,moveVX:dir*585,moveVY:0});
+                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,
+                    passTarget:null,attacker:team,lastTouchTeam:team,age:0,shot:null,strike:null,
+                    ordinaryShot:false,hideBallTimer:0});
+                const originalRandom=Math.random;
+                try{
+                    Math.random=()=>.99;
+                    for(let step=0;step<36;step++){
+                        carrier.x=x;carrier.y=y;game.clock=1+step*.016;
+                        game.driveAI(carrier,.016);
+                    }
+                }finally{Math.random=originalRandom;}
+                return {team,dy:carrier.dy,moveVX:carrier.moveVX};
+            };
             const skillRows=[];
             const runSkill=(team,dribbling)=>{
                 game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
@@ -159,6 +186,7 @@ with sync_playwright() as pw:
                 return {team,passAttempts,retained:game.ball.owner===carrier,dx:carrier.dx,dy:carrier.dy};
             };
             for(const team of [0,1]){
+                parallelSlideRows.push(runParallelSlide(team));
                 directRows.push(runDirect(team));
                 retentionRows.push(runRetention(team));
                 rows.push(run(team,240,0));
@@ -167,7 +195,7 @@ with sync_playwright() as pw:
                 slideRows.push(runSlide(team,true));
                 skillRows.push(runSkill(team,1),runSkill(team,100));
             }
-            return {rows,slideRows,skillRows,directRows,retentionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            return {rows,slideRows,parallelSlideRows,skillRows,directRows,retentionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -181,6 +209,11 @@ with sync_playwright() as pw:
                 assert row['dy']<-.3,(kind,'carrier must choose the open upper diagonal against the upper-lane slide',row)
             else:
                 assert abs(row['dy'])>.3,(kind,'carrier must leave a straight incoming slide lane',row)
+        assert len(result['parallelSlideRows'])==2,(kind,result)
+        for row in result['parallelSlideRows']:
+            direction=1 if row['team']==0 else -1
+            assert direction*row['moveVX']>20,(kind,'carrier should retain goalward movement beside a non-crossing slide',row)
+            assert abs(row['dy'])<.1,(kind,'a parallel slide outside the straight route must not force a lateral cut',row)
         assert len(result['skillRows'])==4,(kind,result)
         assert len(result['directRows'])==2,(kind,result)
         for row in result['directRows']:

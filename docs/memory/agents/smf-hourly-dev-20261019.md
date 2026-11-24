@@ -6,21 +6,24 @@
 Deliver player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.276 — AI-MAGIC-TRICK-LIGHTNING-MOMENTUM-READ-01:** delayed Lightning resolution now recognizes residual 2D movement toward the marked carrier after directional input releases. Current dx/dy remains authoritative; moveVX/moveVY is used only when input is neutral. Retreating movement and stationary face-only defenders still fail the counter.
-- Production change in `src/modules/engine.js`; mirrored actual-GameEngine Node and desktop/simulated-touch Chromium regressions cover both teams, approach, retreat and stationary facing.
-- .275 exact-head Modular QA #45484164516 passed; Full Regression Census #45484164535 passed preflight, preview, all four Node and all four Chromium shards, and QA-gated promotion. Pages deployment #45486084208 succeeded. Independent main Census #45486092597 passed preflight, preview, hosted-pages smoke, Node shards 0/2/3 and Chromium shards 0/2/3; Node shard 1 and Chromium shard 1 were still running at latest inspection.
-- .276 exact-head Modular QA and Full Regression Census are pending.
+- **0.12.81.277 — AI-CARRY-ESCAPE-SWEPT-LANE-READ-01:** CPU carriers now compare the full early escape segment with each active slide's projected sweep. A nearby parallel slide that misses the straight lane no longer forces an unnecessary lateral cut; true crossing slides still favor a safe diagonal.
+- Production change in `src/modules/ai.js`; focused Node helper/actual-GameEngine tests and desktop/simulated-touch Chromium acceptance cover both teams, the parallel miss and existing true-crossing behavior.
+- .276 Modular QA #45488337024 passed; dev Full Regression Census #45488336910 passed preflight, preview, all four Node shards and all four Chromium shards. Its existing QA-gated promotion advanced main to .276.
+- Pages deployment #45490435538 succeeded. Independent main Census #45490450399 failed browser shard 1 in two scripts: `ai_defensive_third_man_runner_cover_browser_qa.py` and `online_account_ui_browser_qa.py`; the latter timed out waiting for the external online service to show its expected loading/server status. Failed-job-only retry was requested; its result must be checked separately.
+- .277 exact-head Modular QA and Full Regression Census are pending.
 
 ## Next smallest action
-Complete .276 exact-head Modular QA and four-Node/four-Chromium Census; repair confirmed failures, then allow only the existing QA-gated promotion. Independently verify main Census, Pages deployment and hosted bytes.
+Complete .277 exact-head Modular QA and four-Node/four-Chromium Census; repair any confirmed failures. Check the .276 main-Census failed-job-only retry and independently verify Pages hosted bytes after the next promotion.
 
 ## Ownership and exclusions
 Preserve 223 original teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No new concept heroes or copied graphics. New Studio art requires provenance, game-scale QA and owner acceptance. Physical two-phone #48 and Render drift #86 remain open; no device or hosting acceptance claimed.
 
 ## Evidence
-- Before .276, dev and main both pointed to `7dced88059b85d4b74ed0b996733c10632bed6af`; .275 is the currently Pages-deployed candidate.
-- GitHub branch metadata reports `main.protected=false`; repository rulesets are empty and #87 remains open.
-- Physical two-phone #48, Render drift #86 and authenticated online hosting remain unverified/open.
+- Before .277, dev and main both pointed to `fbee1f3cd7cf828794cad5f4b8a8dac1b14dbae9`.
+- .276 exact-head dev Census #45488336910 passed all four Node and four Chromium shards; Modular QA #45488337024 passed 2,871/2,871; promotion job succeeded. Pages deployment #45490435538 passed.
+- Main Census #45490450399 failed two browser scripts in shard 1; failed-job-only retry was requested. No LAN/P2P source changed.
+- Branch metadata reports `main.protected=false` and `dev.protected=false`; repository rulesets are empty. The dedicated main-protection endpoint is not accessible to the connected integration. Issue #87 remains open.
+- #86 Render drift, #48 physical two-phone acceptance, #3 Android Rainbow Dribble and #12 deployed About revision remain open.
 
 ## Cleanup
 Keep this file below 4 KiB with all required headings and exact Agent ID. Never bypass CI, security or QA promotion.

@@ -178,3 +178,39 @@ test('engine carrier movement evades a live incoming slide in both attack direct
   assert.ok(Math.abs(carrier.dy)>.3,'actual driveAI movement must leave the incoming slide lane');
  }
 });
+
+test('CPU carrier keeps a clear straight lane when a nearby slide sweeps a parallel upper lane on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?700:1300,y=500;
+  const carrier=player('parallel-slide-carrier-'+team,team,x,y);
+  const slide=player('parallel-upper-slide-'+team,1-team,x-dir*80,y-80,{
+   action:'slide',actionTimer:.36,slideTimer:.24,slideRemaining:148,slideSpeed:585,
+   slideDX:dir,slideDY:0,moveVX:dir*585,moveVY:0
+  });
+  const target=AI.attackingCarryEscapeTarget([carrier,slide],team,carrier,bounds);
+  assert.ok(target,JSON.stringify({team,target}));
+  assert.ok(dir*(target.x-carrier.x)>=100,'the safe direct route should retain full forward progress');
+  assert.equal(target.y,carrier.y,'a parallel slide missing the straight route must not force a lateral cut');
+ }
+});
+
+test('actual CPU carrier keeps the straight route when a live slide misses that route on both sides',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const {game,carrier}=prepareCarrierGame(ENGINE,team),marker=game.player(1-team,3);
+  const dir=team===0?1:-1,x=carrier.x,y=carrier.y,originalRandom=Math.random;
+  Object.assign(carrier,{moveVX:0,moveVY:0,dx:dir,dy:0,action:'run',actionTimer:0,
+   aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,firstTouchControlTimer:0,cd:1,trickCd:1});
+  Object.assign(marker,{x:x-dir*80,y:y-80,down:false,stun:0,z:0,action:'slide',actionTimer:.36,
+   slideTimer:.24,slideRemaining:148,slideSpeed:585,slideDX:dir,slideDY:0,
+   moveVX:dir*585,moveVY:0});
+  game.ball.owner=carrier;game.ball.attacker=team;game.clock=1;
+  try{
+   Math.random=()=>.99;
+   for(let step=0;step<36;step++){carrier.x=x;carrier.y=y;game.clock=1+step*.016;game.driveAI(carrier,.016);}
+  }finally{Math.random=originalRandom;}
+  assert.ok(dir*carrier.moveVX>20,'the carrier should keep building goalward movement');
+  assert.ok(Math.abs(carrier.dy)<.1,'actual driveAI should preserve the clear straight lane');
+ }
+});
