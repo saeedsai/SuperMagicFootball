@@ -149,3 +149,28 @@ test('ground-pass interception reach respects agility acceleration and current m
   assert.deepEqual(missing,average,'missing Agility uses the neutral 50-point acceleration profile');
  }
 });
+
+
+test('ground-pass interception discounts cross-track momentum while preserving aligned arrival',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team);f.receiver.moveVX=f.dir*180;f.receiver.moveVY=120;
+  const support=player('cross-track-support-'+team,team,f.ball.x+f.dir*136,f.ball.y+12.6);
+  support.src.agility=100;
+  const read=(vx,vy)=>{
+   support.moveVX=vx;support.moveVY=vy;
+   return AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds,support,320,.2);
+  };
+  const aligned=read(-f.dir*200,0),crossTrack=read(0,200),stationary=read(0,0);
+  assert.ok(aligned&&crossTrack&&stationary,JSON.stringify({team,aligned,crossTrack,stationary}));
+  const progress=point=>(point.x-f.ball.x)*f.dir;
+  assert.ok(progress(aligned)<progress(crossTrack)-5,
+   JSON.stringify({team,aligned,crossTrack,stationary}));
+  assert.ok(progress(stationary)<=progress(crossTrack)+1,
+   'cross-track momentum must not create an earlier interception than a stationary start');
+  const extreme=read(0,2400);
+  assert.ok(extreme&&extreme.x>=bounds.xMin&&extreme.x<=bounds.xMax&&
+   extreme.y>=bounds.yMin&&extreme.y<=bounds.yMax,
+   'the capped turn reserve must retain a bounded fallback lane');
+ }
+});

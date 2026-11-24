@@ -1251,7 +1251,12 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const towardSpeed=travel>1e-6?clampTo((currentVX*dx+currentVY*dy)/travel,-speed,speed):0;
    const rampArea=(1-Math.exp(-turnRate*moveTime))/turnRate;
    const reachableDistance=speed*moveTime+(towardSpeed-speed)*rampArea;
-   const reachable=Math.max(0,reachableDistance)*.82+12;
+   // Cross-track momentum still has to be turned into the pass lane. Reserve a
+   // small, bounded part of the arrival budget for that lateral drift instead
+   // of treating all non-forward velocity as free acceleration.
+   const crossTrackSpeed=travel>1e-6?Math.abs(currentVX*dy-currentVY*dx)/travel:0;
+   const turnReserve=clampTo(crossTrackSpeed*rampArea*.45,0,16);
+   const reachable=Math.max(0,reachableDistance-turnReserve)*.82+12;
    if(travel<=reachable)return point;
   }
   return null;
