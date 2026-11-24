@@ -7,8 +7,9 @@ Deliver real player-facing football gameplay first, then existing-player graphic
 
 ## Current checkpoint
 - **0.12.81.257 — AI-LOOSE-BALL-PRIMARY-LANDING-READ-01:** for eligible descending high loose balls, the primary CPU presser now meets the shared predicted landing point while the second defender keeps the 26-unit goal-side cover. Both roles use one bounded ballistic projection, avoiding divergent pursuit targets. Ground spills, passes, shots, keeper behavior, ball physics, four actions, saves, rosters, persistence and offline play are unchanged.
-- Mirrored Node and actual-engine desktop/simulated-touch Chromium regressions cover both goals, moving/vertical drops, shared projection, 26-unit spacing and fail-closed states. Exact-head .257 CI pending.
-- **.256 prior candidate:** Modular QA #45356206934 passed; Census #45356206870 was still running when .257 began, so no .256 promotion is claimed.
+- Mirrored Node and actual-engine desktop/simulated-touch Chromium regressions cover both goals, moving/vertical drops, shared projection, 26-unit spacing and fail-closed states. Modular QA #45358492760 passed; exact-head Census #45358492733 is running.
+- Corrected the stale contested-cross browser fixture: its 80-unit rebound pocket was intentionally unreachable under .256's new arrival gate; it now matches the Node test's reachable 8-unit pocket. The dedicated parry-chase suite retains far/unreachable coverage.
+- **.256 prior candidate:** Modular QA #45356206934 passed; Census #45356206870 failed only the contested-cross browser fixture's unreachable 80-unit chase setup. Corrected in the .257 follow-up; no .256 promotion is claimed.
 - **0.12.81.255 main-promoted:** dev Modular QA #45347036594 and Full Regression Census #45347036669 passed on `16824300c39c3d97fb59dfa3d82556de0eac47b1`; QA-gated promotion advanced main/dev to the same SHA. Pages deployment #45348250257 succeeded. Main Census #45348259495 passed on failed-job-only retry attempt 2: all Node/Chromium shards, preflight, preview and hosted-pages smoke.
 
 ## Next smallest action

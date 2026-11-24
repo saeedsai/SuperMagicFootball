@@ -40,7 +40,8 @@ with sync_playwright() as pw:
     Object.assign(liveKeeper,{z:12,action:'keeperDive',actionTimer:.1,diveElapsed:.24,
      diveIntentPending:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false});
     Object.assign(g.ball,{owner:null,attacker:team,lastTouchTeam:team,
-     x:liveKeeper.x+dir*80,y:liveKeeper.y+38,z:60,vx:dir*260,vy:30,vz:-110,
+     // Keep this acceptance on a reachable near pocket; the dedicated parry-chase suite covers unreachable far pockets.
+     x:liveKeeper.x+dir*8,y:liveKeeper.y+38,z:60,vx:dir*260,vy:30,vz:-110,
      shot:null,strike:null,ordinaryShot:false,pass:false,age:.6,canCollect:0});
     g.clock=.35;g.driveAI(liveKeeper,.016);
     const chase=liveKeeper.aiParryReboundTarget===true;
