@@ -3198,8 +3198,9 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     supportCarrierCover?{x:supportCarrierCover.x,y:supportCarrierCover.y}:{
     x:clamp(target.x-(t===0?1:-1)*110,F.x+22,F.x+F.w-22),
     y:clamp(target.y+spread,F.y+23,F.y+F.h-23)};
-  }else if(defensiveThirdMan?.defender===p){
-   p.aiTarget={x:defensiveThirdMan.target.x,y:defensiveThirdMan.target.y};
+  }else if(defensiveThirdMan?.defender===p||defensiveThirdMan?.secondary?.defender===p){
+   const mark=defensiveThirdMan.defender===p?defensiveThirdMan:defensiveThirdMan.secondary;
+   p.aiTarget={x:mark.target.x,y:mark.target.y};
   }
   const activeGiveAndGo=p.aiGiveAndGoRun;
   if(activeGiveAndGo&&owner&&owner.t===t&&owner.src?.id===activeGiveAndGo.receiverId){

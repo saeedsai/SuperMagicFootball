@@ -36,6 +36,7 @@ test('third CPU defender marks an unassigned central runner on both goal sides',
   assert.equal(f.pressers.primary,f.primary,'nearest ready defender retains primary press');
   assert.equal(f.pressers.support,f.support,'next defender retains second-defender cover');
   assert.ok(f.assignment,JSON.stringify({team,pressers:f.pressers}));
+  assert.equal(f.assignment.secondary,undefined,'a single eligible runner must not create a second mark');
   assert.equal(f.assignment.defender,f.third,'remaining ready defender takes runner mark');
   assert.equal(f.assignment.runner,f.runner);
   assert.ok(f.attackDir*(f.assignment.target.x-f.runner.x)>0,'mark point shades goal-side');
@@ -105,4 +106,42 @@ test('third-man helper rejects malformed teams, bounds and missing primary/suppo
  assert.equal(AI.defensiveThirdManRunnerTarget(0,f.carrier,f.game.players,{xMin:1,xMax:1,yMin:0,yMax:1},f.primary,f.support),null);
  assert.equal(AI.defensiveThirdManRunnerTarget(0,f.carrier,f.game.players,f.bounds,f.primary,null),null);
  assert.equal(AI.defensiveThirdManRunnerTarget(0,f.carrier,[],f.bounds,f.primary,f.support),null);
+});
+
+test('third-man marking assigns a second ready defender only to a separate comparable central runner',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=makeFixture(AI,ENGINE,team);
+  const secondRunner=f.game.player(1-team,5),secondDefender=f.game.player(team,1);
+  active(secondRunner,{x:f.ownGoalX-f.attackDir*190,y:f.centerY-105,moveVX:f.attackDir*50});
+  const assignmentTargetX=secondRunner.x+f.attackDir*(50*.12+34);
+  const assignmentTargetY=secondRunner.y+Math.min(18,(f.centerY-secondRunner.y)*.12);
+  active(secondDefender,{x:assignmentTargetX-f.attackDir*75,y:assignmentTargetY+8,moveVX:f.attackDir*35});
+  const assignment=AI.defensiveThirdManRunnerTarget(team,f.carrier,f.game.players,f.bounds,
+   f.primary,f.support);
+  assert.equal(assignment?.defender,f.third,'best defender retains the first central mark');
+  assert.equal(assignment?.runner,f.runner,'best runner remains the first mark');
+  assert.equal(assignment?.secondary?.defender,secondDefender,'a separate ready defender receives the second mark');
+  assert.equal(assignment?.secondary?.runner,secondRunner,'the second mark must cover a distinct runner');
+  assert.ok(Math.hypot(assignment.target.x-assignment.secondary.target.x,
+   assignment.target.y-assignment.secondary.target.y)>=88,'the two marks must occupy distinct lanes');
+  f.game.driveAI(f.third,.016);
+  f.game.driveAI(secondDefender,.016);
+  assert.ok(Math.abs(f.third.aiTarget.x-assignment.target.x)<1e-6);
+  assert.ok(Math.abs(f.third.aiTarget.y-assignment.target.y)<1e-6);
+  assert.ok(Math.abs(secondDefender.aiTarget.x-assignment.secondary.target.x)<1e-6);
+  assert.ok(Math.abs(secondDefender.aiTarget.y-assignment.secondary.target.y)<1e-6);
+  assert.equal(f.game.ball.owner,f.carrier,'two marks must not alter possession');
+  assert.equal(AI.defensiveThirdManRunnerTarget(team,f.carrier,f.game.players,f.bounds,
+   f.primary,f.support,secondDefender)?.secondary,undefined,
+   'human-controlled defenders cannot receive the secondary mark');
+
+  const overlap=makeFixture(AI,ENGINE,team);
+  const overlapRunner=overlap.game.player(1-team,5),overlapDefender=overlap.game.player(team,1);
+  active(overlapRunner,{x:overlap.runner.x,y:overlap.runner.y+12,moveVX:overlap.attackDir*40});
+  active(overlapDefender,{x:overlap.third.x,y:overlap.third.y+10});
+  const overlapping=AI.defensiveThirdManRunnerTarget(team,overlap.carrier,overlap.game.players,
+   overlap.bounds,overlap.primary,overlap.support);
+  assert.equal(overlapping?.secondary,undefined,'overlapping runner lanes must not attract duplicate marks');
+ }
 });

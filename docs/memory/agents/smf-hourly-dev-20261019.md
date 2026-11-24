@@ -6,22 +6,22 @@
 Deliver player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.266 — AI-THIRD-MAN-MARK-ARRIVAL-READ-01:** the remaining CPU defender now scores a third-man mark using a bounded 120 ms projection of its own movement toward the goal-side target. Per-axis displacement is capped at 24 units and score influence at ±12; a slightly farther defender already closing can beat a nearer defender moving away, while materially better geometry and existing primary/support roles remain preferred.
-- Gameplay commit: `fd42ffb04067307c9ec96d3f6aa57427c9841d42`. Test-fixture correction: `12c6a969a8bc2ba8b6ee13638a3d67c5f5bb7b94`. Release metadata, README heading/banner, version policy, cache suffix and master backlog are synchronized to .266.
-- **.265 test-only repair:** `ebc3d2f3ceaf207386f0677614cfd4b034b150e8` fixed the jump-pose comparison to sample only character pixels, but its Crown reference filter used the wrong ID. The exact ID `demo_crown_royals_reference` and original 223-team count are corrected in 12c6a96.
-- **.266 first exact-head failure:** #45412360843 and #45412360854 failed Node preflight because the new test requested bench index 6 instead of one of six active on-field players. The mirrored Node/Chromium fixture now uses active slot 2; no production AI failure was established.
-- Main remains .261 on SHA `5ab96a2ddf6eeb5763e7e1cc834aaedf995b3aed`; Pages #45379378786 and independent main Census #45379388061 passed.
+- **0.12.81.267 — AI-THIRD-MAN-DOUBLE-MARK-01:** when two distinct eligible central runners remain unmarked in the defending third, a second available CPU defender can receive a separate goal-side mark. The second pair must be within 34 score points of the best and at least 88 units from its target lane; defenders/runners are unique. Primary press, support cover, human/committed exclusions and single-runner fallback remain authoritative.
+- Gameplay implementation updates `src/modules/ai.js` and the real `driveAI` assignment in `src/modules/engine.js`; mirrored Node and desktop/simulated-touch Chromium acceptance cover both goals, distinct targets and overlap fallback. Exact-head CI pending.
+- **0.12.81.266 main-promoted:** Modular QA #45413176275 and dev Full Regression Census #45413176067 passed on SHA `b0b5641b88b56b7d8915e5944a2edc2455e37c53`; the existing QA-gated promotion advanced main/dev to that SHA. Pages #45414997006 succeeded. Main Census #45415010070 had one 45-second timeout in `lan_render_hosted_browser_qa.py`; failed-job-only retry requested.
+- New candidate release metadata is synchronized to About-only .267, including package, README heading/banner, version policy, service-worker cache and master backlog.
 
 ## Next smallest action
-Verify exact final-head Modular QA and four-Node/four-Chromium Census. Fix only confirmed failures, then continue an independent gameplay increment on dev; promote only a fully green exact head through the existing QA-gated pipeline and independently verify Pages, main Census and hosted bytes.
+Verify .267 exact-head Modular QA and four-Node/four-Chromium Full Regression Census. Fix confirmed failures only, then continue the next unblocked player-facing gameplay increment; promote only a fully green exact head through the existing QA-gated pipeline and independently verify Pages, main Census and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 original teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No new concept heroes or copied graphics. New Studio art requires provenance, game-scale QA and owner acceptance. Physical two-phone #48 and Render drift #86 remain open; do not claim device or hosting acceptance.
 
 ## Evidence
-- .265 Full Census #45410908941: preflight, preview and all four Node shards passed; browser shard 0 still failed the first filter at 224, browser shard 2 passed the player-region repeat comparison, and other browser shards were still running. Corrected team ID in 12c6a96.
-- .266 Modular QA #45412360843 and Census #45412360854 failed only at Node preflight on the invalid bench-slot fixture; corrected in 12c6a96. New exact-head runs are required.
-- .261 release was independently verified and deployed; .266 is not promoted or deployed.
+- .266 dev Modular QA #45413176275 passed; dev Census #45413176067 passed preflight, preview, four Node and four Chromium shards; automatic QA-gated promotion succeeded.
+- .266 Pages deployment #45414997006 succeeded. Main Census #45415010070: hosted smoke, preflight, preview, all four Node shards and three browser shards passed; one browser shard failed only the 45-second hosted LAN page wait and a failed-job-only retry was requested.
+- Repository REST reports both `dev.protected=false` and `main.protected=false`; #87 remains an unresolved security issue. No protection bypass or manual promotion.
+- Local `git clone` could not resolve `github.com`; connected GitHub source/API is used for inspection and commit. Local Node/Chromium execution is not available in this run; exact-head Actions are the verification gate.
 
 ## Cleanup
 Keep this file below 4 KiB with all required headings and exact Agent ID. Never bypass CI, security or QA promotion.

@@ -196,7 +196,7 @@ function defensiveThirdManRunnerTarget(team,carrier,players,bounds,primary,suppo
   const legacy=axis==='x'?p?.vx:p?.vy;
   return Number.isFinite(legacy)?legacy:0;
  };
- let best=null;
+ const candidates=[];
  for(const runner of players){
   if(runner===carrier||runner.t!==carrier.t||!active(runner))continue;
   const vx=velocity(runner,'x'),vy=velocity(runner,'y');
@@ -234,10 +234,25 @@ function defensiveThirdManRunnerTarget(team,carrier,players,bounds,primary,suppo
    const arrivalTieBreak=clampTo(projectedGap-gap,-12,12);
    const score=gap+lateral*.12+runnerDepth*.04-
     Math.min(180,advance)*.06+Math.max(0,carrierGap-260)*.12+arrivalTieBreak;
-   if(!best||score<best.score)best={defender,runner,target,score};
+   candidates.push({defender,runner,target,score});
   }
  }
- return best?{defender:best.defender,runner:best.runner,target:best.target}:null;
+ if(!candidates.length)return null;
+ candidates.sort((a,b)=>a.score-b.score);
+ const best=candidates[0];
+ // A second mark is useful only for a genuinely separate central lane and a
+ // comparably reachable defender; never duplicate a runner or steal the first mark.
+ const secondary=candidates.find(candidate=>
+  candidate.defender!==best.defender&&candidate.runner!==best.runner&&
+  candidate.score<=best.score+34&&
+  Math.hypot(candidate.target.x-best.target.x,candidate.target.y-best.target.y)>=88
+ );
+ return {
+  defender:best.defender,runner:best.runner,target:best.target,score:best.score,
+  ...(secondary?{secondary:{
+   defender:secondary.defender,runner:secondary.runner,target:secondary.target,score:secondary.score
+  }}:{})
+ };
 }
 
 // Lead the primary presser along a moving carrier's live path. When the carrier
