@@ -165,7 +165,7 @@ with sync_playwright() as pw:
         for team in (0,1):
             low=next(row for row in result['skillRows'] if row['team']==team and row['dribbling']==1)
             high=next(row for row in result['skillRows'] if row['team']==team and row['dribbling']==100)
-            assert abs(high['dy'])>abs(low['dy'])+.05,(kind,'higher Dribbling should produce the sharper actual-engine lateral cut',low,high)
+            assert abs(high['dy'])>abs(low['dy'])*1.15,(kind,'higher Dribbling should produce the sharper actual-engine lateral cut',low,high)
             assert high['dy']*low['dy']>0,(kind,'both profiles must preserve the same open-side choice',low,high)
         assert not errors,(kind,errors)
         print('PASS',kind,'momentum-aware escape, live-slide avoidance, mirrored engine, four actions and no JS errors',flush=True)
