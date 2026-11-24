@@ -49,6 +49,27 @@ test('second-defender Magic Trick screen reads require the live ball on the defe
   assert.equal(ordinary?.screened,false,'the ball-side gate only restricts the second-defender screen read');
  }
 });
+test('second-defender screen reads require a two-dimensional heading toward the carrier',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,p=carrier({t:team,x:team===0?100:200,dx:dir,dy:0,face:dir});
+  const exposed={owner:p,x:p.x+dir*17,y:p.y+12};
+  const base=defender({t:1-team,x:p.x+dir*68,y:p.y+18,face:-dir});
+  const perpendicular={...base,dx:0,dy:1};
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[perpendicular],true,exposed),null,
+   'a perpendicular 2D heading must reject the screen even when horizontal face matches');
+  const movementPerpendicular={...base,dx:0,dy:0,moveVX:0,moveVY:1};
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[movementPerpendicular],true,exposed),null,
+   'movement velocity is the fallback heading when dx/dy are stationary');
+  const diagonalToward={...base,dx:-dir,dy:-.25};
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[diagonalToward],true,exposed)?.defender,diagonalToward,
+   'a diagonal heading with a positive carrier-facing component remains eligible');
+  const faceFallback={...base,dx:0,dy:0,moveVX:0,moveVY:0};
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[faceFallback],true,exposed)?.defender,faceFallback,
+   'stationary defenders retain the existing horizontal-facing fallback');
+ }
+});
+
 test('a successful screen reader narrows the visible forward lane on both attack directions',async()=>{
  const AI=await loadAI(),bounds={xMin:0,xMax:2000,yMin:0,yMax:1000};
  for(const team of [0,1]){

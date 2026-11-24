@@ -19,21 +19,24 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
    const g=SupermagicFootball.game;
-   function attempt(withScreen,ballSide='exposed',dribbling=95,randomValue=.1){
+   function attempt(withScreen,ballSide='exposed',dribbling=95,randomValue=.1,screenHeading='face',team=0){
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
-    const carrier=g.player(0,3),nearest=g.player(1,3),screen=g.player(1,4);
+    const dir=team===0?1:-1,carrier=g.player(team,3),nearest=g.player(1-team,3),screen=g.player(1-team,4);
     for(const q of g.players)if(q!==carrier&&q!==nearest&&q!==screen&&!q.keeper){q.down=true;q.stun=1;}
-    Object.assign(carrier,{x:1200,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:1,dx:1,dy:0,
-     moveVX:180,moveVY:0,fatigue:0,breath:1,trickCd:0,dribbleCooldown:0,magicReadyAt:0,dribbleHold:1,firstTouchOutletReadTimer:.8,
+    Object.assign(carrier,{x:1200,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:dir,dx:dir,dy:0,
+     moveVX:dir*180,moveVY:0,fatigue:0,breath:1,trickCd:0,dribbleCooldown:0,magicReadyAt:0,dribbleHold:1,firstTouchOutletReadTimer:.8,
      firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0});
     Object.assign(carrier.src,{dribbling,agility:95,stamina:95,magicTrick:'hideBall'});
-    Object.assign(nearest,{x:1170,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:-1,dx:0,dy:0,moveVX:0,moveVY:0});
+    Object.assign(nearest,{x:1200-dir*30,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:-dir,dx:0,dy:0,moveVX:0,moveVY:0});
     Object.assign(nearest.src,{defence:20,aggression:20});
-    Object.assign(screen,{x:1270,y:765,z:0,stun:withScreen?0:1,down:!withScreen,action:'idle',actionTimer:0,
-     face:-1,dx:0,dy:0,moveVX:0,moveVY:0});
+    Object.assign(screen,{x:1200+dir*70,y:765,z:0,stun:withScreen?0:1,down:!withScreen,action:'idle',actionTimer:0,
+     face:-dir,dx:0,dy:0,moveVX:0,moveVY:0});
+    if(screenHeading==='perpendicular'){screen.dx=0;screen.dy=1;}
+    else if(screenHeading==='movement-perpendicular'){screen.moveVX=0;screen.moveVY=1;}
+    else if(screenHeading==='diagonal-toward'){screen.dx=-dir;screen.dy=-.25;}
     Object.assign(screen.src,{defence:95,aggression:95});
-    const ballOffset=ballSide==='shielded'?-17:17;
-    Object.assign(g.ball,{owner:carrier,x:1200+ballOffset,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:0});
+    const ballOffset=ballSide==='shielded'?-dir*17:dir*17;
+    Object.assign(g.ball,{owner:carrier,x:1200+ballOffset,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:team});
     const oldRandom=Math.random;Math.random=()=>randomValue;
     try{g.tryMagicTrick(carrier);}finally{Math.random=oldRandom;}
     if(withScreen){g.driveAI(screen,1/60);g.driveAI(nearest,1/60);}
@@ -45,6 +48,9 @@ with sync_playwright() as pw:
    }
    return {baseline:attempt(false),screened:attempt(true),shielded:attempt(true,'shielded'),
     lowSkill:attempt(true,'exposed',1,.22),neutralSkill:attempt(true,'exposed',50,.22),eliteSkill:attempt(true,'exposed',100,.22),
+    perpendicular:attempt(true,'exposed',95,.1,'perpendicular',0),
+    perpendicularMirrored:attempt(true,'exposed',95,.1,'perpendicular',1),
+    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -58,6 +64,10 @@ with sync_playwright() as pw:
   assert result['lowSkill']['hidden'] is False and result['lowSkill']['readerCue']>0,(kind,result['lowSkill'])
   assert result['neutralSkill']['hidden'] is False and result['neutralSkill']['readerCue']>0,(kind,result['neutralSkill'])
   assert result['eliteSkill']['hidden'] is True and result['eliteSkill']['readerCue']==0,(kind,result['eliteSkill'])
+  for key in ('perpendicular','perpendicularMirrored','movementPerpendicular'):
+   assert result[key]['hidden'] is True,(kind,key,result[key])
+   assert result[key]['readerCue']==0 and result[key]['counterpressTimer']==0,(kind,key,result[key])
+   assert result[key]['owner'] is True,(kind,key,result[key])
   assert result['lowSkill']['cooldown']==result['neutralSkill']['cooldown']==result['eliteSkill']['cooldown'],(kind,result)
   assert abs(result['lowSkill']['fatigue']-result['eliteSkill']['fatigue'])<1e-9,(kind,result)
   target=result['screened']['readerTarget'];primary_target=result['screened']['primaryTarget']

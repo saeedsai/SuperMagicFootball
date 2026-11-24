@@ -1640,8 +1640,21 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
     !Number.isFinite(q.x)||!Number.isFinite(q.y))continue;
    const dx=carrier.x-q.x,dy=carrier.y-q.y,gap=Math.hypot(dx,dy);
    if(gap<1||(gap>105&&!(firstTouchRead&&carryForward&&gap<=132)))continue;
-   const towardX=dx/gap,face=Number(q.face);
-   const facing=(Number.isFinite(face)&&Math.abs(face)>.1?Math.sign(face):1)*towardX>=.15;
+   const towardX=dx/gap,towardY=dy/gap;
+   let headingX=Number.isFinite(q.dx)?q.dx:0,headingY=Number.isFinite(q.dy)?q.dy:0;
+   let headingLength=Math.hypot(headingX,headingY);
+   if(headingLength<=.1){
+    headingX=Number.isFinite(q.moveVX)?q.moveVX:0;
+    headingY=Number.isFinite(q.moveVY)?q.moveVY:0;
+    headingLength=Math.hypot(headingX,headingY);
+   }
+   if(headingLength<=.1){
+    const face=Number(q.face);
+    headingX=Number.isFinite(face)&&Math.abs(face)>.1?Math.sign(face):1;
+    headingY=0;headingLength=1;
+   }
+   headingX/=headingLength;headingY/=headingLength;
+   const facing=headingX*towardX+headingY*towardY>0;
    if(!facing)continue;
    const qdx=Number.isFinite(q.dx)?q.dx:0,qdy=Number.isFinite(q.dy)?q.dy:0;
    const closing=qdx*dx+qdy*dy>.22*gap,relX=q.x-carrier.x,relY=q.y-carrier.y;

@@ -6,20 +6,20 @@
 Deliver real player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.252 — AI-MAGIC-TRICK-SCREEN-SKILL-CONTEST-01:** the existing second-defender READ! counter for named Magic Tricks now weighs defender Defence against carrier Dribbling. Dribbling 50 preserves the previous 7–24% defender-based chance; low skill raises it by up to 5.9 percentage points, elite skill lowers it by up to 6, and the final chance is bounded to 4–28%. Only a valid exposed-ball forward screen during the pressured first-touch window is affected.
-- Focused Node coverage checks low/neutral/elite profiles, 4%/28% probability boundaries, mirrored actual-engine counter results, unchanged cooldown/fatigue/possession and ordinary Dribble Style separation. Desktop/simulated-touch Chromium checks the same actual engine.
-- **0.12.81.251 main-promoted and Pages deployed:** Modular QA #45328041721 and exact-head Census #45328041706 passed on SHA `4353f36d12fb24f46cb74ce9ed6ca071a2b509ee`; QA-gated promotion succeeded. Pages #45329263712 and independent main Census #45329277069 passed, including hosted-pages smoke and all four Node/Chromium shards.
+- **0.12.81.253 — AI-MAGIC-TRICK-2D-FACING-READ-01:** the second-defender forward-screen READ! now requires the defender's full 2D heading to point toward the carrier. It uses current dx/dy, then movement velocity, then the existing horizontal face as a stationary fallback. Perpendicular/away-facing markers cannot cancel a named Magic Trick merely because their horizontal sign matches.
+- Focused Node and actual-engine desktop/simulated-touch Chromium regressions cover both teams, perpendicular and diagonal headings, movement-velocity fallback, stationary face fallback, and unchanged trick/possession/counterpress behavior. Exact-head Modular QA and four-Node/four-Chromium Census pending.
+- **0.12.81.252 main-promoted and Pages deployed:** Modular QA #45333018835 and exact-head Census #45333018761 passed on SHA `653978915b559fc1d7d70ced0afb43293f2b7d5a`; QA-gated promotion succeeded. Pages #45334513946 succeeded; independent main Census #45334521390 is in progress.
 
 ## Next smallest action
-Inspect exact-head .252 Modular QA and Full Regression Census. Fix any confirmed source or fixture failure, then allow only the green exact SHA through the existing QA-gated promotion pipeline. Independently verify main Census, Pages deployment and hosted bytes.
+Inspect exact-head .253 Modular QA and Full Regression Census. Fix any confirmed source or fixture failure, then allow only the green exact SHA through the existing QA-gated promotion pipeline. Independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical #48, Render drift #86 and main protection #87 remain open. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
 
 ## Evidence
-- .251 dev Census: preflight, preview, four Node shards and four Chromium shards passed; promotion succeeded.
-- .251 main Census: preflight, preview, hosted-pages smoke, four Node shards and four Chromium shards passed.
-- .252 source and focused regressions are committed; exact-head CI results pending.
+- .252 dev Modular QA and Full Regression Census passed; all four Node and four Chromium shards passed, QA-gated promotion succeeded.
+- .252 Pages deployment passed; independent main Census is still running.
+- .253 source and focused regressions are committed; exact-head CI results pending.
 
 ## Cleanup
 Keep this file below 4 KiB with all required headings and exact Agent ID. Do not read/edit another agent's private checkpoint. Never bypass CI, security or QA promotion.
