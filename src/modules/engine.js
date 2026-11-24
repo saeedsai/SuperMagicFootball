@@ -2252,8 +2252,17 @@ class GameEngine{
  // defender a trick may fail. DEF, AGG, AGI, DRB, stamina and style all matter.
  tryDribbleTrick(p,byAI=false){
   if(!p||this.ball.owner!==p||p.keeper||p.stun>0||p.trickCd>0||(p.dribbleCooldown||0)>0||p.fatigue>.92||p.breath<.65)return false;
-  const style=dribbleStyle(p.src.dribbleType), opponents=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&q.z<25)
-    .sort((a,b)=>distance(p,a)-distance(p,b));
+  const style=dribbleStyle(p.src.dribbleType),timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const opponents=this.players.filter(q=>{
+   if(q.t===p.t||q.keeper||!(q.stun<=0)||!(q.z<25))return false;
+   if(!byAI)return true;
+   // CPU style duels use the nearest defender who can still contest the move.
+   // Keep active slides as threats, but ignore downed/invulnerable/recovery states.
+   return !q.down&&timerClear(q.invuln)&&
+    timerClear(q.shotImpactKnockdownPending)&&timerClear(q.shotImpactKnockdownTimer)&&
+    timerClear(q.shotImpactRiseTimer)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&
+    !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0);
+  }).sort((a,b)=>distance(p,a)-distance(p,b));
   const rival=opponents[0],close=!!rival&&distance(p,rival)<105;
   const skill={dribbling:stat(p,'dribbling'),agility:stat(p,'agility'),fatigue:p.fatigue,x:p.x,y:p.y};
   const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression'),fatigue:rival.fatigue,x:rival.x,y:rival.y,vx:rival.dx||0,vy:rival.dy||0}:null;
