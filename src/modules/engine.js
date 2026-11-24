@@ -247,24 +247,27 @@ function keeperCutbackReadLane(keeper,players,ball,baselineY){
  let best=null;
  for(const runner of players){
   if(!active(runner)||runner.t!==carrier.t||runner===carrier||runner.keeper)continue;
-  const behind=(runner.x-carrier.x)*attackDir;
-  const depth=Math.abs(runner.x-ownGoalX);
-  if(behind>-45||behind< -300||depth<80||depth>430||
-   Math.abs(runner.y-centerY)>F.h*.24)continue;
   const vx=Number.isFinite(runner.moveVX)?runner.moveVX:
    Number.isFinite(runner.vx)?runner.vx:0;
+  const vy=Number.isFinite(runner.moveVY)?runner.moveVY:
+   Number.isFinite(runner.vy)?runner.vy:0;
   if(vx*attackDir< -100)continue;
-  const score=Math.abs(runner.y-centerY)*.7+Math.abs(behind+150)*.22+
+  // Score the same bounded 120 ms arrival used by the final shade. This avoids
+  // selecting a runner who is central now but moving out of the cutback lane.
+  const projectedX=runner.x+clamp(vx*.12,-18,18);
+  const projectedY=runner.y+clamp(vy*.12,-18,18);
+  const behind=(projectedX-carrier.x)*attackDir;
+  const depth=Math.abs(projectedX-ownGoalX);
+  if(behind>-45||behind< -300||depth<80||depth>430||
+   Math.abs(projectedY-centerY)>F.h*.24)continue;
+  const score=Math.abs(projectedY-centerY)*.7+Math.abs(behind+150)*.22+
    Math.abs(depth-260)*.08;
-  if(!best||score<best.score)best={runner,score};
+  if(!best||score<best.score)best={runner,score,projectedY};
  }
  if(!best)return baselineY;
  const skill=clamp(stat(keeper,'gkSkill'),0,100);
- // Lead the cutback shade slightly into the runner's lateral path. A short
- // 120 ms projection capped at 18 units avoids reacting to stale current feet.
- const runnerVy=Number.isFinite(best.runner.moveVY)?best.runner.moveVY:
-  Number.isFinite(best.runner.vy)?best.runner.vy:0;
- const projectedRunnerY=best.runner.y+clamp(runnerVy*.12,-18,18);
+ // Reuse the selected runner's already-scored projected arrival.
+ const projectedRunnerY=best.projectedY;
  const shift=clamp((projectedRunnerY-baselineY)*(.12+skill*.0016),-58,58);
  return clamp(baselineY+shift,WORLD.goalTop+15,WORLD.goalBottom-15);
 }

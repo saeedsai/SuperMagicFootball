@@ -18,6 +18,7 @@ function fixture(ENGINE,field,keeperTeam=0){
  const centerY=field.y+field.h/2;
  const carrier=game.players.find(p=>p.t===attackingTeam&&p.i===3);
  const runner=game.players.find(p=>p.t===attackingTeam&&p.i===4);
+ const runner2=game.players.find(p=>p.t===attackingTeam&&p.i===5);
  keeper.x=ownGoalX+(keeperTeam===0?34:-34);keeper.y=centerY;
  keeper.homeX=keeper.x;keeper.homeY=keeper.y;
  carrier.x=ownGoalX-attackDir*220;carrier.y=centerY-300;
@@ -34,7 +35,7 @@ function fixture(ENGINE,field,keeperTeam=0){
  game.ball.passTeam=null;game.ball.shot=null;game.ball.strike=null;game.ball.ordinaryShot=false;
  keeper.stun=0;keeper.down=false;keeper.z=0;keeper.aiTimer=0;keeper.aiTarget=null;
  keeper.aiAssistTarget=null;keeper.diveIntentPending=false;keeper.diveCooldown=0;
- return {game,keeper,carrier,runner,attackDir,centerY};
+ return {game,keeper,carrier,runner,runner2,attackDir,centerY};
 }
 
 function targetY(f){
@@ -90,5 +91,37 @@ test('keeper retains its ordinary lane for central or distant carriers and unava
    assert.equal(targetY(candidate),baseline,
     'without a central active runner behind a wide byline carrier, keeper must keep its normal lane');
   }
+ }
+});
+
+
+test('keeper selects the runner projected to arrive centrally rather than the currently closest runner',async()=>{
+ const {ENGINE,field}=await loadEngine();
+ for(const keeperTeam of [0,1])for(const wing of [-1,1]){
+  const configure=(f,mode)=>{
+   f.carrier.y=f.centerY+wing*300;
+   f.runner.x=f.carrier.x-f.attackDir*150;
+   f.runner2.x=f.runner.x;
+   f.runner.y=f.centerY-wing*40;
+   f.runner2.y=f.centerY-wing*58;
+   f.runner.moveVX=f.attackDir*70;f.runner2.moveVX=f.attackDir*70;
+   f.runner.moveVY=-wing*180;
+   f.runner2.moveVY=wing*180;
+   for(const p of [f.runner,f.runner2]){
+    p.stun=0;p.z=0;p.action='idle';p.actionTimer=0;p.slideTimer=0;
+   }
+   f.runner.down=mode==='alternative-only';
+   f.runner2.down=mode==='runner-only';
+  };
+  const runnerOnly=fixture(ENGINE,field,keeperTeam);configure(runnerOnly,'runner-only');
+  const runnerOnlyY=targetY(runnerOnly);
+  const alternativeOnly=fixture(ENGINE,field,keeperTeam);configure(alternativeOnly,'alternative-only');
+  const alternativeOnlyY=targetY(alternativeOnly);
+  const both=fixture(ENGINE,field,keeperTeam);configure(both,'both');
+  const bothY=targetY(both);
+  assert.ok(Math.abs(bothY-alternativeOnlyY)<1e-7,
+   'team '+keeperTeam+' wing '+wing+': the arriving central runner should win the two-runner choice');
+  assert.ok(Math.abs(bothY-runnerOnlyY)>1.5,
+   'team '+keeperTeam+' wing '+wing+': the runner moving out of the lane must not keep priority');
  }
 });
