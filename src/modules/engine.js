@@ -2938,8 +2938,11 @@ class GameEngine{
   // defender contests the arrival; fall back to the live/known ball position
   // when no validated landing estimate exists.
   const pressTarget=owner||(looseBallLandingTarget?{...looseBallLandingTarget,landingRead:true}:b);
+  const looseBallSupportTarget=looseBallLandingTarget?
+   (defensiveLooseBallCoverTarget(t,liveBall,looseBallBounds)||
+    defensiveGroundSpillCoverTarget(t,liveBall,looseBallBounds)):null;
   const pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,pressTarget,
-   this.inControl(t)?this.controlledPlayer(t):null):null;
+   this.inControl(t)?this.controlledPlayer(t):null,looseBallSupportTarget):null;
   const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
   const speed=this.playerSpeed(p)*ai.speed*styleSpeed*(this.terrain==='Sand'?.75:1);
   const defensiveCutbackCover=owner&&owner.t!==t?defensiveCutbackCoverTarget(t,owner,
@@ -2954,10 +2957,7 @@ class GameEngine{
     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},p,speed,ai.reaction)||
     defensiveLoftedPassCover):null;
   const defensiveLooseBallCover=pressing?.support===p&&!owner&&!concealed?
-   (defensiveLooseBallCoverTarget(t,liveBall,
-    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24})||
-    defensiveGroundSpillCoverTarget(t,liveBall,
-    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24})):null;
+   looseBallSupportTarget:null;
   const defensiveFirstTouchContest=owner&&owner.t!==t&&pressing?.support===p&&!concealed&&
    !defensiveGiveAndGoCover&&!defensiveCutbackCover?
    defensiveFirstTouchContestTarget(t,owner,this.players,

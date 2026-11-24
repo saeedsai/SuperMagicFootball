@@ -51,3 +51,21 @@ test('validated loose-ball landing press uses bounded momentum to select the def
   assert.equal(landing.support,nearerRetreating,'the other ready defender remains available for goal-side cover');
  }
 });
+
+test('validated landing support selects the defender already arriving at the goal-side cover pocket',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,target={x:500,y:300,landingRead:true};
+  const cover={x:target.x-dir*26,y:target.y};
+  const primary=player('primary',target.x,target.y);
+  const atPocket=player('at-pocket',cover.x,cover.y,{moveVX:dir*220,moveVY:0});
+  const closing=player('closing',cover.x-dir*4,cover.y,{moveVX:dir*33,moveVY:0});
+  for(const p of [primary,atPocket,closing])p.t=team;
+  const legacy=AI.defensivePressers([primary,atPocket,closing],team,target);
+  assert.equal(legacy.primary,primary);
+  assert.equal(legacy.support,atPocket,'without a cover target, legacy landing-center ordering is retained');
+  const arrival=AI.defensivePressers([primary,atPocket,closing],team,target,null,cover);
+  assert.equal(arrival.primary,primary);
+  assert.equal(arrival.support,closing,'a farther defender already moving into the pocket wins the support assignment');
+ }
+});

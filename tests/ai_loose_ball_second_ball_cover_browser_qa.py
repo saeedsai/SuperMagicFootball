@@ -67,7 +67,36 @@ with sync_playwright() as pw:
                         primaryUsesLanding:true});
                 }
             }
-            return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            const supportRows=[];
+            for(const team of [0,1]){
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const dir=team===0?1:-1,primary=game.player(team,3),
+                    atPocket=game.player(team,4),closing=game.player(team,5);
+                const x=field.x+field.w*.5,y=field.y+field.h*.5;
+                for(const p of game.players){
+                    p.aiTarget=null;p.aiTimer=0;p.aiAssistTarget=null;p.aiGiveAndGoRun=null;
+                    p.action='idle';p.actionTimer=0;p.z=0;p.down=true;p.stun=1;
+                }
+                for(const p of [primary,atPocket,closing])Object.assign(p,{
+                    x,y,down:false,stun:0,invuln:0,z:0,action:'idle',actionTimer:0,
+                    slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
+                    shotImpactRiseTimer:0,aiTarget:null,aiTimer:1
+                });
+                Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
+                    x,y,z:0,vx:dir*180,vy:-60,vz:0,canCollect:0,age:.35,
+                    lastTouchTeam:1-team,attacker:1-team});
+                game.clock=5;
+                const flight=.18,landing={x:x+dir*180*flight,y:y-60*flight},
+                    cover={x:landing.x-dir*26,y:landing.y};
+                Object.assign(primary,{x:landing.x,y:landing.y,moveVX:0,moveVY:0});
+                Object.assign(atPocket,{x:cover.x,y:cover.y,moveVX:dir*220,moveVY:0});
+                Object.assign(closing,{x:cover.x-dir*4,y:cover.y,moveVX:dir*33,moveVY:0});
+                game.moveAgile=()=>{};
+                game.driveAI(primary,.016);game.driveAI(atPocket,.016);game.driveAI(closing,.016);
+                supportRows.push({team,landing,cover,primary:primary.aiTarget,
+                    retreating:atPocket.aiTarget,closing:closing.aiTarget});
+            }
+            return {rows,supportRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -86,7 +115,14 @@ with sync_playwright() as pw:
                     assert row['currentBallDistanceSupport']<row['currentBallDistancePrimary'],(kind,row)
             else:
                 assert gap>.5,(kind,row)
+        for row in result['supportRows']:
+            assert row['primary'] and abs(row['primary']['x']-row['landing']['x'])<1e-6,(kind,row)
+            assert row['primary'] and abs(row['primary']['y']-row['landing']['y'])<1e-6,(kind,row)
+            assert row['closing'] and abs(row['closing']['x']-row['cover']['x'])<1e-6,(kind,row)
+            assert row['closing'] and abs(row['closing']['y']-row['cover']['y'])<1e-6,(kind,row)
+            assert row['retreating'] and (abs(row['retreating']['x']-row['cover']['x'])>1e-6 or
+                abs(row['retreating']['y']-row['cover']['y'])>1e-6),(kind,row)
         assert not errors,(kind,errors)
-        print('PASS',kind,'primary/support high-ball and ground-spill landing coordination, four actions and no JavaScript errors',flush=True)
+        print('PASS',kind,'landing-center primary, momentum-aware goal-side support, mirrored teams, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()

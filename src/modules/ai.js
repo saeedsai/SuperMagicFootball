@@ -47,12 +47,9 @@ function defensiveCarrierSupportCoverTarget(support,carrier,bounds,horizonSecond
  };
 }
 
-function defensivePressers(players,team,target,humanControlled=null){
+function defensivePressers(players,team,target,humanControlled=null,supportTarget=null){
  if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y)||!Array.isArray(players))
   return {primary:null,support:null};
- // Moving carriers and explicitly validated loose-ball landing reads use a
- // bounded arrival-aware primary score. Ordinary loose-ball and stationary-carrier
- // ordering remains distance-first.
  const velocity=(p,axis)=>{
   const current=axis==='x'?p?.moveVX:p?.moveVY;
   if(Number.isFinite(current))return current;
@@ -70,8 +67,9 @@ function defensivePressers(players,team,target,humanControlled=null){
  };
  const landingRead=target.landingRead===true;
  const projectedTarget=movingCarrier?project(target):landingRead?{x:target.x,y:target.y}:null;
- // Airborne and impact-recovering players cannot press or provide cover yet.
- // Treat a missing legacy z as grounded, but reject malformed or high airborne state.
+ const supportPoint=landingRead&&supportTarget&&
+  Number.isFinite(supportTarget.x)&&Number.isFinite(supportTarget.y)?
+  {x:supportTarget.x,y:supportTarget.y}:null;
  const candidates=players.filter(p=>p&&p.t===team&&!p.keeper&&p!==humanControlled&&
    p.stun<=0&&!p.down&&!(Number(p.slideTimer)>0)&&
    !(Number(p.shotImpactKnockdownPending)>0)&&
@@ -83,27 +81,40 @@ function defensivePressers(players,team,target,humanControlled=null){
    Number.isFinite(p.x)&&Number.isFinite(p.y))
   .map((p,index)=>{
    const d=Math.hypot(p.x-target.x,p.y-target.y);
-   if(!projectedTarget)return {p,index,d,pressScore:d};
-   const future=project(p),arrival=Math.hypot(future.x-projectedTarget.x,future.y-projectedTarget.y);
-   // Limit the momentum adjustment to 13.2 distance units so a distant runner
-   // cannot steal the press assignment merely by reporting an extreme velocity.
-   const delta=Math.max(-24,Math.min(24,arrival-d));
-   return {p,index,d,pressScore:d+delta*.55};
+   const future=(projectedTarget||supportPoint)?project(p):{x:p.x,y:p.y};
+   let pressScore=d;
+   if(projectedTarget){
+    const arrival=Math.hypot(future.x-projectedTarget.x,future.y-projectedTarget.y);
+    const delta=Math.max(-24,Math.min(24,arrival-d));
+    pressScore=d+delta*.55;
+   }
+   const supportDistance=supportPoint?
+    Math.hypot(p.x-supportPoint.x,p.y-supportPoint.y):d;
+   let supportScore=d;
+   if(supportPoint){
+    const supportArrival=Math.hypot(future.x-supportPoint.x,future.y-supportPoint.y);
+    const delta=Math.max(-24,Math.min(24,supportArrival-supportDistance));
+    supportScore=supportDistance+delta*.55;
+   }
+   return {p,index,d,pressScore,supportDistance,supportScore};
   })
   .sort((a,b)=>a.pressScore-b.pressScore||a.d-b.d||a.index-b.index);
  const primary=candidates[0]?.p||null;
  if(candidates.length<2)return {primary,support:null};
  const remaining=candidates.slice(1);
- const nearest=remaining.reduce((value,candidate)=>Math.min(value,candidate.d),Infinity);
+ const nearest=remaining.reduce((value,candidate)=>
+  Math.min(value,supportPoint?candidate.supportDistance:candidate.d),Infinity);
  let chosen=remaining[0],best=Infinity;
  for(const candidate of remaining){
-  if(candidate.d>nearest+110)continue;
+  const localDistance=supportPoint?candidate.supportDistance:candidate.d;
+  if(localDistance>nearest+110)continue;
   const q=candidate.p;
   const primarySide=primary.y-target.y,coverSide=q.y-target.y;
   const sameSide=Math.abs(primarySide)>25&&Math.abs(coverSide)>25&&primarySide*coverSide>0;
   const lateralGap=Math.abs(q.y-primary.y);
   const goalSide=team===0?q.x<=target.x:q.x>=target.x;
-  const score=candidate.d+(sameSide?75:0)+Math.max(0,65-lateralGap)*.4-(goalSide?12:0);
+  const score=(supportPoint?candidate.supportScore:candidate.d)+
+   (sameSide?75:0)+Math.max(0,65-lateralGap)*.4-(goalSide?12:0);
   if(score<best-1e-9){best=score;chosen=candidate;}
  }
  return {primary,support:chosen.p};

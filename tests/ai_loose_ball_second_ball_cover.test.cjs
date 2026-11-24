@@ -155,6 +155,46 @@ test('primary and support split fresh low tackle spills and short rolling reboun
  }
 });
 
+test('driveAI assigns the support defender with the best momentum-aware arrival to the goal-side spill pocket',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+  const dir=team===0?1:-1,primary=game.player(team,3),atPocket=game.player(team,4),closing=game.player(team,5);
+  const field=ENGINE.WORLD.field,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  for(const p of game.players){
+   p.aiTarget=null;p.aiTimer=0;p.aiAssistTarget=null;p.aiGiveAndGoRun=null;
+   p.action='idle';p.actionTimer=0;p.z=0;p.down=true;p.stun=1;
+  }
+  for(const p of [primary,atPocket,closing]){
+   p.down=false;p.stun=0;p.invuln=0;p.action='idle';p.actionTimer=0;p.z=0;
+   p.slideTimer=0;p.shotImpactKnockdownPending=0;p.shotImpactKnockdownTimer=0;
+   p.shotImpactRiseTimer=0;p.aiTarget=null;p.aiTimer=1;
+  }
+  Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
+   x,y,z:0,vx:dir*180,vy:-60,vz:0,canCollect:0,age:.35,attacker:1-team,lastTouchTeam:1-team});
+  game.clock=5;
+  const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+  const primaryTarget=AI.defensiveGroundSpillPrimaryTarget(team,game.ball,bounds);
+  const supportTarget=AI.defensiveGroundSpillCoverTarget(team,game.ball,bounds);
+  assert.ok(primaryTarget&&supportTarget);
+  Object.assign(primary,{x:primaryTarget.x,y:primaryTarget.y,moveVX:0,moveVY:0});
+  Object.assign(atPocket,{x:supportTarget.x,y:supportTarget.y,moveVX:dir*220,moveVY:0});
+  Object.assign(closing,{x:supportTarget.x-dir*4,y:supportTarget.y,moveVX:dir*33,moveVY:0});
+  const distanceFirst=AI.defensivePressers([primary,atPocket,closing],team,{...primaryTarget,landingRead:true});
+  assert.equal(distanceFirst.primary,primary);
+  assert.equal(distanceFirst.support,atPocket,'distance-only support prefers the closer landing-center defender');
+  const arrivalAware=AI.defensivePressers([primary,atPocket,closing],team,
+   {...primaryTarget,landingRead:true},null,supportTarget);
+  assert.equal(arrivalAware.primary,primary);
+  assert.equal(arrivalAware.support,closing,'the slightly farther defender is already arriving into the cover pocket');
+  game.moveAgile=()=>{};
+  game.driveAI(primary,.016);game.driveAI(atPocket,.016);game.driveAI(closing,.016);
+  assert.deepEqual(primary.aiTarget,primaryTarget,'primary still meets the spill landing');
+  assert.deepEqual(closing.aiTarget,supportTarget,'closing support defender owns the goal-side cover pocket');
+  assert.notDeepEqual(atPocket.aiTarget,supportTarget,'retreating pocket defender is not assigned the cover target');
+ }
+});
 test('driveAI assigns primary and support to coordinated fresh ground-spill landing targets',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){
@@ -194,7 +234,7 @@ test('driveAI assigns primary and support to coordinated fresh ground-spill land
     primary.aiTarget.y-support.aiTarget.y)-26)<1e-6,scenario.name+' keeps 26-unit separation');
   }
  }
- const staleBall={...spill,z:23,vx:150,vy:50,vz:115,canCollect:.15,age:1.16,lastTouchTeam:1};
+ const staleBall={...looseBall(),z:23,vx:150,vy:50,vz:115,canCollect:.15,age:1.16,lastTouchTeam:1};
  const nearBall={t:0,x:420,y:300,stun:0,down:false,z:0,action:'idle'};
  const farther={t:0,x:512,y:330,stun:0,down:false,z:0,action:'idle'};
  assert.equal(AI.defensiveGroundSpillPrimaryTarget(0,staleBall,bounds),null,
