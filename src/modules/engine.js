@@ -2826,6 +2826,8 @@ class GameEngine{
   // live simulation and human controls retain the real owner and ball state.
   const b=concealed?{...liveBall,owner:null,x:known?.x??liveOwner.x,y:known?.y??liveOwner.y,z:0,vx:0,vy:0,vz:0}:liveBall;
   const owner=b.owner;
+  const firstTouchReadExpired=!!(p.aiFirstTouchOutletUntil&&Number.isFinite(p.aiFirstTouchOutletUntil)&&
+   Number.isFinite(this.clock)&&this.clock>p.aiFirstTouchOutletUntil);
   if(p.aiFirstTouchOutletUntil&&(owner!==p||!Number.isFinite(p.aiFirstTouchOutletUntil)||
    !Number.isFinite(this.clock)||this.clock>p.aiFirstTouchOutletUntil))p.aiFirstTouchOutletUntil=0;
   const firstTouchOutletWindow=!!(owner===p&&Number.isFinite(p.aiFirstTouchOutletUntil)&&
@@ -3030,7 +3032,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
      carryEscapeTarget=attackingCarryEscapeTarget(this.players,t,p,
       {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24});
     }
-    const retainPressuredCarry=pressured&&!firstTouchControl&&!!carryEscapeTarget&&
+    const retainPressuredCarry=pressured&&!firstTouchControl&&!firstTouchReadExpired&&!!carryEscapeTarget&&
      !supportPassTarget&&!supportCutback&&!supportGoalmouth&&!giveAndGoReturn&&!firstTouchOutlet;
     // Attack-quality gate runs before pressure passing. On the shorter pitch,
     // the earlier pass-first ordering suppressed promising close-range shots.
