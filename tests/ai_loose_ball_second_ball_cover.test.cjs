@@ -178,7 +178,7 @@ test('driveAI assigns primary and support to coordinated fresh ground-spill land
     x,y,z:scenario.z,vx:scenario.vx,vy:scenario.vy,vz:scenario.vz,
     canCollect:scenario.canCollect,age:scenario.age,attacker:1-team,lastTouchTeam:1-team});
    game.clock=5;
-   const bounds={xMin:field.x+24,xMax:field.x+F.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+   const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
    const primaryExpected=AI.defensiveGroundSpillPrimaryTarget(team,game.ball,bounds);
    const supportExpected=AI.defensiveGroundSpillCoverTarget(team,game.ball,bounds);
    assert.ok(primaryExpected&&supportExpected,scenario.name);
