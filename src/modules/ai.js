@@ -50,8 +50,9 @@ function defensiveCarrierSupportCoverTarget(support,carrier,bounds,horizonSecond
 function defensivePressers(players,team,target,humanControlled=null){
  if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y)||!Array.isArray(players))
   return {primary:null,support:null};
- // Only a moving opponent carrier gets arrival-aware primary selection. Loose-ball
- // pursuit and stationary-carrier ordering stay distance-first.
+ // Moving carriers and explicitly validated loose-ball landing reads use a
+ // bounded arrival-aware primary score. Ordinary loose-ball and stationary-carrier
+ // ordering remains distance-first.
  const velocity=(p,axis)=>{
   const current=axis==='x'?p?.moveVX:p?.moveVY;
   if(Number.isFinite(current))return current;
@@ -67,7 +68,8 @@ function defensivePressers(players,team,target,humanControlled=null){
   const scale=speed>220?220/speed:1;
   return {x:p.x+vx*scale*.12,y:p.y+vy*scale*.12};
  };
- const projectedCarrier=movingCarrier?project(target):null;
+ const landingRead=target.landingRead===true;
+ const projectedTarget=movingCarrier?project(target):landingRead?{x:target.x,y:target.y}:null;
  // Airborne and impact-recovering players cannot press or provide cover yet.
  // Treat a missing legacy z as grounded, but reject malformed or high airborne state.
  const candidates=players.filter(p=>p&&p.t===team&&!p.keeper&&p!==humanControlled&&
@@ -81,8 +83,8 @@ function defensivePressers(players,team,target,humanControlled=null){
    Number.isFinite(p.x)&&Number.isFinite(p.y))
   .map((p,index)=>{
    const d=Math.hypot(p.x-target.x,p.y-target.y);
-   if(!projectedCarrier)return {p,index,d,pressScore:d};
-   const future=project(p),arrival=Math.hypot(future.x-projectedCarrier.x,future.y-projectedCarrier.y);
+   if(!projectedTarget)return {p,index,d,pressScore:d};
+   const future=project(p),arrival=Math.hypot(future.x-projectedTarget.x,future.y-projectedTarget.y);
    // Limit the momentum adjustment to 13.2 distance units so a distant runner
    // cannot steal the press assignment merely by reporting an extreme velocity.
    const delta=Math.max(-24,Math.min(24,arrival-d));

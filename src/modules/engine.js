@@ -2937,7 +2937,7 @@ class GameEngine{
   // Select press roles against a trusted landing point so the best-positioned
   // defender contests the arrival; fall back to the live/known ball position
   // when no validated landing estimate exists.
-  const pressTarget=owner||looseBallLandingTarget||b;
+  const pressTarget=owner||(looseBallLandingTarget?{...looseBallLandingTarget,landingRead:true}:b);
   const pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,pressTarget,
    this.inControl(t)?this.controlledPlayer(t):null):null;
   const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;

@@ -11,7 +11,7 @@ test('Hide Ball gives opposing CPU only the saved last-known position',()=>{
  assert.match(drive,/const concealed=!!\(liveOwner&&liveOwner\.t!==t&&\(liveOwner\.hideBallTimer\|\|0\)>0\)/);
  assert.match(drive,/const b=concealed\?\{\.\.\.liveBall,owner:null,x:known\?\.x\?\?liveOwner\.x,y:known\?\.y\?\?liveOwner\.y,z:0,vx:0,vy:0,vz:0\}:liveBall/);
  assert.match(drive,/const looseBallLandingTarget=!owner&&!concealed\?/,'concealed observations cannot create a live landing estimate');
- assert.match(drive,/const pressTarget=owner\|\|looseBallLandingTarget\|\|b/,'concealed pressing falls back to the masked observation');
+ assert.match(drive,/const pressTarget=owner\|\|\(looseBallLandingTarget\?\{\.\.\.looseBallLandingTarget,landingRead:true\}:b\)/,'concealed pressing falls back to the masked observation');
  assert.match(drive,/defensivePressers\(this\.players,t,pressTarget/,'pressing decisions use the selected safe observation');
  assert.match(drive,/if\(!concealed&&!firstTouchControl&&this\.driveAiCombo\(p,dt,ai\)\)return/,'CPU combos respect both concealment and the first-touch control window');
 });

@@ -36,3 +36,18 @@ test('healthy pressing order and human/keeper exclusions remain unchanged',async
  const result=AI.defensivePressers([human,keeper,nearest,second],0,target,human);
  assert.equal(result.primary,nearest);assert.equal(result.support,second);
 });
+
+test('validated loose-ball landing press uses bounded momentum to select the defender who can arrive first',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,target={x:500,y:300,landingRead:true};
+  const nearerRetreating=player('nearer-retreating',target.x-dir*100,target.y,{moveVX:-dir*220,moveVY:0});
+  const fartherClosing=player('farther-closing',target.x-dir*110,target.y,{moveVX:dir*220,moveVY:0});
+  nearerRetreating.t=team;fartherClosing.t=team;
+  const ordinary=AI.defensivePressers([nearerRetreating,fartherClosing],team,{x:target.x,y:target.y});
+  assert.equal(ordinary.primary,nearerRetreating,'ordinary ball targets retain distance-first ordering');
+  const landing=AI.defensivePressers([nearerRetreating,fartherClosing],team,target);
+  assert.equal(landing.primary,fartherClosing,'a defender closing on the landing can beat a slightly nearer retreating defender');
+  assert.equal(landing.support,nearerRetreating,'the other ready defender remains available for goal-side cover');
+ }
+});

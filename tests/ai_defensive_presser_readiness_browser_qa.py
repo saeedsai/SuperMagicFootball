@@ -28,7 +28,7 @@ with sync_playwright() as pw:
         page.add_script_tag(content=js,type='module')
         page.wait_for_function('!!window.SupermagicFootball?.game')
         result=page.evaluate("""() => {
-            const game=SupermagicFootball.game,rows=[];
+            const game=SupermagicFootball.game,rows=[],momentumRows=[];
             const field={x:150,y:155,w:2260.8,h:1220};
             for(const team of [0,1]){
                 game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
@@ -51,8 +51,22 @@ with sync_playwright() as pw:
                 game.clock=5;
                 game.driveAI(primary,.016);game.driveAI(support,.016);
                 rows.push({team,dir,x,y,primary:primary.aiTarget,support:support.aiTarget});
+                const flight=(-40+Math.sqrt(40*40+1000*54))/500;
+                const landing={x:x+dir*260*flight,y};
+                Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
+                    x,y,z:54,vx:dir*260,vy:0,vz:-40,canCollect:0,age:0,lastTouchTeam:1-team,attacker:1-team});
+                Object.assign(primary,{x:landing.x-dir*100,y,moveVX:-dir*220,moveVY:0,aiTarget:null,aiTimer:1,
+                    down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0});
+                Object.assign(support,{x:landing.x-dir*110,y,moveVX:dir*220,moveVY:0,aiTarget:null,aiTimer:1,
+                    down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0});
+                game.clock=5;game.moveAgile=()=>{};
+                const nearBallDistance=Math.hypot(primary.x-x,primary.y-y);
+                const closingBallDistance=Math.hypot(support.x-x,support.y-y);
+                game.driveAI(primary,.016);game.driveAI(support,.016);
+                momentumRows.push({team,dir,landing,cover:{x:landing.x-dir*26,y},
+                    near:primary.aiTarget,closing:support.aiTarget,nearBallDistance,closingBallDistance});
             }
-            return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            return {rows,momentumRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -61,7 +75,11 @@ with sync_playwright() as pw:
             assert row['primary'] and abs(row['primary']['x']-row['x'])<1e-6 and abs(row['primary']['y']-row['y'])<1e-6,(kind,row)
             assert row['support'] and abs(row['support']['x']-(row['x']-row['dir']*110))<1e-6,(kind,row)
             assert abs(row['support']['y']-(row['y']+95))<1e-6,(kind,row)
+        for row in result['momentumRows']:
+            assert row['nearBallDistance']<row['closingBallDistance'],(kind,row)
+            assert row['closing'] and abs(row['closing']['x']-row['landing']['x'])<1e-6 and abs(row['closing']['y']-row['landing']['y'])<1e-6,(kind,row)
+            assert row['near'] and abs(row['near']['x']-row['cover']['x'])<1e-6 and abs(row['near']['y']-row['cover']['y'])<1e-6,(kind,row)
         assert not errors,(kind,errors)
-        print('PASS',kind,'grounded pressers, airborne exclusion, mirrored teams, four actions and no JS errors',flush=True)
+        print('PASS',kind,'grounded/airborne pressers, momentum-aware landing arrival, mirrored teams, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()
