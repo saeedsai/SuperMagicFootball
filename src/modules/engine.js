@@ -458,9 +458,9 @@ function defensiveTackleSlideBallSideRead(defender,carrier,ball,baseSpeed=0){
  return defensiveTackleSlide(defender,carrier,baseSpeed);
 }
 function defensivePokeCommitWindow(defender,carrier,ball=null){
- // Predict the existing short PASS poke exactly: 55 ms of carrier lead,
+ // Predict the existing short PASS poke with 55 ms of relative lead,
  // capped at 12 units per axis, followed by the 16-unit forward step.
- // Only add an early commit when a grounded carrier is actually closing.
+ // Only add an early commit when the grounded pair is actually closing.
  if(!defender||!carrier||defender===carrier||defender.t===carrier.t||
   defender.keeper||carrier.keeper||defender.down||carrier.down||
   !Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
