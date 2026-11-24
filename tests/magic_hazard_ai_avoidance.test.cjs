@@ -140,3 +140,19 @@ test('an active first-frame JUMP counters Banana and Ice before vertical lift re
   assert.equal(groundedResult.slips.length,1,kind+' missing jump count is not a counter');
  }
 });
+
+
+test('CPU prioritizes an in-lane trap over a nearer off-lane trap for both teams',()=>{
+ for(const side of [0,1]){
+  const {game,cpu}=setup(side,'ice'),direction=side===0?1:-1;
+  Object.assign(cpu,{x:500,y:500,dx:direction,dy:0,face:direction,cd:0,fatigue:.1,action:'run'});
+  const offLane={kind:'banana',team:1-side,x:500,y:545,life:2.5,arm:0};
+  const inLane={kind:'ice',team:1-side,x:500+direction*60,y:500,life:2.5,arm:0};
+  game.magicHazards=[offLane,inLane];game.ball.owner=cpu;
+  let jumps=0;
+  game.jump=p=>{jumps++;p.action='jump';p.actionTimer=.5;p.jumpCount=1;return true;};
+  assert.equal(react.call(game,cpu,.016,0),true,'the lane threat is handled');
+  assert.equal(cpu.aiHazardKey,'ice:'+(1-side)+':'+(500+direction*60)+':500');
+  assert.equal(jumps,1,'CPU jumps over the trap in its travel lane');
+ }
+});

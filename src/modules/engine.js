@@ -1700,12 +1700,30 @@ class GameEngine{
  }
  reactToMagicHazard(p,dt,reactionSeconds){
   if(p.keeper){p.aiHazardKey=null;p.aiHazardReaction=0;p.aiHazardEvading=false;return false;}
-  const hazard=(this.magicHazards||[]).filter(h=>h&&h.team!==p.t&&
+  const moveX=Number.isFinite(p.dx)?p.dx:0,moveY=Number.isFinite(p.dy)?p.dy:0;
+  const moveLength=Math.hypot(moveX,moveY);
+  const heading=moveLength>.15?{x:moveX/moveLength,y:moveY/moveLength}:
+   {x:p.face===-1?-1:1,y:0};
+  // Prefer a trap that intersects the run lane over a nearer off-lane distraction.
+  // An already-overlapping trap stays first; no lane threat keeps nearest fallback.
+  const candidates=(this.magicHazards||[]).filter(h=>h&&h.team!==p.t&&
    (h.kind==='banana'||h.kind==='ice')&&h.life>0&&(h.arm||0)<=.15&&
    Number.isFinite(h.x)&&Number.isFinite(h.y))
-   .map(h=>({h,radius:h.kind==='ice'?35:27,d:Math.hypot(p.x-h.x,p.y-h.y)}))
+   .map(h=>{
+    const radius=h.kind==='ice'?35:27,dx=h.x-p.x,dy=h.y-p.y,d=Math.hypot(dx,dy);
+    const ahead=dx*heading.x+dy*heading.y;
+    const across=Math.abs(dx*heading.y-dy*heading.x);
+    return {h,radius,d,ahead,across,immediate:d<=radius+8,
+     inPath:ahead>=-4&&across<=radius+8,
+     pathScore:Math.max(0,ahead-radius)+across*.25};
+   }).filter(candidate=>candidate.d<candidate.radius+60);
+  const immediate=candidates.filter(candidate=>candidate.immediate)
    .sort((a,b)=>a.d-b.d)[0];
-  if(!hazard||hazard.d>=hazard.radius+60){p.aiHazardKey=null;p.aiHazardReaction=0;p.aiHazardEvading=false;return false;}
+  const inPath=candidates.filter(candidate=>candidate.inPath)
+   .sort((a,b)=>a.pathScore-b.pathScore||a.d-b.d)[0];
+  const nearest=candidates.reduce((best,candidate)=>!best||candidate.d<best.d?candidate:best,null);
+  const hazard=immediate||inPath||nearest;
+  if(!hazard){p.aiHazardKey=null;p.aiHazardReaction=0;p.aiHazardEvading=false;return false;}
   const key=`${hazard.h.kind}:${hazard.h.team}:${hazard.h.x}:${hazard.h.y}`;
   if(p.aiHazardKey!==key){p.aiHazardKey=key;p.aiHazardReaction=hazard.d<=hazard.radius+20?0:Math.max(0,Number(reactionSeconds)||0);p.aiHazardEvading=false;}
   if(p.action==='slide'&&(p.actionTimer||0)>0)return false;
@@ -1728,13 +1746,7 @@ class GameEngine{
   // Clear a trap in the running lane with the existing grounded SHOOT slide.
   // Avoid committing while carrying, when an opponent would be auto-targeted,
   // or when a teammate is already sweeping the same trap.
-  const moveX=Number.isFinite(p.dx)?p.dx:0,moveY=Number.isFinite(p.dy)?p.dy:0;
-  const moveLength=Math.hypot(moveX,moveY);
-  const heading=moveLength>.15?{x:moveX/moveLength,y:moveY/moveLength}:
-   {x:p.face===-1?-1:1,y:0};
-  const hazardDX=hazard.h.x-p.x,hazardDY=hazard.h.y-p.y;
-  const ahead=hazardDX*heading.x+hazardDY*heading.y;
-  const across=Math.abs(hazardDX*heading.y-hazardDY*heading.x);
+  const ahead=hazard.ahead,across=hazard.across;
   const opponentsInSlideArc=(this.players||[]).some(q=>{
    if(!q||q===p||q.t===p.t||q.keeper||q.stun>0||q.invuln>0||
     q.action==='shotDown'||q.action==='shotGetUp'||

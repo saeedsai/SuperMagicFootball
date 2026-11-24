@@ -63,7 +63,24 @@ with sync_playwright() as pw:
     g.updateMagicHazards(1/hz);
     jumpCases.push({kind,side,hz,committed,action,jumpCount,ballKept,slips:g.events.filter(e=>e.type==='magicHazard'&&e.player===cpu.src.name).length,active:g.magicHazards.some(h=>h.kind===kind&&h.team===1-side)});
    }
-   return {cases,jumpCases,actionButtons:document.querySelectorAll('#touchButtons button[data-act]').length};
+   const multiHazardCases=[];
+   for(const side of [0,1]){
+    g.init({home:0,away:9,humans:1,mode:'quick'});g.matchState='paused';
+    const cpu=g.players.find(p=>p.t===side&&!p.keeper),dir=side===0?1:-1;
+    for(const player of g.players)if(player!==cpu)Object.assign(player,{
+     x:1300,y:950,z:0,stun:0,down:false,action:'idle',actionTimer:0,slideTimer:0
+    });
+    Object.assign(cpu,{x:500,y:500,z:0,stun:0,down:false,face:dir,cd:0,fatigue:0,invuln:0,
+     moveVX:0,moveVY:0,dx:dir,dy:0,action:'run',actionTimer:0,jumpHold:0,slideTimer:0,
+     jumpCount:0,aiHazardKey:null,aiHazardReaction:0,aiHazardEvading:false});
+    const offLane={kind:'banana',team:1-side,x:500,y:545,life:2.5,arm:0};
+    const inLane={kind:'ice',team:1-side,x:500+dir*60,y:500,life:2.5,arm:0};
+    g.magicHazards=[offLane,inLane];g.ball.owner=cpu;
+    for(let frame=0;frame<20&&cpu.action!=='jump';frame++)g.reactToMagicHazard(cpu,1/60,.18);
+    multiHazardCases.push({side,action:cpu.action,key:cpu.aiHazardKey,
+     expectedKey:'ice:'+(1-side)+':'+(500+dir*60)+':500'});
+   }
+   return {cases,jumpCases,multiHazardCases,actionButtons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert len(result['cases'])==12,(label,result)
   for case in result['cases']:
@@ -75,6 +92,9 @@ with sync_playwright() as pw:
    assert case['committed'] and case['action']=='jump' and case['jumpCount']==1,(label,'CPU must use the existing JUMP counter',case)
    assert case['ballKept'],(label,'JUMP counter must preserve carried-ball possession',case)
    assert case['slips']==0 and case['active'],(label,'first-frame JUMP must evade without consuming the trap',case)
+  assert len(result['multiHazardCases'])==2,(label,'both teams must exercise competing traps',result)
+  for case in result['multiHazardCases']:
+   assert case['action']=='jump' and case['key']==case['expectedKey'],(label,'in-lane trap must outrank nearer off-lane trap',case)
   assert result['actionButtons']==4,(label,'four-button grammar changed',result)
   assert not errors,(label,errors)
   print('MAGIC_HAZARD_AI_AVOIDANCE_BROWSER_PASS',label,result,flush=True)
