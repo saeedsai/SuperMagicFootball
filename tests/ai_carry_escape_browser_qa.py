@@ -100,21 +100,50 @@ with sync_playwright() as pw:
                 const originalRandom=Math.random;
                 try{
                     Math.random=()=>.99;
-                    for(let step=0;step<36;step++){
-                        carrier.x=x;carrier.y=y;game.clock=1+step*.016;
-                        game.driveAI(carrier,.016);
-                    }
+                    game.clock=1;
+                    game.driveAI(carrier,.016);
                 }finally{Math.random=originalRandom;}
                 return {team,dribbling,dy:carrier.dy,moveVY:carrier.moveVY};
             };
+            const retentionRows=[];
+            const runRetention=(team)=>{
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
+                const carrier=game.player(team,3),marker=game.player(1-team,3);
+                for(const q of game.players)if(q!==carrier&&q!==marker&&!q.keeper){
+                    Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0});
+                }
+                Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'run',actionTimer:0,
+                    moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiFirstTouchTarget:null,
+                    firstTouchControlTimer:0,cd:0,trickCd:1});
+                Object.assign(carrier.src,{dribbling:75});
+                Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0,
+                    action:'idle',actionTimer:0,moveVX:-dir*30,moveVY:0});
+                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,
+                    passTarget:null,attacker:team,lastTouchTeam:team,age:0,shot:null,strike:null,
+                    ordinaryShot:false,hideBallTimer:0});
+                const originalPass=game.pass,originalRandom=Math.random;
+                let passAttempts=0;
+                game.pass=function(...args){passAttempts++;return originalPass.apply(this,args);};
+                try{
+                    Math.random=()=>0;
+                    game.clock=1;
+                    game.driveAI(carrier,.016);
+                }finally{
+                    Math.random=originalRandom;
+                    game.pass=originalPass;
+                }
+                return {team,passAttempts,retained:game.ball.owner===carrier,dx:carrier.dx,dy:carrier.dy};
+            };
             for(const team of [0,1]){
+                retentionRows.push(runRetention(team));
                 rows.push(run(team,240,0));
                 rows.push(run(team,-240,-70));
                 slideRows.push(runSlide(team,false));
                 slideRows.push(runSlide(team,true));
                 skillRows.push(runSkill(team,1),runSkill(team,100));
             }
-            return {rows,slideRows,skillRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            return {rows,slideRows,skillRows,retentionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -129,6 +158,10 @@ with sync_playwright() as pw:
             else:
                 assert abs(row['dy'])>.3,(kind,'carrier must leave a straight incoming slide lane',row)
         assert len(result['skillRows'])==4,(kind,result)
+        assert len(result['retentionRows'])==2,(kind,result)
+        for row in result['retentionRows']:
+            assert row['passAttempts']==0 and row['retained'],(kind,'CPU should retain possession rather than force a pressured pass without a safe outlet',row)
+            assert abs(row['dy'])>.1 and row['dx']*(1 if row['team']==0 else -1)>0,(kind,'retained carrier should use a forward escape cut',row)
         for team in (0,1):
             low=next(row for row in result['skillRows'] if row['team']==team and row['dribbling']==1)
             high=next(row for row in result['skillRows'] if row['team']==team and row['dribbling']==100)

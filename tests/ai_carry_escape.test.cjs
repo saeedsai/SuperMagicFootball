@@ -128,6 +128,28 @@ test('engine applies the escape as actual CPU carrier movement in both attack di
   assert.ok((team===0?1:-1)*(carrier.x-(ENGINE.WORLD.field.x+ENGINE.WORLD.field.w*.5))>=0,'carrier must not reverse');
  }
 });
+test('pressured CPU carrier retains possession and uses its safe escape when every validated outlet is closed',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const {game,carrier}=prepareCarrierGame(ENGINE,team),marker=game.player(1-team,3);
+  const dir=team===0?1:-1,x=carrier.x,y=carrier.y;
+  Object.assign(carrier,{moveVX:0,moveVY:0,cd:0,trickCd:1,aiTimer:0,aiTarget:null,
+   action:'run',firstTouchControlTimer:0});
+  Object.assign(carrier.src,{dribbling:75});
+  Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0,action:'idle',
+   actionTimer:0,moveVX:-dir*30,moveVY:0});
+  game.ball.owner=carrier;game.ball.attacker=team;game.clock=1;
+  let passAttempts=0;
+  const originalPass=game.pass,originalRandom=Math.random;
+  game.pass=function(...args){passAttempts++;return originalPass.apply(this,args);};
+  try{Math.random=()=>0;game.driveAI(carrier,.016);}
+  finally{Math.random=originalRandom;game.pass=originalPass;}
+  assert.equal(passAttempts,0,'no speculative PASS should be attempted when all validated outlets are closed');
+  assert.equal(game.ball.owner,carrier,'the carrier must retain the live ball');
+  assert.ok(dir*carrier.dx>0,'the escape must continue toward the attacking goal');
+  assert.ok(Math.abs(carrier.dy)>.1,'the carrier must actually cut into the safer diagonal');
+ }
+});
 test('engine carrier movement evades a live incoming slide in both attack directions',async()=>{
  const {ENGINE}=await loadModules();
  for(const team of [0,1]){

@@ -2995,6 +2995,7 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
   // still moves the carrier toward a safer diagonal during this short read.
   const retainFirstTouchPossession=firstTouchOutletWindow&&!firstTouchOutlet&&!giveAndGoReturn&&
    !supportGoalmouth&&!supportPassTarget&&!supportCutback;
+  let carryEscapeTarget=null,carryEscapeEvaluated=false;
   p.aiTimer=(p.aiTimer??0)-dt;
   const decide=p.aiTimer<=0||!p.aiTarget;
   if(decide){
@@ -3024,6 +3025,13 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     const nearGoal=t===0?p.x>F.x+F.w*(.88-ai.anticipation*.32):p.x<F.x+F.w*(.12+ai.anticipation*.32);
     const defenders=this.players.filter(q=>q.t!==t&&!q.stun&&distance(p,q)<230);
     const pressured=defenders.length>0;
+    carryEscapeEvaluated=true;
+    if(!firstTouchControl&&!p.keeper&&Math.abs((t===0?F.x+F.w:F.x)-p.x)>320){
+     carryEscapeTarget=attackingCarryEscapeTarget(this.players,t,p,
+      {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24});
+    }
+    const retainPressuredCarry=pressured&&!firstTouchControl&&!!carryEscapeTarget&&
+     !supportPassTarget&&!supportCutback&&!supportGoalmouth&&!giveAndGoReturn&&!firstTouchOutlet;
     // Attack-quality gate runs before pressure passing. On the shorter pitch,
     // the earlier pass-first ordering suppressed promising close-range shots.
     const goalDistance=Math.abs((t===0?F.x+F.w:F.x)-p.x);
@@ -3045,8 +3053,11 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
     // emergency pass after a defender reaches the carrier. Keep finishing first
     // and scale this early release with the CPU pass tendency and team tactic.
     else if(!firstTouchControl&&p.cd<=0&&retainFirstTouchPossession){
-     // No safe outlet is visible: keep the ball briefly and let the live carry
-     // escape above choose a safer diagonal instead of forcing a speculative pass.
+     // No safe first-touch outlet is visible: retain the ball during the settling read.
+    }
+    else if(!firstTouchControl&&p.cd<=0&&retainPressuredCarry){
+     // Every validated outlet is closed; keep possession and use the live escape route
+     // rather than gambling on an ordinary pressured PASS to an unsafe teammate.
     }
     else if(!firstTouchControl&&p.cd<=0&&supportCutback&&!pressured&&Math.random()<ai.passRate*tactical.pass*.22){this.pass(p,false,false,passOptions)}
     else if(!firstTouchControl&&p.cd<=0&&pressured&&Math.random()<ai.passRate*tactical.pass){this.pass(p,false,false,passOptions)}
@@ -3159,9 +3170,12 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
   // as a defender commits elsewhere; the base formation target is retained.
   if(owner===p&&this.ball.owner===p&&!p.keeper&&!(Number(p.firstTouchControlTimer)>0)&&
    Math.abs((t===0?F.x+F.w:F.x)-p.x)>320){
-   const escape=attackingCarryEscapeTarget(this.players,t,p,
-    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24});
-   if(escape){tx=escape.x;ty=escape.y;}
+   if(!carryEscapeEvaluated){
+    carryEscapeEvaluated=true;
+    carryEscapeTarget=attackingCarryEscapeTarget(this.players,t,p,
+     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24});
+   }
+   if(carryEscapeTarget){tx=carryEscapeTarget.x;ty=carryEscapeTarget.y;}
   }
   // Detect stalled movement after collision resolution, then choose a temporary
   // lateral route around the closest grounded player blocking the pursuit line.
