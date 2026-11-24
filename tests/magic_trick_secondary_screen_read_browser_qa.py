@@ -65,13 +65,38 @@ with sync_playwright() as pw:
     return {team,mode,hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,
      cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue};
    }
+   function attemptSecondDirectRead(team,mode){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
+    const dir=team===0?1:-1,carrier=g.player(team,3),nearest=g.player(1-team,3),second=g.player(1-team,4);
+    for(const q of g.players)if(q!==carrier&&q!==nearest&&q!==second&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(carrier,{x:1200,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,face:dir,dx:dir,dy:0,
+     moveVX:dir*180,moveVY:0,fatigue:0,magicReadyAt:0,firstTouchOutletReadTimer:0,
+     firstTouchControlTimer:0,firstTouchPressure:0,hideBallTimer:0});
+    Object.assign(carrier.src,{dribbling:50,magicTrick:'hideBall'});
+    Object.assign(nearest,{x:1200-dir*25,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     face:-dir,dx:0,dy:0,moveVX:0,moveVY:0,magicReadCueTimer:0});
+    Object.assign(nearest.src,{defence:20});
+    const motion=mode==='approach'?{moveVX:dir*150,moveVY:-30}:
+     mode==='retreat'?{moveVX:-dir*150,moveVY:30}:{moveVX:0,moveVY:0};
+    Object.assign(second,{x:1200-dir*58,y:780,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     face:dir,dx:0,dy:0,magicReadCueTimer:0,...motion});
+    Object.assign(second.src,{defence:95});
+    Object.assign(g.ball,{owner:carrier,x:1200+dir*12,y:765,z:0,pass:false,passTarget:null,
+     shot:null,strike:null,attacker:team,lastTouchTeam:team,ordinaryShot:false});
+    g.tryMagicTrick(carrier);
+    return {team,mode,hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,
+     cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue,readerCue:second.magicReadCueTimer||0,
+     nearestCue:nearest.magicReadCueTimer||0,counterpress:second.magicReadCounterpressTimer||0};
+   }
+   const directCounters=[];
+   for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])directCounters.push(attemptSecondDirectRead(team,mode));
    const momentum=[];
    for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])momentum.push(attemptMomentum(team,mode));
    return {baseline:attempt(false),screened:attempt(true),shielded:attempt(true,'shielded'),
     lowSkill:attempt(true,'exposed',1,.22),neutralSkill:attempt(true,'exposed',50,.22),eliteSkill:attempt(true,'exposed',100,.22),
     perpendicular:attempt(true,'exposed',95,.1,'perpendicular',0),
     perpendicularMirrored:attempt(true,'exposed',95,.1,'perpendicular',1),
-    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),momentum,
+    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),momentum,directCounters,
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -90,6 +115,16 @@ with sync_playwright() as pw:
    assert row['owner'] is True,(kind,row)
    assert row['cooldown']>2 and row['fatigue']>0,(kind,row)
    assert row['hidden'] is (row['mode']!='approach'),(kind,'residual approach should counter, retreat/stationary should not',row)
+  assert len(result['directCounters'])==6,(kind,result)
+  for row in result['directCounters']:
+   assert row['owner'] is True and row['cooldown']>0 and row['fatigue']>0,(kind,row)
+   assert row['counterpress']==0,(kind,row)
+   if row['mode']=='approach':
+    assert row['hidden'] is False and row['readerCue']>0,(kind,row)
+    assert row['nearestCue']==0,(kind,row)
+   else:
+    assert row['hidden'] is True and row['readerCue']==0,(kind,row)
+   assert row['nearestCue']==0,(kind,row)
   for key in ('perpendicular','perpendicularMirrored','movementPerpendicular'):
    assert result[key]['hidden'] is True,(kind,key,result[key])
    assert result[key]['readerCue']==0 and result[key]['counterpressTimer']==0,(kind,key,result[key])
