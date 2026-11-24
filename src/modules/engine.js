@@ -2907,7 +2907,8 @@ class GameEngine{
    const parryTarget=p.keeper&&!concealed&&!liveOwner?
     keeperParryReboundTarget(p,liveBall,this.players,
      {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},
-     this.clock,keeperParryRebounds.get(liveBall)):null;
+     this.clock,keeperParryRebounds.get(liveBall),
+     this.playerSpeed(p)*ai.speed*(t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1)*(this.terrain==='Sand'?.75:1)):null;
    if(parryTarget){
     p.aiParryReboundTarget=true;p.aiTarget={x:parryTarget.x,y:parryTarget.y};
     p.aiTimer=Math.max(ai.reaction,dt*2);

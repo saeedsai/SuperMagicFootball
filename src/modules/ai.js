@@ -2078,7 +2078,7 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
  // After a parry, a CPU keeper may step off the line for its own descending
  // rebound. It stays inside a short goal-side corridor and yields to closer
  // outfield players or an opponent who can reach the landing pocket first.
- function keeperParryReboundTarget(keeper,ball,players,bounds,now=0,rebound=null){
+ function keeperParryReboundTarget(keeper,ball,players,bounds,now=0,rebound=null,maxSpeed=null){
   const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
   if(!keeper?.keeper||keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
    (keeper.action==='keeperDive'&&(keeper.diveIntentPending||!Number.isFinite(keeper.diveElapsed)||keeper.diveElapsed<.22))||
@@ -2106,6 +2106,22 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   };
   const targetDepth=(target.x-ownGoalX)*dir,keeperGap=Math.hypot(target.x-keeper.x,target.y-keeper.y);
   if(targetDepth<26||targetDepth>210||keeperGap<22||keeperGap>235)return null;
+  // Do not send a keeper on a second-ball chase it cannot physically reach.
+  // Grounded rebounds retain a short, bounded collection window; airborne
+  // rebounds also include their remaining descent. Use the same acceleration
+  // response as moveAgile, current movement momentum and the live match speed.
+  const pursuitSeconds=Math.max(landingSeconds,Math.min(.48,Math.max(0,rebound.expires-now)));
+  const rawSpeed=Number(maxSpeed);
+  const moveSpeed=Number.isFinite(rawSpeed)&&rawSpeed>0?clampTo(rawSpeed,0,500):300;
+  const rawAgility=Number(keeper.src?.agility);
+  const agility=clampTo(Number.isFinite(rawAgility)?rawAgility:50,0,100);
+  const turnRate=3+agility*.13;
+  const velocityX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
+  const velocityY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
+  const initialTowardSpeed=clampTo((velocityX*(target.x-keeper.x)+velocityY*(target.y-keeper.y))/Math.max(1,keeperGap),-moveSpeed,moveSpeed);
+  const accelerationWindow=(1-Math.exp(-turnRate*pursuitSeconds))/turnRate;
+  const reachableTravel=Math.max(0,moveSpeed*pursuitSeconds+(initialTowardSpeed-moveSpeed)*accelerationWindow);
+  if(keeperGap>reachableTravel+44)return null;
   const activeOutfielder=q=>q&&q!==keeper&&!q.keeper&&!q.down&&
    (q.stun==null||Number(q.stun)<=0)&&(q.z==null||Number(q.z)<=18)&&
    Number.isFinite(q.x)&&Number.isFinite(q.y)&&

@@ -43,7 +43,7 @@ with sync_playwright() as pw:
     Object.assign(k,{action:'keeperDive',actionTimer:.4,diveElapsed:.24,
       diveIntentPending:false,z:12,stun:0,down:false,aiTimer:0,aiTarget:null});
     Object.assign(b,{owner:null,attacker:side,lastTouchTeam:side,
-      x:k.x+dir*80,y:goalY+38,z:60,vx:dir*260,vy:30,vz:-110,
+      x:k.x+dir*24,y:goalY+38,z:60,vx:dir*260,vy:30,vz:-110,
       ordinaryShot:false,shot:null,strike:null,pass:false,age:.6,canCollect:0});
     g.clock=.2;
     g.driveAI(k,.016);
@@ -58,7 +58,28 @@ with sync_playwright() as pw:
     const teammate=g.player(side,3);
     g.take(teammate);
     const cleared=k.aiParryReboundTarget===false&&k.aiTarget===null;
-    rows.push({side,parried,chase,moving,target,yieldedToClosingRunner,cleared});
+    // Repeat a real parry with a distant landing pocket. The keeper must
+    // stay goal-side when its speed/acceleration cannot cover the gap in time.
+    Object.assign(k,{x:side===0?255:2305,y:goalY,action:'idle',actionTimer:0,
+      stun:0,down:false,z:0,diveCooldown:0,diveIntentCooldown:0,
+      diveIntentPending:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false,
+      moveVX:0,moveVY:0});
+    Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,
+      x:k.x+dir*24,y:goalY,z:0,vx:-dir*2500,vy:0,vz:0,power:60,
+      ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[],pass:false});
+    const farParried=g.tryKeeperDive(k,false);
+    Object.assign(k,{action:'keeperDive',actionTimer:.4,diveElapsed:.24,
+      diveIntentPending:false,z:12,stun:0,down:false,aiTimer:0,aiTarget:null,
+      moveVX:0,moveVY:0});
+    Object.assign(b,{owner:null,attacker:side,lastTouchTeam:side,
+      x:k.x+dir*120,y:goalY+38,z:60,vx:dir*260,vy:30,vz:-110,
+      ordinaryShot:false,shot:null,strike:null,pass:false,age:.6,canCollect:0});
+    g.clock=.2;g.driveAI(k,.016);
+    const farDeclined=k.aiParryReboundTarget===false;
+    const farTarget=k.aiTarget?{x:k.aiTarget.x,y:k.aiTarget.y}:null;
+    const staysGoalSide=!!farTarget&&dir*(farTarget.x-k.x)<0;
+    rows.push({side,parried,chase,moving,target,yieldedToClosingRunner,cleared,
+      farParried,farDeclined,staysGoalSide});
    }
    return {rows,teams:SupermagicFootball.teams.length};
   }""")
@@ -68,6 +89,7 @@ with sync_playwright() as pw:
   for row in result['rows']:
    assert row['parried'] and row['chase'] and row['moving'] and row['yieldedToClosingRunner'] and row['cleared'],(kind,row)
    assert row['target'] is not None,(kind,row)
+   assert row['farParried'] and row['farDeclined'] and row['staysGoalSide'],(kind,row)
   print('PASS',kind,'both mirrored real-engine parry follow-throughs, bounded keeper movement and possession cleanup',flush=True)
   ctx.close()
  browser.close()

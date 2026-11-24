@@ -11,7 +11,7 @@ function helperFixture(ENGINE,team){
   yMin:field.y+24,yMax:field.y+field.h-24},dir=team===0?1:-1;
  const keeper={t:team,keeper:true,x:dir===1?bounds.xMin+31:bounds.xMax-31,
   y:(bounds.yMin+bounds.yMax)/2,down:false,stun:0,z:0,action:'idle',moveVX:0,moveVY:0};
- const ball={owner:null,attacker:team,lastTouchTeam:team,x:keeper.x+dir*75,
+ const ball={owner:null,attacker:team,lastTouchTeam:team,x:keeper.x+dir*25,
   y:keeper.y+38,z:60,vx:dir*260,vy:30,vz:-110,shot:null,strike:null,
   ordinaryShot:false,pass:false};
  return {bounds,dir,keeper,ball,players:[keeper],rebound:{team,expires:2}};
@@ -78,6 +78,18 @@ test('keeper rebound chase rejects owned, incoming, rising, expired and recovery
  f.keeper.action='keeperDive';f.keeper.diveElapsed=.10;assert.equal(check(),null);
  f.keeper.diveElapsed=.24;assert.ok(check(),'late dive follow-through may start the bounded chase');
 });
+test('keeper only chases a parry when its acceleration-limited movement can reach the rebound window',async()=>{
+ const {AI,ENGINE}=await loadModules(),f=helperFixture(ENGINE,0);
+ f.ball.x=f.keeper.x+120;
+ assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),null,
+  'a stationary keeper must not abandon the line for an unreachable far pocket');
+ f.keeper.moveVX=300;f.keeper.moveVY=0;
+ assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),
+  'existing approach momentum can make the same bounded pocket reachable');
+ f.keeper.moveVX=-300;
+ assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300),null,
+  'retreating momentum must reduce rather than inflate the arrival estimate');
+});
 function engineFixture(ENGINE,team){
  const game=new ENGINE.GameEngine({halfSeconds:120});
  game.init({home:0,away:1,humans:0,mode:'quick'});
@@ -98,7 +110,7 @@ function engineFixture(ENGINE,team){
  assert.equal(game.tryKeeperDive(keeper,false),true,'strong shot should be parried');
  assert.equal(game.ball.attacker,team);
  keeper.action='keeperDive';keeper.actionTimer=.4;keeper.diveElapsed=.24;keeper.diveIntentPending=false;keeper.z=12;keeper.stun=0;keeper.down=false;
- Object.assign(game.ball,{x:keeper.x+dir*80,y:keeper.y+38,z:60,vx:dir*260,vy:30,
+ Object.assign(game.ball,{x:keeper.x+dir*24,y:keeper.y+38,z:60,vx:dir*260,vy:30,
   vz:-110,shot:null,strike:null,ordinaryShot:false,pass:false,owner:null,age:.6});
  game.clock=.2;
  return {game,keeper,dir};
