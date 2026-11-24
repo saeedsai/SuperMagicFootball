@@ -3,26 +3,24 @@
 **Updated:** 2026-11-24
 
 ## Mission
-Deliver real player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve the four actions, canonical rosters, compatible saves and offline play.
+Deliver real player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve four actions, canonical rosters, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.250 — AI-CARRY-OPEN-FORWARD-LANE-01:** a pressured CPU carrier now uses a straight-forward escape only when its clearance score reaches 150 and no active incoming slide is present; a diagonal must provide an 18-point safety advantage to override that safe direct lane. Frontal/diagonal pressure and slides still trigger diagonal evasion.
-- .249 gate repair commit 939210d extends the whole-match diagnostic allowance to 156 seconds without weakening full-regulation assertions and changes the actual-engine skill check to a 15% relative distinction (observed high/low response was 27%). .249 itself was not certified.
-- .250 adds mirrored Node helper and actual-engine desktop/simulated-touch Chromium tests for both teams, two diagonal blockers and a clear forward lane; existing frontal and slide tests remain.
-- First .250 run #45324310088 exposed two Node regressions: direct-lane threshold 38 allowed the old blocked-diagonal case and an active slide; threshold is now 150 and direct routes are disabled when a slide threat exists. The same run found the checkpoint Agent ID missing required backticks; e1a8cdc restored the exact contract marker. Fresh exact-head gates are pending.
-- .247 remains the last verified deployed release on main SHA 31c24ae2a11007b7c719a97913d8821f0d7bd6e0; Pages #45307713844 and independent main Census/hosted smoke #45307721714 passed.
+- **0.12.81.251 — AI-FIRST-TOUCH-DRIBBLING-CUT-01:** CPU pressured first-touch escape now scales its diagonal settling geometry with the receiver's Dribbling rating. Neutral 50 preserves 72-forward/78-lateral; low skill favors 78/66 and elite skill 66/90. Human direction and existing first-touch timing remain unchanged.
+- **0.12.81.250 main-promoted:** strong-clearance straight-forward pressure escape, with diagonal/slide safety retained. Modular QA #45325809560 passed 2,838/2,838; exact-head Census #45325809486 passed all four Node and four Chromium shards. Main SHA is 35536ed236246ef682f7ea492c489fd89fe337d6; Pages #45327024959 succeeded; independent main Census #45327033894 is still running.
+- .251 adds mirrored helper, actual GameEngine.take and desktop/simulated-touch Chromium regressions for both teams, low/neutral/high ratings and missing/invalid fallback.
+- .247 was the previous verified main release; .250 is now the latest deployed release.
 
 ## Next smallest action
-Run exact-head .250 Full Regression Census after the actual-engine direct-lane movement threshold correction. Modular QA is already green at 2,838/2,838. Fix any confirmed failures, then allow only the green exact SHA through the existing QA-gated promotion pipeline. Independently verify main SHA, Pages deployment, main Census and hosted-byte smoke.
+Inspect exact-head .251 Modular QA and Full Regression Census. Fix any confirmed failures, then allow only a green exact SHA through the existing QA-gated promotion pipeline. Independently verify main Census, hosted bytes and deployment after promotion.
 
 ## Ownership and exclusions
-Edit only this assigned checkpoint. Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical two-phone #48 remains open; Render drift #86 remains open; main protection #87 remains unresolved. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
+Edit only this checkpoint. Preserve 223 teams, 2,676 players, ordering and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Physical #48, Render drift #86 and main protection #87 remain open. Authenticated online hosting requires owner resources. Never expose Git SHA in player UI.
 
 ## Evidence
-- .249 Modular QA #45317873541 passed 2,837/2,837 Node tests; Census #45317873538 failed the two harness checks described above. .249 was not certified.
-- Exact-head Modular QA #45324567959 passed 2,838/2,838 Node tests. Census #45324568041 passed preflight, preview, all four Node shards (166/166 each), and browser shards 0, 2 and 3 (70/70 each); browser shard 1 failed only the new direct-lane movement threshold (actual goalward moveVX 46.08, dy 0, dx 0.19152 vs test requirement dx >0.3). The browser assertion now checks goalward velocity >20 while preserving the straight-lane check; fresh exact-head Census pending.
-- .247 main release: Pages #45307713844 and independent main Census/hosted smoke #45307721714 passed.
-- #87 branch protection; #86 Render commit-trigger drift; #48 physical two-phone acceptance.
+- .250 Modular QA #45325809560 passed 2,838/2,838 Node tests. Dev Census #45325809486 passed preflight, preview and all four Node/four Chromium shards; QA-gated promotion and Pages deployment succeeded.
+- .251 exact-head Modular QA #45327863441 and Full Regression Census #45327863488 were in progress at last observation; no .251 test result is claimed yet.
+- Independent .250 main Census #45327033894 passed preflight, preview and hosted-pages smoke; two Node and four Chromium shards were still running at last observation.
 
 ## Cleanup
-Keep this file below 4 KiB and retain all required headings and Agent ID. Do not read/edit another agent's private checkpoint. Never bypass required CI, security or QA promotion.
+Keep this file below 4 KiB with all required headings and exact Agent ID. Do not read/edit another agent's private checkpoint. Never bypass CI, security or QA promotion.
