@@ -367,3 +367,47 @@ test('direct named Magic Trick counters recognize residual 2D movement after dir
   }
  }
 });
+
+
+test('direct named Magic Trick reads search past the nearest idle marker for a closing second defender',async()=>{
+ const ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  const cases=[
+   {mode:'approach',moveVX:dir*150,moveVY:-30,defence:95,offset:58,countered:true},
+   {mode:'retreat',moveVX:-dir*150,moveVY:30,defence:95,offset:58,countered:false},
+   {mode:'stationary',moveVX:0,moveVY:0,defence:95,offset:58,countered:false},
+   {mode:'low-defence',moveVX:dir*150,moveVY:-30,defence:49,offset:58,countered:false},
+   {mode:'equal-skill',moveVX:dir*150,moveVY:-30,defence:50,offset:58,countered:true},
+   {mode:'outside-range',moveVX:dir*150,moveVY:-30,defence:95,offset:110,countered:false}
+  ];
+  for(const sample of cases){
+   const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,humans:0,mode:'quick'});
+   const carrier=game.player(team,3),nearest=game.player(1-team,3),second=game.player(1-team,4);
+   for(const other of game.players)if(other!==carrier&&other!==nearest&&other!==second&&!other.keeper){other.down=true;other.stun=1;}
+   Object.assign(carrier,{x,y,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+    dx:dir,dy:0,moveVX:dir*180,moveVY:0,face:dir,firstTouchOutletReadTimer:0,
+    firstTouchControlTimer:0,firstTouchPressure:0,hideBallTimer:0,magicReadyAt:0,fatigue:0});
+   Object.assign(carrier.src,{magicTrick:'hideBall',dribbling:50});
+   Object.assign(nearest,{x:x-dir*25,y,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+    dx:0,dy:0,moveVX:0,moveVY:0,face:-dir,magicReadCueTimer:0});
+   Object.assign(nearest.src,{defence:20});
+   Object.assign(second,{x:x-dir*sample.offset,y:y+15,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+    dx:0,dy:0,moveVX:sample.moveVX,moveVY:sample.moveVY,face:dir,magicReadCueTimer:0});
+   Object.assign(second.src,{defence:sample.defence});
+   Object.assign(game.ball,{owner:carrier,x:x+dir*12,y,z:0,pass:false,passTarget:null,
+    attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+   game.clock=2;
+   assert.equal(game.tryMagicTrick(carrier),true);
+   assert.equal(game.events.at(-1)?.countered,sample.countered,JSON.stringify({team,...sample}));
+   assert.equal(carrier.hideBallTimer||0,sample.countered?0:.65);
+   assert.equal(second.magicReadCueTimer||0,sample.countered ? .48 : 0,
+    'the closest eligible second defender receives the READ! cue');
+   assert.equal(nearest.magicReadCueTimer||0,0,'the nearest idle/turned-away marker is not credited');
+   assert.equal(second.magicReadCounterpressTimer||0,0,'a direct read does not add an automatic counterpress');
+   assert.equal(game.ball.owner,carrier,'the read never awards automatic possession');
+   assert.equal(carrier.magicReadyAt,8,'the caster pays the same cooldown');
+   assert.equal(carrier.fatigue,.035,'the caster pays the same fatigue');
+  }
+ }
+});
