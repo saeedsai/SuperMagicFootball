@@ -80,7 +80,12 @@ script=r'''()=>{
     c.strokeStyle='#a8b7c5';c.lineWidth=1;c.beginPath();c.moveTo(x+8,y+178);c.lineTo(x+88,y+178);c.stroke();
     const q={...p,visualFacing:{...p.visualFacing}};c.save();c.translate(x+48,y+178);c.scale(.52,.52);draw(c,q,view,true);c.restore();
     const repeated=c.getImageData(x,y,96,200).data;let changed=0;
-    for(let k=0;k<afterPixels.length;k+=4)if(afterPixels[k]!==repeated[k]||afterPixels[k+1]!==repeated[k+1]||afterPixels[k+2]!==repeated[k+2])changed++;
+    // Compare only the production character bounds. Fixture labels and the ground guide
+    // are test decorations; their font/line rasterization must not affect pose determinism.
+    for(let py=16;py<176;py++)for(let px=4;px<92;px++){
+     const k=(py*96+px)*4;
+     if(afterPixels[k]!==repeated[k]||afterPixels[k+1]!==repeated[k+1]||afterPixels[k+2]!==repeated[k+2])changed++;
+    }
     flashChecks.push({view:view.name,phase:phase.name,reducedFlashRepeatPixelDelta:changed});
    }
   }
