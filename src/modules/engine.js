@@ -252,11 +252,14 @@ function keeperCutbackReadLane(keeper,players,ball,baselineY){
  };
  // A runner already within tackling distance of a ready defender is not an
  // uncovered cutback target. Project both players over the same short horizon.
- const tightlyMarked=(runnerX,runnerY)=>players.some(defender=>{
+ const tightlyMarked=(runner,runnerX,runnerY)=>players.some(defender=>{
   if(!active(defender)||defender.t!==keeper.t||defender.keeper)return false;
+  const currentGap=Math.hypot(defender.x-runner.x,defender.y-runner.y);
   const markerX=defender.x+clamp(velocity(defender,'x')*.12,-18,18);
   const markerY=defender.y+clamp(velocity(defender,'y')*.12,-18,18);
-  return Math.hypot(markerX-runnerX,markerY-runnerY)<64;
+  const projectedGap=Math.hypot(markerX-runnerX,markerY-runnerY);
+  // A defender running away is not reliable cover even while still nearby.
+  return projectedGap<64&&projectedGap<=currentGap+6;
  });
  let best=null;
  for(const runner of players){
@@ -268,7 +271,7 @@ function keeperCutbackReadLane(keeper,players,ball,baselineY){
   const behind=(projectedX-carrier.x)*attackDir;
   const depth=Math.abs(projectedX-ownGoalX);
   if(behind>-45||behind< -300||depth<80||depth>430||
-   Math.abs(projectedY-centerY)>F.h*.24||tightlyMarked(projectedX,projectedY))continue;
+   Math.abs(projectedY-centerY)>F.h*.24||tightlyMarked(runner,projectedX,projectedY))continue;
   const score=Math.abs(projectedY-centerY)*.7+Math.abs(behind+150)*.22+
    Math.abs(depth-260)*.08;
   if(!best||score<best.score)best={runner,score,projectedY};

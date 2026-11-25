@@ -99,7 +99,7 @@ with sync_playwright() as pw:
                 const x=field.x+field.w*.55,y=field.y+field.h*.5;
                 const carrier=game.player(attackingTeam,3),lowAgility=game.player(defendingTeam,3),steady=game.player(defendingTeam,4);
                 for(const q of game.players){if(q===carrier||q===lowAgility||q===steady||q.keeper)continue;q.down=true;q.stun=1;}
-                Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,firstTouchControlTimer:0,firstTouchPressure:0});
+                Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'run',actionTimer:0,moveVX:dir*120,moveVY:0,vx:dir*120,vy:0,firstTouchControlTimer:0,firstTouchPressure:0});
                 Object.assign(lowAgility,{x:x-dir*90,y,z:0,down:false,stun:0,action:'run',actionTimer:0,moveVX:0,moveVY:60,vx:0,vy:60,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});
                 lowAgility.src.agility=1;
                 Object.assign(steady,{x:x-dir*92,y,z:0,down:false,stun:0,action:'run',actionTimer:0,moveVX:dir*1,moveVY:0,vx:dir*1,vy:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});

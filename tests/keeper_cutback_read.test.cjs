@@ -127,15 +127,16 @@ test('keeper selects the runner projected to arrive centrally rather than the cu
  }
 });
 
-function markRunnerWithDefender(f,runner,recovering=false){
+function markRunnerWithDefender(f,runner,recovering=false,markerMotion={x:0,y:0},offset={x:0,y:0}){
  const marker=f.game.players.find(p=>p.t===f.keeper.t&&!p.keeper&&p.i===4);
  assert.ok(marker,'fixture needs an outfield marker');
  const lead=value=>Math.max(-18,Math.min(18,(Number(value)||0)*.12));
- Object.assign(marker,{x:runner.x+lead(runner.moveVX),y:runner.y+lead(runner.moveVY),
+ Object.assign(marker,{x:runner.x+lead(runner.moveVX)+(Number(offset.x)||0),
+  y:runner.y+lead(runner.moveVY)+(Number(offset.y)||0),
   z:0,down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,
   shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
   action:recovering?'hurt':'idle',actionTimer:recovering?.4:0,
-  moveVX:0,moveVY:0});
+  moveVX:Number(markerMotion.x)||0,moveVY:Number(markerMotion.y)||0});
  return marker;
 }
 
@@ -151,6 +152,27 @@ test('keeper does not shade toward a tightly marked cutback runner, but ignores 
   const recovering=fixture(ENGINE,field,keeperTeam);
   markRunnerWithDefender(recovering,recovering.runner,true);
   assert.notEqual(targetY(recovering),baseline,'a hurt-recovering defender must not falsely mark the runner');
+ }
+});
+
+test('keeper ignores a nearby marker running away but retains closing and stationary cover',async()=>{
+ const {ENGINE,field}=await loadEngine();
+ for(const keeperTeam of [0,1]){
+  const baseline=fixture(ENGINE,field,keeperTeam);baseline.runner.down=true;
+  const baselineY=targetY(baseline);
+  const open=fixture(ENGINE,field,keeperTeam),openY=targetY(open);
+  const retreating=fixture(ENGINE,field,keeperTeam);
+  markRunnerWithDefender(retreating,retreating.runner,false,{x:0,y:180});
+  assert.equal(targetY(retreating),openY,
+   'a marker whose projected gap opens must not suppress the cutback read');
+  const closing=fixture(ENGINE,field,keeperTeam);
+  markRunnerWithDefender(closing,closing.runner,false,{x:0,y:-180},{x:0,y:24});
+  assert.equal(targetY(closing),baselineY,
+   'a defender closing into the runner lane must still count as cover');
+  const stationary=fixture(ENGINE,field,keeperTeam);
+  markRunnerWithDefender(stationary,stationary.runner);
+  assert.equal(targetY(stationary),baselineY,
+   'a stationary ready defender already in the runner lane must still count as cover');
  }
 });
 

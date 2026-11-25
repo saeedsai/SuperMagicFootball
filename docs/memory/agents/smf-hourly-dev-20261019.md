@@ -6,23 +6,20 @@
 Deliver player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup improvements. Preserve canonical data, four match actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.294 — KEEPER-CUTBACK-OPEN-RUNNER-READ-01:** CPU goalkeeper cutback positioning now discounts a runner already within 64 units of a ready defender's bounded 120 ms projected position. Recovery, downed, stunned, airborne and active slide/hurt defenders do not suppress the keeper read; an open alternative remains eligible.
-- .293 exact-head Modular QA #45604152084 and Census #45604152073 failed only the project-memory contract: the checkpoint had `## Next action` instead of required `## Next smallest action`. Node recorded 2,895/2,896 passing; the sole failure was that heading contract. The .293 press-turn Node tests passed; Chromium was skipped after Census preflight failed.
-- .292 failed-job-only Census retry #45592512918 passed and QA-gated promotion advanced main to `faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b`. Fresh Pages deployment and independent main Census status still require verification.
-- .294 first Modular QA #45606939591 and Census #45606939616 found one open-alternative fixture failure (2,897/2,898 Node passed): the supposed alternative runner was 25.2 units from the marked runner, inside the 64-unit coverage radius. The fixture now separates the open lane beyond 64 while preserving the cutback bounds; this was a test-fixture issue, not evidence of a production failure. Fresh exact-head gates required.
+- **0.12.81.295 — KEEPER-CUTBACK-RETREATING-MARKER-READ-01:** goalkeeper cutback coverage now requires the defender's bounded 120 ms projected gap to remain under 64 units and not open by more than 6 units. A ready defender moving away no longer falsely marks the runner; stationary/closing defenders still suppress the read. Keeper dive/catch/shot physics are unchanged.
+- .294 Modular QA #45607252032 passed 2,898/2,898 Node tests. Full Census #45607251921 passed preflight, preview, all four Node shards and browser shards 0/1/3; browser shard 2 failed only the Agility turn-read browser fixture because a stationary carrier was expected to produce a non-zero lead. .295 changes that fixture to a 120-unit/s carrier while retaining the separate stationary baseline.
+- Main remains .292 on `faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b`; dev parent before .295 was `da77e18d95e5c51096da2824c4547c7482649c81`.
 
 ## Next smallest action
-Inspect the fresh .294 exact-head Modular QA and four-Node/four-Chromium Census after widening the open-alternative fixture; repair confirmed failures, then verify QA-gated main promotion, independent main Census, Pages deployment and hosted bytes.
+Run exact-head .295 Modular QA and the full four-Node/four-Chromium Census. Repair confirmed failures, then verify automatic QA-gated promotion, independent main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Studio art requires provenance, game-scale QA and owner acceptance. Keep #48 physical acceptance, #86 Render drift and #87 branch-protection security open. No authenticated online-hosting claim.
 
 ## Evidence
-- .294 first exact-head QA/Census: 2,897 Node pass / 1 new cutback fixture failure; the alternative was within 64 units of the marked runner and was correctly treated as covered.
-- .293 run #45604152084: 2,895 Node pass / 1 project-memory heading failure; press-turn feature tests passed.
-- .293 Census #45604152073 stopped in Node preflight on the same checkpoint heading; no Chromium shard ran.
-- Branch heads before .294 integration: dev `29a3de043c8db13faf6935c7025c09668e50ff77`; main `faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b`.
-- GitHub REST branch listing reports dev and main unprotected; #87 remains open.
+- .294 exact-head Modular QA #45607252032: 2,898 Node passed.
+- .294 Full Regression Census #45607251921: preflight/preview, four Node shards and three Chromium shards passed; one Agility turn-read browser fixture failed because stationary carriers intentionally receive no non-zero lead.
+- GitHub REST: dev parent `da77e18d95e5c51096da2824c4547c7482649c81`; main `faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b`; both branches unprotected; #87 remains open.
 
 ## Cleanup
 Keep this file below 4 KiB with these headings and exact Agent ID. Never bypass CI, security or QA promotion.

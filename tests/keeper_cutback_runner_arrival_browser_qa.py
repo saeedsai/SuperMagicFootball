@@ -57,11 +57,16 @@ with sync_playwright() as pw:
                 if(markerMode){
                     const marker=game.players.find(p=>p.t===team&&!p.keeper&&p.i===4);
                     const lead=value=>Math.max(-18,Math.min(18,(Number(value)||0)*.12));
-                    Object.assign(marker,{x:runner.x+lead(runner.moveVX),y:runner.y+lead(runner.moveVY),
+                    const markerVelocity=markerMode==='retreating'?{x:0,y:180}:
+                        markerMode==='closing'?{x:0,y:-180}:{x:0,y:0};
+                    const markerOffset=markerMode==='closing'?{x:0,y:24}:{x:0,y:0};
+                    Object.assign(marker,{x:runner.x+lead(runner.moveVX)+markerOffset.x,
+                        y:runner.y+lead(runner.moveVY)+markerOffset.y,
                         z:0,down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,
                         shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
                         action:markerMode==='recovering'?'hurt':'idle',
-                        actionTimer:markerMode==='recovering'?.4:0,moveVX:0,moveVY:0});
+                        actionTimer:markerMode==='recovering'?.4:0,
+                        moveVX:markerVelocity.x,moveVY:markerVelocity.y});
                 }
                 Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,
                     vx:0,vy:0,vz:0,attacker:attacking,lastTouchTeam:attacking,
@@ -83,7 +88,9 @@ with sync_playwright() as pw:
                 const openRunner=targetY(team,wing,'runner-only');
                 const markedRunner=targetY(team,wing,'runner-only','ready');
                 const recoveringMarker=targetY(team,wing,'runner-only','recovering');
-                markingRows.push({team,wing,noRunner,openRunner,markedRunner,recoveringMarker});
+                const retreatingMarker=targetY(team,wing,'runner-only','retreating');
+                const closingMarker=targetY(team,wing,'runner-only','closing');
+                markingRows.push({team,wing,noRunner,openRunner,markedRunner,recoveringMarker,retreatingMarker,closingMarker});
             }
             return {rows,markingRows,originalTeams:SupermagicFootball.teams.filter(team=>!['demo_concept_royals','demo_crown_royals_reference'].includes(team.id)).length,
                 totalTeams:SupermagicFootball.teams.length,
@@ -100,6 +107,8 @@ with sync_playwright() as pw:
         for row in result['markingRows']:
             assert abs(row['markedRunner']-row['noRunner'])<1e-7,(kind,row)
             assert abs(row['recoveringMarker']-row['openRunner'])<1e-7,(kind,row)
-        print('PASS',kind,'cutback arrival plus marked/open-runner counterplay; four actions and 223 teams intact',flush=True)
+            assert abs(row['retreatingMarker']-row['openRunner'])<1e-7,(kind,row)
+            assert abs(row['closingMarker']-row['noRunner'])<1e-7,(kind,row)
+        print('PASS',kind,'cutback arrival plus retreating/closing marker counterplay; four actions and 223 teams intact',flush=True)
         ctx.close()
     browser.close()
