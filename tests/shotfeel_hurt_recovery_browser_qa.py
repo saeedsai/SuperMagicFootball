@@ -23,17 +23,17 @@ with sync_playwright() as pw:
     Object.assign(carrier,{x:cx,y:cy,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,cd:0,aiTimer:0});
     Object.assign(direct,{x:cx+dir*200,y:cy,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:dir*140,moveVY:0,vx:0,vy:0,dx:dir,dy:0,face:dir});
     Object.assign(angled,{x:cx+dir*200,y:cy+60,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,dx:dir,dy:0,face:dir});
-    Object.assign(defender,{x:cx+dir*220,y:cy,down:false,stun:0,z:0,action:'hurt',actionTimer:mode==='hurtRecover'?.35:0,slideTimer:0,moveVX:0,moveVY:0,vx:0,vy:0});
+    Object.assign(defender,{x:cx+dir*220,y:cy,down:false,stun:0,z:0,action:mode==='hurtRecover'?'hurt':'idle',actionTimer:mode==='hurtRecover'?.35:0,slideTimer:0,shotImpactKnockdownPending:mode==='impactPending'?.35:0,shotImpactKnockdownTimer:mode==='impactKnockdown'?.35:0,shotImpactRiseTimer:mode==='impactRise'?.35:0,moveVX:0,moveVY:0,vx:0,vy:0});
     g.take(carrier);g.matchState='play';g.clock=10;
     const kicked=g.performTeamPass(carrier,false,false,{x:dir,y:0},0);
     return {team,mode,kicked,pass:g.ball.pass===true,target:g.ball.passTarget,directId:direct.src.id,angledId:angled.src.id};
    }
-   for(const team of [0,1])for(const mode of ['hurtRecover','hurtFinished'])rows.push(run(team,mode));
+   for(const team of [0,1])for(const mode of ['hurtRecover','hurtFinished','impactPending','impactKnockdown','impactRise','impactFinished'])rows.push(run(team,mode));
    return {rows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   assert result['teams']>=223,(kind,result);assert result['buttons']==4,(kind,result)
   for row in result['rows']:
-   expected=row['directId'] if row['mode']=='hurtRecover' else row['angledId']
+   expected=row['directId'] if (row['mode']=='hurtRecover'||row['mode'] in ['impactPending','impactKnockdown','impactRise']) else row['angledId']
    assert row['kicked'] and row['pass'] and row['target']==expected,(kind,row,expected)
   assert not errors,(kind,errors)
   print('PASS',kind,'directed PASS ignores active hurt recovery and restores defender after recovery',flush=True)

@@ -26,3 +26,22 @@ test('completed hurt recovery and ordinary ready defenders remain genuine lane t
  assert.ok(SHOTFEEL.passingLanePressure(from,to,[ready])>=.10);
  assert.equal(SHOTFEEL.passingLanePressure(from,to,[{...completed,actionTimer:.25}]),0);
 });
+
+
+test('directional ground passes ignore every active shot-impact recovery phase and restore the defender when it clears',async()=>{
+ const {SHOTFEEL}=await load();
+ const phases=['shotImpactKnockdownPending','shotImpactKnockdownTimer','shotImpactRiseTimer'];
+ for(const direction of [1,-1]){
+  const from={x:0,y:0};
+  const direct={x:direction*200,y:0,stun:0,moveVX:direction*140,moveVY:0,vx:0,vy:0};
+  const angled={x:direction*200,y:60,stun:0,moveVX:0,moveVY:0,vx:0,vy:0};
+  const defender={x:direction*220,y:0,stun:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,vx:0,vy:0};
+  for(const phase of phases){
+   const recovering={...defender,[phase]:.35},recovered={...recovering,[phase]:0};
+   assert.equal(SHOTFEEL.passingLanePressure(from,{x:direction*220,y:0},[recovering]),0,phase+' should not block');
+   assert.ok(SHOTFEEL.passingLanePressure(from,{x:direction*220,y:0},[recovered])>=.10,phase+' should restore lane pressure');
+   assert.equal(SHOTFEEL.teammateInDirection(from,[direct,angled],{x:direction,y:0},1150,[recovering]),direct,phase+' recovery should leave the moving direct receiver preferred');
+   assert.equal(SHOTFEEL.teammateInDirection(from,[direct,angled],{x:direction,y:0},1150,[recovered]),angled,phase+' completion should restore collection-pocket crowding');
+  }
+ }
+});

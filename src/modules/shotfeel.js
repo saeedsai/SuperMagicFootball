@@ -16,9 +16,13 @@ const SHOTFEEL=(()=>{
   const legacy=axis==='x'?player?.vx:player?.vy;
   return Number.isFinite(legacy)?legacy:0;
  };
- // A player still recoiling from contact cannot contest a ground-pass lane or
- // crowd a moving receiver's collection pocket until the recovery timer ends.
- const inHurtRecovery=player=>player?.action==='hurt'&&finiteNumber(player.actionTimer)>0;
+ // Contact and shot-impact recovery temporarily remove a player from ground-pass
+ // interception and receiver-crowding reads. Timers clearing restores the defender.
+ const inUnavailableRecovery=player=>
+  (player?.action==='hurt'&&finiteNumber(player.actionTimer)>0)||
+  finiteNumber(player?.shotImpactKnockdownPending)>0||
+  finiteNumber(player?.shotImpactKnockdownTimer)>0||
+  finiteNumber(player?.shotImpactRiseTimer)>0;
  function launchPower(power,fatigue=0,superShot=false){
   const rating=clamp(Number(power)||50,1,100),tired=clamp(Number(fatigue)||0,0,1);
   return (superShot?1.15:1.19)*(.72+rating*.005)*(.99-.32*tired);
@@ -61,7 +65,7 @@ const SHOTFEEL=(()=>{
   if(!Number.isFinite(segment)||segment<=0)return 0;
   let strongest=0,second=0;
   for(const rival of opponents){
-   if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y)||inHurtRecovery(rival))continue;
+   if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y)||inUnavailableRecovery(rival))continue;
    // DOWNED-LANE-READ-01: a defender lying on the pitch or getting up
    // cannot actively mark a receiver or cut out a ground pass. Do not let
    // stale proximity pressure steer PASS away from a genuinely open lane.
@@ -202,9 +206,9 @@ const SHOTFEEL=(()=>{
    // available lone teammate is still passable and bad velocity data is neutral.
    const moving=Math.hypot(vx,vy)>85;
    const receptionCrowding=moving&&Array.isArray(opponents)?opponents.reduce((risk,rival)=>{
-    // DOWNED-ARRIVAL-CROWD-01: a knocked-down defender cannot crowd a runner's collection point.
+    // DOWNED-ARRIVAL-CROWD-01: a knocked-down or recovering defender cannot crowd a runner's collection point.
     if(!rival||!Number.isFinite(rival.x)||!Number.isFinite(rival.y)||rival.stun>arrivalSeconds||
-       rival.action==='shotDown'||rival.action==='shotGetUp'||inHurtRecovery(rival)||
+       rival.action==='shotDown'||rival.action==='shotGetUp'||inUnavailableRecovery(rival)||
        (rival.action==='jump'&&Number.isFinite(rival.z)&&rival.z>25))return risk;
     const rx=rival.x+clamp((Number.isFinite(rival.vx)?rival.vx:0)*arrivalSeconds,-65,65);
     const ry=rival.y+clamp((Number.isFinite(rival.vy)?rival.vy:0)*arrivalSeconds,-65,65);
