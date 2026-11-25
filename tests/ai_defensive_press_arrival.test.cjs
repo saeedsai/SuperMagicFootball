@@ -180,3 +180,88 @@ test('real driveAI uses the Agility-aware cross-track press read without changin
   assert.equal(game.ball.owner,carrier,'the turn-aware press assignment must not change possession');
  }
 });
+
+
+test('moving-carrier press and lead projection anticipate current turn input at the carrier Agility limit',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const attackTeam=1-team,dir=attackTeam===0?1:-1,cutSign=team===0?-1:1;
+  const carrier={t:attackTeam,keeper:false,x:1000,y:600,moveVX:dir*220,moveVY:0,
+   dx:0,dy:cutSign,src:{agility:100}};
+  const makeDefenders=()=>[
+   player('momentum-lane-'+team,team,1000-dir*80,600,{moveVX:dir*220,moveVY:0}),
+   player('cut-lane-'+team,team,1000-dir*80,600+cutSign*16,{moveVX:dir*220,moveVY:0})
+  ];
+  const bounds={xMin:100,xMax:2100,yMin:100,yMax:1300};
+  let defenders=makeDefenders();
+  assert.equal(AI.defensivePressers(defenders,team,carrier).primary,defenders[1],
+   'high-Agility carrier input should move the press read into the cut lane');
+  let lead=AI.defensiveCarrierLeadTarget(defenders[1],carrier,bounds,.5);
+  assert.ok(lead&&cutSign*(lead.y-carrier.y)>20,JSON.stringify({team,agility:100,lead}));
+
+  carrier.src.agility=50;defenders=makeDefenders();
+  assert.equal(AI.defensivePressers(defenders,team,carrier).primary,defenders[1],
+   'average Agility preserves a responsive but bounded input read');
+  lead=AI.defensiveCarrierLeadTarget(defenders[1],carrier,bounds,.5);
+  assert.ok(lead&&cutSign*(lead.y-carrier.y)>20,JSON.stringify({team,agility:50,lead}));
+
+  carrier.src.agility=1;defenders=makeDefenders();
+  assert.equal(AI.defensivePressers(defenders,team,carrier).primary,defenders[0],
+   'low Agility retains more of the existing momentum lane');
+  lead=AI.defensiveCarrierLeadTarget(defenders[0],carrier,bounds,.5);
+  assert.ok(lead&&cutSign*(lead.y-carrier.y)<14,JSON.stringify({team,agility:1,lead}));
+
+  delete carrier.dx;delete carrier.dy;defenders=makeDefenders();
+  assert.equal(AI.defensivePressers(defenders,team,carrier).primary,defenders[0],
+   'neutral input preserves the residual-momentum baseline');
+  lead=AI.defensiveCarrierLeadTarget(defenders[0],carrier,bounds,.5);
+  assert.ok(lead&&Math.abs(lead.y-carrier.y)<1e-9);
+
+  carrier.dx=NaN;carrier.dy=Infinity;defenders=makeDefenders();
+  assert.equal(AI.defensivePressers(defenders,team,carrier).primary,defenders[0],
+   'malformed input fails back to residual momentum');
+  carrier.moveVX=dir*60;carrier.moveVY=0;defenders=makeDefenders();
+  assert.equal(AI.defensivePressers(defenders,team,carrier).primary,defenders[0],
+   'slow carriers retain the stationary/slow arrival read');
+  assert.equal(AI.defensiveCarrierLeadTarget(defenders[0],carrier,bounds,.5),null);
+
+  const looseBall={x:1000,y:600,vx:dir*220,vy:0,dx:0,dy:cutSign};
+  defenders=makeDefenders();
+  assert.equal(AI.defensivePressers(defenders,team,looseBall).primary,defenders[0],
+   'loose-ball and non-carrier targets remain distance-first');
+ }
+});
+
+test('real GameEngine driveAI selects and leads into the moving carrier input lane on both sides',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const defendingTeam of [0,1]){
+  for(const agility of [100,1]){
+   const game=new ENGINE.GameEngine({halfSeconds:120});
+   game.init({home:0,away:1,mode:'quick',humans:0});
+   const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1,cutSign=defendingTeam===0?-1:1;
+   const field=ENGINE.WORLD.field,x=field.x+field.w*.55,y=field.y+field.h*.5;
+   const carrier=game.player(attackingTeam,3),momentum=game.player(defendingTeam,3),cut=game.player(defendingTeam,4);
+   for(const q of game.players){if(q===carrier||q===momentum||q===cut||q.keeper)continue;q.down=true;q.stun=1;}
+   Object.assign(carrier,{x,y,z:0,down:false,stun:0,invuln:0,action:'run',actionTimer:0,
+    moveVX:dir*220,moveVY:0,vx:dir*220,vy:0,dx:0,dy:cutSign,
+    firstTouchControlTimer:0,firstTouchPressure:0,dribbleHold:0});
+   carrier.src.agility=agility;
+   for(const [q,laneY] of [[momentum,y],[cut,y+cutSign*16]]){
+    Object.assign(q,{x:x-dir*80,y:laneY,z:0,down:false,stun:0,invuln:0,action:'run',actionTimer:0,
+     moveVX:dir*220,moveVY:0,vx:dir*220,vy:0,slideTimer:0,
+     shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+     aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
+   }
+   Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
+    attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+   game.clock=2;game.moveAgile=()=>{};
+   const primary=agility>=50?cut:momentum;
+   game.driveAI(primary,.016);
+   assert.ok(primary.aiTarget,JSON.stringify({defendingTeam,agility,target:primary.aiTarget}));
+   const laneShift=cutSign*(primary.aiTarget.y-y);
+   assert.ok(agility>=50?laneShift>20:laneShift<14,
+    JSON.stringify({defendingTeam,agility,laneShift,target:primary.aiTarget}));
+   assert.equal(game.ball.owner,carrier,'turn-aware press assignment must not change possession');
+  }
+ }
+});
