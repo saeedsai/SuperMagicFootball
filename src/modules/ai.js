@@ -2389,7 +2389,11 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  const goalTop=Number(world?.goalTop),goalBottom=Number(world?.goalBottom);
  if(!Number.isFinite(goalTop)||!Number.isFinite(goalBottom)||goalTop>=goalBottom)return null;
  const receiver=players.find(q=>q?.t===1-keeper.t&&q.src?.id===ball.passTarget);
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
  const activeOutfielder=q=>q&&!q.keeper&&!q.down&&Number(q.stun||0)<=0&&
+  timerClear(q.shotImpactKnockdownPending)&&
+  timerClear(q.shotImpactKnockdownTimer)&&
+  timerClear(q.shotImpactRiseTimer)&&
   (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)<=18))&&
   Number(q.slideTimer||0)<=0&&
   !['shotDown','shotGetUp'].includes(q.action)&&
@@ -2404,7 +2408,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  const horizon=Math.min(.22,flight);
  const ballAtX=ball.x+ball.vx*horizon,ballAtY=ball.y+ball.vy*horizon;
  const ballAtZ=Math.max(0,ball.z+ball.vz*horizon-250*horizon*horizon);
- const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
  for(const q of players){
   if(!q||q===keeper||q.keeper||q.t!==1-keeper.t||q.down||
    !timerClear(q.stun)||!timerClear(q.slideTimer)||

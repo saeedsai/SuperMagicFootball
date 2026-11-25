@@ -65,6 +65,23 @@ test('keeper yields to a clearly closer active receiver or teammate but ignores 
    'must reject unavailable intended receiver '+Object.keys(patch).join(','));
  }
 });
+
+test('keeper ignores outfielders in shot-impact knockdown and get-up recovery when judging high-cross arrival',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const recoveryFields=['shotImpactKnockdownPending','shotImpactKnockdownTimer','shotImpactRiseTimer'];
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  for(const side of ['opponent','teammate'])for(const fieldName of recoveryFields){
+   const unavailable=player('recovering-'+side+'-'+fieldName+'-'+team,
+    side==='opponent'?1-team:team,f.target.x,f.target.y,{[fieldName]:.2});
+   const point=AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,unavailable],f.bounds);
+   assert.ok(point,JSON.stringify({team,side,fieldName,point}));
+   assert.ok(Math.abs(point.x-f.target.x)<2&&Math.abs(point.y-f.target.y)<2,
+    'the keeper should claim when the only apparent landing winner is unavailable');
+  }
+ }
+});
+
 test('driveAI sends the CPU goalkeeper toward the safe cross claim on both sides',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){

@@ -153,7 +153,31 @@ with sync_playwright() as pw:
     arrivalRows.push({team,name:profile.name,expected:profile.expected,
      claimActive:keeper.aiKeeperClaimTargetActive===true});
    }
-   return {rows,aerialRows,arrivalRows,profileRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+
+   const recoveryRows=[];
+   for(const team of [0,1])for(const side of ['opponent','teammate'])for(const fieldName of [
+    'shotImpactKnockdownPending','shotImpactKnockdownTimer','shotImpactRiseTimer'
+   ]){
+    const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax,goalY=765;
+    const target={x:ownGoalX+dir*190,y:goalY+78};
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+    const keeper=g.player(team,0),receiver=g.player(1-team,3);
+    const recovering=g.player(side==='opponent'?1-team:team,2);
+    for(const q of g.players)if(q!==keeper&&q!==receiver&&q!==recovering&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(keeper,{x:ownGoalX+dir*40,y:goalY,z:0,stun:0,down:false,action:'idle',
+     actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,aiKeeperClaimTargetActive:false,
+     aiParryReboundTarget:false,moveVX:0,moveVY:0});
+    Object.assign(receiver,{x:target.x+dir*155,y:target.y+10,z:0,stun:0,down:false,
+     action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+    Object.assign(recovering,{x:target.x,y:target.y,z:0,stun:0,down:false,
+     action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,[fieldName]:.2});
+    Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,pass:true,
+     passTarget:receiver.src.id,x:target.x+dir*118,y:target.y-30,z:90,
+     vx:-dir*190,vy:48,vz:10,age:.15,canCollect:0,shot:null,strike:null,ordinaryShot:false});
+    g.clock=.2;g.driveAI(keeper,.016);
+    recoveryRows.push({team,side,fieldName,claimActive:keeper.aiKeeperClaimTargetActive===true});
+   }
+   return {rows,aerialRows,arrivalRows,profileRows,recoveryRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -178,6 +202,9 @@ with sync_playwright() as pw:
   for row in result['arrivalRows']:
    assert row['claimActive'] is row['expected'],(kind,row)
   assert len(result['profileRows'])==18,(kind,result['profileRows'])
+  assert len(result['recoveryRows'])==12,(kind,result['recoveryRows'])
+  for row in result['recoveryRows']:
+   assert row['claimActive'] is True,(kind,row)
   for row in result['profileRows']:
    assert row['claimActive'] is row['expected'],(kind,row)
    if row['expected']:
