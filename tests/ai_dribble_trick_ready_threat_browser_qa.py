@@ -52,6 +52,7 @@ with sync_playwright() as pw:
             };
             const rows=[];
             for(const team of [0,1]){
+                const dir=team===0?1:-1;
                 rows.push({team,kind:'downed',...run(team,{down:true})});
                 rows.push({team,kind:'invulnerable',...run(team,{invuln:.4})});
                 rows.push({team,kind:'shot-down',...run(team,{action:'shotDown',actionTimer:.3})});
