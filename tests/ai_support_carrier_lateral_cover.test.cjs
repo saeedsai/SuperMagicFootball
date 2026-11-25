@@ -67,14 +67,14 @@ test('support cover stays on the defender side when a lateral cut crosses its cu
 test('moving-carrier support selection protects the opposite projected flank and keeps stationary parity',()=>{
  for(const team of [0,1]){
   const goalSide=team===0?-1:1,lateralDir=team===0?1:-1;
-  const carrier=player(1-team,1000,700,{moveVY:lateralDir*180});
+  const carrier=player(1-team,1000,700,{moveVY:lateralDir*220});
   const primary=player(team,1000+goalSide*40,700-lateralDir*20);
-  const nearSameProjectedFlank=player(team,1000+goalSide*60,700+lateralDir*10);
+  const nearSameProjectedFlank=player(team,1000+goalSide*60,700+lateralDir*1);
   const fartherOppositeProjectedFlank=player(team,1000+goalSide*100,700+lateralDir*50);
   const moving=AI.defensivePressers([primary,nearSameProjectedFlank,fartherOppositeProjectedFlank],team,carrier);
   assert.equal(moving.primary,primary,'nearest arrival remains the primary presser');
   assert.equal(moving.support,fartherOppositeProjectedFlank,
-   'support should protect the opposite side of the carrier projected 120 ms ahead');
+   'support should protect the opposite side after a 26.4-unit projected lateral cut');
   const stationary=AI.defensivePressers(
    [primary,nearSameProjectedFlank,fartherOppositeProjectedFlank],team,{...carrier,moveVY:0});
   assert.equal(stationary.primary,primary);

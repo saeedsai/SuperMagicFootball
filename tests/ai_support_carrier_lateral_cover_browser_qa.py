@@ -83,17 +83,17 @@ with sync_playwright() as pw:
                     near=game.player(team,4),far=game.player(team,5);
                 for(const q of game.players)if(![carrier,primary,near,far].includes(q)&&!q.keeper){q.down=true;q.stun=1;}
                 Object.assign(carrier,{x:1050,y:700,z:0,down:false,stun:0,invuln:0,action:'idle',
-                    actionTimer:0,moveVX:0,moveVY:lateral*180,firstTouchPressure:0,firstTouchControlTimer:0});
+                    actionTimer:0,moveVX:0,moveVY:lateral*220,firstTouchPressure:0,firstTouchControlTimer:0});
                 Object.assign(primary,{x:1050+goalSide*40,y:700-lateral*20,z:0,down:false,stun:0,invuln:0,cd:0,
                     action:'idle',actionTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiDetour:null});
-                Object.assign(near,{x:1050+goalSide*60,y:700+lateral*10,z:0,down:false,stun:0,invuln:0,cd:0,
+                Object.assign(near,{x:1050+goalSide*60,y:700+lateral*1,z:0,down:false,stun:0,invuln:0,cd:0,
                     action:'idle',actionTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiDetour:null});
                 Object.assign(far,{x:1050+goalSide*100,y:700+lateral*50,z:0,down:false,stun:0,invuln:0,cd:0,
                     action:'idle',actionTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiDetour:null});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,
                     pass:false,shot:null,strike:null,ordinaryShot:false,attacker:1-team,lastTouchTeam:1-team});
                 game.clock=10;game.driveAI(far,.016);
-                const projectedY=700+lateral*21.6,side=Math.sign(far.y-projectedY);
+                const projectedY=700+lateral*26.4,side=Math.sign(far.y-projectedY);
                 return {target:far.aiTarget,expectedX:1050-dir*110,expectedY:projectedY+side*95};
             });
             return {down,up,capped,engineRows,crossingRows,selectionRows,
