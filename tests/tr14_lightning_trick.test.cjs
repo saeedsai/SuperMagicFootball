@@ -27,6 +27,50 @@ test('Lightning fails closed without verified Gold+, carrier, live target or ava
  const cooldown=setup();cooldown.p.magicReadyAt=5;assert.equal(trick.call(cooldown.g,cooldown.p),false);
 });
 
+
+test('Lightning selects the nearest available target instead of an incapacitated decoy',()=>{
+ const unavailable=[
+  {down:true},{invuln:.2},{shotImpactKnockdownPending:.2},
+  {shotImpactKnockdownTimer:.2},{shotImpactRiseTimer:.2},
+  {action:'shotDown'},{action:'shotGetUp'},{action:'hurt',actionTimer:.2}
+ ];
+ for(const patch of unavailable){
+  const {g,p,q}=setup();
+  Object.assign(q,{x:p.x+24,...patch});
+  const ready={...q,x:p.x+72,down:false,invuln:0,stun:0,action:'idle',actionTimer:0,
+   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+   src:{id:'ready-lightning-target',name:'Ready Defender',defence:20}};
+  g.players=[p,q,ready];
+  assert.equal(trick.call(g,p),true,JSON.stringify(patch));
+  assert.equal(p.lightningPending.target,ready,JSON.stringify(patch));
+  assert.equal(q.lightningMark||0,0,'unavailable decoy must not receive the warning mark');
+  assert.equal(ready.lightningMark,.32,'nearest ready target receives the warning mark');
+ }
+ const none=setup();Object.assign(none.q,{down:true});
+ assert.equal(trick.call(none.g,none.p),false,'Lightning cannot acquire only unavailable defenders');
+ assert.equal(none.p.magicReadyAt,0,'rejected acquisition spends no cooldown');
+ assert.equal(none.p.fatigue,.2,'rejected acquisition spends no fatigue');
+});
+
+test('Lightning fizzles without stun if its marked defender becomes unavailable during the warning',()=>{
+ const unavailable=[
+  {down:true},{invuln:.2},{shotImpactKnockdownPending:.2},
+  {shotImpactKnockdownTimer:.2},{shotImpactRiseTimer:.2},
+  {action:'shotDown'},{action:'shotGetUp'},{action:'hurt',actionTimer:.2}
+ ];
+ for(const patch of unavailable){
+  const {g,p,q,events}=setup();
+  assert.equal(trick.call(g,p),true);
+  Object.assign(q,patch);
+  update.call(g,p,.32,false);
+  assert.equal(q.stun,0,JSON.stringify(patch));
+  assert.equal(events.at(-1).type,'lightningTrickResolved');
+  assert.equal(events.at(-1).hit,false,JSON.stringify(patch));
+  assert.equal(events.at(-1).countered,false,JSON.stringify(patch));
+  assert.equal(q.lightningMark,0,'the stale warning mark is cleared');
+ }
+});
+
 test('Lightning starts a .32s target windup, preserves possession and resolves a bounded stun after the tell',()=>{
  for(const side of [0,1]){
   const {g,p,q,ball,events}=setup(side);assert.equal(trick.call(g,p),true);

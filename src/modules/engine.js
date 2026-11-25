@@ -1949,7 +1949,18 @@ class GameEngine{
   if(id==='shoulderRide'&&(!rideMate||distance(p,rideMate)>84))return false;
   const rivals=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0&&(id!=='mud'||(q.mudSlowTimer||0)<=0))
    .sort((a,b)=>distance(p,a)-distance(p,b));
-  const rival=rivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
+  // Lightning is delayed and single-target: incapacitated/protected opponents
+  // must not soak its lock while a ready defender remains nearby.
+  const lightningTargets=id==='lightning'?rivals.filter(defender=>{
+   const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+   return defender.down!==true&&clear(defender.invuln)&&
+    clear(defender.shotImpactKnockdownPending)&&clear(defender.shotImpactKnockdownTimer)&&
+    clear(defender.shotImpactRiseTimer)&&
+    !['shotDown','shotGetUp'].includes(defender.action)&&
+    !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
+    (defender.z==null||(Number.isFinite(Number(defender.z))&&Number(defender.z)>=0));
+  }):rivals;
+  const rival=lightningTargets[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
   if(id==='lightning'&&!inRange)return false;
   // Any eligible nearby defender can read a named Trick, not only the nearest marker.
@@ -2141,7 +2152,13 @@ class GameEngine{
  resolveLightningTrick(p){
   const pending=p?.lightningPending;if(!pending)return false;p.lightningPending=null;
   const q=pending.target;if(q)q.lightningMark=0;
-  if(!q||!this.players.includes(q)||q.t===p.t||q.keeper||q.stun>0||distance(p,q)>=95){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,hit:false,countered:false});return false;}
+  const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const unavailable=q&&(q.down===true||!clear(q.invuln)||
+   !clear(q.shotImpactKnockdownPending)||!clear(q.shotImpactKnockdownTimer)||
+   !clear(q.shotImpactRiseTimer)||['shotDown','shotGetUp'].includes(q.action)||
+   (q.action==='hurt'&&(Number(q.actionTimer)||0)>0)||
+   (q.z!=null&&(!Number.isFinite(Number(q.z))||Number(q.z)<0)));
+  if(!q||!this.players.includes(q)||q.t===p.t||q.keeper||q.stun>0||unavailable||distance(p,q)>=95){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,hit:false,countered:false});return false;}
   const inJump=q.action==='jump'&&q.z>=20,inSlide=q.action==='slide'&&q.actionTimer>0&&q.z<20;
   const facing=typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(q,p):(q.face||1)*(p.x-q.x)>0;
   // Match named-Trick counter semantics: current 2D input leads, residual movement
