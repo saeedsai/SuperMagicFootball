@@ -779,7 +779,7 @@
 
 # Supermagic Football · v0.12.81.290 · Modular source project
 
-> **25 November 2026 active development:** Candidate 0.12.81.285 improves CPU defensive pressing against stationary and slow carriers by choosing the primary presser from a bounded 120 ms arrival read. A nearby defender already closing can take priority over a nearer defender retreating; the support role and loose-ball selection remain unchanged. The update preserves four gameplay actions, 223 canonical teams, 2,676 players, six formations, saves and offline play. Existing-player graphics remain gated by the documented Studio workflow; no new art or visual approval is claimed.
+> **25 November 2026 active development:** Candidate 0.12.81.290 makes CPU SHOOT-slide selection respond to defender Agility when reading lateral carrier cuts: Agility 50 keeps the 105-unit baseline, elite Agility 100 lowers it to 95, and low Agility 1 raises it to 114.8. The existing straight-escape branch, run-up/facing/momentum arc, exposed-ball gate, difficulty-scaled slide probability and physical tackle resolution remain authoritative. The update preserves exactly four gameplay actions, 223 canonical teams, 2,676 players, six formations, saves and offline play. Existing-player graphics remain gated by the documented Studio workflow; no new art or visual approval is claimed.
 
 
 This is a **continuation of v0.8.25.29**, which itself derives from the v0.8.25.28 handover. The game has NOT been recreated. Player IDs, team ordering, formation choices, controls, game modes, saved-progress keys and gameplay formulas are retained. The authoritative playable version now consists of **multiple JavaScript modules and JSON data files**; `index.html` loads those files at runtime.
