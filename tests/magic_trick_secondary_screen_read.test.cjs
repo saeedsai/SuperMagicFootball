@@ -267,6 +267,9 @@ test('real engine grants the screen counter only when the live ball is exposed, 
   if(readExpected){
    assert.equal(screen.magicReadCounterpressTimer,.42);
    assert.equal(screen.magicReadCueTimer,.48);
+   // The read has been proved; clear its first-touch window to exercise the
+   // counterpress fallback separately from established first-touch cover.
+   carrier.firstTouchOutletReadTimer=0;
    // The player cuts diagonally after the successful read while old horizontal
    // momentum remains; the second defender must update to the live input lane.
    Object.assign(carrier,{dx:dir*.8,dy:.6});
