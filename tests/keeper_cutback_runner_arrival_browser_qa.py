@@ -57,9 +57,9 @@ with sync_playwright() as pw:
                 if(markerMode){
                     const marker=game.players.find(p=>p.t===team&&!p.keeper&&p.i===4);
                     const lead=value=>Math.max(-18,Math.min(18,(Number(value)||0)*.12));
-                    const markerVelocity=markerMode==='retreating'?{x:0,y:runner.moveVY+180}:
+                    const markerVelocity=markerMode==='retreating'?{x:0,y:-runner.moveVY}:
                         markerMode==='closing'?{x:0,y:runner.moveVY-180}:{x:0,y:0};
-                    const markerOffset=markerMode==='closing'?{x:0,y:24}:{x:0,y:0};
+                    const markerOffset=markerMode==='closing'?{x:0,y:24}:markerMode==='retreating'?{x:0,y:-lead(runner.moveVY)}:{x:0,y:0};
                     Object.assign(marker,{x:runner.x+lead(runner.moveVX)+markerOffset.x,
                         y:runner.y+lead(runner.moveVY)+markerOffset.y,
                         z:0,down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,

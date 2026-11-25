@@ -247,15 +247,15 @@ with sync_playwright() as pw:
    for(const defendingTeam of [0,1])for(const profile of [{name:'closing',move:100,covered:true},{name:'retreating',move:-220,covered:false}]){
     g.init({home:0,away:1,mode:'quick',humans:0});
     const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1,y=field.y+field.h/2;
-    const receiverX=attackingTeam===0?field.x+field.w*.60:field.x+field.w*.42,ballX=receiverX-dir*110;
+    const receiverX=attackingTeam===0?field.x+field.w*.60:field.x+field.w*.42,ballX=receiverX-dir*180;
     const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,2),support=g.player(defendingTeam,3);
     const keep=new Set([receiver,primary,support]);
     for(const q of g.players)if(!keep.has(q)&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
     Object.assign(receiver,{x:receiverX,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
      moveVX:0,moveVY:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
-    Object.assign(primary,{x:ballX+dir*80,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+    Object.assign(primary,{x:ballX+dir*120,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
      moveVX:dir*profile.move,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
-    Object.assign(support,{x:ballX+dir*100,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+    Object.assign(support,{x:ballX+dir*140,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
      moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
     Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,
      attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,
@@ -264,7 +264,7 @@ with sync_playwright() as pw:
     const supportTarget=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
     g.driveAI(primary,.016);
     const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
-    const laneX=ballX+dir*92.8;
+    const laneX=ballX+dir*140.4;
     rows.push({defendingTeam,name:profile.name,covered:profile.covered,supportTarget,primaryTarget,
      supportGap:supportTarget?Math.hypot(supportTarget.x-laneX,supportTarget.y-y):Infinity,
      primaryGap:primaryTarget?Math.hypot(primaryTarget.x-ballX,primaryTarget.y-y):Infinity,

@@ -7,18 +7,18 @@ Deliver player-facing football gameplay first, then existing-player graphics/ani
 
 ## Current checkpoint
 - **0.12.81.297 — AI-GROUND-PASS-SUPPORT-OVERLAP-AVOIDANCE-01:** the second CPU defender yields a targeted ground-pass lane when the primary's bounded 120 ms projected position already covers that same pocket within 44 units. Retreating/distant primary movement still hands the lane to support; descending lofted passes remain on dedicated high-pass cover.
-- .296 release-note syntax blocker fixed in b44e42209037602a869bb084329f9dffd9858a45; Modular QA #45620539636 passed. Full Regression Census #45620539513: preflight, preview and Node shards 2/3 passed; Node shards 0/1 and all four Chromium shards were still running when .297 began.
+- .296 release-note syntax blocker fixed in b44e42209037602a869bb084329f9dffd9858a45; Modular QA #45620539636 passed. Census #45620539513 then failed one cutback fixture on a mirrored wing (marker/runner projection saturated identically) and hit the historical LAN browser timeout. .297 first QA found one new fixture spacing issue (110-unit pass made the intercept point invalid); both fixtures are corrected without changing production thresholds.
 - Main remains .292 on faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b.
 
 ## Next smallest action
-Run exact-head .297 Modular QA and full four-Node/four-Chromium Census. Repair confirmed failures, then allow only a green exact head through the QA-gated promotion pipeline and independently verify main Census, Pages deployment and hosted bytes.
+Run exact-head .297 follow-up Modular QA and full four-Node/four-Chromium Census. Repair confirmed failures, then allow only a green exact head through the QA-gated promotion pipeline and independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Studio art requires provenance, game-scale QA and owner acceptance. Keep #48 physical acceptance, #86 Render drift and #87 branch-protection security open. No authenticated online-hosting claim.
 
 ## Evidence
 - .296 Modular QA #45620539636: passed.
-- .296 Full Regression Census #45620539513: preflight/preview and Node shards 2/3 passed; other Node/browser shards were in progress at .297 integration.
+- .296 Full Regression Census #45620539513: preflight/preview and all four Node shards passed; browser shard 3 exposed the mirrored cutback fixture issue and browser shard 1 hit the historical LAN timeout.
 - GitHub REST: dev parent b44e42209037602a869bb084329f9dffd9858a45; main faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b; both branches report unprotected; #87 remains open.
 
 ## Cleanup

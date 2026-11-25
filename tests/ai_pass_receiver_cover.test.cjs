@@ -264,14 +264,14 @@ test('ground-pass support yields to a primary already covering the lane and reje
   const receiver=game.player(attackingTeam,3),primary=game.player(defendingTeam,2),support=game.player(defendingTeam,3);
   const field=ENGINE.WORLD.field,y=field.y+field.h/2;
   const receiverX=attackingTeam===0?field.x+field.w*.60:field.x+field.w*.42;
-  const ballX=receiverX-dir*110;
+  const ballX=receiverX-dir*180;
   const keep=new Set([receiver,primary,support]);
   for(const q of game.players)if(!keep.has(q)&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
   Object.assign(receiver,{x:receiverX,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
    moveVX:0,moveVY:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
-  Object.assign(primary,{x:ballX+dir*80,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+  Object.assign(primary,{x:ballX+dir*120,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
    moveVX:dir*100,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
-  Object.assign(support,{x:ballX+dir*100,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+  Object.assign(support,{x:ballX+dir*140,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
    moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
   Object.assign(game.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,
    attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,
