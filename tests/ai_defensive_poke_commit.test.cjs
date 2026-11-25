@@ -27,7 +27,7 @@ test('relative closing lets an advancing defender open the bounded early PASS-po
   const qualifies=(defenderSpeed,carrierSpeed=0,range=78,defence=50,extra={})=>{
    const defender=player(team,1000,700,{dx:0,dy:0,face:-dir,
     moveVX:dir*defenderSpeed,moveVY:0,src:{defence},...extra});
-   const carrier=player(1-team,1000+dir*range,700,{moveVX:dir*carrierSpeed,moveVY:0});
+   const carrier=player(1-team,1000+dir*range,700,{moveVX:dir*carrierSpeed,moveVY:0,dx:dir,dy:0});
    const ball={owner:carrier,x:carrier.x-dir*17,y:carrier.y+12,z:12};
    return commit(defender,carrier,ball);
   };

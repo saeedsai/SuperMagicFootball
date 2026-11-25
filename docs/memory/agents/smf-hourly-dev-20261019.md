@@ -7,6 +7,7 @@ Deliver real player-facing gameplay first, then existing-player graphics/animati
 
 ## Current checkpoint
 - **0.12.81.311 — AI-AGILITY-AWARE-EARLY-POKE-TURN-READ-01:** early CPU PASS-poke commitment now projects a grounded carrier's current input through the existing Agility-limited turn model over 55 ms, but only after a live carried ball passes ownership, grounding and defender-side exposure checks. It changes commitment timing only; movement and contact physics are unchanged.
+- First .311 Modular QA #45722296290 observed 2,922 Node tests with one failure in the existing `a faster retreat keeps net closing below threshold` fixture. On team 1 the fixture left `dx=+1` while the carrier moved left, which now correctly means a turn toward the defender. The baseline now mirrors carrier input with its retreat velocity (`dx=dir`); the production turn-read behavior remains unchanged. Exact-head rerun is pending.
 - .310 Modular QA #45720332579 passed on SHA `6b29c6ed7507fedc9269fc8e1302647e235c33d1`; Full Regression Census #45720332649 was in progress when .311 began. .310 is not release-certified by that status alone.
 - .309 is promoted to main at `165b63464f03f6f85c392134046af288706946f4`; independent main Census #45719666223 and Pages deployment #45719655576 both succeeded, including hosted-pages smoke.
 
