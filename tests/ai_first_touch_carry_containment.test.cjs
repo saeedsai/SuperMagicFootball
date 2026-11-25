@@ -52,11 +52,11 @@ test('carry containment follows live forward-diagonal input before residual mome
   s.carrier.dx=0;s.carrier.dy=0;
   const released=AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary);
   assert.ok(released,JSON.stringify({team,released}));
-  s.carrier.dx=s.dir*.5;s.carrier.dy=Math.sqrt(.75);
+  s.carrier.dx=s.dir*.56;s.carrier.dy=Math.sqrt(1-.56*.56);
   const live=AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary);
   assert.ok(live,JSON.stringify({team,live}));
-  const along=(live.x-s.carrier.x)*s.dir*.5+(live.y-s.carrier.y)*Math.sqrt(.75);
-  assert.ok(along>72&&along<90,JSON.stringify({team,along,live,released}));
+  const along=(live.x-s.carrier.x)*s.dir*.56+(live.y-s.carrier.y)*Math.sqrt(1-.56*.56);
+  assert.ok(along>83&&along<90,JSON.stringify({team,along,live,released}));
   assert.ok(Math.hypot(live.x-released.x,live.y-released.y)>18,
    'a sharp live diagonal cut must move the screen away from the stale momentum lane');
   s.carrier.dx=-s.dir;s.carrier.dy=0;
