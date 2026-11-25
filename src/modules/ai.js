@@ -1697,15 +1697,19 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const legacy=axis==='x'?carrier.vx:carrier.vy;
    return Number.isFinite(legacy)?legacy:0;
   };
-  // Live directional input is the carrier's current cut; residual movement is only the release fallback.
+  // Direction follows live input, while the bounded position projection keeps actual movement velocity.
+  const motionVX=velocity('x'),motionVY=velocity('y');
   let vx=Number.isFinite(carrier.dx)?carrier.dx:0;
   let vy=Number.isFinite(carrier.dy)?carrier.dy:0;
   let speed=Math.hypot(vx,vy);
-  if(speed<.05){vx=velocity('x');vy=velocity('y');speed=Math.hypot(vx,vy);}
   if(speed<.05){
-   const face=Number(carrier.face);
-   vx=Number.isFinite(face)&&Math.abs(face)>.5?Math.sign(face):dir;
-   vy=0;speed=1;
+   const motionSpeed=Math.hypot(motionVX,motionVY);
+   if(motionSpeed>=38){vx=motionVX;vy=motionVY;speed=motionSpeed;}
+   else{
+    const face=Number(carrier.face);
+    vx=Number.isFinite(face)&&Math.abs(face)>.5?Math.sign(face):dir;
+    vy=0;speed=1;
+   }
   }
   const ux=vx/speed,uy=vy/speed;
   if(!Number.isFinite(ux)||!Number.isFinite(uy)||dir*ux<.28)return null;
@@ -1713,8 +1717,8 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const primaryGap=Math.hypot(primary.x-carrier.x,primary.y-carrier.y);
   if(supportGap<52||supportGap>360||primaryGap>210)return null;
   const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.14,.08,.18);
-  const predictedX=clampTo(carrier.x+clampTo(vx*horizon,-28,28),xMin+24,xMax-24);
-  const predictedY=clampTo(carrier.y+clampTo(vy*horizon,-28,28),yMin+24,yMax-24);
+  const predictedX=clampTo(carrier.x+clampTo(motionVX*horizon,-28,28),xMin+24,xMax-24);
+  const predictedY=clampTo(carrier.y+clampTo(motionVY*horizon,-28,28),yMin+24,yMax-24);
   // Stand on the visible carry line, offset to the side opposite the primary
   // so the two defenders do not collapse onto the same point.
   const primarySide=(primary.x-predictedX)*(-uy)+(primary.y-predictedY)*ux;
