@@ -219,6 +219,38 @@ test('high-cross claim reach follows keeper approach momentum but not retreat, w
  }
 });
 
+test('high-cross claim discounts cross-track momentum while preserving aligned reach and a bounded turn cost',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),dir=f.dir;
+  f.target={x:f.ownGoalX+dir*265,y:f.goalY+35};
+  Object.assign(f.keeper,{x:f.ownGoalX+dir*25,y:f.goalY,fatigue:0});
+  Object.assign(f.receiver,{x:f.target.x+dir*215,y:f.target.y+10});
+  Object.assign(f.ball,{x:f.target.x+dir*160,y:f.target.y-40,z:170,vx:-dir*190,vy:48,vz:10});
+  f.keeper.src.gkSkill=80;f.keeper.src.gkDiving=50;
+  const gap=Math.hypot(240,35),speed=360;
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),
+   'the skilled stationary keeper retains the existing safe claim');
+  f.keeper.moveVX=-35/gap*speed;f.keeper.moveVY=dir*240/gap*speed;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'cross-track momentum consumes part of the bounded turn margin');
+  f.keeper.moveVX=dir*240/gap*speed;f.keeper.moveVY=35/gap*speed;
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),
+   'aligned momentum retains the existing approach bonus');
+  // The turn cost is capped at 18 units even for an extreme cross-track sample.
+  f.target={x:f.ownGoalX+dir*264,y:f.goalY+35};
+  Object.assign(f.keeper,{x:f.ownGoalX+dir*25,y:f.goalY,moveVX:0,moveVY:0,fatigue:0});
+  Object.assign(f.receiver,{x:f.target.x+dir*215,y:f.target.y+10});
+  Object.assign(f.ball,{x:f.target.x+dir*160,y:f.target.y-40,z:170,vx:-dir*190,vy:48,vz:10});
+  f.keeper.src.gkSkill=100;f.keeper.src.gkDiving=100;
+  const capGap=Math.hypot(239,35),extremeSpeed=600;
+  f.keeper.moveVX=-35/capGap*extremeSpeed;
+  f.keeper.moveVY=dir*239/capGap*extremeSpeed;
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),
+   'the capped 18-unit turn cost does not become an unbounded cross-track penalty');
+ }
+});
+
 test('keeper yields a high-cross claim to a grounded runner who can arrive during the bounded flight window',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){

@@ -2466,7 +2466,15 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  const keeperVY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
  const momentumToward=(keeperVX*(target.x-keeper.x)+keeperVY*(target.y-keeper.y))/Math.max(1,keeperGap);
  const momentumBonus=clampTo(momentumToward*.05*(1-fatigue*.5),-12,12);
- const claimReach=clampTo(235+(skill-50)*.30+(diving-50)*.20-fatigue*28+momentumBonus,185,260);
+ // Cross-track momentum needs a bounded reorientation before the keeper can
+ // reach the high-cross landing. Keep stationary/aligned baselines unchanged.
+ const rawAgility=Number(keeper.src?.agility);
+ const agility=clampTo(Number.isFinite(rawAgility)?rawAgility:50,0,100);
+ const turnRate=clampTo(3+agility*.13+(skill-50)*.025-fatigue*1.1,4.5,16.5);
+ const lateralSpeed=Math.abs((keeperVX*targetDy-keeperVY*targetDx)/Math.max(1,keeperGap));
+ const lateralTurnCost=Math.min(18,lateralSpeed/turnRate*.45);
+ const claimReach=clampTo(235+(skill-50)*.30+(diving-50)*.20-fatigue*28+
+  momentumBonus-lateralTurnCost,185,260);
  if(depth<24||depth>360||target.y<goalTop-230||target.y>goalBottom+230||
   keeperGap<24||keeperGap>Math.min(claimReach,260*flight+32))return null;
  const receiverGap=Math.hypot(receiver.x-target.x,receiver.y-target.y);
