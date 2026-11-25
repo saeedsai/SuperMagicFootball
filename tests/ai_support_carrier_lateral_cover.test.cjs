@@ -31,6 +31,33 @@ test('support cover projects lateral carrier movement while retaining its origin
  assert.equal(up.x,1110);
 });
 
+test('support cover projects forward and retreating carrier runs in both defending directions',()=>{
+ const forward=cover(player(0,850,800),player(1,1000,700,{moveVX:180}));
+ const retreat=cover(player(1,1150,800),player(0,1000,700,{moveVX:-180}));
+ assert.ok(Math.abs(forward.x-911.6)<1e-9,JSON.stringify(forward));
+ assert.ok(Math.abs(retreat.x-1088.4)<1e-9,JSON.stringify(retreat));
+ assert.equal(forward.y,795);
+ assert.equal(retreat.y,795);
+});
+
+test('support cover projects diagonal movement on both axes and caps each lead independently',()=>{
+ const diagonal=cover(player(0,850,800),player(1,1000,700,{moveVX:180,moveVY:180}));
+ assert.ok(Math.abs(diagonal.x-911.6)<1e-9,JSON.stringify(diagonal));
+ assert.ok(Math.abs(diagonal.y-816.6)<1e-9,JSON.stringify(diagonal));
+ const capped=cover(player(0,850,800),player(1,1000,700,{moveVX:2000,moveVY:2000}),bounds,.18);
+ assert.equal(capped.x,926);
+ assert.equal(capped.y,831);
+});
+
+test('support cover keeps the projected goal-side screen inside bounds at both field edges',()=>{
+ const left=cover(player(0,110,800),player(1,110,700,{moveVX:-2000}),bounds,.18);
+ const right=cover(player(1,1990,800),player(0,1990,700,{moveVX:2000}),bounds,.18);
+ assert.equal(left.x,233);
+ assert.equal(right.x,1867);
+ assert.ok(left.x>=bounds.xMin+22&&left.x<=bounds.xMax-22);
+ assert.ok(right.x>=bounds.xMin+22&&right.x<=bounds.xMax-22);
+});
+
 test('support cover caps lateral prediction at 36 units and clamps to playable bounds',()=>{
  const fast=cover(player(0,850,800),player(1,1000,700,{moveVY:2000}),bounds,.18);
  assert.equal(fast.y,831);

@@ -37,7 +37,7 @@ with sync_playwright() as pw:
                 player(1,1150,800),player(0,1000,700,{moveVY:-180}),bounds);
             const capped=game.defensiveCarrierSupportCoverTarget(
                 player(0,850,800),player(1,1000,700,{moveVY:2000}),bounds,.18);
-            const runEngine=(team,carrierVY)=>{
+            const runEngine=(team,carrierVY,carrierVX=0)=>{
                 const dir=team===0?1:-1;
                 game.init({home:0,away:1,mode:'quick',humans:0});
                 const carrier=game.player(1-team,3);
@@ -45,7 +45,7 @@ with sync_playwright() as pw:
                 const support=game.player(team,4);
                 for(const q of game.players)if(q!==carrier&&q!==primary&&q!==support){q.down=true;q.stun=1;}
                 Object.assign(carrier,{x:1050,y:700,z:0,down:false,stun:0,invuln:0,action:'idle',
-                    moveVX:0,moveVY:carrierVY,firstTouchPressure:0,firstTouchControlTimer:0});
+                    moveVX:carrierVX,moveVY:carrierVY,firstTouchPressure:0,firstTouchControlTimer:0});
                 Object.assign(primary,{x:1050-dir*70,y:700,z:0,down:false,stun:0,invuln:0,cd:0,
                     action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
                 Object.assign(support,{x:1050-dir*110,y:795,z:0,down:false,stun:0,invuln:0,cd:0,
@@ -55,10 +55,12 @@ with sync_playwright() as pw:
                     pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=10;
                 game.driveAI(support,.016);
-                return {target:support.aiTarget,expectedX:carrier.x-dir*110,
+                return {target:support.aiTarget,
+                    expectedX:Math.max(122,Math.min(1978,carrier.x+Math.max(-36,Math.min(36,carrierVX*.12))-dir*110)),
                     expectedY:Math.max(123,Math.min(1277,carrier.y+Math.max(-36,Math.min(36,carrierVY*.12))+95))};
             };
             const engineRows=[runEngine(0,180),runEngine(1,-180)];
+            const forwardRows=[runEngine(0,0,180),runEngine(1,0,-180)];
             const crossingRows=[0,1].map(team=>{
                 const dir=team===0?1:-1,lateral=team===0?1:-1;
                 game.init({home:0,away:1,mode:'quick',humans:0});
@@ -96,7 +98,7 @@ with sync_playwright() as pw:
                 const projectedY=700+lateral*26.4,side=Math.sign(far.y-projectedY);
                 return {target:far.aiTarget,expectedX:1050-dir*110,expectedY:projectedY+side*95};
             });
-            return {down,up,capped,engineRows,crossingRows,selectionRows,
+            return {down,up,capped,engineRows,forwardRows,crossingRows,selectionRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.filter(team=>
                     !['concept_demo','crown_royals_reference'].includes(team.group)).length};
@@ -104,11 +106,11 @@ with sync_playwright() as pw:
         assert abs(result['down']['y']-816.6)<1e-9,(kind,result)
         assert abs(result['up']['y']-773.4)<1e-9,(kind,result)
         assert result['capped']['y']==831,(kind,result)
-        for row in result['engineRows']+result['crossingRows']+result['selectionRows']:
+        for row in result['engineRows']+result['forwardRows']+result['crossingRows']+result['selectionRows']:
             assert abs(row['target']['x']-row['expectedX'])<1e-9,(kind,row)
             assert abs(row['target']['y']-row['expectedY'])<1e-9,(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'projected-flank cover, crossing carrier, support selection, 223 teams and four actions',flush=True)
+        print('PASS',kind,'two-axis projected-flank cover, forward carrier, support selection, 223 teams and four actions',flush=True)
         ctx.close()
     browser.close()

@@ -35,15 +35,19 @@ function defensiveCarrierSupportCoverTarget(support,carrier,bounds,horizonSecond
  const yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
  const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.12,.08,.18);
+ const vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:
+  Number.isFinite(carrier.vx)?carrier.vx:0;
  const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:
   Number.isFinite(carrier.vy)?carrier.vy:0;
+ const forwardLead=clampTo(vx*horizon,-36,36);
  const lateralLead=clampTo(vy*horizon,-36,36);
+ const projectedX=clampTo(carrier.x+forwardLead,xMin+23,xMax-23);
  const projectedY=clampTo(carrier.y+lateralLead,yMin+23,yMax-23);
  // Keep the screen on the support's side of the carrier's projected lane; a lateral cut must not make the cover run through the carrier.
  const side=support.y>projectedY?1:-1;
  const goalDirection=support.t===0?1:-1;
  return {
-  x:clampTo(carrier.x-goalDirection*110,xMin+22,xMax-22),
+  x:clampTo(projectedX-goalDirection*110,xMin+22,xMax-22),
   y:clampTo(projectedY+side*95,yMin+23,yMax-23)
  };
 }
