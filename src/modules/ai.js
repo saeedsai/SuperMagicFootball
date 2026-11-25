@@ -689,7 +689,8 @@ function attackingSupportPass(players,team,carrier,supportRun){
  const eligibleDefenders=[];
  for(const defender of players){
   if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
-   keeperUnavailableForGroundPass(defender))continue;
+   keeperUnavailableForGroundPass(defender)||
+   (defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0))continue;
   if(defender.down||defender.action==='shotDown'||defender.action==='shotGetUp'||
    !timerClear(defender.shotImpactKnockdownPending)||
    !timerClear(defender.shotImpactKnockdownTimer)||
@@ -919,7 +920,7 @@ function attackingGoalmouthPass(players,team,carrier,bounds){
   return Number.isFinite(legacy)?legacy:0;
  };
  const defenders=players.filter(p=>p&&p.t!==team&&!keeperUnavailableForGroundPass(p)&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
-  !p.down&&timerClear(p.shotImpactKnockdownPending)&&
+  !p.down&&!((p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&timerClear(p.shotImpactKnockdownPending)&&
   timerClear(p.shotImpactKnockdownTimer)&&timerClear(p.shotImpactRiseTimer)&&
   grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp');
  let best=null;
@@ -1004,7 +1005,7 @@ function attackingGiveAndGoRun(players,team,passer,receiver,bounds){
   return Number.isFinite(legacy)?legacy:0;
  };
  const defenders=players.filter(p=>p&&p.t!==team&&!keeperUnavailableForGroundPass(p)&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
-  !p.down&&timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+  !p.down&&!((p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp');
  const allies=players.filter(p=>p&&p.t===team&&p!==passer&&p!==receiver&&!p.keeper&&ready(p));
  const pointSegmentDistance=(point,start,end)=>{
@@ -1084,7 +1085,7 @@ function attackingGiveAndGoRun(players,team,passer,receiver,bounds){
    return Number.isFinite(legacy)?legacy:0;
   };
   const defenders=players.filter(p=>p&&p.t!==team&&!keeperUnavailableForGroundPass(p)&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
-   !p.down&&timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
+   !p.down&&!((p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
    timerClear(p.shotImpactRiseTimer)&&grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp');
   const allies=players.filter(p=>p&&p.t===team&&p!==carrier&&!p.keeper&&ready(p));
   let best=null;
