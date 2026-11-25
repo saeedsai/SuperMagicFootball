@@ -50,9 +50,9 @@ with sync_playwright() as pw:
     Object.assign(runner,{x:carrierX+dir*160,y:center+112,z:0,stun:0,down:false,
      action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,face:dir,dx:dir,dy:0,
      aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:0});
-    Object.assign(slider,{x:carrierX+dir*80,y:center-45,z:0,stun:0,down:false,
-     action:'slide',actionTimer:.16,slideTimer:.16,slideRemaining:120,slideSpeed:720,
-     slideDX:0,slideDY:slideDirection,moveVX:0,moveVY:slideDirection*720,
+    Object.assign(slider,{x:carrierX+dir*105,y:center-35,z:0,stun:0,down:false,
+     action:'slide',actionTimer:.16,slideTimer:.16,slideRemaining:120,slideSpeed:595,
+     slideDX:0,slideDY:slideDirection,moveVX:0,moveVY:slideDirection*595,
      aiAssistTarget:null});
     Object.assign(g.ball,{owner:null,pass:false,passTeam:null,passTarget:null,attacker:team,
      lastTouchTeam:team,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,
