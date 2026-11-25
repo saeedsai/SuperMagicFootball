@@ -1697,14 +1697,17 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const legacy=axis==='x'?carrier.vx:carrier.vy;
    return Number.isFinite(legacy)?legacy:0;
   };
-  const vx=velocity('x'),vy=velocity('y'),speed=Math.hypot(vx,vy);
-  let ux,uy;
-  if(speed>=38){ux=vx/speed;uy=vy/speed;}
-  else{
+  // Live directional input is the carrier's current cut; residual movement is only the release fallback.
+  let vx=Number.isFinite(carrier.dx)?carrier.dx:0;
+  let vy=Number.isFinite(carrier.dy)?carrier.dy:0;
+  let speed=Math.hypot(vx,vy);
+  if(speed<.05){vx=velocity('x');vy=velocity('y');speed=Math.hypot(vx,vy);}
+  if(speed<.05){
    const face=Number(carrier.face);
-   ux=Number.isFinite(face)&&Math.abs(face)>.5?Math.sign(face):dir;
-   uy=0;
+   vx=Number.isFinite(face)&&Math.abs(face)>.5?Math.sign(face):dir;
+   vy=0;speed=1;
   }
+  const ux=vx/speed,uy=vy/speed;
   if(!Number.isFinite(ux)||!Number.isFinite(uy)||dir*ux<.28)return null;
   const supportGap=Math.hypot(defender.x-carrier.x,defender.y-carrier.y);
   const primaryGap=Math.hypot(primary.x-carrier.x,primary.y-carrier.y);

@@ -54,11 +54,12 @@ with sync_playwright() as pw:
                     x,y,z:8,vx:-dir*600,vy:0,vz:0,age:.18,canCollect:0,shot:null,strike:null,ordinaryShot:false});
                 game.clock=10;game.take(carrier);
                 Object.assign(carrier,{firstTouchControlTimer:0,firstTouchPressure:.8,firstTouchOutletReadTimer:.92,
-                    aiFirstTouchTarget:null,aiFirstTouchOutletUntil:game.clock+.92,moveVX:dir*80,moveVY:18,
-                    face:dir,aiTimer:0,aiTarget:null});
+                    aiFirstTouchTarget:null,aiFirstTouchOutletUntil:game.clock+.92,moveVX:dir*80,moveVY:0,
+                    dx:dir*.5,dy:.8660254037844386,face:dir,aiTimer:0,aiTarget:null});
                 game.driveAI(support,.016);game.driveAI(primary,.016);
                 const target=support.aiTarget,primaryTarget=primary.aiTarget;
-                rows.push({team:defendingTeam,dir,carrier:{x:carrier.x,y:carrier.y},target,primaryTarget,
+                const inputAlong=target?(target.x-x)*dir*.5+(target.y-y)*.8660254037844386:null;
+                rows.push({team:defendingTeam,dir,carrier:{x:carrier.x,y:carrier.y},target,primaryTarget,inputAlong,
                     owner:game.ball.owner===carrier,buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
             }
             return {rows,teams:SupermagicFootball.teams.length};
@@ -74,6 +75,7 @@ with sync_playwright() as pw:
                 (row['primaryTarget']['y']-row['carrier']['y'])**2)**.5
             assert primary_gap<80,(kind,row)
             assert row['owner'],(kind,row)
+            assert row['inputAlong']>72,(kind,row)
             assert row['buttons']==4,(kind,row)
         assert not errors,(kind,errors)
         print('PASS',kind,'mirrored carry-lane containment, primary pressure, four actions and no JS errors',flush=True)

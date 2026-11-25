@@ -45,6 +45,32 @@ test('carry containment ignores private AI targets and follows only visible move
  assert.equal(AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary),null,
   'a backward carrier is not treated as a forward carry escape');
 });
+test('carry containment follows live forward-diagonal input before residual momentum and cancels a stale forward read on backward input',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const s=scenario(team);
+  s.carrier.dx=0;s.carrier.dy=0;
+  const released=AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary);
+  assert.ok(released,JSON.stringify({team,released}));
+  s.carrier.dx=s.dir*.5;s.carrier.dy=Math.sqrt(.75);
+  const live=AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary);
+  assert.ok(live,JSON.stringify({team,live}));
+  const along=(live.x-s.carrier.x)*s.dir*.5+(live.y-s.carrier.y)*Math.sqrt(.75);
+  assert.ok(along>72&&along<90,JSON.stringify({team,along,live,released}));
+  assert.ok(Math.hypot(live.x-released.x,live.y-released.y)>18,
+   'a sharp live diagonal cut must move the screen away from the stale momentum lane');
+  s.carrier.dx=-s.dir;s.carrier.dy=0;
+  assert.equal(AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary),null,
+   'backward live input must cancel a forward contain screen even while residual momentum points forward');
+  s.carrier.dx=0;s.carrier.dy=0;
+  assert.deepEqual(AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary),released,
+   'released input falls back to the same bounded residual-movement target');
+  s.carrier.moveVX=0;s.carrier.moveVY=0;
+  const facing=AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary);
+  assert.ok(facing&&s.dir*(facing.x-s.carrier.x)>34,
+   'when both input and movement are neutral, the existing facing fallback remains available');
+ }
+});
 test('carry containment expires and yields to pressure, hidden-ball and first-touch state',async()=>{
  const {AI}=await loadModules(),s=scenario(0);
  const read=()=>AI.defensiveFirstTouchCarryContainTarget(s.team,s.carrier,s.players,bounds,s.support,s.primary);

@@ -6,20 +6,21 @@
 Deliver player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup improvements. Preserve canonical data, four match actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.297 — AI-GROUND-PASS-SUPPORT-OVERLAP-AVOIDANCE-01:** the second CPU defender yields a targeted ground-pass lane when the primary's bounded 120 ms projected position already covers that same pocket within 44 units. Retreating/distant primary movement still hands the lane to support; descending lofted passes remain on dedicated high-pass cover.
-- .296 release-note syntax blocker fixed in b44e42209037602a869bb084329f9dffd9858a45; Modular QA #45620539636 passed. Census #45620539513 then failed one cutback fixture on a mirrored wing (marker/runner projection saturated identically) and hit the historical LAN browser timeout. .297 first QA found one new fixture spacing issue (110-unit pass made the intercept point invalid); both fixtures are corrected without changing production thresholds.
-- Main remains .292 on faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b.
+- **0.12.81.298 — AI-FIRST-TOUCH-CARRY-INPUT-SCREEN-01:** after a pressured receiver's settling touch, the second CPU defender screens the carrier's live forward-diagonal input when no safe outlet/contest/cutback assignment has priority. Neutral input falls back to residual movement; backward input cancels the forward screen.
+- .297 is fully certified and promoted: dev Census #45622688439 passed all four Node and all four Chromium shards plus preview; automatic promotion succeeded. Main Census #45632852684 and Pages deployment #45632838906 both succeeded on exact SHA 4e66fc54cbb65c1fd6afe38b53c399a8ec575c48.
+- .298 focused Node/Chromium regressions and Modular QA/full Census are pending exact-head Actions evidence.
 
 ## Next smallest action
-Run exact-head .297 follow-up Modular QA and full four-Node/four-Chromium Census. Repair confirmed failures, then allow only a green exact head through the QA-gated promotion pipeline and independently verify main Census, Pages deployment and hosted bytes.
+Run exact-head Modular QA and the full four-Node/four-Chromium Census for .298. Repair confirmed failures, then permit only a green exact head through the existing QA-gated promotion pipeline and independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Studio art requires provenance, game-scale QA and owner acceptance. Keep #48 physical acceptance, #86 Render drift and #87 branch-protection security open. No authenticated online-hosting claim.
 
 ## Evidence
-- .296 Modular QA #45620539636: passed.
-- .296 Full Regression Census #45620539513: preflight/preview and all four Node shards passed; browser shard 3 exposed the mirrored cutback fixture issue and browser shard 1 hit the historical LAN timeout.
-- GitHub REST: dev parent b44e42209037602a869bb084329f9dffd9858a45; main faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b; both branches report unprotected; #87 remains open.
+- .297 dev Full Regression Census #45622688439: preflight, preview, all four Node shards and all four Chromium shards passed; QA-gated promotion succeeded.
+- .297 main Full Regression Census #45632852684: preflight, preview, all four Node shards, all four Chromium shards and hosted Pages smoke passed.
+- .297 Pages deployment #45632838906: successful.
+- GitHub REST: dev/main both at 4e66fc54cbb65c1fd6afe38b53c399a8ec575c48; both branches report unprotected; #87 remains open.
 
 ## Cleanup
 Keep this file below 4 KiB with these headings and exact Agent ID. Never bypass CI, security or QA promotion.
