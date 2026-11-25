@@ -32,8 +32,43 @@ SCRIPT=r"""() => {
   const recovery=document.createElement('canvas');recovery.width=180;recovery.height=180;const rc=recovery.getContext('2d');if(r.drawLightningTrick(rc,q.lightningFx,'strike',true)!==false||pixels(rc)!==0)throw Error('Lightning impact cue remained after expiry');
   results.push({side,fps,frames,expectedFrames:Math.ceil(.32*fps-1e-9),retainedPossession:true,stun:q.stun,cooldown:6,cost:.045,targetRecovered:true,steadyReduced:true});
  }
+
+ // An unavailable nearest marker cannot soak Lightning's single-target lock.
+ const unavailableTargetCases=[];
+ for(const patch of [{down:true},{invuln:.2},{shotImpactKnockdownPending:.2},{action:'shotGetUp'}]){
+  g.init({home:0,away:9,humans:1,mode:'quick'});
+  const caster=g.players.find(v=>v.t===0&&!v.keeper);
+  const rivals=g.players.filter(v=>v.t===1&&!v.keeper);
+  const decoy=rivals[0],ready=rivals[1];
+  Object.assign(caster.src,{magicTrick:'lightning',statsVerified:true,verifiedTier:'Gold'});
+  Object.assign(caster,{x:640,y:360,dx:1,dy:0,face:1,z:0,stun:0,down:false,
+   fatigue:0,magicReadyAt:0,lightningPending:null});
+  Object.assign(decoy,{x:665,y:360,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,
+   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,...patch});
+  Object.assign(ready,{x:712,y:360,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,
+   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+  Object.assign(ready.src,{defence:20});
+  g.players=[caster,decoy,ready];g.ball.owner=caster;g.ball.x=caster.x;g.ball.y=caster.y;g.ball.z=0;g.clock=4;
+  if(!g.tryMagicTrick(caster)||caster.lightningPending?.target!==ready)
+   throw new Error('Lightning did not select the nearest available target for '+JSON.stringify(patch));
+  if(decoy.lightningMark||ready.lightningMark!==.32)throw new Error('Lightning warning mark was assigned to the wrong player');
+  ready.invuln=.2;g.resolveLightningTrick(caster);
+  const event=g.events.at(-1);
+  if(ready.stun!==0||event?.hit!==false||event?.countered!==false)
+   throw new Error('Unavailable marked target was stunned at Lightning impact');
+  unavailableTargetCases.push({patch,targetSelected:true,impactFizzled:true});
+ }
+ g.init({home:0,away:9,humans:1,mode:'quick'});
+ const loneCaster=g.players.find(v=>v.t===0&&!v.keeper),loneRival=g.players.find(v=>v.t===1&&!v.keeper);
+ Object.assign(loneCaster.src,{magicTrick:'lightning',statsVerified:true,verifiedTier:'Gold'});
+ Object.assign(loneCaster,{stun:0,fatigue:0,magicReadyAt:0});
+ Object.assign(loneRival,{down:true,stun:0});
+ g.players=[loneCaster,loneRival];g.ball.owner=loneCaster;g.clock=4;
+ if(g.tryMagicTrick(loneCaster)||loneCaster.magicReadyAt!==0||loneCaster.fatigue!==0)
+  throw new Error('Lightning without an available target must not spend cooldown or fatigue');
+
  const controls=document.querySelectorAll('#touchButtons button[data-act]').length;if(controls!==4)throw Error('Expected four existing actions; got '+controls);
- return{results,controls,canvas:'960x1920'};
+ return{results,unavailableTargetCases,controls,canvas:'960x1920'};
 }"""
 
 with sync_playwright() as pw:
@@ -42,7 +77,7 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport={'width':1280 if not mobile else 844,'height':850 if not mobile else 700},is_mobile=mobile,has_touch=mobile)
   page=context.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
   page.set_content(HTML,wait_until='load');page.wait_for_function('!!window.SupermagicFootball?.renderer',timeout=30000)
-  result=page.evaluate(SCRIPT);assert len(result['results'])==6 and result['controls']==4,result
+  result=page.evaluate(SCRIPT);assert len(result['results'])==6 and len(result['unavailableTargetCases'])==4 and result['controls']==4,result
   assert not errors,errors
   if not mobile:page.locator('#tr14-lightning-gallery').screenshot(path=str(ROOT/'tests/.generated/tr14_lightning_gallery.png'))
   print('TR14_LIGHTNING_BROWSER_PASS',kind,result,flush=True);context.close()
