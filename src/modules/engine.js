@@ -1308,7 +1308,7 @@ class GameEngine{
    defensivePokeBallSideRead(p,target,slideBall)?slideBall:null;
   // A nimble carrier can redirect sooner after the read, so CPU slides lead
   // less aggressively; average Agility preserves the existing 85 ms baseline.
-  const rawCarrierAgility=ballTarget?.src?.agility;
+  const rawCarrierAgility=target?.src?.agility;
   const parsedCarrierAgility=typeof rawCarrierAgility==='number'?rawCarrierAgility:
    typeof rawCarrierAgility==='string'&&rawCarrierAgility.trim()!==''?Number(rawCarrierAgility):NaN;
   const carrierAgility=clamp(Number.isFinite(parsedCarrierAgility)?parsedCarrierAgility:50,1,100);

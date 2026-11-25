@@ -40,6 +40,7 @@ with sync_playwright() as pw:
                     moveVX:0,moveVY:carrierVY,action:'idle',actionTimer:0});
                 Object.assign(match.ball,{owner:carrier,x:carrier.x-dir*17,y:carrier.y+20,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+                if(withLiveBall&&!match.defensivePokeBallSideRead(defender,carrier,match.ball))throw new Error('fixture ball must be exposed to the defender');
                 match.spendStamina=()=>{};match.slideContact=()=>{};match.emit=()=>{};
                 const originalRandom=Math.random;Math.random=()=>1;
                 try{match.tackle(defender,slide,withLiveBall?match.ball:null);}

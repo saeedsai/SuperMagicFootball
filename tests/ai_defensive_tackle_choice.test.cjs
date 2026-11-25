@@ -151,6 +151,7 @@ test('CPU exposed-ball slide lead respects carrier Agility without changing huma
    src:{id:'slide-lead-defender',role:'DF',speedRating:50,defence:50}});
   const carrier=player(1-team,1000+dir*55,700,{moveVX:0,moveVY:carrierVY,src:{agility}});
   const liveBall={owner:carrier,x:carrier.x-dir*17,y:carrier.y+20,z:12};
+  assert.equal(ENGINE.GameEngine.prototype.defensivePokeBallSideRead.call({},defender,carrier,liveBall),true,'fixture must expose the carried ball');
   const game={players:[defender,carrier],ball:{owner:carrier},spendStamina(){},
    playerSpeed(){return 320;},emit(){},slideContact(){}};
   assert.equal(ENGINE.GameEngine.prototype.tackle.call(game,defender,true,withLiveBall?liveBall:null),true);

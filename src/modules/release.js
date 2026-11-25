@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.307',
+ version:'0.12.81.308',
  date:'2026-11-25',
  notes:Object.freeze([
   "AI-SLIDE-AGILITY-EVASION-LEAD-01: CPU SHOOT slides that have verified an exposed carried ball now adjust their short target lead to the carrier's Agility: average 50 preserves 85 ms, high Agility 100 reduces the lead to 70 ms, and low Agility 1 extends it to 99.7 ms (bounded to 70–100 ms). Agile carriers are therefore harder to over-lead, while less agile carriers remain more predictable. The existing 22-unit per-axis cap, forward-arc/run-up/ball-side eligibility, slide travel and contact physics remain unchanged. The adjustment applies only to CPU slides supplied with a validated live ball; human/contextual slides, ordinary PASS pokes, magic-counter slides without a live-ball context, four actions, saves, rosters, persistence and offline play remain unchanged. Mirrored Node and actual-engine desktop/simulated-touch Chromium regressions cover both goals, rating fallback, capped motion and unchanged human/ordinary-poke baselines.",
