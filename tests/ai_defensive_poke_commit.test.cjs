@@ -289,8 +289,7 @@ test('the dedicated pressured first-touch slide read takes priority over a relat
 });
 
 
-test('actual PASS poke aims through the exposed live ball and keeps body aim against shielding',async()=>{
- const {ENGINE}=await loadModules();
+test('actual PASS poke aims through the exposed live ball and keeps body aim against shielding',()=>{
  for(const defendingTeam of [0,1]){
   const dir=defendingTeam===0?1:-1;
   const run=(exposed)=>{
