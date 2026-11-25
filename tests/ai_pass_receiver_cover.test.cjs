@@ -174,3 +174,72 @@ test('ground-pass interception discounts cross-track momentum while preserving a
    'the capped turn reserve must retain a bounded fallback lane');
  }
 });
+
+
+test('targeted ground-pass lane selects the second defender without moving primary pressure off the ball',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team);
+  const hint=AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds);
+  assert.ok(hint,JSON.stringify({team,hint}));
+  const primary=player('ball-primary-'+team,team,f.ball.x-f.dir*18,f.ball.y);
+  const nearBall=player('near-ball-decoy-'+team,team,f.ball.x+f.dir*42,f.ball.y+35);
+  const laneSupport=player('pass-lane-support-'+team,team,hint.x,hint.y+8);
+  const candidates=[nearBall,laneSupport,primary];
+  const distanceOnly=AI.defensivePressers(candidates,team,f.ball);
+  assert.equal(distanceOnly.primary,primary);
+  assert.equal(distanceOnly.support,nearBall,'without a pass hint the nearest remaining defender keeps the old support role');
+  const roles=AI.defensivePressers(candidates,team,f.ball,null,hint);
+  assert.equal(roles.primary,primary,'the nearest defender must keep pressing the live ball');
+  assert.equal(roles.support,laneSupport,'the second defender should protect the projected receiver lane');
+  const farLane=player('out-of-range-lane-'+team,team,f.ball.x+f.dir*390,f.ball.y);
+  const localRoles=AI.defensivePressers([primary,nearBall,farLane],team,f.ball,null,hint);
+  assert.equal(localRoles.primary,primary);
+  assert.equal(localRoles.support,nearBall,'the existing 110-unit locality guard must reject a distant lane candidate');
+ }
+});
+
+test('real driveAI hands a targeted ground-pass interception lane to the second defender on both sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const defendingTeam of [0,1]){
+  const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const receiver=game.player(attackingTeam,3),primary=game.player(defendingTeam,2),
+   nearBall=game.player(defendingTeam,3),laneSupport=game.player(defendingTeam,4);
+  const field=ENGINE.WORLD.field,y=field.y+field.h/2;
+  const receiverX=attackingTeam===0?field.x+field.w*.60:field.x+field.w*.42;
+  const ballX=receiverX-dir*180;
+  const keep=new Set([receiver,primary,nearBall,laneSupport]);
+  for(const q of game.players)if(!keep.has(q)&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
+  Object.assign(receiver,{x:receiverX,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   slideTimer:0,moveVX:0,moveVY:0,shotImpactKnockdownPending:0,
+   shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+  Object.assign(primary,{x:ballX-dir*18,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+  Object.assign(nearBall,{x:ballX+dir*42,y:y+35,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+  Object.assign(laneSupport,{x:ballX+dir*140,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1,
+   fatigue:0,breath:10,morale:55});
+  laneSupport.homeX=laneSupport.x-dir*300;laneSupport.homeY=laneSupport.y+260;
+  Object.assign(game.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,
+   attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,
+   shot:null,strike:null,ordinaryShot:false});
+  game.clock=.2;
+  const boundsNow={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+  const ai=AI.aiTuning(game.cpuLevel(laneSupport)),style=game.options.aiStyle||'Balanced';
+  const styleSpeed=defendingTeam===1?(style==='Aggressive'?1.09:style==='Defensive'?.96:1):1;
+  const speed=game.playerSpeed(laneSupport)*ai.speed*styleSpeed*(game.terrain==='Sand'?.75:1);
+  const expected=AI.defensivePassReceiverCoverTarget(defendingTeam,game.ball,game.players,boundsNow,
+   laneSupport,speed,ai.reaction);
+  assert.ok(expected,JSON.stringify({defendingTeam,ball:game.ball,laneSupport}));
+  game.driveAI(laneSupport,.016);
+  assert.ok(laneSupport.aiTarget&&Math.hypot(laneSupport.aiTarget.x-expected.x,laneSupport.aiTarget.y-expected.y)<1,
+   JSON.stringify({defendingTeam,expected,actual:laneSupport.aiTarget}));
+  game.driveAI(primary,.016);
+  assert.ok(primary.aiTarget&&Math.hypot(primary.aiTarget.x-ballX,primary.aiTarget.y-y)<80,
+   JSON.stringify({defendingTeam,primaryTarget:primary.aiTarget,ball:{x:ballX,y}}));
+  assert.equal(game.ball.owner,null,'support selection must not change pass possession');
+ }
+});

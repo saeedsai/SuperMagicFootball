@@ -2990,8 +2990,13 @@ class GameEngine{
   const looseBallSupportTarget=looseBallLandingTarget?
    (defensiveLooseBallCoverTarget(t,liveBall,looseBallBounds)||
     defensiveGroundSpillCoverTarget(t,liveBall,looseBallBounds)):null;
+  // On a targeted low ground pass, select the second defender against the
+  // receiver-side interception lane while the primary continues to press the ball.
+  const defensivePassCoverHint=!owner&&!concealed&&liveBall.pass===true?
+   defensivePassReceiverCoverTarget(t,liveBall,this.players,looseBallBounds):null;
+  const supportReadTarget=defensivePassCoverHint||looseBallSupportTarget;
   const pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,pressTarget,
-   this.inControl(t)?this.controlledPlayer(t):null,looseBallSupportTarget):null;
+   this.inControl(t)?this.controlledPlayer(t):null,supportReadTarget):null;
   const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
   const speed=this.playerSpeed(p)*ai.speed*styleSpeed*(this.terrain==='Sand'?.75:1);
   const defensiveCutbackCover=owner&&owner.t!==t?defensiveCutbackCoverTarget(t,owner,

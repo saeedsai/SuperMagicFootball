@@ -87,7 +87,9 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
  const projectedTarget=opponentCarrier?
   (movingCarrier?project(target):{x:target.x,y:target.y}):
   landingRead?{x:target.x,y:target.y}:null;
- const supportPoint=landingRead&&supportTarget&&
+ // The second defender may be assigned to a trusted loose-ball landing or
+ // to the projected interception lane of a targeted pass.
+ const supportPoint=supportTarget&&
   Number.isFinite(supportTarget.x)&&Number.isFinite(supportTarget.y)?
   {x:supportTarget.x,y:supportTarget.y}:null;
  const candidates=players.filter(p=>p&&p.t===team&&!p.keeper&&p!==humanControlled&&

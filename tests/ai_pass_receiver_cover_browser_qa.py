@@ -123,6 +123,43 @@ with sync_playwright() as pw:
    }
    return {rows,skillRows,reachRows,momentumRows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
+  handoff_result=page.evaluate("""() => {
+   const g=SupermagicFootball.game,rows=[],field={x:150,y:155,w:2260.8,h:1220};
+   for(const defendingTeam of [0,1]){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+    const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1,y=field.y+field.h/2;
+    const receiverX=attackingTeam===0?field.x+field.w*.60:field.x+field.w*.42;
+    const ballX=receiverX-dir*180;
+    const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,2),
+     nearBall=g.player(defendingTeam,3),laneSupport=g.player(defendingTeam,4);
+    const keep=new Set([receiver,primary,nearBall,laneSupport]);
+    for(const q of g.players)if(!keep.has(q)&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
+    Object.assign(receiver,{x:receiverX,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+     slideTimer:0,moveVX:0,moveVY:0,shotImpactKnockdownPending:0,
+     shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+    Object.assign(primary,{x:ballX-dir*18,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+    Object.assign(nearBall,{x:ballX+dir*42,y:y+35,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+    Object.assign(laneSupport,{x:ballX+dir*140,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1,
+     fatigue:0,breath:10,morale:55});
+    laneSupport.homeX=laneSupport.x-dir*300;laneSupport.homeY=laneSupport.y+260;
+    Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,
+     attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,
+     shot:null,strike:null,ordinaryShot:false});
+    g.clock=.2;g.driveAI(laneSupport,.016);
+    const supportTarget=laneSupport.aiTarget?{x:laneSupport.aiTarget.x,y:laneSupport.aiTarget.y}:null;
+    g.driveAI(primary,.016);
+    const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
+    const passPointX=ballX+dir*140.4;
+    rows.push({defendingTeam,dir,ballX,y,passPointX,supportTarget,primaryTarget,
+     supportGap:supportTarget?Math.hypot(supportTarget.x-passPointX,supportTarget.y-y):Infinity,
+     primaryGap:primaryTarget?Math.hypot(primaryTarget.x-ballX,primaryTarget.y-y):Infinity,
+     possession:g.ball.owner===null});
+   }
+   return {rows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }""")
   outlet_result=page.evaluate("""() => {
    const g=SupermagicFootball.game,rows=[],originalRandom=Math.random;
    try {
@@ -164,6 +201,12 @@ with sync_playwright() as pw:
    }finally{Math.random=originalRandom;}
    return {rows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
+  assert handoff_result['teams']>=223,(kind,handoff_result)
+  assert handoff_result['buttons']==4,(kind,handoff_result)
+  for row in handoff_result['rows']:
+   assert row['supportTarget'] is not None and row['supportGap']<35,(kind,row)
+   assert row['primaryTarget'] is not None and row['primaryGap']<80,(kind,row)
+   assert row['possession'],(kind,row)
   assert outlet_result['teams']>=223,(kind,outlet_result)
   assert outlet_result['buttons']==4,(kind,outlet_result)
   for row in outlet_result['rows']:
