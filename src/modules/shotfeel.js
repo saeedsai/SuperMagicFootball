@@ -74,11 +74,40 @@ const SHOTFEEL=(()=>{
    if(Number.isFinite(rival.stun)&&rival.stun>arrival)continue;
    // A defender already moving into the passing lane is more dangerous than
    // one moving away. Limit the lookahead to keep sudden AI changes readable.
+   // A live slide is not ordinary moveVX/moveVY movement: its direction,
+   // remaining distance and timers define a bounded swept path. Compare that
+   // path with the ball at the same time so a late or retreating slide cannot
+   // falsely close an otherwise safe ground-pass lane.
+   const lookahead=passLookahead;
+   const activeSlide=rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&
+    rival.actionTimer>0&&Number.isFinite(rival.slideTimer)&&rival.slideTimer>0;
+   if(activeSlide){
+    const rawSpeed=finiteNumber(rival.slideSpeed),remaining=finiteNumber(rival.slideRemaining);
+    const slideX=finiteNumber(rival.slideDX),slideY=finiteNumber(rival.slideDY);
+    const directionLength=Math.hypot(slideX,slideY);
+    if(!Number.isFinite(rawSpeed)||rawSpeed<200||!Number.isFinite(remaining)||remaining<=0||
+       !Number.isFinite(directionLength)||directionLength<.5)continue;
+    const slideSpeed=clamp(rawSpeed,200,720);
+    const slideDuration=Math.min(lookahead,rival.actionTimer,rival.slideTimer,remaining/slideSpeed);
+    if(!(slideDuration>0))continue;
+    const ux=slideX/directionLength,uy=slideY/directionLength;
+    const relativeX=rival.x-from.x,relativeY=rival.y-from.y;
+    const relativeVX=ux*slideSpeed-dx/lookahead;
+    const relativeVY=uy*slideSpeed-dy/lookahead;
+    const relativeSpeedSquared=relativeVX*relativeVX+relativeVY*relativeVY;
+    const closestTime=relativeSpeedSquared>1e-6
+     ?clamp(-(relativeX*relativeVX+relativeY*relativeVY)/relativeSpeedSquared,0,slideDuration)
+     :0;
+    const slideGap=Math.hypot(relativeX+relativeVX*closestTime,relativeY+relativeVY*closestTime);
+    const slidePressure=slideGap<64?.24*clamp((64-slideGap)/12,0,1):0;
+    if(slidePressure>strongest){second=strongest;strongest=slidePressure;}
+    else if(slidePressure>second)second=slidePressure;
+    continue;
+   }
    const vx=movementVelocity(rival,'x');
    const vy=movementVelocity(rival,'y');
    // Longer passes give moving defenders more time to close the lane; short
    // passes retain the snappy near-instant read. Bound prediction for fairness.
-   const lookahead=passLookahead;
    const futureX=rival.x+Math.max(-65,Math.min(65,vx*lookahead));
    const futureY=rival.y+Math.max(-65,Math.min(65,vy*lookahead));
    const marker=Math.max(0,1-Math.hypot(futureX-receiver.x,futureY-receiver.y)/90)*.12;
