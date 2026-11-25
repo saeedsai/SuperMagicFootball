@@ -39,6 +39,9 @@ with sync_playwright() as pw:
     Object.assign(g.ball,{owner:carrier,x:1200+ballOffset,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:team});
     const oldRandom=Math.random;Math.random=()=>randomValue;
     try{g.tryMagicTrick(carrier);}finally{Math.random=oldRandom;}
+    // Isolate the earned read-screen fallback from the separate established
+    // first-touch outlet/containment assignment tested below.
+    if(withScreen)carrier.firstTouchOutletReadTimer=0;
     if(postReadDiagonal)Object.assign(carrier,{dx:dir*.8,dy:.6});
     if(withScreen){g.driveAI(screen,1/60);g.driveAI(nearest,1/60);}
     return {hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue,
