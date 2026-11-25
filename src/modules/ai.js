@@ -650,6 +650,12 @@ function attackingThirdManRun(players,team,carrier,primaryRun,humanControlled=nu
 // Prefer a completed, genuinely open support run when the carrier chooses an AI
 // pass. The runner must already have entered its lane; a blocked corridor or a
 // defender waiting at the receiving point keeps the existing pass selection.
+// Ground-pass options share the same goalkeeper availability rule as through balls.
+// A keeper still catching, holding or recovering cannot contest a new ground-pass lane;
+// an active keeperDive remains a real physical threat.
+const keeperUnavailableForGroundPass = player => !!player?.keeper &&
+ ['keeperDiveCatch','keeperRecover','keeperHold','keeperCatch'].includes(player.action);
+
 function attackingSupportPass(players,team,carrier,supportRun){
  if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
   !Number.isFinite(carrier.x)||!Number.isFinite(carrier.y))return null;
@@ -682,7 +688,8 @@ function attackingSupportPass(players,team,carrier,supportRun){
  if(!Number.isFinite(segment)||segment<=0)return null;
  const eligibleDefenders=[];
  for(const defender of players){
-  if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y))continue;
+  if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+   keeperUnavailableForGroundPass(defender))continue;
   if(defender.down||defender.action==='shotDown'||defender.action==='shotGetUp'||
    !timerClear(defender.shotImpactKnockdownPending)||
    !timerClear(defender.shotImpactKnockdownTimer)||
@@ -774,7 +781,7 @@ function attackingSupportPass(players,team,carrier,supportRun){
     !timerClear(defender.shotImpactKnockdownPending)||
     !timerClear(defender.shotImpactKnockdownTimer)||
     !timerClear(defender.shotImpactRiseTimer)||!grounded(defender))continue;
-   if(defender.keeper&&['keeperDiveCatch','keeperRecover','keeperHold','keeperCatch'].includes(defender.action))continue;
+   if(keeperUnavailableForGroundPass(defender))continue;
    const stun=defender.stun==null?0:Number(defender.stun);
    if(!Number.isFinite(stun)||stun>arrivalSeconds)continue;
    defenders.push(defender);
@@ -829,7 +836,7 @@ function attackingSupportPass(players,team,carrier,supportRun){
   };
   const activeDefender=p=>{
    // A goalkeeper can step into the driven cutback lane or claim its collection pocket.
-   if(!p||p.t===team||p.down||!Number.isFinite(p.x)||!Number.isFinite(p.y)||
+   if(!p||p.t===team||keeperUnavailableForGroundPass(p)||p.down||!Number.isFinite(p.x)||!Number.isFinite(p.y)||
     !timerClear(p.slideTimer)||!timerClear(p.shotImpactKnockdownPending)||
     !timerClear(p.shotImpactKnockdownTimer)||!timerClear(p.shotImpactRiseTimer)||
     !grounded(p)||p.action==='shotDown'||p.action==='shotGetUp'||
@@ -911,7 +918,7 @@ function attackingGoalmouthPass(players,team,carrier,bounds){
   const legacy=axis==='x'?player?.vx:player?.vy;
   return Number.isFinite(legacy)?legacy:0;
  };
- const defenders=players.filter(p=>p&&p.t!==team&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
+ const defenders=players.filter(p=>p&&p.t!==team&&!keeperUnavailableForGroundPass(p)&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
   !p.down&&timerClear(p.shotImpactKnockdownPending)&&
   timerClear(p.shotImpactKnockdownTimer)&&timerClear(p.shotImpactRiseTimer)&&
   grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp');
@@ -996,7 +1003,7 @@ function attackingGiveAndGoRun(players,team,passer,receiver,bounds){
   const legacy=axis==='x'?p.vx:p.vy;
   return Number.isFinite(legacy)?legacy:0;
  };
- const defenders=players.filter(p=>p&&p.t!==team&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
+ const defenders=players.filter(p=>p&&p.t!==team&&!keeperUnavailableForGroundPass(p)&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
   !p.down&&timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
   timerClear(p.shotImpactRiseTimer)&&grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp');
  const allies=players.filter(p=>p&&p.t===team&&p!==passer&&p!==receiver&&!p.keeper&&ready(p));
@@ -1076,7 +1083,7 @@ function attackingGiveAndGoRun(players,team,passer,receiver,bounds){
    const legacy=axis==='x'?p?.vx:p?.vy;
    return Number.isFinite(legacy)?legacy:0;
   };
-  const defenders=players.filter(p=>p&&p.t!==team&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
+  const defenders=players.filter(p=>p&&p.t!==team&&!keeperUnavailableForGroundPass(p)&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&
    !p.down&&timerClear(p.shotImpactKnockdownPending)&&timerClear(p.shotImpactKnockdownTimer)&&
    timerClear(p.shotImpactRiseTimer)&&grounded(p)&&p.action!=='shotDown'&&p.action!=='shotGetUp');
   const allies=players.filter(p=>p&&p.t===team&&p!==carrier&&!p.keeper&&ready(p));
@@ -1922,7 +1929,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    return Number.isFinite(legacy)?legacy:0;
   };
   const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.16,.08,.20);
-  const defenders=players.filter(q=>q&&q.t!==team&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
+  const defenders=players.filter(q=>q&&q.t!==team&&!keeperUnavailableForGroundPass(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
    !q.down&&timerClear(q.slideTimer)&&timerClear(q.shotImpactKnockdownPending)&&
    timerClear(q.shotImpactKnockdownTimer)&&timerClear(q.shotImpactRiseTimer)&&grounded(q)&&
    q.action!=='shotDown'&&q.action!=='shotGetUp'&&
