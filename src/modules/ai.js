@@ -370,7 +370,15 @@ function defensiveTackleSlide(defender,carrier,baseSpeed=0){
  const relativeX=carrierVX-defenderVX,relativeY=carrierVY-defenderVY;
  const escaping=relativeX*ux+relativeY*uy;
  const crossing=Math.abs(relativeX*(-uy)+relativeY*ux);
- return escaping>45||(crossing>105&&escaping>-100);
+ const rawAgility=defender.src?.agility;
+ const parsedAgility=typeof rawAgility==='number'?rawAgility:
+  typeof rawAgility==='string'&&rawAgility.trim()!==''?Number(rawAgility):NaN;
+ const agility=Math.max(1,Math.min(100,Number.isFinite(parsedAgility)?parsedAgility:50));
+ // Agility changes only the lateral-cut read: average players keep the old
+ // 105-unit gate, while elite readers need less crossing and low-rated players
+ // require a clearer cut. The straight escape and contact/probability gates stay intact.
+ const crossingThreshold=Math.max(95,Math.min(115,105+(50-agility)*.2));
+ return escaping>45||(crossing>crossingThreshold&&escaping>-100);
 }
 
  

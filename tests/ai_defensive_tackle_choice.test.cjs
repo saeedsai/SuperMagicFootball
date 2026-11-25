@@ -33,6 +33,28 @@ test('a running defender can slide across a lateral cut when relative closure is
  assert.equal(AI.defensiveTackleSlide(defender,carrier,160),true);
 });
 
+test('Agility tunes only the lateral-cut SHOOT-slide read in both directions',()=>{
+ for(const dir of [1,-1]){
+  const defendingTeam=dir===1?0:1;
+  const decide=(agility,crossing=100,straight=false)=>{
+   const defender=player(defendingTeam,1000,700,{moveVX:dir*110,moveVY:0,
+    dx:dir,dy:0,face:dir,src:{agility}});
+   const carrier=player(1-defendingTeam,1000+dir*60,700,{
+    moveVX:straight?dir*300:dir*40,moveVY:straight?0:crossing
+   });
+   return AI.defensiveTackleSlide(defender,carrier,160);
+  };
+  assert.equal(decide(100),true,'elite Agility reads a 100-unit lateral cut');
+  assert.equal(decide(50),false,'average Agility retains the exact 105-unit baseline');
+  assert.equal(decide(20),false,'low Agility keeps the more conservative cut read');
+  assert.equal(decide(1,120),true,'a sufficiently clear cut remains eligible at low Agility');
+  assert.equal(decide(undefined),false,'missing Agility falls back to the average threshold');
+  assert.equal(decide(NaN),false,'invalid Agility falls back to the average threshold');
+  assert.equal(decide(1,0,true),true,'straight escaping carriers remain eligible independent of Agility');
+  assert.equal(decide(100,0,true),true,'elite Agility does not change the straight escape branch');
+ }
+});
+
 test('retreating and side-on run-ups keep the short poke; a diagonal forward run-up can still slide',()=>{
  const carrier=player(1,1060,700,{moveVX:300,moveVY:0});
  const retreating=player(0,1000,700,{moveVX:-220,moveVY:0,dx:-1,dy:0,face:-1});
