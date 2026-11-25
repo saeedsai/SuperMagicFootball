@@ -2464,7 +2464,8 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  // halves this contribution; a stationary keeper keeps the exact old baseline.
  const keeperVX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
  const keeperVY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
- const momentumToward=(keeperVX*(target.x-keeper.x)+keeperVY*(target.y-keeper.y))/Math.max(1,keeperGap);
+ const targetDx=target.x-keeper.x,targetDy=target.y-keeper.y;
+ const momentumToward=(keeperVX*targetDx+keeperVY*targetDy)/Math.max(1,keeperGap);
  const momentumBonus=clampTo(momentumToward*.05*(1-fatigue*.5),-12,12);
  // Cross-track momentum needs a bounded reorientation before the keeper can
  // reach the high-cross landing. Keep stationary/aligned baselines unchanged.
