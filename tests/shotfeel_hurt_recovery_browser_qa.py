@@ -33,7 +33,7 @@ with sync_playwright() as pw:
   }""")
   assert result['teams']>=223,(kind,result);assert result['buttons']==4,(kind,result)
   for row in result['rows']:
-   expected=row['directId'] if (row['mode']=='hurtRecover'||['impactPending','impactKnockdown','impactRise'].includes(row['mode'])) else row['angledId']
+   expected=row['directId'] if (row['mode']=='hurtRecover' or row['mode'] in ['impactPending','impactKnockdown','impactRise']) else row['angledId']
    assert row['kicked'] and row['pass'] and row['target']==expected,(kind,row,expected)
   assert not errors,(kind,errors)
   print('PASS',kind,'directed PASS ignores active hurt recovery and restores defender after recovery',flush=True)

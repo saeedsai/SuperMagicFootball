@@ -7,7 +7,7 @@ Deliver player-facing gameplay first, then existing-player graphics/animation, g
 
 ## Current checkpoint
 - **0.12.81.284 — AI-DIRECT-PASS-SHOT-IMPACT-RECOVERY-LANE-READ-01:** generic directional ground PASS now ignores defenders with active shot-impact knockdown-pending, knockdown or get-up recovery timers when scoring the flight corridor and a moving receiver's collection pocket. Clearing the timers restores normal defensive pressure.
-- Production change: `src/modules/shotfeel.js`; focused Node and actual-engine desktop/simulated-touch Chromium regressions cover both pass directions, all three impact phases and recovery completion. The browser fixture's phase selector was corrected in a follow-up so its embedded JavaScript uses Array.includes.
+- Production change: `src/modules/shotfeel.js`; focused Node and actual-engine desktop/simulated-touch Chromium regressions cover both pass directions, all three impact phases and recovery completion. The browser fixture's expected-target selector was corrected in follow-ups to use valid Python syntax outside the embedded engine JavaScript.
 - Prior .283 Modular QA #45541675302 passed 2,883/2,883. Its Full Regression Census #45541675300 failed only the historical third-man runner-cover browser assertion; all four Node shards and three other Chromium shards passed. The same browser assertion failed on .282 main Census #45541162082 but passed on .282 dev Census #45539768615; failed-job-only retries are pending.
 
 ## Next smallest action
