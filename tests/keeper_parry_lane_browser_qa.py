@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Real-engine keeper parry lane prediction: moving attackers, both goals, desktop and touch."""
+"""Real-engine keeper parry lane prediction: active and recovering attackers, both goals, desktop and touch."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -24,7 +24,7 @@ with sync_playwright() as pw:
   page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
    const g=SupermagicFootball.game,rows=[];
-   for(const side of [0,1]){
+   const run=(side,markerPatch={})=>{
     g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='paused';g.cooldown=0;
     const k=g.player(side,0),b=g.ball,dir=side===0?1:-1,goalY=765;
@@ -40,21 +40,33 @@ with sync_playwright() as pw:
     }
     const marker=g.player(1-side,3);
     Object.assign(marker,{x:k.x+dir*170,y:goalY+130,z:0,stun:0,down:false,
-      action:'idle',actionTimer:0,moveVX:0,moveVY:-300,vx:0,vy:-300});
+      action:'idle',actionTimer:0,moveVX:0,moveVY:-300,vx:0,vy:-300},markerPatch);
     Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,
       x:k.x+dir*24,y:goalY,z:0,vx:-dir*2500,vy:0,vz:0,power:60,
       ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[],pass:false});
     const parried=g.tryKeeperDive(k,false);
-    rows.push({side,parried,vy:b.vy,markerX:marker.x,markerY:marker.y});
+    return {parried,vy:b.vy,markerX:marker.x,markerY:marker.y};
+   };
+   for(const side of [0,1]){
+    rows.push({side,kind:'active',...run(side)});
+    rows.push({side,kind:'impact-pending',...run(side,{shotImpactKnockdownPending:.4})});
+    rows.push({side,kind:'impact-rise',...run(side,{shotImpactRiseTimer:.4})});
+    rows.push({side,kind:'shot-get-up',...run(side,{action:'shotGetUp',actionTimer:.4})});
    }
-   return {rows,teams:SupermagicFootball.teams.length};
+   return {rows,teams:SupermagicFootball.teams.filter(team=>
+     !['concept_demo','crown_royals_reference'].includes(team.group)).length,
+     buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   assert not errors,(kind,errors)
-  assert result['teams']>=223,(kind,result)
-  assert len(result['rows'])==2,(kind,result)
+  assert result['teams']==223,(kind,result)
+  assert result['buttons']==4,(kind,result)
+  assert len(result['rows'])==8,(kind,result)
   for row in result['rows']:
    assert row['parried'],(kind,row)
-   assert row['vy']<0,(kind,row)
-  print('PASS',kind,'both mirrored real-engine parries avoid a projected attacker in the preferred lane',flush=True)
+   if row['kind']=='active':
+    assert row['vy']<0,(kind,row)
+   else:
+    assert row['vy']>0,(kind,row)
+  print('PASS',kind,'active rebound threat retained; shot-impact recovery excluded; 223 teams and four actions',flush=True)
   ctx.close()
  browser.close()

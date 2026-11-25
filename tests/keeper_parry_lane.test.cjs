@@ -67,3 +67,15 @@ test('actual dive deflection uses the selected side without changing outward spe
  assert.ok(source.includes('const catchThreshold=saveQuality*.62*(1-.10*fatigue)'));
  assert.ok(source.includes('if(force<catchThreshold)'));
 });
+
+test('shot-impact pending/rise and explicit shot-down/get-up poses do not bias the parry',()=>{
+ const inactive=[
+  rival(210,300,{shotImpactKnockdownPending:.2}),
+  rival(210,300,{shotImpactRiseTimer:.2}),
+  rival(210,300,{action:'shotDown',actionTimer:.3}),
+  rival(210,300,{action:'shotGetUp',actionTimer:.3})
+ ];
+ for(const player of inactive){
+  assert.equal(helper(keeper(0),[player],-1),-1,JSON.stringify(player));
+ }
+});

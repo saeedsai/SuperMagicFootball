@@ -363,7 +363,7 @@ function keeperParryRecoverySeconds(keeper){
   keeperDiveRecoverySeconds(keeper)-reduction);
 }
 // Lower is safer. Nearby active defenders can intercept the first touch;
- // knocked-down, stunned and high-airborne defenders cannot contest it.
+ // knocked-down, stunned, shot-impact-recovering and high-airborne attackers cannot contest it.
 // A strong dive that cannot hold the ball should parry toward the clearer side.
 // Score the two short rebound corridors against nearby active attackers; ignore
 // players who cannot contest the rebound. Ambiguous/no pressure keeps shot angle.
@@ -382,7 +382,10 @@ function keeperParrySide(keeper,players,shotOffset){
   };
   for(const q of players||[]){
    if(!q||q.t===keeper.t||q.keeper||q.stun>0||q.down||
+      (q.shotImpactKnockdownPending||0)>0||
       (q.shotImpactKnockdownTimer||0)>0||
+      (q.shotImpactRiseTimer||0)>0||
+      q.action==='shotDown'||q.action==='shotGetUp'||
       (q.action==='hurt'&&(q.actionTimer||0)>0)||
       (q.z||0)>28||!Number.isFinite(q.x)||!Number.isFinite(q.y)||
       distance(keeper,q)>360)continue;
