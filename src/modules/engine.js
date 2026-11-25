@@ -1301,13 +1301,21 @@ class GameEngine{
   // Ordinary PASS pokes use a shorter, tighter prediction; SHOOT slides retain
   // their existing longer run-up lead. Missing/invalid motion stays neutral.
   const leadSeconds=slide ? .085 : .055,leadLimit=slide?22:12;
-  const leadX=target?clamp((Number.isFinite(target.moveVX)?target.moveVX:0)*leadSeconds,-leadLimit,leadLimit):0;
-  const leadY=target?clamp((Number.isFinite(target.moveVY)?target.moveVY:0)*leadSeconds,-leadLimit,leadLimit):0;
   // Qualified CPU PASS pokes and SHOOT slides may steer through the exposed live ball.
   // Keep the same carrier-momentum lead and fail closed to body aim for human/contextual calls,
   // shielded balls, stale ownership or invalid coordinates.
   const ballTarget=target&&slideBall&&slideBall.owner===target&&
    defensivePokeBallSideRead(p,target,slideBall)?slideBall:null;
+  // A nimble carrier can redirect sooner after the read, so CPU slides lead
+  // less aggressively; average Agility preserves the existing 85 ms baseline.
+  const rawCarrierAgility=ballTarget?.src?.agility;
+  const parsedCarrierAgility=typeof rawCarrierAgility==='number'?rawCarrierAgility:
+   typeof rawCarrierAgility==='string'&&rawCarrierAgility.trim()!==''?Number(rawCarrierAgility):NaN;
+  const carrierAgility=clamp(Number.isFinite(parsedCarrierAgility)?parsedCarrierAgility:50,1,100);
+  const slideLeadSeconds=slide&&ballTarget?
+   clamp(.085+(50-carrierAgility)*.0003,.07,.10):leadSeconds;
+  const leadX=target?clamp((Number.isFinite(target.moveVX)?target.moveVX:0)*slideLeadSeconds,-leadLimit,leadLimit):0;
+  const leadY=target?clamp((Number.isFinite(target.moveVY)?target.moveVY:0)*slideLeadSeconds,-leadLimit,leadLimit):0;
   const aimX=target?(ballTarget?ballTarget.x:target.x):0;
   const aimY=target?(ballTarget?ballTarget.y:target.y):0;
   const dir=target?norm(aimX+leadX-p.x,aimY+leadY-p.y):norm(p.dx||p.face,p.dy||0);

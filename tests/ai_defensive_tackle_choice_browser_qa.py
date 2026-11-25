@@ -29,6 +29,32 @@ with sync_playwright() as pw:
         page.wait_for_function('!!window.SupermagicFootball?.game?.cpuTackleSlideChance && !!window.SupermagicFootball?.game?.defensiveTackleSlideBallSideRead')
         result=page.evaluate("""() => {
             const game=SupermagicFootball.game;
+            const liveSlideAim=(team,agility,withLiveBall=true,carrierVY=200,slide=true)=>{
+                const match=new game.constructor({halfSeconds:120});
+                match.init({home:0,away:1,mode:'quick',humans:0});
+                const dir=team===0?1:-1,defender=match.player(team,3),carrier=match.player(1-team,3);
+                Object.assign(defender,{x:1000,y:700,z:0,down:false,stun:0,invuln:0,cd:0,
+                    moveVX:dir*220,moveVY:0,dx:dir,dy:0,face:dir});
+                carrier.src={...(carrier.src||{}),agility};
+                Object.assign(carrier,{x:1000+dir*55,y:700,z:0,down:false,stun:0,invuln:0,
+                    moveVX:0,moveVY:carrierVY,action:'idle',actionTimer:0});
+                Object.assign(match.ball,{owner:carrier,x:carrier.x-dir*17,y:carrier.y+20,z:12,
+                    vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+                match.spendStamina=()=>{};match.slideContact=()=>{};match.emit=()=>{};
+                const originalRandom=Math.random;Math.random=()=>1;
+                try{match.tackle(defender,slide,withLiveBall?match.ball:null);}
+                finally{Math.random=originalRandom;}
+                return slide?{x:defender.slideDX,y:defender.slideDY}:{x:defender.x-1000,y:defender.y-700};
+            };
+            const slideAgility={};
+            for(const team of [0,1]){
+                const elite=liveSlideAim(team,100),average=liveSlideAim(team,50),low=liveSlideAim(team,1);
+                const missing=liveSlideAim(team,undefined),invalid=liveSlideAim(team,NaN);
+                const bodyElite=liveSlideAim(team,100,false),bodyLow=liveSlideAim(team,1,false);
+                const cappedElite=liveSlideAim(team,100,true,10000),cappedLow=liveSlideAim(team,1,true,10000);
+                const elitePoke=liveSlideAim(team,100,true,200,false),lowPoke=liveSlideAim(team,1,true,200,false);
+                slideAgility[team]={elite,average,low,missing,invalid,bodyElite,bodyLow,cappedElite,cappedLow,elitePoke,lowPoke};
+            }
             const slideRead=(team,agility,crossing=100,straight=false)=>{
                 const dir=team===0?1:-1;
                 const defender={t:team,x:1000,y:700,keeper:false,down:false,stun:0,invuln:0,z:0,
@@ -57,7 +83,7 @@ with sync_playwright() as pw:
                 slideHighRight:slideRead(0,100),slideAverageRight:slideRead(0,50),slideLowRight:slideRead(0,20),
                 slideHighLeft:slideRead(1,100),slideAverageLeft:slideRead(1,50),slideLowLeft:slideRead(1,20),
                 slideLowWideCut:slideRead(0,1,120),slideMissingAgility:slideRead(0,undefined),
-                slideInvalidAgility:slideRead(1,NaN),slideStraightLow:slideRead(0,1,0,true),
+                slideInvalidAgility:slideRead(1,NaN),slideStraightLow:slideRead(0,1,0,true),slideAgility,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -74,6 +100,13 @@ with sync_playwright() as pw:
         assert not result['slideLowRight'] and not result['slideLowLeft'],(kind,result)
         assert result['slideLowWideCut'] and result['slideStraightLow'],(kind,result)
         assert not result['slideMissingAgility'] and not result['slideInvalidAgility'],(kind,result)
+        for team,read in result['slideAgility'].items():
+            assert read['elite']['y']<read['average']['y']<read['low']['y'],(kind,team,read)
+            assert abs(read['missing']['y']-read['average']['y'])<1e-12,(kind,team,read)
+            assert abs(read['invalid']['y']-read['average']['y'])<1e-12,(kind,team,read)
+            assert abs(read['bodyElite']['y']-read['bodyLow']['y'])<1e-12,(kind,team,read)
+            assert abs(read['cappedElite']['y']-read['cappedLow']['y'])<1e-12,(kind,team,read)
+            assert abs(read['elitePoke']['y']-read['lowPoke']['y'])<1e-12,(kind,team,read)
         assert result['buttons']==4,(kind,result)
         assert result['teams']==223,(kind,result)
         assert not errors,(kind,errors)

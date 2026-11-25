@@ -142,3 +142,42 @@ test('CPU slide preference remains bounded for extreme profiles and tuning input
  assert.equal(high,.76);
 });
 
+
+
+test('CPU exposed-ball slide lead respects carrier Agility without changing human slides or PASS pokes',()=>{
+ const slideAim=(team,agility,withLiveBall=true,carrierVY=200)=>{
+  const dir=team===0?1:-1;
+  const defender=player(team,1000,700,{moveVX:dir*220,moveVY:0,dx:dir,dy:0,face:dir,
+   src:{id:'slide-lead-defender',role:'DF',speedRating:50,defence:50}});
+  const carrier=player(1-team,1000+dir*55,700,{moveVX:0,moveVY:carrierVY,src:{agility}});
+  const liveBall={owner:carrier,x:carrier.x-dir*17,y:carrier.y+20,z:12};
+  const game={players:[defender,carrier],ball:{owner:carrier},spendStamina(){},
+   playerSpeed(){return 320;},emit(){},slideContact(){}};
+  assert.equal(ENGINE.GameEngine.prototype.tackle.call(game,defender,true,withLiveBall?liveBall:null),true);
+  return {x:defender.slideDX,y:defender.slideDY};
+ };
+ const pokeAim=(team,agility)=>{
+  const dir=team===0?1:-1;
+  const defender=player(team,1000,700,{moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,
+   src:{id:'poke-lead-defender',role:'DF',speedRating:50,defence:50}});
+  const carrier=player(1-team,1000+dir*55,700,{moveVX:0,moveVY:200,src:{agility}});
+  const liveBall={owner:carrier,x:carrier.x-dir*17,y:carrier.y+20,z:12};
+  const game={players:[defender,carrier],ball:{owner:carrier},spendStamina(){},emit(){},slideContact(){}};
+  const originalRandom=Math.random;Math.random=()=>1;
+  try{assert.equal(ENGINE.GameEngine.prototype.tackle.call(game,defender,false,liveBall),true);}
+  finally{Math.random=originalRandom;}
+  return {x:defender.x-1000,y:defender.y-700};
+ };
+ for(const team of [0,1]){
+  const elite=slideAim(team,100),average=slideAim(team,50),low=slideAim(team,1);
+  assert.ok(elite.y<average.y&&average.y<low.y,JSON.stringify({team,elite,average,low}));
+  assert.ok(Math.abs(slideAim(team,undefined).y-average.y)<1e-12,'missing Agility uses the 85 ms baseline');
+  assert.ok(Math.abs(slideAim(team,NaN).y-average.y)<1e-12,'invalid Agility uses the 85 ms baseline');
+  const bodyElite=slideAim(team,100,false),bodyLow=slideAim(team,1,false);
+  assert.ok(Math.abs(bodyElite.y-bodyLow.y)<1e-12,'slides without a validated live ball retain the human/contextual baseline');
+  const cappedElite=slideAim(team,100,true,10000),cappedLow=slideAim(team,1,true,10000);
+  assert.ok(Math.abs(cappedElite.y-cappedLow.y)<1e-12,'the existing 22-unit lead cap remains authoritative');
+  const elitePoke=pokeAim(team,100),lowPoke=pokeAim(team,1);
+  assert.ok(Math.abs(elitePoke.y-lowPoke.y)<1e-12,'ordinary PASS pokes keep their 55 ms lead');
+ }
+});
