@@ -9,15 +9,16 @@ Deliver player-facing football gameplay first, then existing-player graphics/ani
 - **0.12.81.294 — KEEPER-CUTBACK-OPEN-RUNNER-READ-01:** CPU goalkeeper cutback positioning now discounts a runner already within 64 units of a ready defender's bounded 120 ms projected position. Recovery, downed, stunned, airborne and active slide/hurt defenders do not suppress the keeper read; an open alternative remains eligible.
 - .293 exact-head Modular QA #45604152084 and Census #45604152073 failed only the project-memory contract: the checkpoint had `## Next action` instead of required `## Next smallest action`. Node recorded 2,895/2,896 passing; the sole failure was that heading contract. The .293 press-turn Node tests passed; Chromium was skipped after Census preflight failed.
 - .292 failed-job-only Census retry #45592512918 passed and QA-gated promotion advanced main to `faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b`. Fresh Pages deployment and independent main Census status still require verification.
-- .294 adds focused Node and actual-engine desktop/simulated-touch Chromium coverage for marked versus open cutback runners, both goals and unavailable marker recovery. Exact-head gates are required before promotion.
+- .294 first Modular QA #45606939591 and Census #45606939616 found one open-alternative fixture failure (2,897/2,898 Node passed): the supposed alternative runner was 25.2 units from the marked runner, inside the 64-unit coverage radius. The fixture now separates the open lane beyond 64 while preserving the cutback bounds; this was a test-fixture issue, not evidence of a production failure. Fresh exact-head gates required.
 
 ## Next smallest action
-Inspect .294 exact-head Modular QA and four-Node/four-Chromium Census; fix only confirmed failures, then verify QA-gated main promotion, independent main Census, Pages deployment and hosted bytes.
+Inspect the fresh .294 exact-head Modular QA and four-Node/four-Chromium Census after widening the open-alternative fixture; repair confirmed failures, then verify QA-gated main promotion, independent main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Studio art requires provenance, game-scale QA and owner acceptance. Keep #48 physical acceptance, #86 Render drift and #87 branch-protection security open. No authenticated online-hosting claim.
 
 ## Evidence
+- .294 first exact-head QA/Census: 2,897 Node pass / 1 new cutback fixture failure; the alternative was within 64 units of the marked runner and was correctly treated as covered.
 - .293 run #45604152084: 2,895 Node pass / 1 project-memory heading failure; press-turn feature tests passed.
 - .293 Census #45604152073 stopped in Node preflight on the same checkpoint heading; no Chromium shard ran.
 - Branch heads before .294 integration: dev `29a3de043c8db13faf6935c7025c09668e50ff77`; main `faa2fda91f6c34e49c27adf1d9f5c5e4a5f7452b`.

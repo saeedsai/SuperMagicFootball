@@ -161,7 +161,7 @@ test('keeper selects an open alternative when the best cutback runner is tightly
    f.carrier.y=f.centerY+wing*300;
    f.game.ball.x=f.carrier.x;f.game.ball.y=f.carrier.y;
    f.runner.x=f.carrier.x-f.attackDir*150;f.runner2.x=f.runner.x;
-   f.runner.y=f.centerY-wing*58;f.runner2.y=f.centerY-wing*40;
+   f.runner.y=f.centerY-wing*58;f.runner2.y=f.centerY-wing*130;
    f.runner.moveVX=f.attackDir*70;f.runner2.moveVX=f.attackDir*70;
    f.runner.moveVY=wing*180;f.runner2.moveVY=-wing*180;
    for(const p of [f.runner,f.runner2]){p.down=false;p.stun=0;p.z=0;p.action='idle';p.actionTimer=0;p.slideTimer=0;}
