@@ -2401,9 +2401,20 @@ function keeperHighCrossPunchDecision(keeper,ball,players){
    ((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0))return false;
   const z=q.z==null?0:Number(q.z);
   if(!Number.isFinite(z)||z<0||!Number.isFinite(q.x)||!Number.isFinite(q.y))return false;
-  // Grounded players retain the existing potential-jump pressure. An already
-  // airborne player counts only when a real jump pose is active and its body
-  // will overlap the cross at the same short horizon used for XY arrival.
+  // A grounded attacker counts as high-cross pressure only if their first
+  // JUMP can reach the ball at the same 120 ms horizon used for XY arrival.
+  // The existing 45-unit body allowance is shared with airborne collection.
+  if(z<=18){
+   const rawJumping=q.src?.jumping;
+   const parsedJumping=typeof rawJumping==='number'?rawJumping:
+    typeof rawJumping==='string'&&rawJumping.trim()!==''?Number(rawJumping):NaN;
+   const jump=JUMPMETRICS.jumpMetrics(Number.isFinite(parsedJumping)?parsedJumping:50);
+   const jumpHeight=Math.max(0,jump.initialLift+jump.firstImpulse*.12-540*.12*.12)+45;
+   const ballHeight=Math.max(0,ball.z+ball.vz*.12-250*.12*.12);
+   if(ballHeight>jumpHeight)return false;
+  }
+  // An already airborne attacker counts only with a live jump pose whose
+  // projected body overlaps the descending cross at the same short horizon.
   if(z>18){
    const airborne=Number(q.jumpCount)>0&&['jump','doubleJump','idle'].includes(q.action);
    if(!airborne)return false;

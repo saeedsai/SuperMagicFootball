@@ -80,6 +80,33 @@ test('an already-airborne opponent contests only when its projected body overlap
    'a raised but non-jumping player must not be treated as an aerial challenger');
  }
 });
+test('grounded high-cross punch pressure requires enough Jumping to reach the projected ball',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  f.ball.z=92;
+  f.receiver.x=f.ball.x+f.dir*90;
+  f.receiver.moveVX=-f.dir*300;
+  const profiles=[
+   {jumping:1,expected:false},
+   {jumping:50,expected:false},
+   {jumping:100,expected:true},
+   {jumping:'invalid',expected:false},
+   {jumping:undefined,expected:false}
+  ];
+  for(const profile of profiles){
+   if(profile.jumping===undefined)delete f.receiver.src.jumping;
+   else f.receiver.src.jumping=profile.jumping;
+   const decision=AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players);
+   assert.equal(!!decision,profile.expected,
+    JSON.stringify({team,jumping:profile.jumping,decision,ballZ:f.ball.z}));
+  }
+  f.ball.z=70;f.receiver.src.jumping=1;
+  assert.ok(AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players),
+   JSON.stringify({team,lowJumpingLowCross:true}));
+ }
+});
+
 test('real engine punches a contested cross away from either goal and shows the punch response',async()=>{
  const {ENGINE}=await loadModules();
  for(const team of [0,1]){
