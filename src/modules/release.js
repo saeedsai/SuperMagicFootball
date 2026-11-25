@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.293',
+ version:'0.12.81.294',
  date:'2026-11-25',
  notes:Object.freeze([
   "AI-DEFENSIVE-PRESS-CROSS-TRACK-TURN-READ-01: CPU primary/support role selection now adds a bounded 120 ms cross-track turn reserve when evaluating a projected carrier or cover point. Lateral momentum that must be redirected consumes up to 12 units of the short arrival score; the reserve is scaled by the defender's existing Agility, so higher-Agility players reorient sooner while lower-Agility players are more conservative. Aligned, retreating and stationary movement retain their existing arrival-projection behavior. This changes role choice only, not player speed, movement physics, tackle contact/probability, possession, four actions, saves, rosters, persistence or offline play. Mirrored Node and actual-engine desktop/simulated-touch Chromium regressions cover both teams, low/average/high Agility, cross-track versus aligned movement and primary assignment.",

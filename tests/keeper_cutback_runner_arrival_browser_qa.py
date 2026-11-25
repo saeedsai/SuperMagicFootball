@@ -30,7 +30,7 @@ with sync_playwright() as pw:
         result=page.evaluate("""() => {
             const game=SupermagicFootball.game;
             const field={x:150,y:155,w:2260.8,h:1220};
-            const targetY=(team,wing,mode)=>{
+            const targetY=(team,wing,mode,markerMode=null)=>{
                 game.init({home:0,away:1,mode:'quick',humans:0});
                 const keeper=game.players.find(p=>p.t===team&&p.keeper);
                 const attacking=1-team,attackDir=team===0?-1:1;
@@ -49,11 +49,20 @@ with sync_playwright() as pw:
                     stun:0,down:false,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
                 const runnerX=carrier.x-attackDir*150;
                 Object.assign(runner,{x:runnerX,y:centerY-wing*40,z:0,stun:0,
-                    down:mode==='alternative-only',action:'idle',actionTimer:0,slideTimer:0,
+                    down:mode==='alternative-only'||mode==='none',action:'idle',actionTimer:0,slideTimer:0,
                     moveVX:attackDir*70,moveVY:-wing*180});
                 Object.assign(runner2,{x:runnerX,y:centerY-wing*58,z:0,stun:0,
-                    down:mode==='runner-only',action:'idle',actionTimer:0,slideTimer:0,
+                    down:mode==='runner-only'||mode==='none',action:'idle',actionTimer:0,slideTimer:0,
                     moveVX:attackDir*70,moveVY:wing*180});
+                if(markerMode){
+                    const marker=game.players.find(p=>p.t===team&&!p.keeper&&p.i===4);
+                    const lead=value=>Math.max(-18,Math.min(18,(Number(value)||0)*.12));
+                    Object.assign(marker,{x:runner.x+lead(runner.moveVX),y:runner.y+lead(runner.moveVY),
+                        z:0,down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,
+                        shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+                        action:markerMode==='recovering'?'hurt':'idle',
+                        actionTimer:markerMode==='recovering'?.4:0,moveVX:0,moveVY:0});
+                }
                 Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,
                     vx:0,vy:0,vz:0,attacker:attacking,lastTouchTeam:attacking,
                     pass:false,passTarget:null,passTeam:null,shot:null,strike:null,ordinaryShot:false});
@@ -68,7 +77,15 @@ with sync_playwright() as pw:
                 const both=targetY(team,wing,'both');
                 rows.push({team,wing,movingOut,movingIn,both});
             }
-            return {rows,originalTeams:SupermagicFootball.teams.filter(team=>!['demo_concept_royals','demo_crown_royals_reference'].includes(team.id)).length,
+            const markingRows=[];
+            for(const team of [0,1])for(const wing of [-1,1]){
+                const noRunner=targetY(team,wing,'none');
+                const openRunner=targetY(team,wing,'runner-only');
+                const markedRunner=targetY(team,wing,'runner-only','ready');
+                const recoveringMarker=targetY(team,wing,'runner-only','recovering');
+                markingRows.push({team,wing,noRunner,openRunner,markedRunner,recoveringMarker});
+            }
+            return {rows,markingRows,originalTeams:SupermagicFootball.teams.filter(team=>!['demo_concept_royals','demo_crown_royals_reference'].includes(team.id)).length,
                 totalTeams:SupermagicFootball.teams.length,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
         }""")
@@ -80,6 +97,9 @@ with sync_playwright() as pw:
             assert row['movingOut'] is not None and row['movingIn'] is not None and row['both'] is not None,(kind,row)
             assert abs(row['both']-row['movingIn'])<1e-7,(kind,row)
             assert abs(row['both']-row['movingOut'])>1.5,(kind,row)
-        print('PASS',kind,'four mirrored keeper cutback arrival contests; four actions and 223 teams intact',flush=True)
+        for row in result['markingRows']:
+            assert abs(row['markedRunner']-row['noRunner'])<1e-7,(kind,row)
+            assert abs(row['recoveringMarker']-row['openRunner'])<1e-7,(kind,row)
+        print('PASS',kind,'cutback arrival plus marked/open-runner counterplay; four actions and 223 teams intact',flush=True)
         ctx.close()
     browser.close()

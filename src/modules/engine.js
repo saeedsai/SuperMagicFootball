@@ -244,31 +244,38 @@ function keeperCutbackReadLane(keeper,players,ball,baselineY){
   !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
   !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
   p.action!=='shotDown'&&p.action!=='shotGetUp';
+ const velocity=(p,axis)=>{
+  const current=axis==='x'?p?.moveVX:p?.moveVY;
+  if(Number.isFinite(current))return current;
+  const legacy=axis==='x'?p?.vx:p?.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
+ // A runner already within tackling distance of a ready defender is not an
+ // uncovered cutback target. Project both players over the same short horizon.
+ const tightlyMarked=(runnerX,runnerY)=>players.some(defender=>{
+  if(!active(defender)||defender.t!==keeper.t||defender.keeper)return false;
+  const markerX=defender.x+clamp(velocity(defender,'x')*.12,-18,18);
+  const markerY=defender.y+clamp(velocity(defender,'y')*.12,-18,18);
+  return Math.hypot(markerX-runnerX,markerY-runnerY)<64;
+ });
  let best=null;
  for(const runner of players){
   if(!active(runner)||runner.t!==carrier.t||runner===carrier||runner.keeper)continue;
-  const vx=Number.isFinite(runner.moveVX)?runner.moveVX:
-   Number.isFinite(runner.vx)?runner.vx:0;
-  const vy=Number.isFinite(runner.moveVY)?runner.moveVY:
-   Number.isFinite(runner.vy)?runner.vy:0;
+  const vx=velocity(runner,'x'),vy=velocity(runner,'y');
   if(vx*attackDir< -100)continue;
-  // Score the same bounded 120 ms arrival used by the final shade. This avoids
-  // selecting a runner who is central now but moving out of the cutback lane.
   const projectedX=runner.x+clamp(vx*.12,-18,18);
   const projectedY=runner.y+clamp(vy*.12,-18,18);
   const behind=(projectedX-carrier.x)*attackDir;
   const depth=Math.abs(projectedX-ownGoalX);
   if(behind>-45||behind< -300||depth<80||depth>430||
-   Math.abs(projectedY-centerY)>F.h*.24)continue;
+   Math.abs(projectedY-centerY)>F.h*.24||tightlyMarked(projectedX,projectedY))continue;
   const score=Math.abs(projectedY-centerY)*.7+Math.abs(behind+150)*.22+
    Math.abs(depth-260)*.08;
   if(!best||score<best.score)best={runner,score,projectedY};
  }
  if(!best)return baselineY;
  const skill=clamp(stat(keeper,'gkSkill'),0,100);
- // Reuse the selected runner's already-scored projected arrival.
- const projectedRunnerY=best.projectedY;
- const shift=clamp((projectedRunnerY-baselineY)*(.12+skill*.0016),-58,58);
+ const shift=clamp((best.projectedY-baselineY)*(.12+skill*.0016),-58,58);
  return clamp(baselineY+shift,WORLD.goalTop+15,WORLD.goalBottom-15);
 }
 // A keeper has less time to reach wide angles against very fast/super shots.

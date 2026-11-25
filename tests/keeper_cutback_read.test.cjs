@@ -126,3 +126,52 @@ test('keeper selects the runner projected to arrive centrally rather than the cu
    'team '+keeperTeam+' wing '+wing+': the runner moving out of the lane must not keep priority');
  }
 });
+
+function markRunnerWithDefender(f,runner,recovering=false){
+ const marker=f.game.players.find(p=>p.t===f.keeper.t&&!p.keeper&&p.i===4);
+ assert.ok(marker,'fixture needs an outfield marker');
+ const lead=value=>Math.max(-18,Math.min(18,(Number(value)||0)*.12));
+ Object.assign(marker,{x:runner.x+lead(runner.moveVX),y:runner.y+lead(runner.moveVY),
+  z:0,down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,
+  shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+  action:recovering?'hurt':'idle',actionTimer:recovering?.4:0,
+  moveVX:0,moveVY:0});
+ return marker;
+}
+
+test('keeper does not shade toward a tightly marked cutback runner, but ignores recovering markers',async()=>{
+ const {ENGINE,field}=await loadEngine();
+ for(const keeperTeam of [0,1]){
+  const baselineFixture=fixture(ENGINE,field,keeperTeam);
+  baselineFixture.runner.down=true;
+  const baseline=targetY(baselineFixture);
+  const marked=fixture(ENGINE,field,keeperTeam);
+  markRunnerWithDefender(marked,marked.runner);
+  assert.equal(targetY(marked),baseline,'a ready marker removes the uncovered cutback read');
+  const recovering=fixture(ENGINE,field,keeperTeam);
+  markRunnerWithDefender(recovering,recovering.runner,true);
+  assert.notEqual(targetY(recovering),baseline,'a hurt-recovering defender must not falsely mark the runner');
+ }
+});
+
+test('keeper selects an open alternative when the best cutback runner is tightly marked',async()=>{
+ const {ENGINE,field}=await loadEngine();
+ for(const keeperTeam of [0,1])for(const wing of [-1,1]){
+  const configure=(f,mark)=>{
+   f.carrier.y=f.centerY+wing*300;
+   f.game.ball.x=f.carrier.x;f.game.ball.y=f.carrier.y;
+   f.runner.x=f.carrier.x-f.attackDir*150;f.runner2.x=f.runner.x;
+   f.runner.y=f.centerY-wing*58;f.runner2.y=f.centerY-wing*40;
+   f.runner.moveVX=f.attackDir*70;f.runner2.moveVX=f.attackDir*70;
+   f.runner.moveVY=wing*180;f.runner2.moveVY=-wing*180;
+   for(const p of [f.runner,f.runner2]){p.down=false;p.stun=0;p.z=0;p.action='idle';p.actionTimer=0;p.slideTimer=0;}
+   if(mark)markRunnerWithDefender(f,f.runner);
+  };
+  const alternative=fixture(ENGINE,field,keeperTeam);configure(alternative,false);alternative.runner.down=true;
+  const alternativeY=targetY(alternative);
+  const marked=fixture(ENGINE,field,keeperTeam);configure(marked,true);
+  assert.equal(targetY(marked),alternativeY,'the open alternative should win after the best runner is marked');
+  const unmarked=fixture(ENGINE,field,keeperTeam);configure(unmarked,false);
+  assert.notEqual(targetY(unmarked),alternativeY,'without a marker the higher-quality runner should control the shade');
+ }
+});
