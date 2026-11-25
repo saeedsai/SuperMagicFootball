@@ -28,7 +28,7 @@ with sync_playwright() as pw:
         page.add_script_tag(content=js,type='module')
         page.wait_for_function('!!window.SupermagicFootball?.game')
         result=page.evaluate("""() => {
-            const game=SupermagicFootball.game,rows=[],stationaryRows=[],turnRows=[];
+            const game=SupermagicFootball.game,rows=[],stationaryRows=[],turnRows=[],inputRows=[];
             const field={x:150,y:155,w:2260.8,h:1220};
             for(const defendingTeam of [0,1]){
                 game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
@@ -111,14 +111,47 @@ with sync_playwright() as pw:
                 if(game.ball.owner!==carrier)throw new Error('turn-aware press changed possession');
                 turnRows.push({defendingTeam,gap,target});
             }
-            return {rows,stationaryRows,turnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            for(const defendingTeam of [0,1]){
+                for(const agility of [100,1]){
+                    game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                    const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1,cutSign=defendingTeam===0?-1:1;
+                    const x=field.x+field.w*.55,y=field.y+field.h*.5;
+                    const carrier=game.player(attackingTeam,3),momentum=game.player(defendingTeam,3),
+                        cut=game.player(defendingTeam,4);
+                    for(const q of game.players){if(q===carrier||q===momentum||q===cut||q.keeper)continue;q.down=true;q.stun=1;}
+                    Object.assign(carrier,{x,y,z:0,down:false,stun:0,invuln:0,action:'run',actionTimer:0,
+                        moveVX:dir*220,moveVY:0,vx:dir*220,vy:0,dx:0,dy:cutSign,
+                        firstTouchControlTimer:0,firstTouchPressure:0,dribbleHold:0});
+                    carrier.src.agility=agility;
+                    for(const [q,laneY] of [[momentum,y],[cut,y+cutSign*16]]){
+                        Object.assign(q,{x:x-dir*80,y:laneY,z:0,down:false,stun:0,invuln:0,action:'run',actionTimer:0,
+                            moveVX:dir*220,moveVY:0,vx:dir*220,vy:0,slideTimer:0,
+                            shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+                            aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,
+                            aiFirstTouchTarget:null,aiDetour:null});
+                    }
+                    Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
+                        attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+                    game.clock=2;game.moveAgile=()=>{};
+                    const primary=agility>=50?cut:momentum;
+                    game.driveAI(primary,.016);
+                    const target=primary.aiTarget,laneShift=target?cutSign*(target.y-y):-Infinity;
+                    if(!(target&&(agility>=50?laneShift>20:laneShift<14)))
+                        throw new Error('carrier input turn did not shape the Agility-limited press lead: '+JSON.stringify({defendingTeam,agility,target,laneShift}));
+                    if(game.ball.owner!==carrier)throw new Error('turn-aware press assignment changed possession');
+                    inputRows.push({defendingTeam,agility,laneShift});
+                }
+            }
+            return {rows,stationaryRows,turnRows,inputRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
         assert result['teams']>=223,(kind,result)
         assert len(result['rows'])==2,(kind,result)
         assert len(result['stationaryRows'])==2,(kind,result)
+        assert len(result['turnRows'])==2,(kind,result)
+        assert len(result['inputRows'])==4,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'moving and stationary-carrier arrival-aware CPU press, possession, four actions and no JS errors',flush=True)
+        print('PASS',kind,'moving/stationary arrival press and Agility-limited carrier-input turn lead, possession, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()
