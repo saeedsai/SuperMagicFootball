@@ -39,7 +39,8 @@ function defensiveCarrierSupportCoverTarget(support,carrier,bounds,horizonSecond
   Number.isFinite(carrier.vy)?carrier.vy:0;
  const lateralLead=clampTo(vy*horizon,-36,36);
  const projectedY=clampTo(carrier.y+lateralLead,yMin+23,yMax-23);
- const side=support.y>carrier.y?1:-1;
+ // Keep the screen on the support's side of the carrier's projected lane; a lateral cut must not make the cover run through the carrier.
+ const side=support.y>projectedY?1:-1;
  const goalDirection=support.t===0?1:-1;
  return {
   x:clampTo(carrier.x-goalDirection*110,xMin+22,xMax-22),
@@ -111,11 +112,13 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
  const nearest=remaining.reduce((value,candidate)=>
   Math.min(value,supportPoint?candidate.supportDistance:candidate.d),Infinity);
  let chosen=remaining[0],best=Infinity;
+ // Choose the support flank relative to the carrier's bounded arrival point, not a stale current lateral line.
+ const coverReferenceY=projectedTarget?.y??target.y;
  for(const candidate of remaining){
   const localDistance=supportPoint?candidate.supportDistance:candidate.d;
   if(localDistance>nearest+110)continue;
   const q=candidate.p;
-  const primarySide=primary.y-target.y,coverSide=q.y-target.y;
+  const primarySide=primary.y-coverReferenceY,coverSide=q.y-coverReferenceY;
   const sameSide=Math.abs(primarySide)>25&&Math.abs(coverSide)>25&&primarySide*coverSide>0;
   const lateralGap=Math.abs(q.y-primary.y);
   const goalSide=team===0?q.x<=target.x:q.x>=target.x;

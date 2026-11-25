@@ -46,3 +46,39 @@ test('missing movement velocity preserves the baseline and invalid or unavailabl
  assert.equal(cover(support,{...carrier,z:19}),null,'airborne carrier cannot drive grounded cover');
  assert.equal(cover(support,carrier,{xMin:100,xMax:100,yMin:100,yMax:1300}),null,'invalid bounds fail closed');
 });
+
+
+test('support cover stays on the defender side when a lateral cut crosses its current flank',()=>{
+ for(const team of [0,1]){
+  const goalDir=team===0?1:-1,lateralDir=team===0?1:-1;
+  const support=player(team,1000-goalDir*150,700+lateralDir*10);
+  const carrier=player(1-team,1000,700,{moveVY:lateralDir*180});
+  const projectedY=700+lateralDir*21.6;
+  const expectedSide=Math.sign(support.y-projectedY);
+  const target=cover(support,carrier);
+  assert.ok(target,JSON.stringify({team,target}));
+  assert.equal(Math.sign(target.y-projectedY),expectedSide,
+   'cover target must remain on the support defender side of the projected carrier');
+  assert.ok(Math.abs(target.y-(projectedY+expectedSide*95))<1e-9,JSON.stringify({team,target,projectedY}));
+  assert.equal(target.x,1000-goalDir*110);
+ }
+});
+
+test('moving-carrier support selection protects the opposite projected flank and keeps stationary parity',()=>{
+ for(const team of [0,1]){
+  const goalSide=team===0?-1:1,lateralDir=team===0?1:-1;
+  const carrier=player(1-team,1000,700,{moveVY:lateralDir*180});
+  const primary=player(team,1000+goalSide*40,700-lateralDir*20);
+  const nearSameProjectedFlank=player(team,1000+goalSide*60,700+lateralDir*10);
+  const fartherOppositeProjectedFlank=player(team,1000+goalSide*100,700+lateralDir*50);
+  const moving=AI.defensivePressers([primary,nearSameProjectedFlank,fartherOppositeProjectedFlank],team,carrier);
+  assert.equal(moving.primary,primary,'nearest arrival remains the primary presser');
+  assert.equal(moving.support,fartherOppositeProjectedFlank,
+   'support should protect the opposite side of the carrier projected 120 ms ahead');
+  const stationary=AI.defensivePressers(
+   [primary,nearSameProjectedFlank,fartherOppositeProjectedFlank],team,{...carrier,moveVY:0});
+  assert.equal(stationary.primary,primary);
+  assert.equal(stationary.support,nearSameProjectedFlank,
+   'stationary-carrier support selection retains the existing nearest-flank baseline');
+ }
+});
