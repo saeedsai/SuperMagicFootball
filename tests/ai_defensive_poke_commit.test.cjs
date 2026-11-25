@@ -72,6 +72,8 @@ test('driveAI commits the early poke from defender residual approach in both dir
   try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
   assert.equal(calls.length,1,'team '+team+' should make one early poke');
   assert.equal(calls[0].who,defender);
+  assert.equal(calls[0].slide,false,'the 88-unit approach remains an ordinary PASS poke');
+  assert.equal(calls[0].slideBall,game.ball,'the validated live ball must reach the ordinary poke aim');
  }
 });
 
@@ -283,5 +285,38 @@ test('the dedicated pressured first-touch slide read takes priority over a relat
   assert.equal(calls[0].slide,true,'the extended first-touch read must not be consumed by an ordinary poke');
   assert.equal(calls[0].slideBall,game.ball,'the existing live-ball slide target remains intact');
   assert.equal(game.ball.owner,carrier,'the decision itself does not transfer possession');
+ }
+});
+
+
+test('actual PASS poke aims through the exposed live ball and keeps body aim against shielding',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const defendingTeam of [0,1]){
+  const dir=defendingTeam===0?1:-1;
+  const run=(exposed)=>{
+   const game=new ENGINE.GameEngine({halfSeconds:120});
+   game.init({home:0,away:1,mode:'quick',humans:0});
+   const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+   const x=1000,y=700;
+   for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+   Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+    moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+   Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+    moveVX:0,moveVY:0});
+   const ballX=carrier.x+(exposed?-dir*17:dir*17),ballY=y+12;
+   Object.assign(game.ball,{owner:carrier,x:ballX,y:ballY,z:12,vx:0,vy:0,vz:0,
+    pass:false,shot:null,strike:null,ordinaryShot:false});
+   const expectedX=exposed?ballX-x:dir*52,expectedY=exposed?ballY-y:0;
+   const expectedLength=Math.hypot(expectedX,expectedY);
+   const originalRandom=Math.random;Math.random=()=>0;
+   try{assert.equal(game.tackle(defender,false,game.ball),true);}finally{Math.random=originalRandom;}
+   assert.equal(game.ball.owner,null,'a valid close-contact poke should release the carrier');
+   assert.ok(Math.abs(game.ball.vx-expectedX/expectedLength*150)<1e-8,
+    JSON.stringify({defendingTeam,exposed,vx:game.ball.vx,expectedX:expectedX/expectedLength*150}));
+   assert.ok(Math.abs(game.ball.vy-expectedY/expectedLength*150)<1e-8,
+    JSON.stringify({defendingTeam,exposed,vy:game.ball.vy,expectedY:expectedY/expectedLength*150}));
+  };
+  run(true);
+  run(false);
  }
 });

@@ -95,6 +95,30 @@ with sync_playwright() as pw:
             const closeContactEngineRows=[];
             for(const defendingTeam of [0,1])closeContactEngineRows.push({team:defendingTeam,
                 exposed:runCloseContactPoke(defendingTeam,true),shielded:runCloseContactPoke(defendingTeam,false)});
+            const runActualPokeAim=(defendingTeam,exposed)=>{
+                const dir=defendingTeam===0?1:-1;
+                game.init({home:0,away:1,mode:'quick',humans:0});
+                game.tackle=Object.getPrototypeOf(game).tackle;
+                const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+                const x=1000,y=700;
+                for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+                Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+                Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0});
+                const ballX=carrier.x+(exposed?-dir*17:dir*17),ballY=y+12;
+                Object.assign(game.ball,{owner:carrier,x:ballX,y:ballY,z:12,vx:0,vy:0,vz:0,
+                    pass:false,shot:null,strike:null,ordinaryShot:false});
+                const expectedX=exposed?ballX-x:dir*52,expectedY=exposed?ballY-y:0;
+                const length=Math.hypot(expectedX,expectedY);
+                const originalRandom=Math.random;Math.random=()=>0;
+                try{game.tackle(defender,false,game.ball);}finally{Math.random=originalRandom;}
+                return {released:game.ball.owner===null,vx:game.ball.vx,vy:game.ball.vy,
+                    expectedVx:expectedX/length*150,expectedVy:expectedY/length*150};
+            };
+            const actualPokeAimRows=[];
+            for(const team of [0,1])actualPokeAimRows.push({team,
+                exposed:runActualPokeAim(team,true),shielded:runActualPokeAim(team,false)});
             const runCpuSlide=(defendingTeam,exposed,range=55,firstTouch=false,ballZ=12)=>{
                 const dir=defendingTeam===0?1:-1;
                 game.init({home:0,away:1,mode:'quick',humans:0});
@@ -159,7 +183,7 @@ with sync_playwright() as pw:
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
-                closeBallSideRows,ballHeightRows,closeContactEngineRows,closeContactSlideRows,firstTouchSlideRows,
+                closeBallSideRows,ballHeightRows,closeContactEngineRows,actualPokeAimRows,closeContactSlideRows,firstTouchSlideRows,
                 airborneGroundChallengeRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
@@ -168,7 +192,7 @@ with sync_playwright() as pw:
             expected=row['name'] in ('approach','mirrored','net-threshold')
             assert len(row['calls'])==(1 if expected else 0),(kind,row)
             if expected:
-                assert row['calls'][0]['same'],(kind,row)
+                assert row['calls'][0]['same'] and row['calls'][0]['liveBall'],(kind,row)
         assert result['right'] and result['left'],(kind,result)
         assert not result['retreat'] and not result['lateral'] and not result['sideOn'] and not result['staleVelocity'],(kind,result)
         assert result['low'] and not result['high'],(kind,result)
@@ -181,8 +205,14 @@ with sync_playwright() as pw:
             expected=row['heightLabel']=='19.99'
             assert row['poke']==expected and row['slide']==expected,(kind,row)
         for row in result['closeContactEngineRows']:
-            assert row['exposed'] and all(call['same'] and not call['slide'] for call in row['exposed']),(kind,row)
+            assert row['exposed'] and all(call['same'] and not call['slide'] and call['liveBall'] for call in row['exposed']),(kind,row)
             assert row['shielded']==[],(kind,row)
+        for row in result['actualPokeAimRows']:
+            for profile in ('exposed','shielded'):
+                sample=row[profile]
+                assert sample['released'],(kind,row,profile)
+                assert abs(sample['vx']-sample['expectedVx'])<1e-6,(kind,row,profile,sample)
+                assert abs(sample['vy']-sample['expectedVy'])<1e-6,(kind,row,profile,sample)
         for row in result['closeContactSlideRows']:
             assert len(row['exposed'])==1 and row['exposed'][0]['same'] and row['exposed'][0]['slide'] and row['exposed'][0]['liveBall'],(kind,row)
             assert row['shielded']==[],(kind,row)
