@@ -2291,7 +2291,17 @@ class GameEngine{
   }).sort((a,b)=>distance(p,a)-distance(p,b));
   const rival=opponents[0],close=!!rival&&distance(p,rival)<105;
   const skill={dribbling:stat(p,'dribbling'),agility:stat(p,'agility'),fatigue:p.fatigue,x:p.x,y:p.y};
-  const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression'),fatigue:rival.fatigue,x:rival.x,y:rival.y,vx:rival.dx||0,vy:rival.dy||0}:null;
+  // Dribble odds use world-units/second so a defender still closing after
+  // releasing directional input keeps the existing bounded read/counter bonus.
+  const threatVelocity=axis=>{
+   const movement=axis==='x'?rival.moveVX:rival.moveVY;
+   if(Number.isFinite(movement))return movement;
+   const legacy=axis==='x'?rival.vx:rival.vy;
+   if(Number.isFinite(legacy))return legacy;
+   const direction=axis==='x'?rival.dx:rival.dy;
+   return (Number.isFinite(direction)?direction:0)*this.playerSpeed(rival);
+  };
+  const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression'),fatigue:rival.fatigue,x:rival.x,y:rival.y,vx:threatVelocity('x'),vy:threatVelocity('y')}:null;
   // Forward live facing direction to the Rainbow Flick aerial counter.
   if(threat)threat.face=rival.face;
   const success=!threat||Math.random()<Math.max(.08,dribbleOdds(skill,threat,style));

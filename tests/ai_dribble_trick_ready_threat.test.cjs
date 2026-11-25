@@ -1,14 +1,15 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
-let ENGINE;
+let ENGINE,DRIBBLES;
 test.before(async()=>{
  const {loadAssetsFromNode}=await import('../src/assets.js');
  await loadAssetsFromNode();
  const {ENGINE:engine}=await import('../src/modules/engine.js');
- ENGINE=engine;
+ const {DRIBBLES:dribbles}=await import('../src/modules/dribbles.js');
+ ENGINE=engine;DRIBBLES=dribbles;
 });
-function attempt(team,{nearestPatch={},farPatch={},byAI=true,random=.4,multiDefender=false}={}){
+function attempt(team,{nearestPatch={},farPatch={},nearestSrcPatch={},carrierSrcPatch={},style='stepovers',byAI=true,random=.4,multiDefender=false}={}){
  const game=new ENGINE.GameEngine({halfSeconds:120});
  game.init({home:0,away:1,mode:'quick',humans:0});
  const carrier=game.player(team,3),nearest=game.player(1-team,3),far=game.player(1-team,4);
@@ -17,10 +18,10 @@ function attempt(team,{nearestPatch={},farPatch={},byAI=true,random=.4,multiDefe
   Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0});
  Object.assign(carrier,{x,y,z:0,down:false,stun:0,invuln:0,action:'run',actionTimer:0,
   dx:dir,dy:0,face:dir,moveVX:0,moveVY:0,cd:0,trickCd:0,dribbleCooldown:0,fatigue:0,breath:1});
- Object.assign(carrier.src,{dribbleType:'stepovers',dribbling:10,agility:10,stamina:80});
+ Object.assign(carrier.src,{dribbleType:style,dribbling:10,agility:10,stamina:80,...carrierSrcPatch});
  Object.assign(nearest,{x:multiDefender?x+dir*48:x+dir*40,y:multiDefender?y-dir*50:y-50,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
   dx:0,dy:0,face:-dir,moveVX:0,moveVY:0});
- Object.assign(nearest.src,{defence:100,aggression:100});
+ Object.assign(nearest.src,{defence:100,aggression:100,...nearestSrcPatch});
  Object.assign(far,{x:multiDefender?x+dir*13:x+dir*80,y:multiDefender?y+dir*70:y+40,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
   dx:0,dy:0,face:-dir,moveVX:0,moveVY:0});
  Object.assign(far.src,{defence:1,aggression:1});
@@ -80,6 +81,29 @@ test('CPU trick redirects away from a second defender closing the nearest-away e
   const human=attempt(team,{multiDefender:true,nearestPatch:{moveVY:-dir*220},farPatch:{moveVY:-dir*300},byAI:false});
   assert.equal(human.event.success,false,JSON.stringify({team,human}));
   assert.ok(human.yDelta*dir>0,JSON.stringify({team,human}));
+ }
+});
+
+
+test('dribble duel reads residual world velocity after directional input is released',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,field=ENGINE.WORLD.field;
+  const x=field.x+field.w*.5,y=field.y+field.h*.5;
+  const style=DRIBBLES.dribbleStyle('rainbow');
+  const carrier={dribbling:95,agility:90,fatigue:0,x,y};
+  const marker={defence:80,aggression:80,fatigue:0,x:x+dir*40,y:y-dir*50,face:-dir};
+  const stillOdds=DRIBBLES.dribbleOdds(carrier,{...marker,vx:0,vy:0},style);
+  const closingThreat={...marker,vx:-dir*220,vy:dir*220};
+  const closingOdds=DRIBBLES.dribbleOdds(carrier,closingThreat,style);
+  assert.ok(closingOdds<stillOdds,JSON.stringify({team,stillOdds,closingOdds}));
+  const random=(stillOdds+closingOdds)/2;
+  const setup={style:'rainbow',carrierSrcPatch:{dribbling:95,agility:90},
+   nearestSrcPatch:{defence:80,aggression:80},random};
+  const stationary=attempt(team,setup);
+  const closing=attempt(team,{...setup,nearestPatch:{moveVX:-dir*220,moveVY:dir*220}});
+  assert.equal(stationary.event.success,true,JSON.stringify({team,stillOdds,closingOdds,stationary}));
+  assert.equal(closing.event.success,false,JSON.stringify({team,stillOdds,closingOdds,closing}));
+  assert.equal(closing.owner,true,JSON.stringify({team,closing}));
  }
 });
 
