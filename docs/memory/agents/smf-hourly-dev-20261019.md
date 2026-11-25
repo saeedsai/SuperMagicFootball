@@ -1,26 +1,26 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
-**Updated:** 2026-11-25
+**Updated:** 2026-11-26
 
 ## Mission
 Deliver real player-facing gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup improvements. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.310 — AI-CARRIER-INPUT-TURN-PRESS-READ-01:** CPU primary/support press scoring and the primary interception lead now project a moving opponent through current 2D input, with turn angle limited by existing Agility. High-Agility carriers reach a cut lane sooner; low-Agility carriers retain more momentum. Actual player movement is unchanged.
-- .309 failed-job rerun completed green on all four Node and four Chromium shards; QA-gated promotion succeeded. Main is now exact .309 SHA `165b63464f03f6f85c392134046af288706946f4`. Independent main Census #45719666223 is in progress; Pages deployment for .309 is not yet verified.
+- **0.12.81.311 — AI-AGILITY-AWARE-EARLY-POKE-TURN-READ-01:** early CPU PASS-poke commitment now projects a grounded carrier's current input through the existing Agility-limited turn model over 55 ms, but only after a live carried ball passes ownership, grounding and defender-side exposure checks. It changes commitment timing only; movement and contact physics are unchanged.
+- .310 Modular QA #45720332579 passed on SHA `6b29c6ed7507fedc9269fc8e1302647e235c33d1`; Full Regression Census #45720332649 was in progress when .311 began. .310 is not release-certified by that status alone.
+- .309 is promoted to main at `165b63464f03f6f85c392134046af288706946f4`; independent main Census #45719666223 and Pages deployment #45719655576 both succeeded, including hosted-pages smoke.
 
 ## Next smallest action
-Complete exact-head Modular QA and four-Node/four-Chromium Full Regression Census for .310; fix confirmed failures, then allow only a green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes.
+Finish .311 exact-head Modular QA and four-Node/four-Chromium Full Regression Census. Fix any confirmed source or fixture failures, then permit only a green exact head through the existing QA-gated main pipeline. Independently verify the new main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Studio art requires provenance and game-scale QA. Keep #48 physical acceptance, #86 Render drift and #87 branch-protection security open. No authenticated online-hosting claim.
 
 ## Evidence
-- .310 gameplay commit: `42d71e05f489ddf5b55cbae40ed23d79e65f0b70`; current candidate metadata .310.
-- .309 Modular QA #45711535971: 2,918/2,918 passed.
-- .309 Census rerun: all four Node/four Chromium shards and promotion passed; promotion log fast-forwarded main to `165b63464f03f6f85c392134046af288706946f4`.
-- Main Census #45719666223: preflight, preview, hosted smoke and Node shards 2/3 passed; other six shards were running at last observation.
-- .309 Pages deployment not verified. .310 exact-head QA/Census results not yet observed.
+- .311 feature, focused Node and desktop/simulated-touch Chromium regressions are included in the current dev candidate; exact-head CI results are pending.
+- .310 Modular QA #45720332579: success. .310 Full Regression Census #45720332649: in progress at last observation.
+- .309 main Census #45719666223: success. .309 Pages deployment #45719655576: success.
+- GitHub reports `main.protected=false` and `dev.protected=false`; #87 remains a real security blocker.
 
 ## Cleanup
 Keep this file below 4 KiB with these headings and exact Agent ID. Never bypass CI, security or QA promotion.

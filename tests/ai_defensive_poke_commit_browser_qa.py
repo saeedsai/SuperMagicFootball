@@ -179,9 +179,37 @@ with sync_playwright() as pw:
                 {name:'below-net-threshold',...runApproachCommit(0,220,110,88)},
                 {name:'contact-boundary',...runApproachCommit(0,220,0,90)}
             ];
+            const runTurnAwareCommit=(defendingTeam,agility,options={})=>{
+                const dir=defendingTeam===0?1:-1;
+                const input=options.input||'cut';
+                game.init({home:0,away:1,mode:'quick',humans:0});
+                const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+                const x=1000,y=700;
+                Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,
+                    moveVX:dir*(options.defenderSpeed??200),moveVY:0,dx:dir,dy:0,face:dir,
+                    src:{...(defender.src||{}),defence:50}});
+                Object.assign(carrier,{x:x+dir*83,y,z:0,down:false,stun:0,invuln:0,
+                    moveVX:dir*(options.carrierSpeed??110),moveVY:0,
+                    dx:input==='cut'?0:input==='neutral'?0:NaN,
+                    dy:input==='cut'?1:input==='neutral'?0:Infinity});
+                carrier.src={...(carrier.src||{}),agility};
+                Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,
+                    vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+                return game.defensivePokeCommitWindow(defender,carrier,options.ball===false?null:game.ball);
+            };
+            const turnAwareRows=[0,1].map(team=>({team,
+                elite:runTurnAwareCommit(team,100),
+                average:runTurnAwareCommit(team,50),
+                low:runTurnAwareCommit(team,1),
+                invalidAgility:runTurnAwareCommit(team,NaN),
+                neutral:runTurnAwareCommit(team,100,{input:'neutral'}),
+                invalidInput:runTurnAwareCommit(team,100,{input:'invalid'}),
+                noBall:runTurnAwareCommit(team,100,{ball:false}),
+                slow:runTurnAwareCommit(team,100,{carrierSpeed:60})
+            }));
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
-            return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,
+            return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,turnAwareRows,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
                 closeBallSideRows,ballHeightRows,closeContactEngineRows,actualPokeAimRows,closeContactSlideRows,firstTouchSlideRows,
                 airborneGroundChallengeRows,
@@ -193,6 +221,10 @@ with sync_playwright() as pw:
             assert len(row['calls'])==(1 if expected else 0),(kind,row)
             if expected:
                 assert row['calls'][0]['same'] and row['calls'][0]['liveBall'],(kind,row)
+        for row in result['turnAwareRows']:
+            assert row['elite'] and not row['average'] and not row['low'],(kind,row)
+            assert not row['invalidAgility'] and not row['neutral'] and not row['invalidInput'],(kind,row)
+            assert not row['noBall'] and row['slow'],(kind,row)
         assert result['right'] and result['left'],(kind,result)
         assert not result['retreat'] and not result['lateral'] and not result['sideOn'] and not result['staleVelocity'],(kind,result)
         assert result['low'] and not result['high'],(kind,result)

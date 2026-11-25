@@ -319,3 +319,64 @@ test('actual PASS poke aims through the exposed live ball and keeps body aim aga
   run(false);
  }
 });
+
+
+test('validated early PASS poke reads current carrier turns through Agility in both directions',()=>{
+ for(const defendingTeam of [0,1]){
+  const dir=defendingTeam===0?1:-1;
+  const read=(agility,options={})=>{
+   const defender=player(defendingTeam,1000,700,{dx:dir,dy:0,face:dir,
+    moveVX:dir*(options.defenderSpeed??200),moveVY:0,src:{defence:50}});
+   const carrier=player(1-defendingTeam,1000+dir*83,700,{
+    moveVX:dir*(options.carrierSpeed??110),moveVY:0,
+    dx:options.input==='neutral'?0:options.input==='invalid'?NaN:0,
+    dy:options.input==='neutral'?0:options.input==='invalid'?Infinity:1,
+    src:{agility}
+   });
+   const liveBall={owner:carrier,x:carrier.x-dir*17,y:carrier.y+12,z:12};
+   return commit(defender,carrier,options.ball===false?null:liveBall);
+  };
+  assert.equal(read(100),true,'elite Agility turns into the exposed-ball interception lane within 55 ms');
+  assert.equal(read(50),false,'average Agility retains the slower turn and misses the unchanged closing threshold');
+  assert.equal(read(1),false,'low Agility retains still more residual momentum');
+  assert.equal(read(NaN),false,'missing/invalid Agility falls back to the average turn rate');
+  assert.equal(read(100,{input:'neutral'}),false,'neutral input preserves residual momentum');
+  assert.equal(read(100,{input:'invalid'}),false,'invalid input fails back to residual momentum');
+  assert.equal(read(100,{ball:false}),false,'legacy no-ball calls retain their raw-velocity behavior');
+  assert.equal(read(50,{defenderSpeed:220}),true,'average Agility retains the previous read when the defender closes faster');
+  assert.equal(read(1,{defenderSpeed:220}),false,'low Agility still cannot borrow the elite turn response');
+  assert.equal(read(100,{carrierSpeed:60}),true,'carriers below the existing 75-unit/s turn-read gate retain raw momentum');
+ }
+});
+
+test('driveAI dispatches the early poke only when the Agility-limited live-ball turn read qualifies',()=>{
+ for(const defendingTeam of [0,1]){
+  const dir=defendingTeam===0?1:-1;
+  const run=agility=>{
+   const game=new ENGINE.GameEngine({halfSeconds:120});
+   game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+   const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+   const x=1000,y=700;
+   for(const q of game.players){
+    if(q===defender||q===carrier||q.keeper)continue;
+    q.down=true;q.stun=1;
+   }
+   Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,
+    aiTarget:null,aiDetour:null,action:'idle',actionTimer:0,moveVX:dir*200,moveVY:0,
+    dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0,magicReadCounterpressTimer:0});
+   Object.assign(carrier,{x:x+dir*83,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+    moveVX:dir*110,moveVY:0,dx:0,dy:1,firstTouchControlTimer:0,firstTouchPressure:0});
+   carrier.src={...(carrier.src||{}),agility};
+   Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,vx:0,vy:0,vz:0,
+    pass:false,shot:null,strike:null,ordinaryShot:false,lastTouchTeam:carrier.t});
+   game.clock=5;game.moveAgile=()=>{};game.activateDefence=()=>false;
+   const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({who,slide,slideBall});who.cd=.5;return true;};
+   const originalRandom=Math.random;Math.random=()=>0;
+   try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
+   return calls.length;
+  };
+  assert.equal(run(100),1,'elite carrier turn read opens the existing probabilistic poke path');
+  assert.equal(run(50),0,'average carrier turn does not cross the unchanged closing threshold');
+  assert.equal(run(1),0,'low Agility cannot turn into the lane quickly enough');
+ }
+});
