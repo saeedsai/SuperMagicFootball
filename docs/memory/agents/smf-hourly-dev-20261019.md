@@ -23,7 +23,7 @@ Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six form
 ## Evidence
 - .303 Modular QA #45675586715 passed on parent dev SHA `6983ea8959b9b55441293fed69a8346a0913070e`.
 - .303 Census #45675586834: all four Node shards and 71/72 browser scripts passed; the sole failure was ReferenceError: dir is not defined in the newly extended dribble-trick browser fixture. The .304 fixture now declares mirrored direction inside the team loop.
-- .304 focused Node and Chromium regressions are added; the browser team-direction fixture and source-contract assertion are corrected. Fresh exact-head CI results pending.
+- .304 focused Node and Chromium regressions are added; the browser team-direction fixture and source-contract assertion are corrected. Exact-head QA then exposed a team-1 integration fixture that had not mirrored marker Y; both Node and Chromium cases now use the existing mirrored geometry. Production code is unchanged by these fixture repairs; fresh exact-head CI pending.
 
 ## Cleanup
 Keep this file below 4 KiB with these headings and exact Agent ID. Never bypass CI, security or QA promotion.

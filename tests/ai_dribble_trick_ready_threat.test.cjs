@@ -91,14 +91,14 @@ test('dribble duel reads residual world velocity after directional input is rele
   const x=field.x+field.w*.5,y=field.y+field.h*.5;
   const style=DRIBBLES.dribbleStyle('rainbow');
   const carrier={dribbling:95,agility:90,fatigue:0,x,y};
-  const marker={defence:80,aggression:80,fatigue:0,x:x+dir*40,y:y-dir*50,face:-dir};
+  const marker={defence:80,aggression:80,fatigue:0,x:x+dir*48,y:y-dir*50,face:-dir};
   const stillOdds=DRIBBLES.dribbleOdds(carrier,{...marker,vx:0,vy:0},style);
   const closingThreat={...marker,vx:-dir*220,vy:dir*220};
   const closingOdds=DRIBBLES.dribbleOdds(carrier,closingThreat,style);
   assert.ok(closingOdds<stillOdds,JSON.stringify({team,stillOdds,closingOdds}));
   const random=(stillOdds+closingOdds)/2;
   const setup={style:'rainbow',carrierSrcPatch:{dribbling:95,agility:90},
-   nearestSrcPatch:{defence:80,aggression:80},random};
+   nearestSrcPatch:{defence:80,aggression:80},random,multiDefender:true};
   const stationary=attempt(team,setup);
   const closing=attempt(team,{...setup,nearestPatch:{moveVX:-dir*220,moveVY:dir*220}});
   assert.equal(stationary.event.success,true,JSON.stringify({team,stillOdds,closingOdds,stationary}));

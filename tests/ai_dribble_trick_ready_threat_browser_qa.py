@@ -61,8 +61,8 @@ with sync_playwright() as pw:
                 rows.push({team,kind:'human-legacy',...run(team,{down:true},{},false)});
                 rows.push({team,kind:'multi-defender-lane',...run(team,{moveVY:-dir*220},{moveVY:-dir*300},true,true)});
                 rows.push({team,kind:'human-multi-defender',...run(team,{moveVY:-dir*220},{moveVY:-dir*300},false,true)});
-                rows.push({team,kind:'residual-stationary-read',...run(team,{}, {},true,false,.632,'rainbow',{dribbling:95,agility:90},{defence:80,aggression:80})});
-                rows.push({team,kind:'residual-closing-read',...run(team,{moveVX:-dir*220,moveVY:dir*220},{},true,false,.632,'rainbow',{dribbling:95,agility:90},{defence:80,aggression:80})});
+                rows.push({team,kind:'residual-stationary-read',...run(team,{}, {},true,true,.632,'rainbow',{dribbling:95,agility:90},{defence:80,aggression:80})});
+                rows.push({team,kind:'residual-closing-read',...run(team,{moveVX:-dir*220,moveVY:dir*220},{},true,true,.632,'rainbow',{dribbling:95,agility:90},{defence:80,aggression:80})});
             }
             return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 canonicalTeams:SupermagicFootball.teams.filter(team=>
