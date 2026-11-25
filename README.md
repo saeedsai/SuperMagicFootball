@@ -780,9 +780,9 @@
 
 > **CONTEXT STARTUP:** Use [short shared memory](docs/memory/SHARED.md) plus [your own agent checkpoint](docs/memory/README.md); do not load other chats' memory or old transcripts. Historical claim records do not impose ownership restrictions. [Documentation index](docs/README.md).
 
-# Supermagic Football · v0.12.81.301 · Modular source project
+# Supermagic Football · v0.12.81.302 · Modular source project
 
-> **25 November 2026 active development:** Candidate 0.12.81.301 improves goalkeeper aerial reads: a player still in the first or last 18 units of a jump is evaluated using current vertical momentum instead of a hypothetical fresh jump. Rising and descending challengers are distinguished; the Jumping-based fresh-jump envelope and full airborne body reach remain intact.
+> **25 November 2026 active development:** Candidate 0.12.81.302 improves CPU shot-lane prediction by estimating how the opposing goalkeeper brakes lateral movement during the existing shot-flight window. Agility and GK Skill improve braking; fatigue reduces it. The existing horizon and 65-unit cap remain. Human shot aim, keeper movement/dive/catch, ball physics, four actions, saves, rosters, persistence and offline play are unchanged.
 
 
 This is a **continuation of v0.8.25.29**, which itself derives from the v0.8.25.28 handover. The game has NOT been recreated. Player IDs, team ordering, formation choices, controls, game modes, saved-progress keys and gameplay formulas are retained. The authoritative playable version now consists of **multiple JavaScript modules and JSON data files**; `index.html` loads those files at runtime.
