@@ -35,10 +35,10 @@ with sync_playwright() as pw:
                 Object.assign(carrier,{x,y,z:0,down:false,stun:0,invuln:0,action:'run',actionTimer:0,
                     dx:dir,dy:0,face:dir,moveVX:0,moveVY:0,cd:0,trickCd:0,dribbleCooldown:0,fatigue:0,breath:1});
                 Object.assign(carrier.src,{dribbleType:'stepovers',dribbling:10,agility:10,stamina:80});
-                Object.assign(nearest,{x:x+dir*40,y:multiDefender?y-dir*50:y-50,z:0,down:false,stun:0,invuln:0,
+                Object.assign(nearest,{x:multiDefender?x+dir*48:x+dir*40,y:multiDefender?y-dir*50:y-50,z:0,down:false,stun:0,invuln:0,
                     action:'idle',actionTimer:0,dx:0,dy:0,face:-dir,moveVX:0,moveVY:0});
                 Object.assign(nearest.src,{defence:100,aggression:100});
-                Object.assign(far,{x:multiDefender?x+dir*13:x+dir*80,y:multiDefender?y+dir*65:y+40,z:0,down:false,stun:0,invuln:0,
+                Object.assign(far,{x:multiDefender?x+dir*13:x+dir*80,y:multiDefender?y+dir*70:y+40,z:0,down:false,stun:0,invuln:0,
                     action:'idle',actionTimer:0,dx:0,dy:0,face:-dir,moveVX:0,moveVY:0});
                 Object.assign(far.src,{defence:1,aggression:1});
                 Object.assign(nearest,nearestPatch);Object.assign(far,farPatch);
