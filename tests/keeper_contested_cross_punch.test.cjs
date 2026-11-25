@@ -107,6 +107,24 @@ test('grounded high-cross punch pressure requires enough Jumping to reach the pr
  }
 });
 
+test('low-altitude live jump pressure follows current vertical momentum instead of a fresh jump estimate',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  f.ball.z=100;f.receiver.x=f.ball.x+f.dir*90;f.receiver.moveVX=-f.dir*300;
+  f.receiver.src.jumping=100;
+  Object.assign(f.receiver,{z:10,vz:420,jumpCount:1,action:'jump',actionTimer:.3});
+  assert.ok(AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players),
+   JSON.stringify({team,liveAscending:true,receiver:f.receiver,ball:f.ball}));
+  Object.assign(f.receiver,{z:10,vz:-300,jumpCount:1,action:'idle',actionTimer:0});
+  assert.equal(AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players),null,
+   JSON.stringify({team,liveDescending:true,receiver:f.receiver,ball:f.ball}));
+  Object.assign(f.receiver,{z:0,vz:0,jumpCount:0,action:'idle'});
+  assert.equal(AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players),null,
+   JSON.stringify({team,groundedFreshJumpCannotReach:true,receiver:f.receiver,ball:f.ball}));
+ }
+});
+
 test('real engine punches a contested cross away from either goal and shows the punch response',async()=>{
  const {ENGINE}=await loadModules();
  for(const team of [0,1]){

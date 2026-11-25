@@ -51,7 +51,10 @@ with sync_playwright() as pw:
    }
    const jumpRows=[];
    for(const profile of [{jumping:1,ballZ:92,expected:0},{jumping:50,ballZ:92,expected:0},
-    {jumping:100,ballZ:92,expected:1},{jumping:1,ballZ:70,expected:1}])for(const team of [0,1]){
+    {jumping:100,ballZ:92,expected:1},{jumping:1,ballZ:70,expected:1},
+    {jumping:100,ballZ:100,expected:0},
+    {jumping:100,ballZ:100,expected:1,z:10,vz:420,jumpCount:1,action:'jump'},
+    {jumping:100,ballZ:100,expected:0,z:10,vz:-300,jumpCount:1,action:'idle'}])for(const team of [0,1]){
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
     const dir=team===0?1:-1,liveKeeper=g.player(team,0),liveReceiver=g.player(1-team,3);
     for(const q of g.players)if(q!==liveKeeper&&q!==liveReceiver)Object.assign(q,{down:true,stun:1});
@@ -60,8 +63,9 @@ with sync_playwright() as pw:
      actionTimer:0,diveCooldown:0,diveIntentCooldown:0,diveIntentPending:false,keeperPunchFx:0,fatigue:.1});
     Object.assign(liveKeeper.src,{gkSkill:55,gkDiving:65});
     const ballX=liveKeeper.x-dir*8,ballY=liveKeeper.y+5;
-    Object.assign(liveReceiver,{x:ballX+dir*90,y:ballY,z:0,vz:0,jumpCount:0,stun:0,down:false,
-     action:'idle',actionTimer:0,slideTimer:0,moveVX:-dir*300,moveVY:0});
+    Object.assign(liveReceiver,{x:ballX+dir*90,y:ballY,z:profile.z??0,vz:profile.vz??0,
+     jumpCount:profile.jumpCount??0,stun:0,down:false,action:profile.action??'idle',
+     actionTimer:profile.actionTimer??0,slideTimer:0,moveVX:-dir*300,moveVY:0});
     Object.assign(liveReceiver.src,{jumping:profile.jumping});
     Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,
      pass:true,passTarget:liveReceiver.src.id,x:ballX,y:ballY,z:profile.ballZ,vx:-dir*30,vy:0,

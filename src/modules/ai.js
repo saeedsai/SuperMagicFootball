@@ -2401,28 +2401,27 @@ function keeperHighCrossPunchDecision(keeper,ball,players){
    ((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0))return false;
   const z=q.z==null?0:Number(q.z);
   if(!Number.isFinite(z)||z<0||!Number.isFinite(q.x)||!Number.isFinite(q.y))return false;
-  // A grounded attacker counts as high-cross pressure only if their first
-  // JUMP can reach the ball at the same 120 ms horizon used for XY arrival.
-  // The existing 45-unit body allowance is shared with airborne collection.
-  if(z<=18){
+  // A live jump can still be below the 18-unit airborne threshold during
+  // take-off or landing. In that band use its actual vertical momentum, not
+  // a fresh first-jump estimate that ignores the jump already in progress.
+  const ballHeight=Math.max(0,ball.z+ball.vz*.12-250*.12*.12);
+  const jumpCount=Number.isFinite(Number(q.jumpCount))?Math.max(0,Number(q.jumpCount)):0;
+  const liveJump=jumpCount>0&&['jump','doubleJump','idle'].includes(q.action);
+  if(liveJump){
+   const playerVz=Number.isFinite(q.vz)?q.vz:0;
+   const playerHeight=Math.max(0,z+playerVz*.12-540*.12*.12);
+   const bodyReach=z<=18?45:126;
+   if(ballHeight<playerHeight-10||ballHeight>playerHeight+bodyReach)return false;
+  }else if(z<=18&&jumpCount===0){
+   // A grounded attacker counts only if a fresh first JUMP can reach the
+   // descending ball at the same 120 ms horizon used for XY arrival.
    const rawJumping=q.src?.jumping;
    const parsedJumping=typeof rawJumping==='number'?rawJumping:
     typeof rawJumping==='string'&&rawJumping.trim()!==''?Number(rawJumping):NaN;
    const jump=JUMPMETRICS.jumpMetrics(Number.isFinite(parsedJumping)?parsedJumping:50);
    const jumpHeight=Math.max(0,jump.initialLift+jump.firstImpulse*.12-540*.12*.12)+45;
-   const ballHeight=Math.max(0,ball.z+ball.vz*.12-250*.12*.12);
    if(ballHeight>jumpHeight)return false;
-  }
-  // An already airborne attacker counts only with a live jump pose whose
-  // projected body overlaps the descending cross at the same short horizon.
-  if(z>18){
-   const airborne=Number(q.jumpCount)>0&&['jump','doubleJump','idle'].includes(q.action);
-   if(!airborne)return false;
-   const playerVz=Number.isFinite(q.vz)?q.vz:0;
-   const playerHeight=Math.max(0,z+playerVz*.12-540*.12*.12);
-   const ballHeight=Math.max(0,ball.z+ball.vz*.12-250*.12*.12);
-   if(ballHeight<playerHeight-10||ballHeight>playerHeight+126)return false;
-  }
+  }else return false;
   return true;
  };
  const arrivals=[];
