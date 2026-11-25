@@ -28,7 +28,7 @@ with sync_playwright() as pw:
         page.add_script_tag(content=js,type='module')
         page.wait_for_function('!!window.SupermagicFootball?.game')
         result=page.evaluate("""() => {
-            const game=SupermagicFootball.game,rows=[],stationaryRows=[];
+            const game=SupermagicFootball.game,rows=[],stationaryRows=[],turnRows=[];
             const field={x:150,y:155,w:2260.8,h:1220};
             for(const defendingTeam of [0,1]){
                 game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
@@ -93,7 +93,25 @@ with sync_playwright() as pw:
                 if(game.ball.owner!==carrier)throw new Error('stationary-carrier press changed possession');
                 stationaryRows.push({defendingTeam,target});
             }
-            return {rows,stationaryRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            for(const defendingTeam of [0,1]){
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+                const x=field.x+field.w*.55,y=field.y+field.h*.5;
+                const carrier=game.player(attackingTeam,3),lowAgility=game.player(defendingTeam,3),steady=game.player(defendingTeam,4);
+                for(const q of game.players){if(q===carrier||q===lowAgility||q===steady||q.keeper)continue;q.down=true;q.stun=1;}
+                Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,firstTouchControlTimer:0,firstTouchPressure:0});
+                Object.assign(lowAgility,{x:x-dir*90,y,z:0,down:false,stun:0,action:'run',actionTimer:0,moveVX:0,moveVY:60,vx:0,vy:60,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});
+                lowAgility.src.agility=1;
+                Object.assign(steady,{x:x-dir*92,y,z:0,down:false,stun:0,action:'run',actionTimer:0,moveVX:dir*1,moveVY:0,vx:dir*1,vy:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});
+                steady.src.agility=50;
+                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+                game.clock=2;game.driveAI(steady,.016);
+                const target=steady.aiTarget,gap=target?Math.hypot(target.x-carrier.x,target.y-carrier.y):Infinity;
+                if(!(target&&gap<=34.1&&gap>0))throw new Error('Agility-aware cross-track press did not select the steady-arrival defender: '+JSON.stringify({defendingTeam,target,carrier:{x,y}}));
+                if(game.ball.owner!==carrier)throw new Error('turn-aware press changed possession');
+                turnRows.push({defendingTeam,gap,target});
+            }
+            return {rows,stationaryRows,turnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)

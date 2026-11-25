@@ -138,3 +138,45 @@ test('real driveAI assigns a stationary or slow-carrier press to the arriving de
   assert.equal(game.ball.owner,carrier,'press assignment must not change possession');
  }
 });
+
+test('cross-track press selection uses the defender Agility turn reserve in both directions',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const carrier=player('stationary-carrier-'+team,1-team,1000,600,{moveVX:0,moveVY:0});
+  const steady=player('steady-arrival-'+team,team,908,600,{moveVX:1,moveVY:0,src:{agility:50}});
+  const lowAgility=player('low-agility-cross-track-'+team,team,910,600,{moveVX:0,moveVY:60,src:{agility:1}});
+  const highAgility=player('high-agility-cross-track-'+team,team,910,600,{moveVX:0,moveVY:60,src:{agility:100}});
+  const low=AI.defensivePressers([lowAgility,steady],team,carrier);
+  const high=AI.defensivePressers([highAgility,steady],team,carrier);
+  assert.equal(low.primary,steady,'low-Agility cross-track momentum must pay the larger reorientation reserve');
+  assert.equal(low.support,lowAgility);
+  assert.equal(high.primary,highAgility,'high Agility must retain the smaller cross-track turn cost in a close arrival tie');
+  assert.equal(high.support,steady);
+  const invalid=player('invalid-agility-cross-track-'+team,team,910,600,{moveVX:0,moveVY:60,src:{agility:NaN}});
+  const fallback=AI.defensivePressers([invalid,steady],team,carrier);
+  assert.equal(fallback.primary,steady,'missing/invalid Agility uses the neutral 50-point turn response');
+  const extreme=AI.defensivePressers([player('extreme-cross-track-'+team,team,910,600,{moveVX:0,moveVY:2400,src:{agility:1}}),steady],team,carrier);
+  assert.equal(extreme.primary,steady,'the turn reserve is capped and cannot over-promote a cross-track defender');
+ }
+});
+
+test('real driveAI uses the Agility-aware cross-track press read without changing possession',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const defendingTeam of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+  const field=ENGINE.WORLD.field,x=field.x+field.w*.55,y=field.y+field.h*.5;
+  const carrier=game.player(attackingTeam,3),lowAgility=game.player(defendingTeam,3),steady=game.player(defendingTeam,4);
+  for(const q of game.players){if(q===carrier||q===lowAgility||q===steady||q.keeper)continue;q.down=true;q.stun=1;}
+  Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,firstTouchControlTimer:0,firstTouchPressure:0});
+  Object.assign(lowAgility,{x:x-dir*90,y,z:0,down:false,stun:0,action:'run',actionTimer:0,moveVX:0,moveVY:60,vx:0,vy:60,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});
+  lowAgility.src.agility=1;
+  Object.assign(steady,{x:x-dir*92,y,z:0,down:false,stun:0,action:'run',actionTimer:0,moveVX:dir*1,moveVY:0,vx:dir*1,vy:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});
+  steady.src.agility=50;
+  Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+  game.clock=2;game.driveAI(steady,.016);
+  assert.ok(steady.aiTarget&&Math.hypot(steady.aiTarget.x-carrier.x,steady.aiTarget.y-carrier.y)<=34.1,JSON.stringify({defendingTeam,target:steady.aiTarget,carrier:{x,y}}));
+  assert.equal(game.ball.owner,carrier,'the turn-aware press assignment must not change possession');
+ }
+});

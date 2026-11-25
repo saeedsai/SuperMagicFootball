@@ -66,6 +66,97 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
   const scale=speed>220?220/speed:1;
   return {x:p.x+vx*scale*.12,y:p.y+vy*scale*.12};
  };
+ // Cross-track momentum needs a short reorientation allowance before a defender
+ // can win a projected arrival tie. This mirrors moveAgile's Agility turn rate.
+ const crossTrackTurnCost=(p,point)=>{
+  const dx=point.x-p.x,dy=point.y-p.y,range=Math.hypot(dx,dy);
+  if(range<1)return 0;
+  const vx=velocity(p,'x'),vy=velocity(p,'y');
+  const crossTrackSpeed=Math.abs(vx*dy-vy*dx)/range;
+  if(crossTrackSpeed<1)return 0;
+  const rawAgility=p.src?.agility;
+  const parsedAgility=typeof rawAgility==='number'?rawAgility:
+   typeof rawAgility==='string'&&rawAgility.trim()!==''?Number(rawAgility):NaN;
+  const agility=Math.max(1,Math.min(100,Number.isFinite(parsedAgility)?parsedAgility:50));
+  const turnRate=3+agility*.13;
+  const turnWindow=(1-Math.exp(-turnRate*.12))/turnRate;
+  return Math.max(0,Math.min(12,crossTrackSpeed*turnWindow*.45));
+ };
+ const landingRead=target.landingRead===true;
+ const opponentCarrier=Number.isInteger(target.t)&&target.t!==team&&!target.keeper;
+ const projectedTarget=opponentCarrier?
+  (movingCarrier?project(target):{x:target.x,y:target.y}):
+  landingRead?{x:target.x,y:target.y}:null;
+ const supportPoint=landingRead&&supportTarget&&
+  Number.isFinite(supportTarget.x)&&Number.isFinite(supportTarget.y)?
+  {x:supportTarget.x,y:supportTarget.y}:null;
+ const candidates=players.filter(p=>p&&p.t===team&&!p.keeper&&p!==humanControlled&&
+   p.stun<=0&&!p.down&&!(Number(p.slideTimer)>0)&&
+   !(Number(p.shotImpactKnockdownPending)>0)&&
+   !(Number(p.shotImpactKnockdownTimer)>0)&&
+   !(Number(p.shotImpactRiseTimer)>0)&&
+   (p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)>=0&&Number(p.z)<=18))&&
+   p.action!=='shotDown'&&p.action!=='shotGetUp'&&
+   !((p.action==='slide'||p.action==='hurt')&&(Number(p.actionTimer)||0)>0)&&
+   Number.isFinite(p.x)&&Number.isFinite(p.y))
+  .map((p,index)=>{
+   const d=Math.hypot(p.x-target.x,p.y-target.y);
+   const future=(projectedTarget||supportPoint)?project(p):{x:p.x,y:p.y};
+   let pressScore=d;
+   if(projectedTarget){
+    const arrival=Math.hypot(future.x-projectedTarget.x,future.y-projectedTarget.y);
+    const delta=Math.max(-24,Math.min(24,arrival-d));
+    pressScore=d+delta*.55+crossTrackTurnCost(p,projectedTarget);
+   }
+   const supportDistance=supportPoint?
+    Math.hypot(p.x-supportPoint.x,p.y-supportPoint.y):d;
+   let supportScore=d;
+   if(supportPoint){
+    const supportArrival=Math.hypot(future.x-supportPoint.x,future.y-supportPoint.y);
+    const delta=Math.max(-24,Math.min(24,supportArrival-supportDistance));
+    supportScore=supportDistance+delta*.55+crossTrackTurnCost(p,supportPoint);
+   }
+   return {p,index,d,pressScore,supportDistance,supportScore};
+  })
+  .sort((a,b)=>a.pressScore-b.pressScore||a.d-b.d||a.index-b.index);
+ const primary=candidates[0]?.p||null;
+ if(candidates.length<2)return {primary,support:null};
+ const remaining=candidates.slice(1);
+ const nearest=remaining.reduce((value,candidate)=>
+  Math.min(value,supportPoint?candidate.supportDistance:candidate.d),Infinity);
+ let chosen=remaining[0],best=Infinity;
+ const coverReferenceY=projectedTarget?.y??target.y;
+ for(const candidate of remaining){
+  const localDistance=supportPoint?candidate.supportDistance:candidate.d;
+  if(localDistance>nearest+110)continue;
+  const q=candidate.p;
+  const primarySide=primary.y-coverReferenceY,coverSide=q.y-coverReferenceY;
+  const sameSide=Math.abs(primarySide)>25&&Math.abs(coverSide)>25&&primarySide*coverSide>0;
+  const lateralGap=Math.abs(q.y-primary.y);
+  const goalSide=team===0?q.x<=target.x:q.x>=target.x;
+  const score=(supportPoint?candidate.supportScore:candidate.d)+
+   (sameSide?75:0)+Math.max(0,65-lateralGap)*.4-(goalSide?12:0);
+  if(score<best-1e-9){best=score;chosen=candidate;}
+ }
+ return {primary,support:chosen.p};
+}
+ if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y)||!Array.isArray(players))
+  return {primary:null,support:null};
+ const velocity=(p,axis)=>{
+  const current=axis==='x'?p?.moveVX:p?.moveVY;
+  if(Number.isFinite(current))return current;
+  const legacy=axis==='x'?p?.vx:p?.vy;
+  return Number.isFinite(legacy)?legacy:0;
+ };
+ const carrierSpeed=Math.hypot(velocity(target,'x'),velocity(target,'y'));
+ const movingCarrier=Number.isInteger(target.t)&&target.t!==team&&!target.keeper&&
+  Number.isFinite(carrierSpeed)&&carrierSpeed>=75;
+ const project=p=>{
+  const vx=velocity(p,'x'),vy=velocity(p,'y'),speed=Math.hypot(vx,vy);
+  if(!Number.isFinite(speed))return {x:p.x,y:p.y};
+  const scale=speed>220?220/speed:1;
+  return {x:p.x+vx*scale*.12,y:p.y+vy*scale*.12};
+ };
  const landingRead=target.landingRead===true;
  // A grounded opponent carrier uses a short arrival read even when stationary or
  // below the live-lead threshold, so a retreating nearest defender does not win
