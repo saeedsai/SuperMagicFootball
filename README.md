@@ -781,7 +781,7 @@
 
 # Supermagic Football · v0.12.81.295 · Modular source project
 
-> **25 November 2026 active development:** Candidate 0.12.81.295; goalkeeper cutback reads distinguish a genuinely holding/closing marker from an outfielder running away. improves CPU goalkeeper cutback reads by discounting central runners already covered by an active defender. The keeper keeps its ordinary lane when no uncovered cutback target exists, but still shades toward an open alternative and ignores defenders in recovery. This changes positioning only; dive/catch physics, the 223-team catalog, 2,676 players, four gameplay actions, saves and offline play remain unchanged.
+> **25 November 2026 active development:** Candidate 0.12.81.295 improves CPU goalkeeper cutback reads by distinguishing a defender who is holding or closing the runner from one running away. Stationary/closing defenders still count as cover; a retreating defender no longer suppresses an uncovered runner. Existing dive/catch physics, 223 teams, 2,676 players, four gameplay actions, saves and offline play remain unchanged.
 
 
 This is a **continuation of v0.8.25.29**, which itself derives from the v0.8.25.28 handover. The game has NOT been recreated. Player IDs, team ordering, formation choices, controls, game modes, saved-progress keys and gameplay formulas are retained. The authoritative playable version now consists of **multiple JavaScript modules and JSON data files**; `index.html` loads those files at runtime.
