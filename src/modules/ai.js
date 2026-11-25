@@ -48,6 +48,18 @@ function defensiveCarrierSupportCoverTarget(support,carrier,bounds,horizonSecond
  };
 }
 
+function defensivePassLaneCoveredByPrimary(primary,target,horizonSeconds=.12,radius=44){
+ if(!primary||primary.keeper||primary.down||Number(primary.stun)>0||
+  !target||![primary.x,primary.y,target.x,target.y].every(Number.isFinite))return false;
+ const vx=Number.isFinite(primary.moveVX)?primary.moveVX:Number.isFinite(primary.vx)?primary.vx:0;
+ const vy=Number.isFinite(primary.moveVY)?primary.moveVY:Number.isFinite(primary.vy)?primary.vy:0;
+ const speed=Math.hypot(vx,vy),scale=speed>220?220/speed:1;
+ const horizon=Number.isFinite(horizonSeconds)?Math.max(.08,Math.min(.18,horizonSeconds)):.12;
+ const limit=Number.isFinite(radius)?Math.max(24,Math.min(60,radius)):44;
+ const projected={x:primary.x+vx*scale*horizon,y:primary.y+vy*scale*horizon};
+ return Math.hypot(projected.x-target.x,projected.y-target.y)<=limit;
+}
+
 function defensivePressers(players,team,target,humanControlled=null,supportTarget=null){
  if(!target||!Number.isFinite(target.x)||!Number.isFinite(target.y)||!Array.isArray(players))
   return {primary:null,support:null};
@@ -1307,7 +1319,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    typeof ball.passTarget!=='string'||!ball.passTarget||!Array.isArray(players)||
    !Number.isFinite(ball.x)||!Number.isFinite(ball.y)||!Number.isFinite(ball.vx)||
    !Number.isFinite(ball.vy)||!Number.isFinite(ball.vz)||!Number.isFinite(ball.z)||
-   !Number.isFinite(ball.age)||ball.age<0||ball.age>2.4||ball.z>64||
+   !Number.isFinite(ball.age)||ball.age<0||ball.age>2.4||ball.z>=24||
    ball.vz>112||ball.vz< -130||ball.shot||ball.strike||ball.ordinaryShot)return null;
   const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
   if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
@@ -2534,6 +2546,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
 
 export {AI};

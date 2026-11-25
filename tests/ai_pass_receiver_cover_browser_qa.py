@@ -242,6 +242,45 @@ with sync_playwright() as pw:
    stationary=next(row for row in rows if row['name']=='stationary')
    assert aligned['progress']<cross['progress']-5,(kind,rows)
    assert stationary['progress']<=cross['progress']+1,(kind,rows)
+  overlap_result=page.evaluate("""() => {
+   const g=SupermagicFootball.game,rows=[],field={x:150,y:155,w:2260.8,h:1220};
+   for(const defendingTeam of [0,1])for(const profile of [{name:'closing',move:100,covered:true},{name:'retreating',move:-220,covered:false}]){
+    g.init({home:0,away:1,mode:'quick',humans:0});
+    const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1,y=field.y+field.h/2;
+    const receiverX=attackingTeam===0?field.x+field.w*.60:field.x+field.w*.42,ballX=receiverX-dir*110;
+    const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,2),support=g.player(defendingTeam,3);
+    const keep=new Set([receiver,primary,support]);
+    for(const q of g.players)if(!keep.has(q)&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
+    Object.assign(receiver,{x:receiverX,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+     moveVX:0,moveVY:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+    Object.assign(primary,{x:ballX+dir*80,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     moveVX:dir*profile.move,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+    Object.assign(support,{x:ballX+dir*100,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+    Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,
+     attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,
+     shot:null,strike:null,ordinaryShot:false});
+    g.clock=.2;g.driveAI(support,.016);
+    const supportTarget=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
+    g.driveAI(primary,.016);
+    const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
+    const laneX=ballX+dir*92.8;
+    rows.push({defendingTeam,name:profile.name,covered:profile.covered,supportTarget,primaryTarget,
+     supportGap:supportTarget?Math.hypot(supportTarget.x-laneX,supportTarget.y-y):Infinity,
+     primaryGap:primaryTarget?Math.hypot(primaryTarget.x-ballX,primaryTarget.y-y):Infinity,
+     possession:g.ball.owner===null});
+   }
+   return {rows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }""")
+  assert overlap_result['teams']>=223,(kind,overlap_result)
+  assert overlap_result['buttons']==4,(kind,overlap_result)
+  for row in overlap_result['rows']:
+   assert row['primaryTarget'] is not None and row['primaryGap']<100,(kind,row)
+   assert row['supportTarget'] is not None and row['possession'],(kind,row)
+   if row['covered']:
+    assert row['supportGap']>80,(kind,row)
+   else:
+    assert row['supportGap']<35,(kind,row)
   assert not errors,(kind,errors)
   print('PASS',kind,'cross-track turn reserve, aligned momentum, Defence/Agility reaction, primary pursuit, four actions and no JavaScript errors',flush=True)
   ctx.close()

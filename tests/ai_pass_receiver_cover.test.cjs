@@ -243,3 +243,50 @@ test('real driveAI hands a targeted ground-pass interception lane to the second 
   assert.equal(game.ball.owner,null,'support selection must not change pass possession');
  }
 });
+
+
+test('ground-pass support yields to a primary already covering the lane and rejects descending lofted balls',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team),hint=AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds);
+  assert.ok(hint,JSON.stringify({team,hint}));
+  const closing=player('primary-closing-'+team,team,hint.x-f.dir*30,hint.y,{moveVX:f.dir*100});
+  const retreating=player('primary-retreating-'+team,team,hint.x-f.dir*30,hint.y,{moveVX:-f.dir*220});
+  assert.equal(AI.defensivePassLaneCoveredByPrimary(closing,hint),true);
+  assert.equal(AI.defensivePassLaneCoveredByPrimary(retreating,hint),false);
+  assert.equal(AI.defensivePassLaneCoveredByPrimary(null,hint),false);
+  assert.equal(AI.defensivePassReceiverCoverTarget(team,{...f.ball,z:24,vz:-40},f.players,bounds),null,
+   'an airborne descending ball must remain with the dedicated lofted-pass cover read');
+
+  const defendingTeam=team,attackingTeam=1-team,dir=f.dir;
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const receiver=game.player(attackingTeam,3),primary=game.player(defendingTeam,2),support=game.player(defendingTeam,3);
+  const field=ENGINE.WORLD.field,y=field.y+field.h/2;
+  const receiverX=attackingTeam===0?field.x+field.w*.60:field.x+field.w*.42;
+  const ballX=receiverX-dir*110;
+  const keep=new Set([receiver,primary,support]);
+  for(const q of game.players)if(!keep.has(q)&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
+  Object.assign(receiver,{x:receiverX,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+  Object.assign(primary,{x:ballX+dir*80,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:dir*100,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+  Object.assign(support,{x:ballX+dir*100,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+  Object.assign(game.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,
+   attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,
+   shot:null,strike:null,ordinaryShot:false});
+  game.clock=.2;
+  const hintNow=AI.defensivePassReceiverCoverTarget(defendingTeam,game.ball,game.players,
+   {xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24});
+  assert.ok(hintNow&&AI.defensivePassLaneCoveredByPrimary(primary,hintNow),
+   JSON.stringify({defendingTeam,hintNow,primary}));
+  game.driveAI(support,.016);
+  assert.ok(support.aiTarget&&Math.hypot(support.aiTarget.x-hintNow.x,support.aiTarget.y-hintNow.y)>80,
+   'the second defender must not duplicate a lane already covered by the primary');
+  game.driveAI(primary,.016);
+  assert.ok(primary.aiTarget&&Math.hypot(primary.aiTarget.x-ballX,primary.aiTarget.y-y)<100,
+   'the primary must continue pressing the live ball');
+  assert.equal(game.ball.owner,null);
+ }
+});
