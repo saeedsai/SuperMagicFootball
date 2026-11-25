@@ -86,6 +86,31 @@ test('a successful screen reader narrows the visible forward lane on both attack
   assert.ok(target.x>=24&&target.x<=1976&&target.y>=24&&target.y<=976);
  }
 });
+test('screen-read counterpress follows live directional input before residual carrier momentum',async()=>{
+ const AI=await loadAI(),bounds={xMin:0,xMax:2000,yMin:0,yMax:1000};
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,defending=1-team,x=team===0?700:1300,y=400;
+  const primary=defender({t:defending,x:x-dir*55,y,face:dir});
+  const screen=defender({t:defending,x:x+dir*68,y:y+18,face:-dir,magicReadCounterpressTimer:.42});
+  const diagonalCarrier=carrier({t:team,x,y,dx:dir*.8,dy:.6,moveVX:dir*180,moveVY:0});
+  const diagonal=AI.defensiveMagicReadCounterpressTarget(defending,diagonalCarrier,
+   [diagonalCarrier,primary,screen],bounds,screen,primary);
+  assert.ok(diagonal,JSON.stringify({team,diagonal}));
+  assert.ok(Math.abs(diagonal.y-y)>25,
+   'a live diagonal cut must move the counterpress target into the new lane, not stale horizontal momentum');
+  const neutralCarrier={...diagonalCarrier,dx:0,dy:0};
+  const neutral=AI.defensiveMagicReadCounterpressTarget(defending,neutralCarrier,
+   [neutralCarrier,primary,screen],bounds,screen,primary);
+  assert.ok(neutral,JSON.stringify({team,neutral}));
+  assert.ok(Math.abs(neutral.y-y)<20,
+   'when input releases, residual horizontal movement remains the fallback');
+  const backwardCarrier={...diagonalCarrier,dx:-dir,dy:0};
+  assert.equal(AI.defensiveMagicReadCounterpressTarget(defending,backwardCarrier,
+   [backwardCarrier,primary,screen],bounds,screen,primary),null,
+   'a backward live input must not inherit the previous forward momentum counterpress');
+ }
+});
+
 test('screen-read counterpress rejects expired, hidden, backward, unavailable and human-owned states',async()=>{
  const AI=await loadAI(),bounds={xMin:0,xMax:2000,yMin:0,yMax:1000};
  const p=carrier({t:0,x:700,dx:1,dy:0,moveVX:180,moveVY:0});
@@ -242,10 +267,15 @@ test('real engine grants the screen counter only when the live ball is exposed, 
   if(readExpected){
    assert.equal(screen.magicReadCounterpressTimer,.42);
    assert.equal(screen.magicReadCueTimer,.48);
+   // The player cuts diagonally after the successful read while old horizontal
+   // momentum remains; the second defender must update to the live input lane.
+   Object.assign(carrier,{dx:dir*.8,dy:.6});
    game.driveAI(screen,.016);
    assert.ok(screen.aiTarget,JSON.stringify({team,target:screen.aiTarget}));
    const forward=(screen.aiTarget.x-carrier.x)*dir;
-   assert.ok(forward>=42&&forward<=72,'the second defender should close the forward lane');
+   assert.ok(forward>=42&&forward<=72,'the second defender should close the live forward lane');
+   assert.ok(Math.abs(screen.aiTarget.y-carrier.y)>25,
+    'the actual engine counterpress should follow the carrier diagonal input instead of stale momentum');
    assert.equal(screen.action,'idle','the movement-only counterpress must not auto-tackle');
    assert.ok(Math.hypot(screen.aiTarget.x-carrier.x,screen.aiTarget.y-carrier.y)<=82,
     'the earned screen reader must keep the bounded counterpress lane target');

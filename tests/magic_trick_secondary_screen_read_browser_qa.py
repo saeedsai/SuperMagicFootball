@@ -19,7 +19,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
    const g=SupermagicFootball.game;
-   function attempt(withScreen,ballSide='exposed',dribbling=95,randomValue=.1,screenHeading='face',team=0){
+   function attempt(withScreen,ballSide='exposed',dribbling=95,randomValue=.1,screenHeading='face',team=0,postReadDiagonal=false){
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
     const dir=team===0?1:-1,carrier=g.player(team,3),nearest=g.player(1-team,3),screen=g.player(1-team,4);
     for(const q of g.players)if(q!==carrier&&q!==nearest&&q!==screen&&!q.keeper){q.down=true;q.stun=1;}
@@ -39,6 +39,7 @@ with sync_playwright() as pw:
     Object.assign(g.ball,{owner:carrier,x:1200+ballOffset,y:777,z:12,pass:false,shot:null,strike:null,attacker:0,lastTouchTeam:team});
     const oldRandom=Math.random;Math.random=()=>randomValue;
     try{g.tryMagicTrick(carrier);}finally{Math.random=oldRandom;}
+    if(postReadDiagonal)Object.assign(carrier,{dx:dir*.8,dy:.6});
     if(withScreen){g.driveAI(screen,1/60);g.driveAI(nearest,1/60);}
     return {hidden:carrier.hideBallTimer>.4,owner:g.ball.owner===carrier,cooldown:carrier.magicReadyAt,fatigue:carrier.fatigue,
      readerCue:screen.magicReadCueTimer||0,counterpressTimer:screen.magicReadCounterpressTimer||0,
@@ -117,7 +118,9 @@ with sync_playwright() as pw:
     lowSkill:attempt(true,'exposed',1,.22),neutralSkill:attempt(true,'exposed',50,.22),eliteSkill:attempt(true,'exposed',100,.22),
     perpendicular:attempt(true,'exposed',95,.1,'perpendicular',0),
     perpendicularMirrored:attempt(true,'exposed',95,.1,'perpendicular',1),
-    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),momentum,directCounters,lightningMomentum,
+    movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),
+    diagonalCounterpress:[attempt(true,'exposed',95,.1,'face',0,true),attempt(true,'exposed',95,.1,'face',1,true)],
+    momentum,directCounters,lightningMomentum,
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -136,6 +139,12 @@ with sync_playwright() as pw:
    assert row['owner'] is True,(kind,row)
    assert row['cooldown']>2 and row['fatigue']>0,(kind,row)
    assert row['hidden'] is (row['mode']!='approach'),(kind,'residual approach should counter, retreat/stationary should not',row)
+  assert len(result['diagonalCounterpress'])==2,(kind,result)
+  for team,row in enumerate(result['diagonalCounterpress']):
+   target=row['readerTarget']
+   assert row['owner'] is True and row['readerAction']=='idle',(kind,row)
+   assert target is not None and 42<=((target['x']-1200)*(1 if team==0 else -1))<=72,(kind,row)
+   assert abs(target['y']-765)>25,(kind,'actual-engine counterpress must follow the post-read diagonal input, not old horizontal momentum',row)
   assert len(result['directCounters'])==6,(kind,result)
   for row in result['directCounters']:
    assert row['owner'] is True and row['cooldown']>0 and row['fatigue']>0,(kind,row)

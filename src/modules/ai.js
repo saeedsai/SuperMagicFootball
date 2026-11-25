@@ -1774,12 +1774,22 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    !Number.isFinite(Number(defender.magicReadCounterpressTimer))||Number(defender.magicReadCounterpressTimer)<=0)return null;
   const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
   if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
-  const movement=(p,axis)=>{
-   const keys=axis==='x'?['moveVX','dx','vx']:['moveVY','dy','vy'];
-   for(const key of keys){const value=p?.[key];if(Number.isFinite(value)&&Math.abs(value)>.05)return value;}
-   return 0;
-  };
-  let vx=movement(carrier,'x'),vy=movement(carrier,'y'),speed=Math.hypot(vx,vy);
+  // Current directional input is the live carry intent. Residual movement is
+  // only the fallback after input releases, so the screen follows a real cut
+  // instead of counterpressing the carrier's previous momentum lane.
+  const inputX=Number.isFinite(carrier.dx)?carrier.dx:0;
+  const inputY=Number.isFinite(carrier.dy)?carrier.dy:0;
+  let vx=inputX,vy=inputY,speed=Math.hypot(vx,vy);
+  if(speed<.05){
+   vx=Number.isFinite(carrier.moveVX)?carrier.moveVX:0;
+   vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:0;
+   speed=Math.hypot(vx,vy);
+  }
+  if(speed<.05){
+   vx=Number.isFinite(carrier.vx)?carrier.vx:0;
+   vy=Number.isFinite(carrier.vy)?carrier.vy:0;
+   speed=Math.hypot(vx,vy);
+  }
   const attackDir=carrier.t===0?1:-1;
   if(speed<.05){vx=attackDir;vy=0;speed=1;}
   const ux=vx/speed,uy=vy/speed;
