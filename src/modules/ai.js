@@ -15,6 +15,34 @@ function aiTuning(value) {
 }
 
 
+function carrierTurnAwareVelocity(carrier,vx,vy,horizonSeconds=.12){
+ const speed=Math.hypot(vx,vy);
+ const horizon=Math.max(.08,Math.min(.18,Number.isFinite(horizonSeconds)?horizonSeconds:.12));
+ const inputX=Number.isFinite(carrier?.dx)?carrier.dx:0;
+ const inputY=Number.isFinite(carrier?.dy)?carrier.dy:0;
+ const inputLength=Math.hypot(inputX,inputY);
+ if(!Number.isFinite(speed)||speed<75||!Number.isFinite(inputLength)||inputLength<.15)
+  return {x:vx,y:vy};
+ const currentX=vx/speed,currentY=vy/speed;
+ const desiredX=inputX/inputLength,desiredY=inputY/inputLength;
+ const dot=Math.max(-1,Math.min(1,currentX*desiredX+currentY*desiredY));
+ if(dot>.995)return {x:vx,y:vy};
+ const cross=currentX*desiredY-currentY*desiredX;
+ const angle=Math.atan2(cross,dot);
+ const rawAgility=carrier?.src?.agility;
+ const parsedAgility=typeof rawAgility==='number'?rawAgility:
+  typeof rawAgility==='string'&&rawAgility.trim()!==''?Number(rawAgility):NaN;
+ const agility=Math.max(1,Math.min(100,Number.isFinite(parsedAgility)?parsedAgility:50));
+ const maxTurn=(3+agility*.13)*horizon;
+ const turn=Math.abs(angle)<=maxTurn?angle:
+  (Math.sign(angle)||(carrier?.t===0?1:-1))*maxTurn;
+ const cosine=Math.cos(turn),sine=Math.sin(turn);
+ return {
+  x:(currentX*cosine-currentY*sine)*speed,
+  y:(currentX*sine+currentY*cosine)*speed
+ };
+}
+
 // Assign the closest available AI player as primary presser. A player already
 // committed to a slide, knockdown or recovery cannot press this frame; skip them
 // before choosing both the primary and cover defender.
@@ -100,8 +128,14 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
  };
  const landingRead=target.landingRead===true;
  const opponentCarrier=Number.isInteger(target.t)&&target.t!==team&&!target.keeper;
+ const carrierMotion=carrierTurnAwareVelocity(target,velocity(target,'x'),velocity(target,'y'),.12);
+ const carrierScale=carrierSpeed>220?220/carrierSpeed:1;
+ const carrierProjection={
+  x:target.x+carrierMotion.x*carrierScale*.12,
+  y:target.y+carrierMotion.y*carrierScale*.12
+ };
  const projectedTarget=opponentCarrier?
-  (movingCarrier?project(target):{x:target.x,y:target.y}):
+  (movingCarrier?carrierProjection:{x:target.x,y:target.y}):
   landingRead?{x:target.x,y:target.y}:null;
  // The second defender may be assigned to a trusted loose-ball landing or
  // to the projected interception lane of a targeted pass.
@@ -328,9 +362,10 @@ function defensiveCarrierLeadTarget(defender,carrier,bounds,anticipation=.5,ball
   xMin+22>=xMax-22||yMin+23>=yMax-23)return null;
  const read=Number.isFinite(anticipation)?clampTo(anticipation,0,1):.5;
  const horizon=.08+read*.10;
- let leadX=vx*horizon,leadY=vy*horizon;
+ const projectedVelocity=carrierTurnAwareVelocity(carrier,vx,vy,horizon);
+ let leadX=projectedVelocity.x*horizon,leadY=projectedVelocity.y*horizon;
  const attackDirection=carrier.t===0?1:carrier.t===1?-1:0;
- const goalwardSpeed=vx*attackDirection;
+ const goalwardSpeed=projectedVelocity.x*attackDirection;
  const goalwardCutoff=attackDirection!==0&&goalwardSpeed>80?
   Math.min(8,(goalwardSpeed-80)*.05)*read:0;
  leadX+=attackDirection*goalwardCutoff;
