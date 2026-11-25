@@ -18,6 +18,9 @@ Deliver player-facing gameplay first, then existing-player graphics/animation, g
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Studio art requires provenance, game-scale QA and owner acceptance. Keep #48 physical acceptance, #86 Render drift and #87 branch-protection security open. No authenticated online-hosting claim.
 
+## Next smallest action
+Complete exact-head Modular QA and Full Regression Census for the .309 Lightning counterplay candidate; fix confirmed failures, then allow only a fully green exact head through the existing QA-gated promotion.
+
 ## Next five product improvements
 1. Improve CPU primary/support tackle timing using ball exposure, carrier momentum and approach angle.
 2. Continue counterable Magic Trick reads with readable windups and skill-appropriate response windows.
