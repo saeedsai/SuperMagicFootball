@@ -3208,9 +3208,11 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
      {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},
      p,counterpressPrimary,this.inControl(t)?this.controlledPlayer(t):null):null;
    const firstTouchCoverTarget=firstTouchOutletCoverTarget||firstTouchCarryContainTarget;
-   p.aiTarget=magicReadCounterpress?{x:magicReadCounterpress.x,y:magicReadCounterpress.y}:
-    establishedCoverTarget?{x:establishedCoverTarget.x,y:establishedCoverTarget.y}:
+   // A brief successful-read screen is a fallback, not a replacement for a
+   // validated return-pass, cutback, pass-lane or first-touch cover assignment.
+   p.aiTarget=establishedCoverTarget?{x:establishedCoverTarget.x,y:establishedCoverTarget.y}:
     firstTouchCoverTarget?{x:firstTouchCoverTarget.x,y:firstTouchCoverTarget.y}:
+    magicReadCounterpress?{x:magicReadCounterpress.x,y:magicReadCounterpress.y}:
     counterpressTrap?{x:counterpressTrap.x,y:counterpressTrap.y}:
     supportCarrierCover?{x:supportCarrierCover.x,y:supportCarrierCover.y}:{
     x:clamp(target.x-(t===0?1:-1)*110,F.x+22,F.x+F.w-22),

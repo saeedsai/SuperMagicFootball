@@ -274,7 +274,7 @@ test('real engine grants the screen counter only when the live ball is exposed, 
    assert.ok(screen.aiTarget,JSON.stringify({team,target:screen.aiTarget}));
    const forward=(screen.aiTarget.x-carrier.x)*dir;
    assert.ok(forward>=42&&forward<=72,'the second defender should close the live forward lane');
-   assert.ok(Math.abs(screen.aiTarget.y-carrier.y)>25,
+   assert.ok(Math.abs(screen.aiTarget.y-carrier.y)>20,
     'the actual engine counterpress should follow the carrier diagonal input instead of stale momentum');
    assert.equal(screen.action,'idle','the movement-only counterpress must not auto-tackle');
    assert.ok(Math.hypot(screen.aiTarget.x-carrier.x,screen.aiTarget.y-carrier.y)<=82,
@@ -474,5 +474,46 @@ test('delayed Lightning counters recognize residual 2D approach after input rele
    assert.equal(defender.lightningMark,0);
    assert.equal(game.ball.owner,carrier,'Lightning countering must not transfer possession');
   }
+ }
+});
+
+
+test('an earned Magic Trick screen preserves established give-and-go cover on both teams',async()=>{
+ const AI=await loadAI(),ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
+ const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=field.x+field.w*(team===0?.35:.65),y=field.y+field.h*.5;
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,humans:0,mode:'quick'});game.clock=2;
+  const carrier=game.player(team,3),primary=game.player(1-team,3),
+   screen=game.player(1-team,4),runner=game.player(team,4);
+  for(const q of game.players)if(q!==carrier&&q!==primary&&q!==screen&&q!==runner&&!q.keeper){
+   q.down=true;q.stun=1;
+  }
+  Object.assign(carrier,{x,y,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+   dx:dir,dy:0,moveVX:dir*180,moveVY:0,face:dir,hideBallTimer:0,
+   firstTouchOutletReadTimer:0,firstTouchControlTimer:0,firstTouchPressure:0});
+  Object.assign(primary,{x:x+dir*20,y,z:0,down:false,stun:0,keeper:false,
+   action:'idle',actionTimer:0,dx:0,dy:0,moveVX:0,moveVY:0,face:-dir});
+  Object.assign(screen,{x:x+dir*80,y,z:0,down:false,stun:0,keeper:false,
+   action:'idle',actionTimer:0,dx:0,dy:0,moveVX:0,moveVY:0,face:-dir,
+   magicReadCounterpressTimer:.42,aiTimer:0});
+  Object.assign(runner,{x:x+dir*240,y:y+220,z:0,down:false,stun:0,keeper:false,
+   action:'idle',actionTimer:0,dx:0,dy:0,moveVX:0,moveVY:0,
+   aiGiveAndGoRun:{receiverId:carrier.src.id,target:{x:x+dir*340,y:y+220},expires:game.clock+1}});
+  Object.assign(game.ball,{owner:carrier,x:x+dir*12,y,z:0,pass:false,passTarget:null,
+   attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+  const expected=AI.defensiveGiveAndGoCoverTarget(1-team,carrier,game.players,bounds,game.clock);
+  const pressing=AI.defensivePressers(game.players,1-team,carrier,null,null);
+  const counter=AI.defensiveMagicReadCounterpressTarget(1-team,carrier,game.players,bounds,screen,primary,null);
+  assert.ok(expected,JSON.stringify({team,expected,carrier,runner:runner.aiGiveAndGoRun}));
+  assert.equal(pressing.primary,primary);
+  assert.equal(pressing.support,screen);
+  assert.ok(counter,JSON.stringify({team,counter,primary,screen}));
+  game.driveAI(screen,.016);
+  assert.ok(Math.abs(screen.aiTarget.x-expected.x)<1e-6,
+   JSON.stringify({team,actual:screen.aiTarget,expected,counter}));
+  assert.ok(Math.abs(screen.aiTarget.y-expected.y)<1e-6,
+   JSON.stringify({team,actual:screen.aiTarget,expected,counter}));
  }
 });

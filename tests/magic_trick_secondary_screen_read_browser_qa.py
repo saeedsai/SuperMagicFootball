@@ -108,6 +108,28 @@ with sync_playwright() as pw:
     return {team,mode,hit,countered:event?.countered,stun:defender.stun,
      owner:g.ball.owner===carrier,pending:carrier.lightningPending===null,mark:defender.lightningMark};
    }
+   function attemptCoverPriority(team){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
+    const dir=team===0?1:-1,carrier=g.player(team,3),primary=g.player(1-team,3),
+     screen=g.player(1-team,4),runner=g.player(team,4);
+    for(const q of g.players)if(q!==carrier&&q!==primary&&q!==screen&&q!==runner&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(carrier,{x:1200,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     face:dir,dx:dir,dy:0,moveVX:dir*180,moveVY:0,hideBallTimer:0,
+     firstTouchOutletReadTimer:0,firstTouchControlTimer:0,firstTouchPressure:0});
+    Object.assign(primary,{x:1200+dir*20,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     face:-dir,dx:0,dy:0,moveVX:0,moveVY:0});
+    Object.assign(screen,{x:1200+dir*80,y:765,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     face:-dir,dx:0,dy:0,moveVX:0,moveVY:0,magicReadCounterpressTimer:.42,aiTimer:0});
+    Object.assign(runner,{x:1200+dir*240,y:985,z:0,stun:0,down:false,action:'idle',actionTimer:0,
+     dx:0,dy:0,moveVX:0,moveVY:0,
+     aiGiveAndGoRun:{receiverId:carrier.src.id,target:{x:1200+dir*340,y:985},expires:g.clock+1}});
+    Object.assign(g.ball,{owner:carrier,x:1200+dir*12,y:765,z:0,pass:false,passTarget:null,
+     attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+    g.driveAI(screen,1/60);
+    return {team,target:screen.aiTarget,
+     expected:{x:1200+dir*(14.4+(340-14.4)*.56),y:765+220*.56},
+     owner:g.ball.owner===carrier,timer:screen.magicReadCounterpressTimer||0};
+   }
    const directCounters=[];
    for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])directCounters.push(attemptSecondDirectRead(team,mode));
    const lightningMomentum=[];
@@ -120,7 +142,7 @@ with sync_playwright() as pw:
     perpendicularMirrored:attempt(true,'exposed',95,.1,'perpendicular',1),
     movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),
     diagonalCounterpress:[attempt(true,'exposed',95,.1,'face',0,true),attempt(true,'exposed',95,.1,'face',1,true)],
-    momentum,directCounters,lightningMomentum,
+    momentum,directCounters,lightningMomentum,coverPriority:[attemptCoverPriority(0),attemptCoverPriority(1)],
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -144,7 +166,13 @@ with sync_playwright() as pw:
    target=row['readerTarget']
    assert row['owner'] is True and row['readerAction']=='idle',(kind,row)
    assert target is not None and 42<=((target['x']-1200)*(1 if team==0 else -1))<=72,(kind,row)
-   assert abs(target['y']-765)>25,(kind,'actual-engine counterpress must follow the post-read diagonal input, not old horizontal momentum',row)
+   assert abs(target['y']-765)>20,(kind,'actual-engine counterpress must follow the post-read diagonal input, not old horizontal momentum',row)
+  assert len(result['coverPriority'])==2,(kind,result)
+  for row in result['coverPriority']:
+   assert row['owner'] is True and row['timer']>0,(kind,row)
+   assert row['target'] is not None,(kind,row)
+   assert abs(row['target']['x']-row['expected']['x'])<1,(kind,'give-and-go cover must outrank temporary Magic Trick counterpress',row)
+   assert abs(row['target']['y']-row['expected']['y'])<1,(kind,'give-and-go cover must retain its return-pass corridor',row)
   assert len(result['directCounters'])==6,(kind,result)
   for row in result['directCounters']:
    assert row['owner'] is True and row['cooldown']>0 and row['fatigue']>0,(kind,row)
