@@ -44,6 +44,10 @@ with sync_playwright() as pw:
     // A slightly farther teammate moving into the goal-side mark should beat
     // the nearer marker who is still moving away from it.
     Object.assign(third,{down:true,stun:1});
+    // Keep the press and cover roles unambiguous: the nearest two ready defenders
+    // remain primary/support, while alternate is a distinct third-man candidate.
+    active(primary,{x:carrierX+attackDir*42,y:centerY+22});
+    active(support,{x:carrierX+attackDir*58,y:centerY-42});
     active(alternate,{x:targetX-attackDir*82,y:targetY+10,moveVX:attackDir*200,moveVY:0});
     game.driveAI(alternate,.016);const arrivalTarget=alternate.aiTarget;
     if(!arrivalTarget||Math.abs(arrivalTarget.x-targetX)>1||Math.abs(arrivalTarget.y-targetY)>1)
