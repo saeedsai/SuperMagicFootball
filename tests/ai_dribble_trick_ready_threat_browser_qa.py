@@ -26,7 +26,7 @@ with sync_playwright() as pw:
         page.wait_for_function('!!window.SupermagicFootball?.game')
         result=page.evaluate("""() => {
             const game=SupermagicFootball.game,field={x:150,y:155,w:2260.8,h:1220};
-            const run=(team,nearestPatch={},farPatch={},byAI=true)=>{
+            const run=(team,nearestPatch={},farPatch={},byAI=true,multiDefender=false)=>{
                 game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
                 const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
                 const carrier=game.player(team,3),nearest=game.player(1-team,3),far=game.player(1-team,4);
@@ -35,10 +35,10 @@ with sync_playwright() as pw:
                 Object.assign(carrier,{x,y,z:0,down:false,stun:0,invuln:0,action:'run',actionTimer:0,
                     dx:dir,dy:0,face:dir,moveVX:0,moveVY:0,cd:0,trickCd:0,dribbleCooldown:0,fatigue:0,breath:1});
                 Object.assign(carrier.src,{dribbleType:'stepovers',dribbling:10,agility:10,stamina:80});
-                Object.assign(nearest,{x:x+dir*40,y:y-50,z:0,down:false,stun:0,invuln:0,
+                Object.assign(nearest,{x:x+dir*40,y:multiDefender?y-dir*50:y-50,z:0,down:false,stun:0,invuln:0,
                     action:'idle',actionTimer:0,dx:0,dy:0,face:-dir,moveVX:0,moveVY:0});
                 Object.assign(nearest.src,{defence:100,aggression:100});
-                Object.assign(far,{x:x+dir*80,y:y+40,z:0,down:false,stun:0,invuln:0,
+                Object.assign(far,{x:multiDefender?x+dir*13:x+dir*80,y:multiDefender?y+dir*65:y+40,z:0,down:false,stun:0,invuln:0,
                     action:'idle',actionTimer:0,dx:0,dy:0,face:-dir,moveVX:0,moveVY:0});
                 Object.assign(far.src,{defence:1,aggression:1});
                 Object.assign(nearest,nearestPatch);Object.assign(far,farPatch);
@@ -58,6 +58,8 @@ with sync_playwright() as pw:
                 rows.push({team,kind:'active',...run(team)});
                 rows.push({team,kind:'no-ready-rival',...run(team,{down:true},{down:true})});
                 rows.push({team,kind:'human-legacy',...run(team,{down:true},{},false)});
+                rows.push({team,kind:'multi-defender-lane',...run(team,{moveVY:-dir*220},{moveVY:-dir*300},true,true)});
+                rows.push({team,kind:'human-multi-defender',...run(team,{moveVY:-dir*220},{moveVY:-dir*300},false,true)});
             }
             return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 canonicalTeams:SupermagicFootball.teams.filter(team=>
@@ -65,7 +67,7 @@ with sync_playwright() as pw:
         }""")
         assert result['buttons']==4,(kind,result)
         assert result['canonicalTeams']==223,(kind,result)
-        assert len(result['rows'])==12,(kind,result)
+        assert len(result['rows'])==16,(kind,result)
         for row in result['rows']:
             assert row['attempted'],(kind,row)
             if row['kind'] in ('downed','invulnerable','shot-down'):
@@ -76,6 +78,12 @@ with sync_playwright() as pw:
                 assert row['ai'] is True and row['success'] is True and row['owner'],(kind,row)
             elif row['kind']=='human-legacy':
                 assert row['ai'] is False and row['success'] is False and row['yDelta']>0,(kind,row)
+            elif row['kind']=='multi-defender-lane':
+                direction=1 if row['team']==0 else -1
+                assert row['ai'] is True and row['success'] is False and row['owner'] and row['yDelta']*direction<0,(kind,row)
+            elif row['kind']=='human-multi-defender':
+                direction=1 if row['team']==0 else -1
+                assert row['ai'] is False and row['success'] is False and row['yDelta']*direction>0,(kind,row)
         assert not errors,(kind,errors)
         print('PASS',kind,'CPU active-threat duel, escape-side selection, human compatibility, 223 teams and four actions',flush=True)
         ctx.close()

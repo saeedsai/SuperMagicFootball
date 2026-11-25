@@ -8,7 +8,7 @@ test.before(async()=>{
  const {ENGINE:engine}=await import('../src/modules/engine.js');
  ENGINE=engine;
 });
-function attempt(team,{nearestPatch={},farPatch={},byAI=true,random=.4}={}){
+function attempt(team,{nearestPatch={},farPatch={},byAI=true,random=.4,multiDefender=false}={}){
  const game=new ENGINE.GameEngine({halfSeconds:120});
  game.init({home:0,away:1,mode:'quick',humans:0});
  const carrier=game.player(team,3),nearest=game.player(1-team,3),far=game.player(1-team,4);
@@ -18,10 +18,10 @@ function attempt(team,{nearestPatch={},farPatch={},byAI=true,random=.4}={}){
  Object.assign(carrier,{x,y,z:0,down:false,stun:0,invuln:0,action:'run',actionTimer:0,
   dx:dir,dy:0,face:dir,moveVX:0,moveVY:0,cd:0,trickCd:0,dribbleCooldown:0,fatigue:0,breath:1});
  Object.assign(carrier.src,{dribbleType:'stepovers',dribbling:10,agility:10,stamina:80});
- Object.assign(nearest,{x:x+dir*40,y:y-50,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+ Object.assign(nearest,{x:x+dir*40,y:multiDefender?y-dir*50:y-50,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
   dx:0,dy:0,face:-dir,moveVX:0,moveVY:0});
  Object.assign(nearest.src,{defence:100,aggression:100});
- Object.assign(far,{x:x+dir*80,y:y+40,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+ Object.assign(far,{x:multiDefender?x+dir*13:x+dir*80,y:multiDefender?y+dir*65:y+40,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
   dx:0,dy:0,face:-dir,moveVX:0,moveVY:0});
  Object.assign(far.src,{defence:1,aggression:1});
  Object.assign(nearest,nearestPatch);Object.assign(far,farPatch);
@@ -67,5 +67,29 @@ test('when no ready rival exists the CPU uses the existing uncontested trick pat
   assert.equal(human.event.ai,false,JSON.stringify({team,human}));
   assert.equal(human.event.success,false,JSON.stringify({team,human}));
   assert.ok(human.yDelta>0,JSON.stringify({team,human}));
+ }
+});
+
+test('CPU trick redirects away from a second defender closing the nearest-away exit, while human movement stays unchanged',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const ai=attempt(team,{multiDefender:true,nearestPatch:{moveVY:-dir*220},farPatch:{moveVY:-dir*300}});
+  assert.equal(ai.event.success,false,JSON.stringify({team,ai}));
+  assert.ok(ai.yDelta*dir<0,JSON.stringify({team,ai}));
+  assert.equal(ai.owner,true,JSON.stringify({team,ai}));
+  const human=attempt(team,{multiDefender:true,nearestPatch:{moveVY:-dir*220},farPatch:{moveVY:-dir*300},byAI:false});
+  assert.equal(human.event.success,false,JSON.stringify({team,human}));
+  assert.ok(human.yDelta*dir>0,JSON.stringify({team,human}));
+ }
+});
+
+test('CPU trick treats a live second-defender slide as an arriving exit-lane threat',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const row=attempt(team,{multiDefender:true,nearestPatch:{moveVY:-dir*220},
+   farPatch:{action:'slide',actionTimer:.05,slideTimer:.05,slideRemaining:120,
+    slideSpeed:600,slideDX:0,slideDY:-dir}});
+  assert.equal(row.event.success,false,JSON.stringify({team,row}));
+  assert.ok(row.yDelta*dir<0,JSON.stringify({team,row}));
  }
 });
