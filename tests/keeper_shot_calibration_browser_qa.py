@@ -192,6 +192,50 @@ def fatigue_read_script():
     }"""
 
 
+def cpu_shot_read_script():
+    # Exercise the real GameEngine.shoot decision on desktop and simulated touch.
+    # The launch is intercepted only after the engine has selected its shot lane.
+    return r"""() => {
+      const g=SupermagicFootball.game,field=SupermagicFootball.world?.field||{x:150,w:2260.8};
+      const middle=765,rows=[],savedRandom=Math.random;
+      function aim(team,keeperVelocity,controlled){
+        g.init({home:0,away:1,humans:0,mode:'quick'});
+        const direction=team===0?1:-1;
+        const goalX=direction===1?field.x+field.w:field.x;
+        const shooter=g.player(team,3),keeper=g.player(1-team,0);
+        for(const p of g.players)if(p!==shooter&&p!==keeper)
+          Object.assign(p,{x:field.x+field.w*.5,y:220,z:0,stun:0});
+        Object.assign(shooter,{x:goalX-direction*500,y:middle,z:0,stun:0,cd:0,
+          fatigue:0,dx:0,dy:0});
+        Object.assign(keeper,{x:goalX-direction*24,y:middle,z:0,stun:0,down:false,
+          action:'run',actionTimer:0,moveVX:0,moveVY:keeperVelocity,
+          diveIntentPending:false,fatigue:0});
+        g.ball.owner=shooter;
+        const previousFreeBall=g.freeBall,previousInControl=g.inControl;
+        let selectedY=null;
+        g.freeBall=(player,dx,dy,speed,options)=>{selectedY=player.y+dy;return true;};
+        g.inControl=()=>controlled;
+        Math.random=()=>.5;
+        try{
+          if(!g.shoot(shooter,false,false,0)||!Number.isFinite(selectedY))
+            throw Error('CPU shot did not reach the real lane-selection launch path');
+        }finally{
+          g.freeBall=previousFreeBall;g.inControl=previousInControl;Math.random=savedRandom;
+        }
+        return selectedY;
+      }
+      try{
+        for(const team of [0,1]){
+          const cpuUp=aim(team,220,false),cpuDown=aim(team,-220,false);
+          const humanUp=aim(team,220,true),humanDown=aim(team,-220,true);
+          rows.push({team,cpuUp,cpuDown,humanUp,humanDown,
+            buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
+        }
+      }finally{Math.random=savedRandom}
+      return {rows,teams:SupermagicFootball.teams.length};
+    }"""
+
+
 with sync_playwright() as pw:
     browser = pw.chromium.launch(executable_path='/usr/bin/chromium', headless=True,
                                  args=['--no-sandbox', '--disable-dev-shm-usage'])
@@ -293,6 +337,15 @@ with sync_playwright() as pw:
         assert all(r['ballUnchanged'] for r in fatigue_rows),(device,'dive intent mutated ball flight',fatigue_rows)
         print('KEEPER_FATIGUE_DIVE_READ_PASS',json.dumps({'device':device,'fixtures':len(fatigue_rows),
               'mirroredSides':2,'restedEarly':2,'fatiguedLate':2,'ballMutations':0},sort_keys=True),flush=True)
+        shotRead=page.evaluate(cpu_shot_read_script())
+        assert len(shotRead['rows'])==2,(device,'CPU shot-read rows',shotRead)
+        assert shotRead['teams']>=223,(device,'canonical team catalog',shotRead)
+        for row in shotRead['rows']:
+            assert row['cpuUp']<row['cpuDown'],(device,'CPU shot must read mirrored keeper momentum',row)
+            assert row['humanUp']==row['humanDown'],(device,'human shot aim must ignore keeper momentum',row)
+            assert row['buttons']==4,(device,'gameplay action count',row)
+        assert not errors,(device,'CPU shot-read browser errors',errors)
+        print('CPU_SHOT_KEEPER_BRAKING_READ_PASS',json.dumps({'device':device,'rows':shotRead['rows'],'teams':shotRead['teams']},sort_keys=True),flush=True)
         ctx.close()
     browser.close()
 # Stable compact console-only evidence; full scripts' stdout is saved by CI.

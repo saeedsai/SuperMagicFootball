@@ -49,3 +49,21 @@ test('keeper shot projection is bounded, goalmouth-clamped and disabled during r
  assert.equal(AI.keeperShotReadY({y:world.goalBottom-2,moveVY:500},.34),world.goalBottom-8);
  assert.equal(AI.keeperShotReadY({y:NaN,moveVY:100},.2),null);
 });
+
+
+test('CPU shot read brakes keeper cross-lane momentum according to Agility, GK Skill and fatigue',async()=>{
+ const {AI,world}=await loadRuntime(),middle=(world.goalTop+world.goalBottom)/2;
+ const read=(agility,gkSkill,fatigue,velocity=220)=>
+  AI.keeperShotReadY({y:middle,moveVY:velocity,fatigue,src:{agility,gkSkill}},.22);
+ const low=read(0,0,0),average=read(50,50,0),elite=read(100,100,0),tiredElite=read(100,100,1);
+ assert.ok(elite>middle&&middle<average&&average<low,
+  JSON.stringify({middle,low,average,elite}));
+ assert.ok(tiredElite>elite&&tiredElite<low,
+  JSON.stringify({elite,tiredElite,low}));
+ assert.equal(read(100,100,0,-220),2*middle-elite,
+  'negative lateral movement must mirror the same braking read');
+ assert.equal(AI.keeperShotReadY({y:middle,moveVY:NaN,vy:220,fatigue:0,
+  src:{agility:'',gkSkill:null}},.22),average,
+  'missing ratings use neutral 50 and legacy velocity remains supported');
+ assert.equal(read(100,100,2),tiredElite,'fatigue remains clamped to its normalized range');
+});

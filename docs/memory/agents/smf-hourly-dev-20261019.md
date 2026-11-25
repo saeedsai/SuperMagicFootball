@@ -6,22 +6,20 @@
 Deliver player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup improvements. Preserve canonical data, four match actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.301 — KEEPER-ACTIVE-JUMP-ARRIVAL-READ-01:** high-cross challengers still in the first/last 18 units of a jump now use their live vertical velocity over the 120 ms arrival horizon. Rising low-altitude jumpers can contest when projected feet plus the 45-unit body reach meets the cross; descending jumpers cannot reuse a fresh-jump estimate. Grounded players retain Jumping-based first-jump reach; higher airborne players retain the 126-unit body envelope.
-- Parent .299 SHA 25da96aa2ddf1ba5d188da936f097c649f657e4f passed dev Modular QA #45642933090 and Full Regression Census #45642931875; promotion, Pages #45644606856 and main Census #45644621966 all passed.
-- .300 SHA 3656d6833ff3eb6632c0bba1b2ba7f39c80f09c1: Modular QA #45652286880 passed. Census #45652287428 attempt 1 had one online-account deferred-request timeout; failed-job-only attempt 2 passed all four Node and four Chromium shards. QA-gated promotion advanced main to .300. Pages #45655829969 is queued; independent main Census and hosted-byte verification remain pending.
-- .301 adds mirrored Node and actual-engine desktop/simulated-touch Chromium coverage for both goals, rising/descending early jumps and grounded baseline.
+- **0.12.81.302 — KEEPER-SHOT-LANE-BRAKING-READ-01:** CPU shot-lane prediction now includes bounded goalkeeper lateral braking. Existing 0.10–0.34 s horizon and ±65-unit cap remain; Agility/GK Skill improve braking and fatigue reduces it. Human shot aim and actual keeper/ball physics are unchanged.
+- Parent .301 SHA `96262c75ac24ce38851a4e5614fe705cc7acebc9` passed dev Modular QA #45656208839 and Full Regression Census #45656208630; QA-gated promotion advanced main to the same SHA. Pages deployment #45658428453 succeeded.
+- Independent main Census #45658441307 attempt 1 passed preflight, preview, hosted smoke and all four Node shards plus browser shards 0/2/3. Browser shard 1 exposed third-man actual-engine marking and historical LAN timeout; failed-job-only attempt 2 was started.
 
 ## Next smallest action
-Correct the own-checkpoint identity marker required by project_memory_contract, then rerun exact-head .301 Modular QA and four-Node/four-Chromium Census. The first .301 Modular QA and Census preflight each found only that checkpoint contract failure (2,907/2,908 Node tests passed); feature regressions were not reported. Promote only through the existing QA-gated pipeline and independently verify main Census, Pages and hosted bytes.
+Validate the exact .302 head with Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening gameplay thresholds, then allow only the green exact head through the existing QA-gated promotion pipeline. Independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Studio art requires provenance, game-scale QA and owner acceptance. Keep #48 physical acceptance, #86 Render drift and #87 branch-protection security open. No authenticated online-hosting claim.
 
 ## Evidence
-- Parent dev/main .299 SHA: 25da96aa2ddf1ba5d188da936f097c649f657e4f; parent Modular QA #45642933090, dev Census #45642931875, Pages #45644606856 and main Census #45644621966 passed.
-- .300 Modular QA #45652286880 passed; Census #45652287428 first attempt failed only online-account deferred-request timeout in browser shard 0; failed-job retry requested.
-- Current parent dev SHA before .301: 3656d6833ff3eb6632c0bba1b2ba7f39c80f09c1; main SHA: 25da96aa2ddf1ba5d188da936f097c649f657e4f. Both branches report unprotected; #87 remains open.
-- No local Node/Chromium run because container github.com DNS is unavailable; connected GitHub Actions is the validation path.
+- Parent dev/main .301 SHA: `96262c75ac24ce38851a4e5614fe705cc7acebc9`; dev Modular QA #45656208839 and Full Regression Census #45656208630 passed; Pages #45658428453 succeeded.
+- Main Census #45658441307 attempt 1: preflight, preview, hosted-pages smoke, Node shards 0–3 and browser shards 0/2/3 passed. Browser shard 1 failed `ai_defensive_third_man_runner_cover_browser_qa.py` plus `lan_auto_two_browser_qa.py` (10-second Playwright timeout); failed-job-only attempt 2 is pending.
+- Main branch protection #87 remains unresolved; #48 and #86 remain open.
 
 ## Cleanup
 Keep this file below 4 KiB with these headings and exact Agent ID. Never bypass CI, security or QA promotion.

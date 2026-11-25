@@ -2275,7 +2275,22 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
  const velocity=Number.isFinite(keeper.moveVY)?keeper.moveVY:
   Number.isFinite(keeper.vy)?keeper.vy:0;
  const horizon=Math.max(0,Math.min(.34,Number.isFinite(flightSeconds)?flightSeconds:.22));
- const lead=Math.max(-65,Math.min(65,velocity*horizon));
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const rating=value=>{
+  const parsed=typeof value==='number'?value:
+   typeof value==='string'&&value.trim()!==''?Number(value):NaN;
+  return clampTo(Number.isFinite(parsed)?parsed:50,0,100);
+ };
+ const agility=rating(keeper.src?.agility);
+ const skill=rating(keeper.src?.gkSkill);
+ const fatigue=clampTo(Number.isFinite(keeper.fatigue)?keeper.fatigue:0,0,1);
+ // A more agile/skilled keeper can brake cross-lane momentum sooner. Fatigue
+ // reduces that braking, leaving a tired keeper committed to the current run.
+ const quality=(agility*.55+skill*.45)/100;
+ const brakingRate=(250+quality*500)*(1-fatigue*.4);
+ const travel=Math.abs(velocity)*horizon;
+ const brakingDistance=Math.min(travel,.5*brakingRate*horizon*horizon);
+ const lead=Math.sign(velocity)*Math.min(65,Math.max(0,travel-brakingDistance));
  const world=GAME_ASSETS.mechanics.world;
  const min=Number.isFinite(world.goalTop)?world.goalTop+8:-Infinity;
  const max=Number.isFinite(world.goalBottom)?world.goalBottom-8:Infinity;
