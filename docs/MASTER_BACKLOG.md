@@ -1,3 +1,5 @@
+**0.12.81.299 regression-fixture correction (25 November 2026):** the new field-edge tests now assert the actual target clamps (122 and 1978) after the projected carrier is clamped to 123/1977 and the existing 110-unit goal-side offset is applied. Added explicit legacy `vx` fallback coverage. No production threshold or target geometry changed.
+
 **0.12.81.299 release candidate (25 November 2026):** AI-SUPPORT-COVER-FORWARD-ARRIVAL-READ-01: CPU second-defender cover now follows the carrier's bounded two-axis 120 ms arrival instead of projecting only lateral movement. Forward and retreating runs shift the goal-side screen with the actual lane, while diagonal movement updates both axes; each lead is capped at 36 units and the target remains inside field bounds. Stationary/lateral-only behavior, support flank, primary pressure, possession, four actions, saves, rosters, persistence and offline play remain unchanged.
 
 ### 2026-11-25 — AI-SUPPORT-COVER-FORWARD-ARRIVAL-READ-01 (smf-hourly-dev-20261019)

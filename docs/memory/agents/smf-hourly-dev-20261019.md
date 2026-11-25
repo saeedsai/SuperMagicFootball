@@ -8,7 +8,8 @@ Deliver player-facing football gameplay first, then existing-player graphics/ani
 ## Current checkpoint
 - **0.12.81.299 — AI-SUPPORT-COVER-FORWARD-ARRIVAL-READ-01:** second-defender cover now projects the grounded carrier's bounded forward and lateral movement over the existing 120 ms horizon. The goal-side screen follows forward/retreating and diagonal runs; each axis is capped at 36 units and existing field clamps remain.
 - Exact parent dev .298 `972c2f8a9924d8cbadab1f48c1f0c225984a05ca` passed dev Modular QA #45638949427 and Full Regression Census #45638949561; the existing QA-gated promotion advanced main to .298. Main independent Census #45641254411 is in progress; browser shard 0 failed before tests while downloading Playwright (6.3/53.5 MB, network timeout), so hosted-byte smoke passed but final main 4+4 Census is not certified.
-- .299 adds mirrored Node helper cases for forward/retreat/diagonal movement, per-axis caps and edge clamps, plus actual-engine desktop/simulated-touch Chromium driveAI rows in both directions.
+- .299 adds mirrored Node helper cases for forward/retreat/diagonal movement, per-axis caps, field-edge clamps and legacy vx fallback, plus actual-engine desktop/simulated-touch Chromium driveAI rows in both directions.
+- The first .299 edge fixture expected unclamped goal-side offsets outside the field; corrected expected values to the existing 122/1978 target clamps. Production geometry is unchanged.
 
 ## Next smallest action
 Run exact-head Modular QA and four-Node/four-Chromium Census for .299. Diagnose only observed failures; if green, allow the existing QA-gated pipeline to promote and independently verify main Census, Pages deployment and hosted bytes.

@@ -52,8 +52,8 @@ test('support cover projects diagonal movement on both axes and caps each lead i
 test('support cover keeps the projected goal-side screen inside bounds at both field edges',()=>{
  const left=cover(player(0,110,800),player(1,110,700,{moveVX:-2000}),bounds,.18);
  const right=cover(player(1,1990,800),player(0,1990,700,{moveVX:2000}),bounds,.18);
- assert.equal(left.x,233);
- assert.equal(right.x,1867);
+ assert.equal(left.x,122);
+ assert.equal(right.x,1978);
  assert.ok(left.x>=bounds.xMin+22&&left.x<=bounds.xMax-22);
  assert.ok(right.x>=bounds.xMin+22&&right.x<=bounds.xMax-22);
 });
@@ -66,8 +66,10 @@ test('support cover caps lateral prediction at 36 units and clamps to playable b
 });
 
 test('missing movement velocity preserves the baseline and invalid or unavailable players fail closed',()=>{
- const support=player(0,850,800),carrier=player(1,1000,700,{moveVY:NaN,vy:NaN});
+ const support=player(0,850,800),carrier=player(1,1000,700,{moveVX:NaN,vx:NaN,moveVY:NaN,vy:NaN});
  assert.deepEqual(cover(support,carrier),{x:890,y:795});
+ const legacy=cover(support,player(1,1000,700,{vx:180}));
+ assert.ok(Math.abs(legacy.x-911.6)<1e-9,JSON.stringify(legacy),'legacy vx fallback remains supported');
  assert.equal(cover(support,{...carrier,t:0}),null,'same-team carrier is invalid');
  assert.equal(cover({...support,keeper:true},carrier),null,'keeper cannot be the outfield screen');
  assert.equal(cover(support,{...carrier,z:19}),null,'airborne carrier cannot drive grounded cover');
