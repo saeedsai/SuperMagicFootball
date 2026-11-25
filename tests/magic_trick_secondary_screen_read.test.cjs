@@ -120,7 +120,7 @@ test('screen-read counterpress rejects expired, hidden, backward, unavailable an
  assert.equal(AI.defensiveMagicReadCounterpressTarget(1,p,players,bounds,{...screen,magicReadCounterpressTimer:0},primary),null);
  assert.equal(AI.defensiveMagicReadCounterpressTarget(...args,screen),null,'human-controlled reader cannot be moved by CPU');
  assert.equal(AI.defensiveMagicReadCounterpressTarget(1,{...p,hideBallTimer:.2},players,bounds,screen,primary),null);
- assert.equal(AI.defensiveMagicReadCounterpressTarget(1,{...p,moveVX:-180},players,bounds,screen,primary),null);
+ assert.equal(AI.defensiveMagicReadCounterpressTarget(1,{...p,dx:0,dy:0,moveVX:-180,moveVY:0},players,bounds,screen,primary),null);
  const turnedAfterRead={...screen,face:1},turnedPlayers=[p,primary,turnedAfterRead];
  assert.ok(AI.defensiveMagicReadCounterpressTarget(1,p,turnedPlayers,bounds,turnedAfterRead,primary),
   'the successful read timer remains actionable when the defender turns toward its lane assignment');
