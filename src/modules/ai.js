@@ -448,7 +448,14 @@ function defensiveFirstTouchSlide(defender,carrier,baseSpeed=0){
  const heading=(defenderVX*ux+defenderVY*uy)/defenderSpeed;
  if(heading<.72)return false;
  const relativeClosing=(defenderVX-carrierVX)*ux+(defenderVY-carrierVY)*uy;
- return Number.isFinite(relativeClosing)&&relativeClosing>=85;
+ const rawAgility=defender.src?.agility;
+ const parsedAgility=typeof rawAgility==='number'?rawAgility:
+  typeof rawAgility==='string'&&rawAgility.trim()!==''?Number(rawAgility):NaN;
+ const agility=Math.max(1,Math.min(100,Number.isFinite(parsedAgility)?parsedAgility:50));
+ // Average Agility preserves the 85-unit read; elite readers need less relative
+ // closure, while low-Agility defenders require a clearer first-touch opening.
+ const closingThreshold=Math.max(70,Math.min(100,85+(50-agility)*.3));
+ return Number.isFinite(relativeClosing)&&relativeClosing>=closingThreshold;
 }
 
 // When the opponent attacks from a wide final-third byline, reserve the second

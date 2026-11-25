@@ -47,7 +47,29 @@ test('first-touch run-up slide requires a fast closing defender in the 74–98 u
  assert.equal(AI.defensiveFirstTouchSlide({...defender,x:carrier.x-102},carrier,280),false);
  assert.equal(AI.defensiveFirstTouchSlide({...defender,moveVX:300,moveVY:220},carrier,280),false);
 });
-function prepareGame(ENGINE,team,firstTouch=true,runUp=true){
+
+test('Agility scales only the first-touch relative-closing threshold in both directions',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const {carrier,defender,attackDir}=setup(team);
+  const reads=(agility,closing)=>{
+   const src={id:'first-touch-agility-'+String(agility)};
+   if(agility!==undefined)src.agility=agility;
+   const sample={...defender,moveVX:attackDir*(160+closing),moveVY:0,src};
+   return AI.defensiveFirstTouchSlide(sample,carrier,280);
+  };
+  assert.equal(reads(100,70),true,'elite Agility reads a 70-unit closing touch');
+  assert.equal(reads(50,70),false,'average Agility retains the existing 85-unit threshold');
+  assert.equal(reads(50,85),true,'average Agility retains its original baseline');
+  assert.equal(reads(1,95),false,'low Agility requires a clearer closing window');
+  assert.equal(reads(1,100),true,'low Agility still reads a fully clear approach');
+  assert.equal(reads(undefined,85),true,'missing Agility uses the neutral baseline');
+  assert.equal(reads(NaN,85),true,'invalid Agility uses the neutral baseline');
+  assert.equal(reads('100',70),true,'numeric-string Agility is accepted consistently');
+ }
+});
+
+function prepareGame(ENGINE,team,firstTouch=true,runUp=true,agility=50,relativeClosing=140){
  const carrierTeam=1-team,attackDir=carrierTeam===0?1:-1;
  const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,mode:'quick',humans:0});
  const carrier=game.player(carrierTeam,3),primary=game.player(team,3),field=ENGINE.WORLD.field;
@@ -55,8 +77,9 @@ function prepareGame(ENGINE,team,firstTouch=true,runUp=true){
  for(const q of game.players)if(q!==carrier&&q!==primary&&!q.keeper){q.down=true;q.stun=1;q.invuln=1.1;q.z=0;}
  Object.assign(carrier,{x,y,face:attackDir,down:false,stun:0,invuln:0,z:0,action:'receive',actionTimer:.2,
   moveVX:attackDir*160,moveVY:0,firstTouchControlTimer:firstTouch ? .20 : 0,firstTouchPressure:firstTouch ? .9 : 0});
+ primary.src={...(primary.src||{}),agility};
  Object.assign(primary,{x:x-attackDir*86,y,down:false,stun:0,invuln:0,z:0,cd:0,
-  action:'run',actionTimer:0,moveVX:runUp?attackDir*300:0,moveVY:0,dx:attackDir,dy:0,face:attackDir,
+  action:'run',actionTimer:0,moveVX:runUp?attackDir*(160+relativeClosing):0,moveVY:0,dx:attackDir,dy:0,face:attackDir,
   aiTimer:0,aiTarget:null,aiAssistTarget:null});
  Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false});
  game.clock=.1;
@@ -74,6 +97,29 @@ test('engine starts the existing SHOOT slide on a qualified long first-touch rea
   assert.equal(Math.sign(primary.slideDX),attackDir);
  }
 });
+
+test('actual driveAI uses Agility-scaled first-touch slide timing without changing the physical resolver',async()=>{
+ const {ENGINE}=await loadModules();
+ const cases=[
+  {agility:100,closing:70,slide:true},
+  {agility:50,closing:70,slide:false},
+  {agility:1,closing:95,slide:false},
+  {agility:1,closing:100,slide:true}
+ ];
+ for(const team of [0,1])for(const scenario of cases){
+  const {game,primary,attackDir}=prepareGame(ENGINE,team,true,true,scenario.agility,scenario.closing);
+  const original=Math.random;
+  try{Math.random=()=>0;game.driveAI(primary,.016);}
+  finally{Math.random=original;}
+  assert.equal(primary.action==='slide',scenario.slide,
+   JSON.stringify({team,...scenario,action:primary.action}));
+  if(scenario.slide){
+   assert.ok(primary.slideRemaining>0);
+   assert.equal(Math.sign(primary.slideDX),attackDir);
+  }
+ }
+});
+
 test('engine does not early-slide without a live first-touch window or a run-up',async()=>{
  const {ENGINE}=await loadModules();
  for(const scenario of [{firstTouch:false,runUp:true},{firstTouch:true,runUp:false}]){

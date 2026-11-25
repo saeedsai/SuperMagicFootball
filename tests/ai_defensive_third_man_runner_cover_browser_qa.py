@@ -40,19 +40,30 @@ with sync_playwright() as pw:
      throw new Error('second defender missed distinct runner mark on side '+team+': '+JSON.stringify({secondTarget,target2X,target2Y}));
     if(game.ball.owner!==carrier)throw new Error('mark changed ball possession');
     rows.push({team,target,secondTarget,secondDefender:secondDefender.i,target2X,target2Y,buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
-    Object.assign(runner2,{down:true,stun:1});Object.assign(secondDefender,{down:true,stun:1});
-    // A slightly farther teammate moving into the goal-side mark should beat
-    // the nearer marker who is still moving away from it.
-    Object.assign(third,{down:true,stun:1});
-    // Keep the press and cover roles unambiguous: the nearest two ready defenders
-    // remain primary/support, while alternate is a distinct third-man candidate.
-    active(primary,{x:carrierX+attackDir*42,y:centerY+22});
-    active(support,{x:carrierX+attackDir*58,y:centerY-42});
-    active(alternate,{x:targetX-attackDir*82,y:targetY+10,moveVX:attackDir*200,moveVY:0});
-    game.driveAI(alternate,.016);const arrivalTarget=alternate.aiTarget;
-    if(!arrivalTarget||Math.abs(arrivalTarget.x-targetX)>1||Math.abs(arrivalTarget.y-targetY)>1)
-     throw new Error('available third defender missed actual-engine mark on side '+team+': '+JSON.stringify({arrivalTarget,targetX,targetY}));
-    arrivalRows.push({team,target:arrivalTarget,selected:alternate.i,buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
+    // Rebuild this arrival case in a fresh match: prior driveAI calls must not
+    // carry movement, tactical targets or transient match state into the tie-break.
+    game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+    const arrivalCarrier=game.player(attackTeam,3),arrivalRunner=game.player(attackTeam,4);
+    const arrivalPrimary=game.player(team,3),arrivalSupport=game.player(team,4);
+    const arrivalAlternate=game.player(team,2);
+    for(const q of game.players)
+     if(![arrivalCarrier,arrivalRunner,arrivalPrimary,arrivalSupport,arrivalAlternate].includes(q)&&!q.keeper)
+      Object.assign(q,{down:true,stun:1});
+    const arrivalCarrierX=ownGoalX-attackDir*390,arrivalRunnerX=ownGoalX-attackDir*175,arrivalRunnerY=centerY+24;
+    active(arrivalCarrier,{x:arrivalCarrierX,y:centerY});
+    active(arrivalRunner,{x:arrivalRunnerX,y:arrivalRunnerY,moveVX:attackDir*80});
+    const arrivalTargetX=arrivalRunnerX+attackDir*(80*.12+34);
+    const arrivalTargetY=arrivalRunnerY+(centerY-arrivalRunnerY)*.12;
+    active(arrivalPrimary,{x:arrivalCarrierX+attackDir*42,y:centerY+22});
+    active(arrivalSupport,{x:arrivalCarrierX+attackDir*58,y:centerY-42});
+    active(arrivalAlternate,{x:arrivalTargetX-attackDir*82,y:arrivalTargetY+10,moveVX:attackDir*200,moveVY:0});
+    Object.assign(game.ball,{owner:arrivalCarrier,x:arrivalCarrier.x,y:arrivalCarrier.y,z:0,vx:0,vy:0,vz:0,
+     pass:false,passTarget:null,attacker:attackTeam,lastTouchTeam:attackTeam,age:0,shot:null,strike:null,
+     ordinaryShot:false,hideBallTimer:0});
+    game.clock=2;game.driveAI(arrivalAlternate,.016);const arrivalTarget=arrivalAlternate.aiTarget;
+    if(!arrivalTarget||Math.abs(arrivalTarget.x-arrivalTargetX)>1||Math.abs(arrivalTarget.y-arrivalTargetY)>1)
+     throw new Error('available third defender missed actual-engine mark on side '+team+': '+JSON.stringify({arrivalTarget,arrivalTargetX,arrivalTargetY}));
+    arrivalRows.push({team,target:arrivalTarget,selected:arrivalAlternate.i,buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
    }
    for(const team of [0,1]){
     for(const direction of ['away','closing']){
