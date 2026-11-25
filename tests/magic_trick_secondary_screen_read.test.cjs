@@ -410,6 +410,7 @@ test('direct named Magic Trick reads search past the nearest idle marker for a c
    {mode:'approach',moveVX:dir*150,moveVY:-30,defence:95,offset:58,countered:true},
    {mode:'retreat',moveVX:-dir*150,moveVY:30,defence:95,offset:58,countered:false},
    {mode:'stationary',moveVX:0,moveVY:0,defence:95,offset:58,countered:false},
+   {mode:'glancing',moveVX:dir*35,moveVY:95,defence:95,offset:58,countered:false},
    {mode:'low-defence',moveVX:dir*150,moveVY:-30,defence:49,offset:58,countered:false},
    {mode:'equal-skill',moveVX:dir*150,moveVY:-30,defence:50,offset:58,countered:true},
    {mode:'outside-range',moveVX:dir*150,moveVY:-30,defence:95,offset:110,countered:false}
@@ -445,6 +446,47 @@ test('direct named Magic Trick reads search past the nearest idle marker for a c
  }
 });
 
+test('direct named Magic Trick reads reject unavailable defenders and glancing lateral movement',async()=>{
+ const ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
+ const unavailable=[
+  {name:'downed',patch:{down:true}},
+  {name:'invulnerable',patch:{invuln:.2}},
+  {name:'airborne',patch:{z:24}},
+  {name:'slide timer',patch:{slideTimer:.2}},
+  {name:'active slide recovery',patch:{action:'slide',actionTimer:.3}},
+  {name:'active hurt recovery',patch:{action:'hurt',actionTimer:.3}},
+  {name:'shot impact pending',patch:{shotImpactKnockdownPending:.2}},
+  {name:'shot impact knockdown',patch:{shotImpactKnockdownTimer:.2}},
+  {name:'shot impact rise',patch:{shotImpactRiseTimer:.2}},
+  {name:'shot-down recovery',patch:{action:'shotDown'}},
+  {name:'shot-get-up recovery',patch:{action:'shotGetUp'}}
+ ];
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  for(const sample of unavailable){
+   const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,humans:0,mode:'quick'});
+   const carrier=game.player(team,3),defender=game.player(1-team,3);
+   for(const other of game.players)if(other!==carrier&&other!==defender&&!other.keeper){other.down=true;other.stun=1;}
+   Object.assign(carrier,{x,y,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+    dx:dir,dy:0,moveVX:dir*180,moveVY:0,face:dir,firstTouchOutletReadTimer:0,
+    firstTouchControlTimer:0,firstTouchPressure:0,hideBallTimer:0,magicReadyAt:0,fatigue:0});
+   Object.assign(carrier.src,{magicTrick:'hideBall',dribbling:50});
+   Object.assign(defender,{x:x-dir*58,y:y+15,z:0,down:false,stun:0,invuln:0,keeper:false,
+    action:'idle',actionTimer:0,slideTimer:0,dx:0,dy:0,moveVX:dir*150,moveVY:-30,face:dir});
+   Object.assign(defender,sample.patch);
+   Object.assign(defender.src,{defence:95});
+   Object.assign(game.ball,{owner:carrier,x:x+dir*12,y,z:0,pass:false,passTarget:null,
+    attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+   game.clock=2;
+   assert.equal(game.tryMagicTrick(carrier),true);
+   assert.equal(game.events.at(-1)?.countered,false,JSON.stringify({team,state:sample.name}));
+   assert.equal(carrier.hideBallTimer,.65,JSON.stringify({team,state:sample.name}));
+   assert.equal(defender.magicReadCueTimer||0,0,JSON.stringify({team,state:sample.name}));
+   assert.equal(game.ball.owner,carrier,'an unavailable defender cannot read or take possession');
+  }
+ }
+});
+ 
 test('delayed Lightning counters recognize residual 2D approach after input release, but not retreat or stationary facing',async()=>{
  const ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
  for(const team of [0,1]){

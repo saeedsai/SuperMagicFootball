@@ -111,6 +111,31 @@ with sync_playwright() as pw:
     return {team,mode,hit,countered:event?.countered,stun:defender.stun,
      owner:g.ball.owner===carrier,pending:carrier.lightningPending===null,mark:defender.lightningMark};
    }
+   function attemptDirectReadEligibility(team,mode){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
+    const dir=team===0?1:-1,carrier=g.player(team,3),defender=g.player(1-team,3);
+    for(const q of g.players)if(q!==carrier&&q!==defender&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(carrier,{x:1200,y:765,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+     face:dir,dx:dir,dy:0,moveVX:dir*180,moveVY:0,firstTouchOutletReadTimer:0,
+     firstTouchControlTimer:0,firstTouchPressure:0,hideBallTimer:0,magicReadyAt:0,fatigue:0});
+    Object.assign(carrier.src,{dribbling:50,magicTrick:'hideBall'});
+    Object.assign(defender,{x:1200-dir*58,y:780,z:0,down:false,stun:0,invuln:0,action:'idle',
+     actionTimer:0,slideTimer:0,face:dir,dx:0,dy:0,moveVX:dir*150,moveVY:-30});
+    const patches={
+     down:{down:true},invulnerable:{invuln:.2},airborne:{z:24},slideTimer:{slideTimer:.2},
+     slideRecovery:{action:'slide',actionTimer:.3},hurtRecovery:{action:'hurt',actionTimer:.3},
+     impactPending:{shotImpactKnockdownPending:.2},impactDown:{shotImpactKnockdownTimer:.2},
+     impactRise:{shotImpactRiseTimer:.2},shotDown:{action:'shotDown'},shotGetUp:{action:'shotGetUp'},
+     glancing:{moveVX:dir*35,moveVY:95}
+    };
+    Object.assign(defender,patches[mode]);
+    Object.assign(defender.src,{defence:95});
+    Object.assign(g.ball,{owner:carrier,x:1200+dir*12,y:765,z:0,pass:false,passTarget:null,
+     attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+    g.tryMagicTrick(carrier);
+    return {team,mode,countered:g.events.at(-1)?.countered,hidden:carrier.hideBallTimer>.4,
+     cue:defender.magicReadCueTimer||0,owner:g.ball.owner===carrier};
+   }
    function attemptCoverPriority(team){
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
     const dir=team===0?1:-1,carrier=g.player(team,3),primary=g.player(1-team,3),
@@ -139,13 +164,17 @@ with sync_playwright() as pw:
    for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])lightningMomentum.push(attemptLightningMomentum(team,mode));
    const momentum=[];
    for(const team of [0,1])for(const mode of ['approach','retreat','stationary'])momentum.push(attemptMomentum(team,mode));
+   const directEligibility=[];
+   for(const team of [0,1])for(const mode of ['down','invulnerable','airborne','slideTimer','slideRecovery','hurtRecovery',
+    'impactPending','impactDown','impactRise','shotDown','shotGetUp','glancing'])
+    directEligibility.push(attemptDirectReadEligibility(team,mode));
    return {baseline:attempt(false),screened:attempt(true),shielded:attempt(true,'shielded'),
     lowSkill:attempt(true,'exposed',1,.22),neutralSkill:attempt(true,'exposed',50,.22),eliteSkill:attempt(true,'exposed',100,.22),
     perpendicular:attempt(true,'exposed',95,.1,'perpendicular',0),
     perpendicularMirrored:attempt(true,'exposed',95,.1,'perpendicular',1),
     movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),
     diagonalCounterpress:[attempt(true,'exposed',95,.1,'face',0,true),attempt(true,'exposed',95,.1,'face',1,true)],
-    momentum,directCounters,lightningMomentum,coverPriority:[attemptCoverPriority(0),attemptCoverPriority(1)],
+    momentum,directCounters,directEligibility,lightningMomentum,coverPriority:[attemptCoverPriority(0),attemptCoverPriority(1)],
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -186,6 +215,10 @@ with sync_playwright() as pw:
    else:
     assert row['hidden'] is True and row['readerCue']==0,(kind,row)
    assert row['nearestCue']==0,(kind,row)
+  assert len(result['directEligibility'])==24,(kind,result)
+  for row in result['directEligibility']:
+   assert row['countered'] is False and row['hidden'] is True,(kind,'only active, meaningfully closing defenders may read a named Trick',row)
+   assert row['cue']==0 and row['owner'] is True,(kind,row)
   assert len(result['lightningMomentum'])==6,(kind,result)
   for row in result['lightningMomentum']:
    expected=row['mode']=='approach'

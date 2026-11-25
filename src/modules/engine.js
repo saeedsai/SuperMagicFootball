@@ -1934,16 +1934,24 @@ class GameEngine{
   // Any eligible nearby defender can read a named Trick, not only the nearest marker.
   // Keep the same live 2D approach requirement and Defence-versus-Dribbling threshold.
   const directCounterDefender=id==='lightning'?null:rivals.find(defender=>{
-   if(!(distance(p,defender)<radius))return false;
+   if(!(distance(p,defender)<radius)||defender.down===true||Number(defender.invuln)>0||
+    (defender.z!=null&&(!Number.isFinite(Number(defender.z))||Number(defender.z)<0||Number(defender.z)>18))||
+    Number(defender.slideTimer)>0||Number(defender.shotImpactKnockdownPending)>0||
+    Number(defender.shotImpactKnockdownTimer)>0||Number(defender.shotImpactRiseTimer)>0||
+    defender.action==='shotDown'||defender.action==='shotGetUp'||
+    ((defender.action==='slide'||defender.action==='hurt')&&(Number(defender.actionTimer)||0)>0))return false;
    let headingX=Number.isFinite(defender?.dx)?defender.dx:0;
    let headingY=Number.isFinite(defender?.dy)?defender.dy:0;
    if(Math.hypot(headingX,headingY)<=.1){
     headingX=Number.isFinite(defender?.moveVX)?defender.moveVX:0;
     headingY=Number.isFinite(defender?.moveVY)?defender.moveVY:0;
    }
-   if(Math.hypot(headingX,headingY)<=.1)return false;
-   const towardX=p.x-defender.x,towardY=p.y-defender.y;
-   return headingX*towardX+headingY*towardY>0&&
+   const headingLength=Math.hypot(headingX,headingY);
+   if(headingLength<=.1)return false;
+   const towardX=p.x-defender.x,towardY=p.y-defender.y,gap=Math.hypot(towardX,towardY);
+   // A glancing lateral vector is not a genuine read: require at least 0.22
+   // directional alignment toward the carrier, whether input or momentum leads.
+   return gap>1&&headingX*towardX+headingY*towardY>.22*gap*headingLength&&
     stat(defender,'defence')>=stat(p,'dribbling');
   });
   if(directCounterDefender){
