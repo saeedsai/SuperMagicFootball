@@ -28,7 +28,7 @@ with sync_playwright() as pw:
         page.add_script_tag(content=js,type='module')
         page.wait_for_function('!!window.SupermagicFootball?.game')
         result=page.evaluate("""() => {
-            const game=SupermagicFootball.game,rows=[];
+            const game=SupermagicFootball.game,rows=[],stationaryRows=[];
             const field={x:150,y:155,w:2260.8,h:1220};
             for(const defendingTeam of [0,1]){
                 game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
@@ -63,13 +63,44 @@ with sync_playwright() as pw:
                 if(game.ball.owner!==carrier)throw new Error('press assignment changed possession');
                 rows.push({defendingTeam,lead,target});
             }
-            return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            for(const defendingTeam of [0,1]){
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+                const x=field.x+field.w*.55,y=field.y+field.h*.5;
+                const carrier=game.player(attackingTeam,3),nearer=game.player(defendingTeam,3),
+                    closing=game.player(defendingTeam,4);
+                for(const q of game.players){
+                    if(q===carrier||q===nearer||q===closing||q.keeper)continue;
+                    q.down=true;q.stun=1;
+                }
+                Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0,vx:0,vy:0,firstTouchControlTimer:0,firstTouchPressure:0});
+                Object.assign(nearer,{x:x-dir*100,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
+                    moveVX:-dir*220,moveVY:0,vx:-dir*220,vy:0,slideTimer:0,
+                    shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+                    aiTarget:null,aiTimer:0,aiAssistTarget:null});
+                Object.assign(closing,{x:x-dir*105,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
+                    moveVX:dir*220,moveVY:0,vx:dir*220,vy:0,slideTimer:0,
+                    shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+                    aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,
+                    aiFirstTouchTarget:null,aiDetour:null});
+                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
+                    attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+                game.clock=2;game.moveAgile=()=>{};game.driveAI(closing,.016);
+                const target=closing.aiTarget;
+                if(!(target&&Math.abs(target.x-x)<1e-6&&Math.abs(target.y-y)<1e-6))
+                    throw new Error('stationary-carrier arrival read did not select the closing primary: '+JSON.stringify({defendingTeam,target,carrier:{x,y}}));
+                if(game.ball.owner!==carrier)throw new Error('stationary-carrier press changed possession');
+                stationaryRows.push({defendingTeam,target});
+            }
+            return {rows,stationaryRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
         assert result['teams']>=223,(kind,result)
         assert len(result['rows'])==2,(kind,result)
+        assert len(result['stationaryRows'])==2,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'arrival-aware mirrored CPU press, possession, four actions and no JS errors',flush=True)
+        print('PASS',kind,'moving and stationary-carrier arrival-aware CPU press, possession, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()

@@ -66,7 +66,13 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
   return {x:p.x+vx*scale*.12,y:p.y+vy*scale*.12};
  };
  const landingRead=target.landingRead===true;
- const projectedTarget=movingCarrier?project(target):landingRead?{x:target.x,y:target.y}:null;
+ // A grounded opponent carrier uses a short arrival read even when stationary or
+ // below the live-lead threshold, so a retreating nearest defender does not win
+ // the press role on foot distance alone. Loose-ball landing selection is unchanged.
+ const opponentCarrier=Number.isInteger(target.t)&&target.t!==team&&!target.keeper;
+ const projectedTarget=opponentCarrier?
+  (movingCarrier?project(target):{x:target.x,y:target.y}):
+  landingRead?{x:target.x,y:target.y}:null;
  const supportPoint=landingRead&&supportTarget&&
   Number.isFinite(supportTarget.x)&&Number.isFinite(supportTarget.y)?
   {x:supportTarget.x,y:supportTarget.y}:null;
