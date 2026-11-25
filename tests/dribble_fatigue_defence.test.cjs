@@ -101,7 +101,8 @@ test('live trick engine supplies spatial motion and fatigue to dribble duel',()=
  const engine=fs.readFileSync(path.join(__dirname,'../src/modules/engine.js'),'utf8');
  assert.match(engine,/const skill=\{dribbling:stat\(p,'dribbling'\),agility:stat\(p,'agility'\),fatigue:p\.fatigue,x:p\.x,y:p\.y\}/);
  assert.match(engine,/const threatVelocity=axis=>\{/);
- assert.match(engine,/Number\.isFinite\(rival\.moveVX\)/);
+ assert.match(engine,/const movement=axis==='x'\?rival\.moveVX:rival\.moveVY;/);
+ assert.match(engine,/if\(Number\.isFinite\(movement\)\)return movement;/);
  assert.match(engine,/return \(Number\.isFinite\(direction\)\?direction:0\)\*this\.playerSpeed\(rival\)/);
  assert.ok(engine.includes("vx:threatVelocity('x'),vy:threatVelocity('y')"));
 });

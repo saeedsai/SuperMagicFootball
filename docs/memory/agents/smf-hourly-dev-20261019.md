@@ -12,7 +12,7 @@ Deliver player-facing football gameplay first, then existing-player graphics/ani
 ## Branches and release
 - Parent dev head: `6983ea8959b9b55441293fed69a8346a0913070e` (.303 fixture/checkpoint correction).
 - Main remains .302: `25a6f58e124fe174a5ccc53bbd29c8ae20ae77f1`.
-- .303 Modular QA #45675586715 passed; Census #45675586834 later failed only browser shard 2 because the .303 mirrored browser fixture omitted its local dir declaration (71 browser scripts passed, one harness error; all Node shards passed). .304 repairs that fixture. .304 is not promoted/deployed.
+- .303 Modular QA #45675586715 passed; Census #45675586834 failed only browser shard 2 because the .303 mirrored browser fixture omitted its local dir declaration (71 browser scripts passed, one harness error; all Node shards passed). .304 repairs that fixture. The first .304 Modular QA #45678021327 and Census preflight #45678021288 then exposed one stale source-contract assertion about axis-selected movement; the assertion is corrected. Fresh exact-head runs pending.
 
 ## Next smallest action
 Run Modular QA and Full Regression Census on the exact .304 dev head. Fix confirmed failures without weakening gameplay behavior. Only a green exact head may advance through the existing QA-gated pipeline; then independently verify main Census, Pages deployment and hosted bytes.
@@ -23,7 +23,7 @@ Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six form
 ## Evidence
 - .303 Modular QA #45675586715 passed on parent dev SHA `6983ea8959b9b55441293fed69a8346a0913070e`.
 - .303 Census #45675586834: all four Node shards and 71/72 browser scripts passed; the sole failure was ReferenceError: dir is not defined in the newly extended dribble-trick browser fixture. The .304 fixture now declares mirrored direction inside the team loop.
-- .304 focused Node and Chromium regressions are added; exact-head CI results pending.
+- .304 focused Node and Chromium regressions are added; the browser team-direction fixture and source-contract assertion are corrected. Fresh exact-head CI results pending.
 
 ## Cleanup
 Keep this file below 4 KiB with these headings and exact Agent ID. Never bypass CI, security or QA promotion.
