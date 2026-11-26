@@ -17,7 +17,7 @@ Preserve 223 team and 2,676 player identities/order and 12-player ratios, six fo
 
 ## Evidence
 - .343 feature commit: a90f8f115d095a640392454dde8d6fbf9046efea; parent/dev baseline: 8a459bc6e8400554be535cb440bd778a4ac34ae5; main: 8a459bc6e8400554be535cb440bd778a4ac34ae5.
-- Initial .343 Modular QA #45900821216 and Census #45900821084 found two Node failures: the new fixture geometry did not put the high-Agility marker inside the 66-unit pocket at the actual 80 ms minimum arrival, and this checkpoint omitted the exact identity markup required by project_memory_contract. The follow-up narrows the mirrored fixture geometry and restores the indexed identity line; production turn-aware projection is unchanged.
+- Initial .343 Modular QA #45900821216 and Census #45900821084 found two Node failures: the first fixture geometry did not put the high-Agility marker inside the 66-unit pocket at the actual 0.116-second carrier-to-return flight, and this checkpoint omitted the exact identity markup required by project_memory_contract. The identity line was restored; a second run showed the low-Agility fixture also needed more separation after trapezoidal turn integration, so the mirrored marker offset is now 62×90. Production turn-aware projection is unchanged.
 - .342 Modular QA #45899141063 and exact-head Census #45899141127 passed. .342 reached main through the QA-gated pipeline; Pages deployment #45900555489 passed. Independent main Census #45900563513 was still running (hosted smoke passed; Node and browser shards remained in progress at last inspection).
 - .341 Modular QA #45888981318 and Census #45888981329 passed. #87 remains unresolved; #48 and #86 remain open.
 

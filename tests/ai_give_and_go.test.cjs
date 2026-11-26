@@ -173,9 +173,9 @@ test('give-and-go return arrival accounts for an Agility-limited marker turn in 
   const runner=player('passer-'+team,team,target.x,target.y);
   runner.src={id:'passer-'+team};
   runner.aiGiveAndGoRun={receiverId:carrier.src.id,target,expires:2};
-  const gap=Math.hypot(62,78);
-  const marker=player('marker-'+team,1-team,target.x-dir*62,target.y+78,{
-   moveVX:dir*600,moveVY:0,dx:dir*62/gap,dy:-78/gap,src:{agility:100}
+  const gap=Math.hypot(62,90);
+  const marker=player('marker-'+team,1-team,target.x-dir*62,target.y+90,{
+   moveVX:dir*600,moveVY:0,dx:dir*62/gap,dy:-90/gap,src:{agility:100}
   });
   const players=[carrier,runner,marker];
   assert.equal(AI.attackingGiveAndGoReturnPass(players,team,carrier,bounds,1),null,
