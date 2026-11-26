@@ -2310,12 +2310,12 @@ class GameEngine{
   // HIDE-BALL-POKE-CONE-01: PASS poke must face the actual carrier, including
   // diagonal approaches. Close-range pokes get a slightly wider aim cone;
   // sideways and backwards pokes still cannot read the fake ball.
-  const hideBallPoked=id==='hideBall'&&counterRivals.some(defender=>distance(p,defender)<=70&&
-   defender.action==='punch'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&
-   Number.isFinite(defender.z)&&defender.z<20&&(()=>{
-    const towardX=p.x-defender.x,towardY=p.y-defender.y;
-    const vx=Number.isFinite(defender.dx)?defender.dx:0,vy=Number.isFinite(defender.dy)?defender.dy:0;
-    const facing=Math.hypot(vx,vy)>.1?norm(vx,vy):norm(defender.face||1,0);
+  const hideBallPoked=id==='hideBall'&&counterRivals.some(rival=>distance(p,rival)<=70&&
+   rival.action==='punch'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
+   Number.isFinite(rival.z)&&rival.z<20&&(()=>{
+    const towardX=p.x-rival.x,towardY=p.y-rival.y;
+    const vx=Number.isFinite(rival.dx)?rival.dx:0,vy=Number.isFinite(rival.dy)?rival.dy:0;
+    const facing=Math.hypot(vx,vy)>.1?norm(vx,vy):norm(rival.face||1,0);
     const range=Math.hypot(towardX,towardY);
     return range>1&&((towardX*facing.x+towardY*facing.y)/range)>=(range<=30?.5:.65);
    })());
