@@ -43,12 +43,16 @@ with sync_playwright() as pw:
    const backupOut=[];
    for(const team of [0,1]){
     const {carrier,human,cpu}=setup(team);
-    let elapsed=.35,steps=0;const dt=1/60;
-    while(cpu.action!=='punch'&&elapsed<.99&&steps<80){
-     carrier.dribbleHold=elapsed;
-     g.reactToHideBallTrick(cpu,dt,.32);
-     elapsed=Math.min(.99,elapsed+dt);steps++;
-    }
+    let elapsed=.35,steps=0;const dt=1/60,originalRandom=Math.random;
+    try{
+     // Isolate the wind-up/resolver contract from the separate random contact-knockback outcome.
+     Math.random=()=>.999;
+     while(cpu.action!=='punch'&&elapsed<.99&&steps<80){
+      carrier.dribbleHold=elapsed;
+      g.reactToHideBallTrick(cpu,dt,.32);
+      elapsed=Math.min(.99,elapsed+dt);steps++;
+     }
+    }finally{Math.random=originalRandom;}
     const holdAtPoke=elapsed;
     const cpuDistance=Math.hypot(carrier.x-cpu.x,carrier.y-cpu.y);
     if(cpuDistance>70)throw Error('AI backup left the existing 70-unit PASS-poke cone '+JSON.stringify({team,cpuDistance,steps,holdAtPoke}));

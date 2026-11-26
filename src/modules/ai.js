@@ -1077,8 +1077,18 @@ function attackingGoalmouthPass(players,team,carrier,bounds){
   let nearestMarkGap=Infinity,blocked=false;
   const dx=target.x-carrier.x,dy=target.y-carrier.y,segment=dx*dx+dy*dy;
   for(const defender of activeDefenders){
-   const futureX=defender.x+clampTo(movementVelocity(defender,'x')*arrival,-65,65);
-   const futureY=defender.y+clampTo(movementVelocity(defender,'y')*arrival,-65,65);
+   const vx=movementVelocity(defender,'x'),vy=movementVelocity(defender,'y');
+   let travelX=vx*arrival,travelY=vy*arrival;
+   // Ground goalmouth passes now account for a defender turning into the receiving
+   // pocket. Keep active slides on their existing swept-path/linear handling.
+   if(!(defender.action==='slide'&&(Number(defender.actionTimer)||0)>0)){
+    const turnSeconds=Math.min(.18,arrival);
+    const turned=carrierTurnAwareVelocity(defender,vx,vy,turnSeconds);
+    travelX=(vx+turned.x)*.5*turnSeconds+turned.x*(arrival-turnSeconds);
+    travelY=(vy+turned.y)*.5*turnSeconds+turned.y*(arrival-turnSeconds);
+   }
+   const futureX=defender.x+clampTo(travelX,-65,65);
+   const futureY=defender.y+clampTo(travelY,-65,65);
    const gap=Math.hypot(futureX-target.x,futureY-target.y);
    nearestMarkGap=Math.min(nearestMarkGap,gap);
    if(gap<68){blocked=true;break;}

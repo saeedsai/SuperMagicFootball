@@ -64,6 +64,24 @@ test('downed, stunned, sliding, recovering, airborne and keeper receivers are ne
  assert.equal(AI.attackingGoalmouthPass([carrier,player('runner',0,790,300)],0,carrier,null),null);
 });
 
+test('goal-mouth pass arrival accounts for a defender turning into the receiving pocket',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const carrier=player('carrier',team,team===0?620:380,300);
+  const runner=player('runner',team,carrier.x+dir*170,300);
+  const marker=player('marker',1-team,runner.x-dir*20,350,{
+   moveVX:0,moveVY:200,dx:0,dy:-1,src:{agility:95}
+  });
+  assert.equal(AI.attackingGoalmouthPass([carrier,runner,marker],team,carrier,bounds),null,
+   'a high-Agility marker turning into the pocket closes the square pass on team '+team);
+  marker.src.agility=1;
+  const result=AI.attackingGoalmouthPass([carrier,runner,marker],team,carrier,bounds);
+  assert.equal(result?.runner,runner,
+   'a low-Agility marker cannot complete the same turn and the safe outlet remains on team '+team);
+ }
+});
+
 test('engine sends the selected goalmouth outlet as an ordinary low pass intent',async()=>{
  const {ENGINE}=await loadModules();
  const game=new ENGINE.GameEngine({halfSeconds:120});
