@@ -57,6 +57,11 @@ SCRIPT=r"""() => {
   const {carrier,human,cpu}=setup(team,trick,{humanCounter:state});
   g.driveAI(cpu,.2);
   if(cpu.action==='jump')throw Error('CPU duplicated effective human '+state+' '+trick);
+  // driveAI is used only to verify no duplicate CPU response. Re-establish the
+  // selected human's already-active counter immediately before the resolver so
+  // resolver acceptance is isolated from unrelated AI frame updates.
+  if(state==='jump')Object.assign(human,{action:'jump',actionTimer:.3,z:22});
+  else Object.assign(human,{action:'slide',actionTimer:.3,z:0});
   carrier.dribbleHold=1;carrier.magicReadyAt=0;carrier.fatigue=.2;g.ball.owner=carrier;g.clock=10;
   const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
   if(!activated||event.countered!==true)throw Error('Existing human '+state+' did not counter '+trick);

@@ -52,8 +52,10 @@ with sync_playwright() as pw:
     const holdAtPoke=elapsed;
     carrier.dribbleHold=1;carrier.magicReadyAt=0;carrier.fatigue=0;
     carrier.down=false;carrier.stun=0;carrier.z=0;g.ball.owner=carrier;g.clock=10;
+    const facingLength=Math.hypot(cpu.dx||0,cpu.dy||0);
+    const facingDot=facingLength>.1?((carrier.x-cpu.x)*(cpu.dx||0)+(carrier.y-cpu.y)*(cpu.dy||0))/(Math.hypot(carrier.x-cpu.x,carrier.y-cpu.y)*facingLength):0;
     const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
-    backupOut.push({team,steps,holdAtPoke,cpuAction:cpu.action,cpuTimer:cpu.actionTimer,
+    backupOut.push({team,steps,holdAtPoke,cpuAction:cpu.action,cpuTimer:cpu.actionTimer,cpuFacingDot:facingDot,
      humanAction:human.action,humanStillSelected:g.controlled[human.t]===human.i,
      activated,countered:event.countered,ownerRetained:g.ball.owner===carrier,hideBallTimer:carrier.hideBallTimer||0});
    }
@@ -81,6 +83,7 @@ with sync_playwright() as pw:
   assert result['actions']==4,(label,'gameplay action count changed',result)
   for case in result['backupOut']:
    assert case['cpuAction']=='punch' and case['cpuTimer']>0,(label,'CPU backup did not start PASS poke',case)
+   assert case['cpuFacingDot']>=.65,(label,'PASS poke strike direction no longer faces the carrier',case)
    assert case['humanAction']=='idle' and case['humanStillSelected'],(label,'selected human lost control',case)
    assert .35<case['holdAtPoke']<1,(label,'backup poke missed the visible wind-up',case)
    assert case['activated'] and case['countered'] is True,(label,'real resolver rejected backup poke',case)

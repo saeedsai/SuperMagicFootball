@@ -1387,6 +1387,12 @@ class GameEngine{
   const aimX=target?(ballTarget?ballTarget.x:target.x):0;
   const aimY=target?(ballTarget?ballTarget.y:target.y):0;
   const dir=target?norm(aimX+leadX-p.x,aimY+leadY-p.y):norm(p.dx||p.face,p.dy||0);
+  if(!slide){
+   // Keep the punch pose and follow-up counter reads aligned with the actual
+   // forward-arc target, not a stale movement vector from the previous step.
+   p.dx=dir.x;p.dy=dir.y;
+   if(Math.abs(dir.x)>.05)p.face=dir.x<0?-1:1;
+  }
   if(slide){
    // A slide is a timed physical dash rather than a 26-unit teleport. Run-up speed matters.
    const running=Math.hypot(p.moveVX||0,p.moveVY||0)>this.playerSpeed(p)*.65 || p.dashTimer>0 || p.sprintCharge>.1;
