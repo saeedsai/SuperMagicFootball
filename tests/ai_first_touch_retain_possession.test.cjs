@@ -2,6 +2,7 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
 async function loadEngine(){const {loadAssetsFromNode}=await import('../src/assets.js');await loadAssetsFromNode();const {ENGINE}=await import('../src/modules/engine.js');return ENGINE;}
+async function loadAI(){const {loadAssetsFromNode}=await import('../src/assets.js');await loadAssetsFromNode();const {AI}=await import('../src/modules/ai.js');return AI;}
 function prepareEngine(ENGINE,defendingTeam){
  const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
  const game=new ENGINE.GameEngine({halfSeconds:120});
@@ -46,4 +47,34 @@ test('CPU retains a pressured first touch when no safe outlet exists, then resum
    }finally{game.pass=originalPass;}
   }
  }finally{Math.random=originalRandom;}
+});
+
+test('first-touch outlet checks the same capped receiver lead that GameEngine.pass will release',async()=>{
+ const ENGINE=await loadEngine(),AI=await loadAI();
+ for(const defendingTeam of [0,1]){
+  const f=prepareEngine(ENGINE,defendingTeam),{game,carrier,runner,primary,support,field}=f;
+  const dir=carrier.t===0?1:-1,bounds={xMin:field.x+24,xMax:field.x+field.w-24,
+   yMin:field.y+24,yMax:field.y+field.h-24};
+  Object.assign(carrier,{firstTouchControlTimer:0,firstTouchPressure:.8,firstTouchOutletReadTimer:.68});
+  Object.assign(runner,{x:carrier.x+dir*400,y:carrier.y,down:false,stun:0,z:0,
+   action:'idle',actionTimer:0,moveVX:0,moveVY:400,aiAssistTarget:null});
+  Object.assign(primary,{x:carrier.x+dir*55,y:carrier.y-78,down:false,stun:0,z:0,
+   action:'idle',actionTimer:0,slideTimer:0});
+  Object.assign(support,{x:carrier.x+dir*370,y:carrier.y+115,down:false,stun:0,z:0,
+   action:'idle',actionTimer:0,slideTimer:0});
+  const stalePoint={x:runner.x,y:runner.y+32};
+  const releaseLead=Math.max(.12,Math.min(.35,400/1400));
+  const releasePoint={x:runner.x,y:runner.y+Math.min(65,400*releaseLead)};
+  const staleGap=Math.hypot(support.x-stalePoint.x,support.y-stalePoint.y);
+  const releaseGap=Math.hypot(support.x-releasePoint.x,support.y-releasePoint.y);
+  assert.ok(staleGap>82&&releaseGap<82,JSON.stringify({defendingTeam,staleGap,releaseGap,stalePoint,releasePoint}));
+  const blocked=AI.attackingFirstTouchOutlet(game.players,carrier.t,carrier,bounds);
+  assert.equal(blocked,null,'a marker at the actual support-pass lead must close the outlet on team '+carrier.t);
+  support.down=true;
+  const safe=AI.attackingFirstTouchOutlet(game.players,carrier.t,carrier,bounds);
+  assert.ok(safe,JSON.stringify({defendingTeam,safe}));
+  assert.equal(safe.runner,runner);
+  assert.equal(safe.target.x,releasePoint.x);
+  assert.equal(safe.target.y,releasePoint.y);
+ }
 });

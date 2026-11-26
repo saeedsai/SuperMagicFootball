@@ -2050,7 +2050,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
  return {x:best.target.x,y:best.target.y};
 }
 
- function attackingFirstTouchOutlet(players,team,carrier,bounds,horizonSeconds=.16){
+ function attackingFirstTouchOutlet(players,team,carrier,bounds,horizonSeconds=null){
   if(!Array.isArray(players)||!carrier||(team!==0&&team!==1)||carrier.t!==team||
    carrier.keeper||carrier.down||Number(carrier.stun)>0||Number(carrier.z)>18||
    Number(carrier.firstTouchControlTimer)>0||!(Number(carrier.firstTouchPressure)>.12)||
@@ -2077,7 +2077,14 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const legacy=axis==='x'?p?.vx:p?.vy;
    return Number.isFinite(legacy)?legacy:0;
   };
-  const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.16,.08,.20);
+  // Match GameEngine.pass: use the same receiver lead and cap that will be applied at release.
+  const requestedLead=Number.isFinite(horizonSeconds)?clampTo(horizonSeconds,.12,.35):null;
+  const receiverLead=(runner,axis,seconds)=>{
+   const movement=axis==='x'?runner?.moveVX:runner?.moveVY;
+   if(Number.isFinite(movement))return clampTo(movement*seconds,-65,65);
+   const input=axis==='x'?runner?.dx:runner?.dy;
+   return (Number.isFinite(input)?input:0)*90;
+  };
   const defenders=players.filter(q=>q&&q.t!==team&&!keeperUnavailableForGroundPass(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
    !q.down&&timerClear(q.slideTimer)&&timerClear(q.shotImpactKnockdownPending)&&
    timerClear(q.shotImpactKnockdownTimer)&&timerClear(q.shotImpactRiseTimer)&&grounded(q)&&
@@ -2127,15 +2134,16 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.aiAssistTarget&&ready(q));
   let best=null;
   for(const runner of allies){
-   const vx=velocity(runner,'x'),vy=velocity(runner,'y');
+   const currentRange=Math.hypot(runner.x-carrier.x,runner.y-carrier.y);
+   const leadSeconds=requestedLead??clampTo(currentRange/1400,.12,.35);
    const target={
-    x:clampTo(runner.x+clampTo(vx*horizon,-32,32),xMin+24,xMax-24),
-    y:clampTo(runner.y+clampTo(vy*horizon,-32,32),yMin+24,yMax-24)
+    x:clampTo(runner.x+receiverLead(runner,'x',leadSeconds),xMin+24,xMax-24),
+    y:clampTo(runner.y+receiverLead(runner,'y',leadSeconds),yMin+24,yMax-24)
    };
    const dx=target.x-carrier.x,dy=target.y-carrier.y,range=Math.hypot(dx,dy);
    const forward=dir*dx;
    if(range<125||range>760||forward< -80||forward>680)continue;
-   const arrival=clampTo(range/1400,.10,.42);
+   const arrival=clampTo(currentRange/1400,.10,.42);
    const laneDefenders=defenders.filter(q=>{
     const stun=q.stun==null?0:Number(q.stun);
     return Number.isFinite(stun)&&stun<=arrival;

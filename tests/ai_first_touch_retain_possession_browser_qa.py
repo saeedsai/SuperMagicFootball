@@ -22,6 +22,37 @@ with sync_playwright() as pw:
    assert row['owner'],(kind,row)
    assert row['movement']>0,(kind,row)
   assert not errors,(kind,errors)
-  print('PASS',kind,'retains possession with no safe outlet, resumes passing after expiry, mirrored sides, no JavaScript errors',flush=True)
+  arrival=page.evaluate("""() => {
+   const g=SupermagicFootball.game,field={x:150,y:155,w:2260.8,h:1220};
+   g.init({home:0,away:1,mode:'quick',humans:1});
+   const carrier=g.player(0,3),runner=g.player(0,4),pressure=g.player(1,3),blocker=g.player(1,4);
+   const x=field.x+field.w*.52,y=field.y+field.h*.5,keep=new Set([carrier,runner,pressure,blocker]);
+   for(const q of g.players)if(!keep.has(q)&&!q.keeper){q.down=true;q.stun=0;q.z=0;}
+   Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,
+    aiTimer:0,aiTarget:null,aiAssistTarget:null,aiGiveAndGoRun:null,cd:0,trickCd:1});
+   Object.assign(runner,{x:x+400,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+    moveVX:0,moveVY:400,aiTimer:0,aiTarget:null,aiAssistTarget:null});
+   Object.assign(pressure,{x:x+55,y:y-78,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+    moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+   Object.assign(blocker,{x:x+370,y:y+115,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+    moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+   g.controlled[0]=runner.i;g.clock=14;g.take(carrier);g.controlled[0]=runner.i;
+   Object.assign(carrier,{firstTouchControlTimer:0,firstTouchPressure:.8,firstTouchOutletReadTimer:.92,
+    aiFirstTouchOutletUntil:g.clock+.92,aiFirstTouchTarget:null,aiAssistTarget:null,aiGiveAndGoRun:null,
+    aiTimer:0,aiTarget:null,cd:0,trickCd:1});
+   const staleGap=Math.hypot(blocker.x-runner.x,blocker.y-(runner.y+32));
+   const releaseGap=Math.hypot(blocker.x-runner.x,blocker.y-(runner.y+65));
+   const before=g.events.length,originalRandom=Math.random;let passIntents=[];
+   try{Math.random=()=>0;g.driveAI(carrier,1/60);passIntents=g.events.slice(before).filter(e=>e.type==='passIntent');}
+   finally{Math.random=originalRandom;}
+   return {staleGap,releaseGap,passIntents:passIntents.length,owner:g.ball.owner===carrier,
+    controlledRunner:g.controlledPlayer(0)===runner,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+    teams:SupermagicFootball.teams.length};
+  }""")
+  assert arrival['staleGap']>82 and arrival['releaseGap']<82,(kind,arrival)
+  assert arrival['passIntents']==0 and arrival['owner'] and arrival['controlledRunner'],(kind,arrival)
+  assert arrival['buttons']==4 and arrival['teams']>=223,(kind,arrival)
+  assert not errors,(kind,errors)
+  print('PASS',kind,'retains possession, rejects a future-lead blocked outlet, resumes ordinary passing after expiry, mirrored sides, no JavaScript errors',flush=True)
   ctx.close()
  browser.close()
