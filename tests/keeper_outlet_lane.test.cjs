@@ -5,10 +5,12 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const ai=fs.readFileSync('src/modules/ai.js','utf8');
 const engine=fs.readFileSync('src/modules/engine.js','utf8');
+const turnStart=ai.indexOf('function carrierTurnAwareVelocity(');
+const turnEnd=ai.indexOf('function defensiveCarrierSupportCoverTarget(',turnStart);
 const start=ai.indexOf('function keeperOutletLane(');
 const end=ai.indexOf('function keeperShotReadY(',start);
-assert.ok(start>=0&&end>start,'locate production keeper outlet helper');
-const helper=vm.runInNewContext('(function(){'+ai.slice(start,end)+';return keeperOutletLane;})()', {});
+assert.ok(turnStart>=0&&turnEnd>turnStart&&start>=0&&end>start,'locate production turn and keeper outlet helpers');
+const helper=vm.runInNewContext('(function(){'+ai.slice(turnStart,turnEnd)+';'+ai.slice(start,end)+';return keeperOutletLane;})()', {});
 const keeper=(x=0,y=0)=>({t:0,x,y,keeper:true});
 const rival=(x,y,extra={})=>({t:1,x,y,stun:0,z:0,down:false,...extra});
 const target={x:500,y:0};
@@ -59,6 +61,30 @@ test('moving-defender safety mirrors for the opposite goal',()=>{
  assert.equal(right.clear,false);
  assert.ok(Math.abs(left.interception-right.interception)<1e-9);
 });
+
+test('keeper avoids a short outlet when an agile defender can turn into its flight lane',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,origin=team===0?0:2400,goal={x:origin+dir*500,y:0};
+  const make=agility=>rival(origin+dir*230,120,{t:1-team,moveVX:-dir*220,moveVY:0,dx:dir,dy:-1,src:{agility}});
+  const low=helper({t:team,x:origin,y:0,keeper:true},goal,[make(1)],480);
+  const high=helper({t:team,x:origin,y:0,keeper:true},goal,[make(100)],480);
+  assert.equal(low.clear,true,JSON.stringify({team,low}));
+  assert.ok(low.interception>95,JSON.stringify({team,low}));
+  assert.equal(high.clear,false,JSON.stringify({team,high}));
+  assert.ok(high.interception<95,JSON.stringify({team,high}));
+ }
+});
+
+test('neutral or invalid defender input preserves linear keeper outlet prediction',()=>{
+ const baseline=helper(keeper(),target,[rival(230,120,{moveVX:-220,moveVY:0})],480);
+ for(const input of [{dx:0,dy:0,src:{agility:100}},{dx:NaN,dy:Infinity,src:{agility:100}}]){
+  const result=helper(keeper(),target,[rival(230,120,{moveVX:-220,moveVY:0,...input})],480);
+  assert.equal(result.interception,baseline.interception);
+  assert.equal(result.endpoint,baseline.endpoint);
+  assert.equal(result.clear,baseline.clear);
+ }
+});
+
 
 test('stunned, downed, knocked-down and high-airborne opponents cannot block an outlet',()=>{
  const inactive=[

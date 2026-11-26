@@ -6,22 +6,22 @@
 Deliver real player-facing gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup improvements. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.311 — AI-AGILITY-AWARE-EARLY-POKE-TURN-READ-01:** early CPU PASS-poke commitment now projects a grounded carrier's current input through the existing Agility-limited turn model over 55 ms, but only after a live carried ball passes ownership, grounding and defender-side exposure checks. It changes commitment timing only; movement and contact physics are unchanged.
-- First .311 Modular QA #45722296290 observed 2,922 Node tests with one failure in the existing `a faster retreat keeps net closing below threshold` fixture. On team 1 the fixture left `dx=+1` while the carrier moved left, which now correctly means a turn toward the defender. The baseline now mirrors carrier input with its retreat velocity (`dx=dir`); the production turn-read behavior remains unchanged. Exact-head rerun is pending.
-- .310 Modular QA #45720332579 passed on SHA `6b29c6ed7507fedc9269fc8e1302647e235c33d1`; Full Regression Census #45720332649 was in progress when .311 began. .310 is not release-certified by that status alone.
-- .309 is promoted to main at `165b63464f03f6f85c392134046af288706946f4`; independent main Census #45719666223 and Pages deployment #45719655576 both succeeded, including hosted-pages smoke.
+- **0.12.81.312 — KEEPER-OUTLET-AGILITY-TURN-READ-01:** goalkeeper short/long outlet safety integrates the existing Agility-limited turn response over the bounded pass-flight read. High-Agility defenders turning toward the flight corridor can invalidate a seemingly safe outlet; low-Agility defenders retain more residual momentum. Existing projection caps, flight horizon, safety thresholds and pass physics remain unchanged.
+- .312 feature source, mirrored Node regressions and actual-engine desktop/simulated-touch Chromium acceptance are committed on the existing dev branch. Exact-head Modular QA and Full Regression Census are pending.
+- **.311 promoted to main** at `d6f8f925a921a3ee3eeb1f6c55c24a8db5a4eb7b`: Modular QA #45722554272 and dev Census #45722554366 passed; Pages #45724068937 and independent main Census #45724077445 succeeded.
+- Main and dev were identical at .311 start. GitHub still reports `main.protected=false`, `dev.protected=false`, and no rulesets; #87 remains open.
 
 ## Next smallest action
-Finish .311 exact-head Modular QA and four-Node/four-Chromium Full Regression Census. Fix any confirmed source or fixture failures, then permit only a green exact head through the existing QA-gated main pipeline. Independently verify the new main Census, Pages deployment and hosted bytes.
+Finish .312 exact-head Modular QA and four-Node/four-Chromium Full Regression Census. Fix any confirmed source or fixture failures, then permit only a green exact head through the existing QA-gated main pipeline. Independently verify the resulting main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept heroes or copied graphics. Studio art requires provenance and game-scale QA. Keep #48 physical acceptance, #86 Render drift and #87 branch-protection security open. No authenticated online-hosting claim.
 
 ## Evidence
-- .311 feature, focused Node and desktop/simulated-touch Chromium regressions are included in the current dev candidate; exact-head CI results are pending.
-- .310 Modular QA #45720332579: success. .310 Full Regression Census #45720332649: in progress at last observation.
-- .309 main Census #45719666223: success. .309 Pages deployment #45719655576: success.
-- GitHub reports `main.protected=false` and `dev.protected=false`; #87 remains a real security blocker.
+- .312 adds turn-aware opponent path integration only to keeper outlet safety; player movement, pass trajectory and distribution physics are unchanged.
+- .311 Modular QA #45722554272 and Full Regression Census #45722554366: success.
+- .311 Pages deployment #45724068937 and independent main Census #45724077445: success.
+- Exact .312 SHA and CI: pending after commit.
 
 ## Cleanup
 Keep this file below 4 KiB with these headings and exact Agent ID. Never bypass CI, security or QA promotion.

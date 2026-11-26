@@ -23,7 +23,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[],marginRows=[];
+   const g=SupermagicFootball.game,rows=[],marginRows=[],turnRows=[];
    for(const side of [0,1]){
     g.init({home:0,away:9,humans:2,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='play';
@@ -88,7 +88,21 @@ with sync_playwright() as pw:
       marginDistributed,selected:marginEvent?.target,expected:open.src.name,
       mode:marginEvent?.mode,pressured:marginEvent?.pressured});
    }
-   return {rows,marginRows,teamCount:SupermagicFootball.teams.length};
+
+   function turnLane(side,agility,activeInput=true){
+    g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+    g.matchState='play';
+    const dir=side===0?1:-1,origin=side===0?0:2400,keeper=g.player(side,0),marker=g.player(1-side,3);
+    for(const p of g.players)Object.assign(p,{down:true,stun:1,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:0,dy:0});
+    Object.assign(keeper,{x:origin,y:0,keeper:true,down:false,stun:0,z:0});
+    Object.assign(marker,{x:origin+dir*230,y:120,keeper:false,down:false,stun:0,z:0,
+     moveVX:-dir*220,moveVY:0,dx:activeInput?dir:0,dy:activeInput?-1:0,
+     src:{...(marker.src||{}),agility}});
+    const lane=g.keeperPassingLane(keeper,{x:origin+dir*500,y:0},480);
+    return {clear:lane.clear,interception:lane.interception,endpoint:lane.endpoint};
+   }
+   for(const side of [0,1])turnRows.push({side,low:turnLane(side,1),high:turnLane(side,100),neutral:turnLane(side,100,false)});
+   return {rows,marginRows,turnRows,teamCount:SupermagicFootball.teams.length,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   assert not errors,(kind,errors)
   assert result['teamCount']>=223,(kind,result)
@@ -106,6 +120,12 @@ with sync_playwright() as pw:
    assert row['tightClear'] is True and row['openClear'] is True,(kind,row)
    assert row['marginDistributed'] is True and row['mode']=='short',(kind,row)
    assert row['pressured'] is False and row['selected']==row['expected'],(kind,row)
-  print('PASS',kind,'mirrored safe short/roll plus wider-lane ranking',flush=True)
+  assert len(result['turnRows'])==2,(kind,result['turnRows'])
+  for row in result['turnRows']:
+   assert row['low']['clear'] is True and row['low']['interception']>95,(kind,row)
+   assert row['high']['clear'] is False and row['high']['interception']<95,(kind,row)
+   assert row['neutral']['clear'] is True and row['neutral']['interception']>110,(kind,row)
+  assert result['actions']==4,(kind,result)
+  print('PASS',kind,'mirrored safe short/roll, wider-lane ranking and Agility turn-aware outlet safety',flush=True)
   ctx.close()
  browser.close()

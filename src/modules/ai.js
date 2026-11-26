@@ -2276,31 +2276,44 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
  };
  const dx=end.x-keeper.x,dy=end.y-keeper.y,lengthSquared=dx*dx+dy*dy;
  const flightSeconds=clampTo(Math.sqrt(lengthSquared)/speed,.12,.72);
+ // Integrate the same bounded Agility turn response used by CPU press reads.
+ // Average start/end velocity approximates the curved path without changing
+ // player movement or the pass trajectory.
+ const project=(opponent,seconds,cap=120)=>{
+  let remaining=clampTo(Number.isFinite(seconds)?seconds:0,0,.72);
+  let vx=velocity(opponent,'x'),vy=velocity(opponent,'y'),travelX=0,travelY=0;
+  while(remaining>1e-6){
+   const step=Math.min(.18,remaining);
+   if(step>=.05){
+    const turned=carrierTurnAwareVelocity(opponent,vx,vy,step);
+    travelX+=(vx+turned.x)*.5*step;
+    travelY+=(vy+turned.y)*.5*step;
+    vx=turned.x;vy=turned.y;
+   }else{
+    travelX+=vx*step;travelY+=vy*step;
+   }
+   remaining-=step;
+  }
+  return {x:opponent.x+clampTo(travelX,-cap,cap),y:opponent.y+clampTo(travelY,-cap,cap)};
+ };
  let endpoint=Infinity,interception=Infinity,pressure=0;
  for(const opponent of opponents){
   if(!opponent||opponent.keeper||!Number.isFinite(opponent.x)||!Number.isFinite(opponent.y)||
    Number(opponent.stun)>0||opponent.down||Number(opponent.shotImpactKnockdownTimer)>0||
    (Number.isFinite(opponent.z)&&opponent.z>20))continue;
-  const vx=velocity(opponent,'x'),vy=velocity(opponent,'y');
-  const project=(seconds,cap=120)=>({
-   x:opponent.x+clampTo(vx*seconds,-cap,cap),
-   y:opponent.y+clampTo(vy*seconds,-cap,cap)
-  });
   let along=lengthSquared>1e-9?
    clampTo(((opponent.x-keeper.x)*dx+(opponent.y-keeper.y)*dy)/lengthSquared,0,1):0;
-  // Re-project at the defender's estimated time of reaching the lane. Two or
-  // three bounded iterations are enough for this short linear movement model.
   for(let step=0;step<3;step++){
-   const future=project(flightSeconds*along);
+   const future=project(opponent,flightSeconds*along);
    const next=lengthSquared>1e-9?
     clampTo(((future.x-keeper.x)*dx+(future.y-keeper.y)*dy)/lengthSquared,0,1):0;
    if(Math.abs(next-along)<.002){along=next;break;}
    along=next;
   }
-  const future=project(flightSeconds*along);
+  const future=project(opponent,flightSeconds*along);
   const laneX=keeper.x+dx*along,laneY=keeper.y+dy*along;
   interception=Math.min(interception,Math.hypot(future.x-laneX,future.y-laneY));
-  const arrival=project(flightSeconds,150);
+  const arrival=project(opponent,flightSeconds,150);
   const endpointGap=Math.hypot(arrival.x-end.x,arrival.y-end.y);
   endpoint=Math.min(endpoint,endpointGap);
   if(endpointGap<175)pressure+=(175-endpointGap)*2.4;
