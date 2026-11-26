@@ -1753,20 +1753,81 @@ class GameEngine{
   return false;
  }
  reactToTeleportTrick(p,dt,reactionSeconds){
-  const carrier=this.ball?.owner;
-  const rivals=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='teleport'&&
-   Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1
-   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
-  const forward=carrier?norm(carrier.dx||carrier.face,carrier.dy||0):{x:1,y:0};
-  const offsetX=p.x-(carrier?.x||0),offsetY=p.y-(carrier?.y||0);
-  const ahead=offsetX*forward.x+offsetY*forward.y,across=Math.abs(offsetX*forward.y-offsetY*forward.x);
-  const laneThreat=carrier&&rivals[0]===p&&ahead>0&&ahead<=85&&across<=35?carrier:null;
-  const threat=laneThreat&&(p.aiTeleportThreat===laneThreat||p.cd<=0&&p.stun<=0&&p.z<20)?laneThreat:null;
-  if(!threat){p.aiTeleportThreat=null;p.aiTeleportReaction=0;p.aiTeleportReady=false;return false;}
-  if(p.action==='slide'&&(p.actionTimer||0)>0){p.aiTeleportThreat=threat;return false;}
-  if(p.aiTeleportThreat!==threat){p.aiTeleportThreat=threat;p.aiTeleportReaction=Math.max(0,Number(reactionSeconds)||0);p.aiTeleportReady=false;}
-  if(!p.aiTeleportReady){p.aiTeleportReaction=Math.max(0,(p.aiTeleportReaction||0)-Math.max(0,dt||0));if(p.aiTeleportReaction<=1e-9)p.aiTeleportReady=true;}
-  if(p.aiTeleportReady&&Number(threat.dribbleHold)>=.88){p.aiTeleportReaction=Infinity;return this.tackle(p,true);}
+  const carrier=this.ball?.owner,hold=Number(carrier?.dribbleHold);
+  const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const reset=()=>{p.aiTeleportThreat=null;p.aiTeleportReaction=0;p.aiTeleportReady=false;return false;};
+  const visible=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='teleport'&&
+   Number.isFinite(hold)&&hold>=.35&&hold<1&&Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&
+   Array.isArray(this.players);
+  if(!visible)return reset();
+  const forward=norm(carrier.dx||carrier.face,carrier.dy||0);
+  const lane=(q,minAhead,maxAhead,maxAcross)=>{
+   const ox=q.x-carrier.x,oy=q.y-carrier.y;
+   const ahead=ox*forward.x+oy*forward.y,across=Math.abs(ox*forward.y-oy*forward.x);
+   return distance(carrier,q)<95&&ahead>=minAhead&&ahead<=maxAhead&&across<=maxAcross;
+  };
+  const slideLane=q=>lane(q,.001,85,35);
+  const jumpLane=q=>lane(q,35,105,38);
+  const ready=q=>q&&q.t!==carrier.t&&!q.keeper&&!q.down&&
+   Number.isFinite(Number(q.stun))&&Number(q.stun)<=0&&clear(q.invuln)&&
+   clear(q.shotImpactKnockdownPending)&&clear(q.shotImpactKnockdownTimer)&&clear(q.shotImpactRiseTimer)&&
+   !['shotDown','shotGetUp'].includes(q.action)&&
+   !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='jump'&&(Number(q.actionTimer)||0)>0&&Number.isFinite(Number(q.z))&&Number(q.z)<20)&&
+   (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)>=0))&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y);
+  const rivals=this.players.filter(ready);
+  const activeSlide=q=>slideLane(q)&&q.action==='slide'&&Number.isFinite(q.actionTimer)&&
+   q.actionTimer>0&&Number.isFinite(q.z)&&q.z<20;
+  const activeJump=q=>jumpLane(q)&&q.action==='jump'&&Number.isFinite(q.actionTimer)&&
+   q.actionTimer>0&&Number.isFinite(q.z)&&q.z>=20;
+  const directRead=q=>{
+   if(distance(carrier,q)>=95||q.down===true||Number(q.invuln)>0||
+    (q.z!=null&&(!Number.isFinite(Number(q.z))||Number(q.z)<0||Number(q.z)>18))||
+    Number(q.slideTimer)>0||Number(q.shotImpactKnockdownPending)>0||
+    Number(q.shotImpactKnockdownTimer)>0||Number(q.shotImpactRiseTimer)>0||
+    q.action==='shotDown'||q.action==='shotGetUp'||
+    ((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0))return false;
+   let headingX=Number.isFinite(q.dx)?q.dx:0,headingY=Number.isFinite(q.dy)?q.dy:0;
+   if(Math.hypot(headingX,headingY)<=.1){
+    headingX=Number.isFinite(q.moveVX)?q.moveVX:0;
+    headingY=Number.isFinite(q.moveVY)?q.moveVY:0;
+   }
+   const headingLength=Math.hypot(headingX,headingY);
+   const towardX=carrier.x-q.x,towardY=carrier.y-q.y,gap=Math.hypot(towardX,towardY);
+   return headingLength>.1&&gap>1&&
+    headingX*towardX+headingY*towardY>.22*gap*headingLength&&
+    stat(q,'defence')>=stat(carrier,'dribbling');
+  };
+  // The nearest ready defender in the slide corridor owns the response. If
+  // that marker is the selected human, one CPU teammate backs them up; the
+  // resolver already accepts any active counter in the same arrival lanes.
+  const alreadyCountering=rivals.some(q=>activeSlide(q)||activeJump(q)||directRead(q));
+  if(alreadyCountering){
+   if(activeSlide(p)||activeJump(p)||directRead(p)){p.aiTeleportThreat=carrier;return false;}
+   return reset();
+  }
+  const laneDefenders=rivals.filter(q=>slideLane(q)&&
+   (q.z==null||Number(q.z)<20)&&clear(q.cd)&&
+   !(q.action==='slide'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='jump'&&(Number(q.actionTimer)||0)>0))
+   .sort((a,b)=>distance(carrier,a)-distance(carrier,b));
+  const selectedHuman=q=>typeof this.inControl==='function'&&this.inControl(q.t)&&
+   Number.isInteger(q.i)&&Number.isInteger(this.controlled?.[q.t])&&this.controlled[q.t]===q.i;
+  const marker=laneDefenders[0]||null;
+  const responder=marker&&selectedHuman(marker)
+   ?laneDefenders.find(q=>q!==marker&&!selectedHuman(q))||null
+   :laneDefenders.find(q=>!selectedHuman(q))||null;
+  const threat=responder===p&&p.cd<=0&&p.stun<=0&&Number.isFinite(p.z)&&p.z<20?carrier:null;
+  if(!threat)return reset();
+  if(p.aiTeleportThreat!==threat){
+   p.aiTeleportThreat=threat;p.aiTeleportReaction=Math.max(0,Number(reactionSeconds)||0);p.aiTeleportReady=false;
+  }
+  if(!p.aiTeleportReady){
+   p.aiTeleportReaction=Math.max(0,(p.aiTeleportReaction||0)-Math.max(0,dt||0));
+   if(p.aiTeleportReaction<=1e-9)p.aiTeleportReady=true;
+  }
+  if(p.aiTeleportReady&&hold>=.88){p.aiTeleportReaction=Infinity;return this.tackle(p,true);}
   return false;
  }
  reactToSupernova(p,dt,reactionSeconds){
