@@ -52,6 +52,41 @@ test('keeper reads opponent arrival through the rebound descent on both sides',a
    f.bounds,1,f.rebound),'team '+team+': retreating runner must not suppress a safe chase');
  }
 });
+test('keeper rebound races project Agility-limited turns for opponents and teammates',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=helperFixture(ENGINE,team),open=AI.keeperParryReboundTarget(
+   f.keeper,f.ball,f.players,f.bounds,1,f.rebound);
+  assert.ok(open,'team '+team+': baseline rebound remains chaseable');
+  for(const role of ['opponent','teammate']){
+   const marker={t:role==='opponent'?1-team:team,keeper:false,
+    x:open.x-f.dir*70,y:open.y,z:0,stun:0,down:false,
+    action:'run',actionTimer:0,moveVX:-f.dir*300,moveVY:0,
+    dx:f.dir,dy:0,src:{agility:100}};
+   const withMarker=()=>AI.keeperParryReboundTarget(
+    f.keeper,f.ball,[...f.players,marker],f.bounds,1,f.rebound);
+   assert.equal(withMarker(),null,
+    'team '+team+' '+role+': elite defender turning into the pocket wins the race');
+   marker.src.agility=1;
+   assert.ok(withMarker(),
+    'team '+team+' '+role+': low-Agility defender retains momentum away from the pocket');
+   marker.src.agility=100;marker.moveVX=-f.dir*50;
+   assert.ok(withMarker(),
+    'team '+team+' '+role+': sub-75-unit/s movement preserves the linear fallback');
+   marker.moveVX=-f.dir*300;marker.dx=0;marker.dy=0;
+   const neutral=withMarker();
+   assert.ok(neutral,'neutral input preserves the linear arrival fallback');
+   assert.ok(Math.abs(neutral.x-open.x)<1e-8&&Math.abs(neutral.y-open.y)<1e-8,
+    'neutral input preserves the existing projected target');
+   marker.dx=NaN;marker.dy=Infinity;
+   const invalid=withMarker();
+   assert.ok(invalid,'invalid input preserves the linear arrival fallback');
+   assert.ok(Math.abs(invalid.x-open.x)<1e-8&&Math.abs(invalid.y-open.y)<1e-8,
+    'invalid input preserves the existing projected target');
+  }
+ }
+});
+
 test('keeper yields to a closer active teammate but ignores unavailable outfielders',async()=>{
  const {AI,ENGINE}=await loadModules(),f=helperFixture(ENGINE,0);
  const open=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound);
