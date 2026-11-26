@@ -3,24 +3,23 @@
 **Updated:** 2026-11-26
 
 ## Mission
-Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve canonical data, four actions, compatible saves and offline play.
+Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper animation, Player Studio and Career/Cup. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.341 — AI-GOALMOUTH-PASS-TURN-ARRIVAL-01:** CPU goalmouth square-pass selection now projects active defenders through the existing Agility-limited turn response before scoring the receiving pocket. High-Agility markers turning into the lane can close a pass that linear momentum leaves open; low-Agility and neutral/slow fallbacks remain bounded. Receiver lead, pass physics and four actions are unchanged.
-- **.340 exact-head Census #45882381256:** preflight, preview, all four Node shards and three Chromium shards passed; browser shard 1 failed only the Hide Ball browser fixture because random successful poke contact displaced the caster outside the 70-unit resolver cone. .341 isolates that fixture's reaction timing from random contact knockback; production tackle behavior is unchanged.
-- .340 Modular QA #45882381224 passed 2,971/2,971. .341 exact-head Modular QA and four-Node/four-Chromium Census are pending.
+- **0.12.81.342 — KEEPER-DIVE-LEG-SCISSOR-01:** the procedural goalkeeper painter now folds the lead knee and trails the far boot through the existing dive phase, with opposite boot flex and an exactly continuous 0.34-second recovery. The change is renderer-only; save/contact/reach/cooldown and match simulation are untouched. Actual-renderer screenshot acceptance covers both dive lanes and five existing projections.
+- **.341 certification/promotion:** exact-head Modular QA #45888981318 passed 2,972/2,972. Full Regression Census #45888981329 passed preflight, preview, all four Node shards and all four Chromium shards; QA-gated promotion succeeded. Main Pages deployment #45890224590 and independent main Census #45890232959 passed on .341.
 
 ## Next smallest action
-Inspect .341 exact-head Modular QA and all four Node/four Chromium Census jobs. Fix confirmed failures, then allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with the next unblocked gameplay or existing-player presentation item.
+Inspect .342 exact-head Modular QA and all four Node/four Chromium Census jobs. Fix any confirmed failure, then allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with the next unblocked gameplay or existing-player presentation item.
 
 ## Ownership and exclusions
 Preserve 223 team and 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept-hero creation or copied art. Keep #48 physical acceptance, #86 Render drift and #87 main protection unresolved until independently verified. Do not claim physical-device certification or authenticated online hosting.
 
 ## Evidence
-- Starting dev SHA: `746fea3915866e79aed8a925d4582bc1111af1e4`; main SHA: `a8edae04834d16a11292617e8d0d52abbd66eb4f`.
-- .340 Modular QA #45882381224 passed 2,971/2,971; Keeper Save Event Integrity #45882381295 and Concept Hero Playable Prototype QA #45882381303 passed.
-- .340 Census #45882381256 failed one browser shard only; exact failure and fixture correction are recorded above. .340 is not certified or promoted.
-- Main .336 deployment/Census evidence from #45846426105 and #45846445829 remains the last verified main release. GitHub REST reports `main.protected=false` and `dev.protected=false`; #87 remains open. #48 and #86 remain open.
+- Starting dev/main SHA: `437f313487d8ea12fb2b84f3b3fc9b77c759aeb3`; branches were identical before this candidate.
+- .341 exact-head Modular QA #45888981318 passed 2,972/2,972; Full Regression Census #45888981329 and all eight Node/Chromium shards passed. The existing QA-gated promotion job passed.
+- .341 Pages #45890224590 and main Census #45890232959 both passed. .342 is a new dev candidate; its release gates are pending.
+- #87 remains open; the branch-protection endpoint currently returns 403 to the connected integration, so no protection claim is made. #48 and #86 remain open.
 
 ## Cleanup
 Only this agent's checkpoint was replaced. No LAN/P2P, roster, concept art, save-schema or online-hosting changes.

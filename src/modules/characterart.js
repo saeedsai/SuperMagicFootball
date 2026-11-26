@@ -17,6 +17,20 @@ const CHARACTER_ART=(()=>{
   const elapsed=Number(diveElapsed),phase=clamp(Number.isFinite(elapsed)?elapsed:0,0,.60)/.60;
   return phase*phase*(3-2*phase);
  }
+ function keeperDiveLegPose(action,diveElapsed=0,near=true,actionTimer=0){
+  let phase=0;
+  if(action==='keeperDive'||action==='keeperDiveCatch'||action==='keeperSuper'){
+   phase=keeperArmReach(action,diveElapsed);
+  }else if(action==='keeperRecover'){
+   const remaining=Number(actionTimer),fraction=clamp(Number.isFinite(remaining)?remaining:0,0,.34)/.34;
+   phase=fraction*fraction*(3-2*fraction);
+  }else return {phase:0,travel:0,raise:0,tuck:0,extend:0,toePitch:0};
+  // The lead knee folds while the far boot trails. Recovery starts at the same
+  // terminal shape and unwinds on its existing 340 ms visual timer.
+  return near
+   ?{phase,travel:8*phase,raise:7.5*phase,tuck:.48*phase,extend:0,toePitch:-.14*phase}
+   :{phase,travel:-10*phase,raise:1.5*phase,tuck:.06*phase,extend:.68*phase,toePitch:.12*phase};
+ }
  const dark='#263149';
  const faces=[{w:28,j:21,chin:34},{w:30,j:26,chin:35},{w:26,j:16,chin:38},{w:30,j:26,chin:33},{w:27,j:20,chin:40}];
  const irisColors=['#493325','#65462f','#57799d','#4a866d','#887297','#b99149'];
@@ -420,7 +434,10 @@ const CHARACTER_ART=(()=>{
  function drawLeg(c,sign,k,p,colors,opt,near,facingSign=1,airPose=null){
   const side=k==='side',quarter=k.startsWith('quarter');
   const spread=side?5:quarter?9:13,rawRun=Number(opt.run)||0;
+  const diveLeg=p.keeper?keeperDiveLegPose(p.action,p.diveElapsed,near,p.actionTimer):null;
+  const divePhase=diveLeg?.phase||0,diveTuck=diveLeg?.tuck||0,diveExtend=diveLeg?.extend||0;
   const airWeight=airPose?.weight||0,tuck=airPose?.tuck||0,extend=airPose?.extend||0,landingBrace=airPose?.landingBrace||0;
+  const legTuck=tuck+diveTuck,legExtend=extend+diveExtend;
   const run=rawRun*(1-airWeight);
   const gait=run*(sign===1?1:-1),strike=opt.kick&&sign===1;
   const launch=clamp(Number(opt.shotLaunchPose?.armSpread)||0,0,1);
@@ -428,14 +445,14 @@ const CHARACTER_ART=(()=>{
   // leg tucks. This keeps the knockback airborne pose from reading as a rigid
   // plank; all motion is paint-only and returns to neutral at the timer ends.
   const launchKick=launch*(sign===1?1:-.55),launchFold=launch*(sign===1?.22:.72);
-  const travel=(side?20:quarter?15:13)*gait+(strike?14:0)+launchKick*17;
-  const raise=Math.max(0,gait)*9+(strike?11:0)+launch*(sign===1?4:10);
+  const travel=(side?20:quarter?15:13)*gait+(strike?14:0)+launchKick*17+(diveLeg?.travel||0);
+  const raise=Math.max(0,gait)*9+(strike?11:0)+launch*(sign===1?4:10)+(diveLeg?.raise||0);
   // During the shot recovery push, plant one bent knee/boot under the hips
   // while the far leg stays extended. This asymmetry makes the get-up read as
   // a push from the turf instead of a rigid torso rotation; paint only.
   const recoveryBrace=shotRecoveryBrace(p.action,p.actionTimer);
   const plantedLeg=sign===1?recoveryBrace:recoveryBrace*.14;
-  const thighX=sign*spread,knee=[thighX+travel*.48-sign*10*plantedLeg-sign*tuck*spread*.24-sign*landingBrace*2.6,-11-raise*.43-11*plantedLeg+launchFold*4-tuck*7+landingBrace*3.4],ankle=[thighX+travel-sign*18*plantedLeg+sign*tuck*spread*.12-sign*landingBrace*1.4,-2-raise+launchFold*11-tuck*2+extend*5+landingBrace*2.1];
+  const thighX=sign*spread,knee=[thighX+travel*.48-sign*10*plantedLeg-sign*legTuck*spread*.24-sign*landingBrace*2.6,-11-raise*.43-11*plantedLeg+launchFold*4-legTuck*7+landingBrace*3.4],ankle=[thighX+travel-sign*18*plantedLeg+sign*legTuck*spread*.12-sign*landingBrace*1.4,-2-raise+launchFold*11-legTuck*2+legExtend*5+landingBrace*2.1];
   const bright=near?colors.skin:blend(colors.skin,-.15);
   stroke(c,[[thighX,-19],[knee[0],knee[1]]],bright,10.6,dark);
   oval(c,knee[0],knee[1],5.1,5,bright,dark,1.15);
@@ -445,8 +462,9 @@ const CHARACTER_ART=(()=>{
   stroke(c,[[ankle[0]-5,ankle[1]-6],[ankle[0]+4,ankle[1]-6]],colors.gold,2.4);
   stroke(c,[[ankle[0]-5,ankle[1]-11],[ankle[0]+3,ankle[1]-11]],ink(colors.gold,.6),1.25);
   const shoeFacing=(side?1:sign)*(facingSign<0?-1:1);
-  const toePitch=opt.locomotion&&!opt.kick&&!opt.sliding
-   ?runToePitch(Number(opt.runPhase)+(sign===-1?Math.PI:0),opt.runSpeedRatio,shoeFacing):0;
+  const toePitch=divePhase>0?diveLeg.toePitch*(facingSign<0?-1:1):
+   opt.locomotion&&!opt.kick&&!opt.sliding
+    ?runToePitch(Number(opt.runPhase)+(sign===-1?Math.PI:0),opt.runSpeedRatio,shoeFacing):0;
   if(toePitch){
    c.save();c.translate(ankle[0],ankle[1]);c.rotate(toePitch);c.translate(-ankle[0],-ankle[1]);
    boots(c,ankle[0],ankle[1],side?1:sign,colors.gold,near);c.restore();
@@ -747,6 +765,6 @@ const CHARACTER_ART=(()=>{
   const mirror=Number(side)<0?-1:1;
   return clamp(turn*.14*mirror,-.095,.095);
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,idleBlink,idleGaze,runToePitch,runArmSwing,jumpAirPose,turnCounterLean,headTurnCounterLean,version:3};
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,keeperDiveLegPose,idleBlink,idleGaze,runToePitch,runArmSwing,jumpAirPose,turnCounterLean,headTurnCounterLean,version:3};
 })();
 export {CHARACTER_ART};
