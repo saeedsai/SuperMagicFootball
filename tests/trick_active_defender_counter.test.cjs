@@ -9,7 +9,7 @@ test('named Magic Trick resolution uses the visible first-touch screen reader; o
  assert.ok(magicStart>=0&&magicEnd>magicStart,'named Magic Trick resolver available');
  assert.ok(dribbleStart>=0&&dribbleEnd>dribbleStart,'ordinary Dribble Style resolver available');
  const magic=src.slice(magicStart,magicEnd),dribble=src.slice(dribbleStart,dribbleEnd);
- assert.ok(magic.includes("const trickRivals=id==='lightning'?lightningTargets:screamTargets"));
+ assert.ok(magic.includes("const trickRivals=id==='lightning'?lightningTargets:readyCounterTargets"));
  assert.ok(magic.includes("const counterRead=typeof defensiveMagicTrickReadTarget==='function'?defensiveMagicTrickReadTarget(p,trickRivals,true,this.ball):null"));
  assert.match(magic,/const defenderRead=clamp\(\.07\+stat\(counterRead\.defender,'defence'\)\*\.0017,\.07,\.24\)/);
  assert.match(magic,/const attackerDribbling=clamp\(stat\(p,'dribbling'\),1,100\)/);

@@ -31,13 +31,15 @@ test('MAGIC-FIREBALL-SLIDE-01: active grounded SHOOT-slide ducks Fireball from e
 test('Medium-range slide counters; expired, airborne, non-slide or out-of-range defenders still get hit',()=>{
  const mid=setup({action:'slide',timer:.25,dist:115});assert.equal(mid.fire(),true);assert.equal(mid.events[0].countered,true);
  const cases=[{action:'slide',timer:0},{action:'slide',timer:-1},{action:'slide',timer:NaN},
-  {action:'run',timer:.25},{action:'punch',timer:.25},{action:'slide',timer:.25,z:NaN}];
+  {action:'run',timer:.25},{action:'punch',timer:.25}];
  for(const c of cases){
   const {defender,events,fire}=setup(c);
   assert.equal(fire(),true);
   assert.equal(events[0].countered,false,JSON.stringify(c));
   assert.equal(defender.stun,.32,JSON.stringify(c));assert.equal(defender.action,'hurt');
  }
+ const invalidHeight=setup({action:'slide',timer:.25,z:NaN});
+ assert.equal(invalidHeight.fire(),true);assert.equal(invalidHeight.defender.stun,0,'invalid-height defender is not a valid target');assert.equal(invalidHeight.events[0].countered,false);
  const far=setup({action:'slide',timer:.25,dist:150});
  assert.equal(far.fire(),true);assert.equal(far.defender.stun,0,'out of range: nobody staggered');assert.equal(far.events[0].countered,false);
  const air=setup({action:'slide',timer:.25,z:25});assert.equal(air.fire(),true);assert.equal(air.events[0].countered,true,'JUMP dodge preserved');

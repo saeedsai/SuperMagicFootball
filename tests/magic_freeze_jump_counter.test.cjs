@@ -28,11 +28,14 @@ test('Freeze JUMP counter works from either team and still spends caster cost',(
  }
 });
 test('Grounded, early jump and invalid height still freeze',()=>{
- for(const z of [0,2,19.99,NaN]){
+ for(const z of [0,2,19.99]){
   const {defender,events,fire}=setup({z});
   assert.equal(fire(),true);assert.equal(defender.stun,.65);
   assert.equal(defender.action,'hurt');assert.equal(events[0].countered,false);
  }
+ const invalid=setup({z:NaN});assert.equal(invalid.fire(),true);
+ assert.equal(invalid.defender.stun,0,'invalid-height defender is excluded from the resolver target set');
+ assert.equal(invalid.events[0].countered,false);
 });
 test('Directional defence still counters Freeze; Bat and Scream now have JUMP counters',()=>{
  const {defender,events,fire}=setup({face:-1,z:0});

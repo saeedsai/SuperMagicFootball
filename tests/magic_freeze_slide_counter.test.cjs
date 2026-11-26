@@ -30,13 +30,16 @@ test('Active grounded SHOOT-slide parries Freeze from either team and caster sti
 });
 test('Expired, airborne, far or non-slide defenders still get frozen',()=>{
  const cases=[{action:'slide',timer:0},{action:'slide',timer:-1},{action:'slide',timer:NaN},
-  {action:'run',timer:.25},{action:'punch',timer:.25},{action:'slide',timer:.25,z:NaN}];
+  {action:'run',timer:.25},{action:'punch',timer:.25}];
  for(const c of cases){
   const {defender,events,fire}=setup(c);
   assert.equal(fire(),true);
   assert.equal(events[0].countered,false,JSON.stringify(c));
   assert.equal(defender.stun,.65,JSON.stringify(c));
  }
+ const invalidHeight=setup({action:'slide',timer:.25,z:NaN});assert.equal(invalidHeight.fire(),true);
+ assert.equal(invalidHeight.defender.stun,0,'invalid-height defender is excluded from the resolver target set');
+ assert.equal(invalidHeight.events[0].countered,false);
  const far=setup({action:'slide',timer:.25,dist:200});
  assert.equal(far.fire(),true);assert.equal(far.defender.stun,0,'out of range: nobody is frozen');assert.equal(far.events[0].countered,false);
  // z>=20 is the pre-existing JUMP dodge, not the slide parry.
