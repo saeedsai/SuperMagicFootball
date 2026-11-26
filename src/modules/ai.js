@@ -2463,8 +2463,13 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   const lateralTurnCost=Math.min(18,lateralSpeed/turnRate*.45);
   const arrivalBuffer=Math.max(26,44-lateralTurnCost);
   if(keeperGap>reachableTravel+arrivalBuffer)return null;
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
   const activeOutfielder=q=>q&&q!==keeper&&!q.keeper&&!q.down&&
-   (q.stun==null||Number(q.stun)<=0)&&(q.z==null||Number(q.z)<=18)&&
+   (q.stun==null||Number(q.stun)<=0)&&
+   timerClear(q.shotImpactKnockdownPending)&&
+   timerClear(q.shotImpactKnockdownTimer)&&
+   timerClear(q.shotImpactRiseTimer)&&
+   (q.z==null||Number(q.z)<=18)&&
    Number.isFinite(q.x)&&Number.isFinite(q.y)&&
    !['shotDown','shotGetUp'].includes(q.action)&&
    !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&

@@ -65,6 +65,31 @@ test('keeper yields to a closer active teammate but ignores unavailable outfield
  assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,marker],
   f.bounds,1,f.rebound));
 });
+test('parry rebound race ignores opponents and teammates in shot-impact recovery',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const phases=['shotImpactKnockdownPending','shotImpactKnockdownTimer','shotImpactRiseTimer'];
+ for(const team of [0,1]){
+  const f=helperFixture(ENGINE,team);
+  const open=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound);
+  assert.ok(open,'team '+team+': baseline rebound remains chaseable');
+  for(const phase of phases){
+   const opponent={t:1-team,keeper:false,x:open.x,y:open.y,z:0,stun:0,down:false,
+    action:'idle',actionTimer:0,moveVX:0,moveVY:0,[phase]:0};
+   assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,opponent],
+    f.bounds,1,f.rebound),null,'team '+team+': active opponent must win the same pocket');
+   opponent[phase]=.4;
+   assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,opponent],
+    f.bounds,1,f.rebound),'team '+team+': recovering opponent cannot suppress keeper chase ('+phase+')');
+   const ally={t:team,keeper:false,x:(open.x+f.keeper.x)/2,y:(open.y+f.keeper.y)/2,
+    z:0,stun:0,down:false,action:'idle',actionTimer:0,moveVX:0,moveVY:0,[phase]:0};
+   assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,ally],
+    f.bounds,1,f.rebound),null,'team '+team+': active teammate should take the closer handoff');
+   ally[phase]=.4;
+   assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,ally],
+    f.bounds,1,f.rebound),'team '+team+': recovering teammate cannot steal the keeper handoff ('+phase+')');
+  }
+ }
+});
 test('keeper rebound chase rejects owned, incoming, rising, expired and recovery states',async()=>{
  const {AI,ENGINE}=await loadModules(),f=helperFixture(ENGINE,0);
  const check=()=>AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound);

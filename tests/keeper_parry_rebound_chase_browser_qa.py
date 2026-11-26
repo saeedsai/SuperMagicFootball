@@ -140,6 +140,6 @@ with sync_playwright() as pw:
    assert row['parried'] and row['chase'] and row['moving'] and row['yieldedToClosingRunner'] and row['cleared'],(kind,row)
    assert row['target'] is not None,(kind,row)
    assert row['farParried'] and row['farDeclined'] and row['staysGoalSide'],(kind,row)
-  print('PASS',kind,'both mirrored real-engine parry follow-throughs, bounded keeper movement and possession cleanup',flush=True)
+  print('PASS',kind,'both mirrored real-engine parry follow-throughs, recovery-aware second-ball races, bounded keeper movement and possession cleanup',flush=True)
   ctx.close()
  browser.close()
