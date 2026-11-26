@@ -19,7 +19,7 @@ SCENARIO=r"""() => {
   const marker=g.players.find(p=>p.t===1-team&&!p.keeper&&p.i===3);
   if(!carrier||!runner||!marker)throw Error('required players unavailable');
   const x=F.x+F.w*(team===0?.72:.28),y=F.y+F.h*.5;
-  const target={x:x+dir*132,y:y+104},gap=Math.hypot(82,100);
+  const target={x:x+dir*132,y:y+104},gap=Math.hypot(62,78);
   Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
    cd:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,trickCd:10,breath:1,
    firstTouchControlTimer:0,firstTouchOutletUntil:0,firstTouchOutletReadTimer:0,
@@ -29,7 +29,7 @@ SCENARIO=r"""() => {
    aiAssistTarget:null,aiGiveAndGoRun:{receiverId:carrier.src.id,target,expires:3}});
   Object.assign(marker,{x:target.x-dir*82,y:target.y+100,down:false,stun:0,z:0,
    action:'idle',actionTimer:0,slideTimer:0,moveVX:dir*600,moveVY:0,
-   dx:dir*82/gap,dy:-100/gap});
+   dx:dir*62/gap,dy:-78/gap});
   marker.src={...marker.src,agility};
   for(const p of g.players){
    if(p===carrier||p===runner||p===marker)continue;
