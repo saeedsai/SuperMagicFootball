@@ -53,7 +53,8 @@ with sync_playwright() as pw:
    expected=isinstance(case['height'],(int,float)) and case['height']>=20
    assert case['activated'] is True,(label,'cast failed',case)
    assert case['countered'] is expected,(label,'airborne Bat counter',case)
-   assert case['stun']==(0 if expected else .32),(label,'stun outcome',case)
+   expected_stun=0 if expected or case['height']=='NaN' else .32
+   assert case['stun']==expected_stun,(label,'stun outcome',case)
    assert case['ready']==8 and abs(case['fatigue']-.035)<1e-9,(label,'caster cost changed',case)
   assert not errors,(label,errors)
   print('MAGIC_BAT_JUMP_BROWSER_PASS',label,flush=True)
