@@ -1614,13 +1614,21 @@ class GameEngine{
   return false;
  }
  reactToScreamTrick(p,dt,reactionSeconds){
-  // The existing one-second hold is the only warning; start reacting early enough to rise into its JUMP counter.
   const carrier=this.ball?.owner;
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const ready=q=>q&&q.t!==carrier?.t&&!q.keeper&&!q.down&&
+   Number.isFinite(Number(q.stun))&&Number(q.stun)<=0&&timerClear(q.invuln)&&
+   timerClear(q.shotImpactKnockdownPending)&&timerClear(q.shotImpactKnockdownTimer)&&
+   timerClear(q.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(q.action)&&
+   !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='jump'&&(Number(q.actionTimer)||0)>0&&Number.isFinite(Number(q.z))&&Number(q.z)<20)&&
+   (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)>=0))&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y);
   const target=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='scream'&&
    Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1&&
-   Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&distance(carrier,p)<=135
-   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&Number.isFinite(q.x)&&Number.isFinite(q.y)).sort((a,b)=>distance(carrier,a)-distance(carrier,b))[0]:null;
-  const threat=target===p?carrier:null;
+   Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&Array.isArray(this.players)
+   ?this.players.filter(ready).sort((a,b)=>distance(carrier,a)-distance(carrier,b))[0]:null;
+  const threat=target===p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&distance(carrier,p)<=135?carrier:null;
   if(!threat){p.aiScreamThreat=null;p.aiScreamReaction=0;return false;}
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0)||(p.action==='slide'&&(p.actionTimer||0)>0))return false;
   if(p.aiScreamThreat!==threat){p.aiScreamThreat=threat;p.aiScreamReaction=Number.isFinite(reactionSeconds)&&reactionSeconds>=0?reactionSeconds:.78;}
@@ -1966,12 +1974,24 @@ class GameEngine{
     !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
     (defender.z==null||(Number.isFinite(Number(defender.z))&&Number(defender.z)>=0));
   }):rivals;
-  const rival=lightningTargets[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
+  // Scream's single-target shockwave must skip opponents who cannot be hit or rise into a JUMP counter.
+  const screamTargets=id==='scream'?rivals.filter(defender=>{
+   const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+   const z=defender.z;
+   return !defender.down&&clear(defender.invuln)&&
+    clear(defender.shotImpactKnockdownPending)&&clear(defender.shotImpactKnockdownTimer)&&
+    clear(defender.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(defender.action)&&
+    !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
+    !(defender.action==='jump'&&(Number(defender.actionTimer)||0)>0&&Number.isFinite(Number(z))&&Number(z)<20)&&
+    (z==null||(Number.isFinite(Number(z))&&Number(z)>=0));
+  }):rivals;
+  const trickRivals=id==='lightning'?lightningTargets:screamTargets;
+  const rival=trickRivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
   if(id==='lightning'&&!inRange)return false;
   // Any eligible nearby defender can read a named Trick, not only the nearest marker.
   // Keep the same live 2D approach requirement and Defence-versus-Dribbling threshold.
-  const directCounterDefender=id==='lightning'?null:rivals.find(defender=>{
+  const directCounterDefender=id==='lightning'?null:trickRivals.find(defender=>{
    if(!(distance(p,defender)<radius)||defender.down===true||Number(defender.invuln)>0||
     (defender.z!=null&&(!Number.isFinite(Number(defender.z))||Number(defender.z)<0||Number(defender.z)>18))||
     Number(defender.slideTimer)>0||Number(defender.shotImpactKnockdownPending)>0||
@@ -1998,7 +2018,7 @@ class GameEngine{
   // A second defender visibly screening the forward carry lane can read a
   // counterable named Magic Trick during the pressured first-touch window.
   // This is one bounded skill-based chance; ordinary Dribble Styles are separate.
-  const counterRead=typeof defensiveMagicTrickReadTarget==='function'?defensiveMagicTrickReadTarget(p,rivals,true,this.ball):null;
+  const counterRead=typeof defensiveMagicTrickReadTarget==='function'?defensiveMagicTrickReadTarget(p,trickRivals,true,this.ball):null;
   // Defence improves the reader's baseline, while the carrier's Dribbling resists a visible screen read.
   // Dribbling 50 preserves the established chance; the skill contest is bounded and never bypasses the screen geometry.
   const screenReadChance=counterRead?.screened?(()=>{

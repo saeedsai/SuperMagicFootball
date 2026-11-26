@@ -26,11 +26,34 @@ with sync_playwright() as pw:
     while(!cpu.jumpCount&&elapsed<1){carrier.dribbleHold=elapsed;g.driveAI(cpu,dt);elapsed+=dt;steps++;}
     out.push({team,fps,jumpCount:cpu.jumpCount,action:cpu.action,z:cpu.z,holdAtJump:elapsed,lead:1-elapsed,steps});
    }
-   return {out,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
+   const handoffOut=[];
+   for(const team of [0,1]){
+    g.init({home:0,away:9,humans:1,mode:'quick',difficulty:3});
+    const carrier=g.player(team,4),cpu=g.player(1-team,3),nearest=g.player(1-team,4),dir=team===0?1:-1;
+    carrier.src={...carrier.src,magicTrick:'scream'};carrier.dribbleHold=.35;g.options.difficulty=3;
+    carrier.down=false;carrier.stun=0;carrier.z=0;g.ball.owner=carrier;
+    Object.assign(nearest,{x:carrier.x+dir*55,y:carrier.y,z:0,down:true,stun:0,invuln:0,
+     action:'shotDown',actionTimer:.4,moveVX:0,moveVY:0});
+    Object.assign(cpu,{x:carrier.x+dir*95,y:carrier.y,z:0,down:false,stun:0,invuln:0,
+     action:'idle',actionTimer:0,moveVX:0,moveVY:0,jumpCount:0,aiScreamThreat:null,aiScreamReaction:0});
+    for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==nearest)q.stun=1;
+    g.matchState='play';g.clock=10;
+    let elapsed=.35,steps=0;const dt=1/60;
+    while(!cpu.jumpCount&&elapsed<1&&steps<60){carrier.dribbleHold=elapsed;g.driveAI(cpu,dt);elapsed+=dt;steps++;}
+    carrier.dribbleHold=1;
+    const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
+    handoffOut.push({team,jumpCount:cpu.jumpCount,action:cpu.action,z:cpu.z,activated,
+     countered:event.countered,nearestDown:nearest.down,nearestAction:nearest.action,steps});
+   }
+   return {out,handoffOut,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert result['actions']==4,(label,'action count changed',result)
   for case in result['out']:
    assert case['jumpCount']==1 and case['action']=='jump' and case['lead']>=.25,(label,'CPU did not start the existing JUMP counter with time to rise before Scream',case)
+  for case in result['handoffOut']:
+   assert case['jumpCount']==1 and case['action']=='jump' and case['z']>=20,(label,'next ready defender did not rise into Scream counter',case)
+   assert case['activated'] and case['countered'] is True,(label,'actual Scream resolver did not recognize the handed-off JUMP',case)
+   assert case['nearestDown'] and case['nearestAction']=='shotDown',(label,'fixture lost unavailable nearest defender',case)
   assert not errors,(label,errors)
   print('MAGIC_SCREAM_AI_COUNTER_BROWSER_PASS',label,result,flush=True)
   context.close()

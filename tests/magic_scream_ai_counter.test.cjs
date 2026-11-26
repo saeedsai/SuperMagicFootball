@@ -100,6 +100,42 @@ test('Scream CPU counter selects the nearest eligible finite defender and ignore
 });
 
 
+
+test('Scream CPU hands the warning to the next ready defender when the nearest is unavailable',()=>{
+ const unavailable=[
+  ['down',p=>{p.down=true;}],['invulnerable',p=>{p.invuln=.3;}],
+  ['shot-impact pending',p=>{p.shotImpactKnockdownPending=.3;}],
+  ['shot-impact knockdown',p=>{p.shotImpactKnockdownTimer=.3;}],
+  ['shot-impact rise',p=>{p.shotImpactRiseTimer=.3;}],
+  ['shot down',p=>{p.action='shotDown';p.actionTimer=.3;}],
+  ['getting up',p=>{p.action='shotGetUp';p.actionTimer=.3;}],
+  ['hurt recovery',p=>{p.action='hurt';p.actionTimer=.3;}],
+  ['jump below dodge height',p=>{p.action='jump';p.actionTimer=.3;p.z=8;}],
+  ['invalid height',p=>{p.z=NaN;}]
+ ];
+ for(const side of [0,1])for(const [label,mark] of unavailable){
+  const {g,carrier,target,other}=fixture(side,.7);other.x=carrier.x+95;other.y=carrier.y;mark(target);
+  assert.equal(react.call(g,target,.1,.02),false,label+' nearest defender cannot react');
+  assert.equal(react.call(g,other,.1,.02),true,label+' next active defender should JUMP');
+  assert.equal(g.jumps,1,label+' must produce one response');assert.equal(other.action,'jump');assert.equal(target.z,0);
+ }
+});
+
+test('Scream keeps an already-effective nearest JUMP or SHOOT-slide as the counter instead of duplicating it',()=>{
+ for(const side of [0,1])for(const state of [{z:22,action:'jump',actionTimer:.3},{z:0,action:'slide',actionTimer:.3}]){
+  const {g,carrier,target,other}=fixture(side,.7);other.x=carrier.x+95;other.y=carrier.y;Object.assign(target,state);
+  assert.equal(react.call(g,other,.1,.02),false);assert.equal(g.jumps,0,'the nearest active counter already protects the team');
+ }
+});
+
+test('Scream does not invent a counter when every nearby defender is unavailable',()=>{
+ for(const side of [0,1]){
+  const {g,carrier,target,other}=fixture(side,.7);other.x=carrier.x+95;other.y=carrier.y;
+  target.down=true;other.down=true;
+  assert.equal(react.call(g,target,.1,.02),false);assert.equal(react.call(g,other,.1,.02),false);assert.equal(g.jumps,0);
+ }
+});
+
 test('Scream CPU reaction fails safely on invalid reaction and frame timing',()=>{
  for(const side of [0,1])for(const bad of [NaN,Infinity,-Infinity,undefined]){
   const f=fixture(side,.7);

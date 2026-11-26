@@ -31,6 +31,31 @@ test('MAGIC-SCREAM-JUMP-01: airborne JUMP dodges Scream from both attack directi
   assert.equal(fire(),false,'cooldown still prevents a free repeat cast');
  }
 });
+test('Scream resolves its JUMP counter against the next ready defender when the nearest is unavailable',()=>{
+ const unavailable=[
+  ['down',p=>{p.down=true;}],['invulnerable',p=>{p.invuln=.3;}],
+  ['shot-impact pending',p=>{p.shotImpactKnockdownPending=.3;}],
+  ['shot-impact knockdown',p=>{p.shotImpactKnockdownTimer=.3;}],
+  ['shot-impact rise',p=>{p.shotImpactRiseTimer=.3;}],
+  ['shot down',p=>{p.action='shotDown';p.actionTimer=.3;}],
+  ['getting up',p=>{p.action='shotGetUp';p.actionTimer=.3;}],
+  ['hurt recovery',p=>{p.action='hurt';p.actionTimer=.3;}],
+  ['jump below dodge height',p=>{p.action='jump';p.actionTimer=.3;p.z=8;}],
+  ['invalid height',p=>{p.z=NaN;}],['negative height',p=>{p.z=-1;}]
+ ];
+ for(const side of [0,1])for(const [label,mark] of unavailable){
+  const state=setup({z:20,side}),dir=side?-1:1;
+  const nearest={t:1-side,x:state.attacker.x+dir*24,y:state.attacker.y,z:0,keeper:false,stun:0,invuln:0,
+   down:false,action:'idle',actionTimer:0,src:{id:'nearest',name:'Unavailable nearest',defence:10}};
+  mark(nearest);state.game.players.splice(1,0,nearest);
+  assert.equal(state.fire(),true,label+' still resolves the named Scream');
+  assert.equal(state.events[0].countered,true,label+' must not hide the next defender JUMP');
+  assert.equal(state.defender.stun,0,label+' next ready defender is not stunned');
+  assert.equal(nearest.stun,0,label+' unavailable nearest is not selected as the target');
+ }
+});
+
+
 test('Grounded, low airborne and invalid-height targets still receive Scream',()=>{
  for(const z of [0,19.9,NaN]){
   const {defender,events,fire}=setup({z});
