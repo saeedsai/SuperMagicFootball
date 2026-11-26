@@ -23,7 +23,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[];
+   const g=SupermagicFootball.game,rows=[],turnRows=[];
    for(const side of [0,1]){
     g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='paused';g.cooldown=0;g.clock=0;
@@ -124,7 +124,40 @@ with sync_playwright() as pw:
     };
     reactionRows.push({side,neutral:run(50,0),low:run(0,0),elite:run(100,0),tired:run(50,1),crossTrack:run(50,0,'cross-track')});
    }
-   return {rows,reactionRows,teams:SupermagicFootball.teams.length};
+    for(const side of [0,1])for(const role of ['opponent','teammate'])for(const agility of [100,1]){
+     g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+     g.matchState='paused';g.cooldown=0;g.clock=0;
+     const k=g.player(side,0),b=g.ball,dir=side===0?1:-1,goalY=765;
+     Object.assign(k,{x:side===0?255:2305,y:goalY,stun:0,down:false,z:0,
+      action:'idle',actionTimer:0,diveCooldown:0,diveIntentCooldown:0,
+      diveIntentPending:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false,
+      moveVX:0,moveVY:0,fatigue:0});
+     for(const p of g.players)if(p!==k&&!p.keeper)
+      Object.assign(p,{down:true,stun:1,z:0,action:'idle',actionTimer:0,slideTimer:0,
+       moveVX:0,moveVY:0,dx:0,dy:0});
+     Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,
+      x:k.x+dir*24,y:goalY,z:0,vx:-dir*2500,vy:0,vz:0,power:60,
+      ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[],pass:false});
+     const parried=g.tryKeeperDive(k,false);
+     if(!parried)throw new Error('turn fixture shot was not parried for side '+side);
+     Object.assign(k,{action:'keeperDive',actionTimer:.4,diveElapsed:.24,
+      diveIntentPending:false,z:12,stun:0,down:false,aiTimer:0,aiTarget:null,
+      aiParryReboundTarget:false});
+     Object.assign(b,{owner:null,attacker:side,lastTouchTeam:side,
+      x:k.x+dir*24,y:goalY+38,z:60,vx:dir*260,vy:30,vz:-110,
+      ordinaryShot:false,shot:null,strike:null,pass:false,age:.6,canCollect:0});
+     g.clock=.2;g.driveAI(k,.016);
+     const target=k.aiTarget?{x:k.aiTarget.x,y:k.aiTarget.y}:null;
+     if(!k.aiParryReboundTarget||!target)throw new Error('baseline keeper chase missing for side '+side);
+     const rival=g.player(role==='opponent'?1-side:side,3);
+     Object.assign(rival,{x:target.x-dir*70,y:target.y,z:0,down:false,stun:0,
+      action:'run',actionTimer:0,slideTimer:0,moveVX:-dir*300,moveVY:0,dx:dir,dy:0});
+     rival.src={...rival.src,agility};
+     k.aiTimer=0;k.moveVX=0;k.moveVY=0;
+     g.driveAI(k,.016);
+     turnRows.push({side,role,agility,parried,chase:k.aiParryReboundTarget===true});
+    }
+   return {rows,reactionRows,turnRows,teams:SupermagicFootball.teams.length};
   }""")
   assert not errors,(kind,errors)
   assert result['teams']>=223,(kind,result)
@@ -136,10 +169,16 @@ with sync_playwright() as pw:
    assert row['elite']['parried'] and row['elite']['chase'],(kind,row)
    assert row['tired']['parried'] and not row['tired']['chase'],(kind,row)
    assert row['crossTrack']['parried'] and not row['crossTrack']['chase'],(kind,row)
+  for side in [0,1]:
+   for role in ['opponent','teammate']:
+    profiles={row['agility']:row for row in result['turnRows']
+     if row['side']==side and row['role']==role}
+    assert profiles[100]['parried'] and not profiles[100]['chase'],(kind,side,role,profiles)
+    assert profiles[1]['parried'] and profiles[1]['chase'],(kind,side,role,profiles)
   for row in result['rows']:
    assert row['parried'] and row['chase'] and row['moving'] and row['yieldedToClosingRunner'] and row['cleared'],(kind,row)
    assert row['target'] is not None,(kind,row)
    assert row['farParried'] and row['farDeclined'] and row['staysGoalSide'],(kind,row)
-  print('PASS',kind,'both mirrored real-engine parry follow-throughs, recovery-aware second-ball races, bounded keeper movement and possession cleanup',flush=True)
+  print('PASS',kind,'both mirrored real-engine parry follow-throughs, Agility-aware opponent/teammate rebound turns, recovery-aware second-ball races, bounded keeper movement and possession cleanup',flush=True)
   ctx.close()
  browser.close()
