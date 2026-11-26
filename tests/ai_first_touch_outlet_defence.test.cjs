@@ -51,3 +51,25 @@ test('first-touch outlet cover recognizes an already-closing marker at pass arri
   assert.ok(read&&read.runner===f.runner,JSON.stringify({team,read}));
  }
 });
+
+test('first-touch outlet marker arrival uses Agility-limited turning before declaring a lane covered',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=makeRead(team);f.primary.y=f.carrier.y-160;
+  const pass=AI.attackingFirstTouchOutlet(f.players,f.carrier.t,f.carrier,bounds);
+  assert.ok(pass,JSON.stringify({team,pass}));
+  const marker=player('turn-marker-'+team,f.team,pass.target.x+f.dir*110,pass.target.y-20,{
+   moveVX:0,moveVY:150,dx:-f.dir,dy:0,src:{id:'turn-marker-'+team,agility:1}
+  });
+  f.players.push(marker);
+  const lowAgility=AI.defensiveFirstTouchOutletCoverTarget(f.team,f.carrier,f.players,bounds,f.support,f.primary);
+  assert.ok(lowAgility,JSON.stringify({team,lowAgility}));
+  marker.src.agility=100;
+  const highAgility=AI.defensiveFirstTouchOutletCoverTarget(f.team,f.carrier,f.players,bounds,f.support,f.primary);
+  assert.equal(highAgility,null,JSON.stringify({team,highAgility}));
+  marker.dx=NaN;marker.dy=NaN;
+  const noDirectionalInput=AI.defensiveFirstTouchOutletCoverTarget(f.team,f.carrier,f.players,bounds,f.support,f.primary);
+  assert.ok(noDirectionalInput,JSON.stringify({team,noDirectionalInput}));
+  assert.deepEqual(noDirectionalInput.target,lowAgility.target);
+ }
+});

@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.333',
+ version:'0.12.81.334',
  date:'2026-11-26',
  notes:Object.freeze([
   "AI-FIRST-TOUCH-OUTLET-COVER-ARRIVAL-PARITY-01: during a pressured CPU first-touch read, the second defender now shades the same bounded receiver point that the support PASS will target: 0.12–0.35 seconds based on current carrier distance, a ±65-unit receiver lead and the exact dx/dy × 90 fallback when movement velocity is unavailable. Existing markers are evaluated at that receiving time with their existing ±30-unit movement cap, so a teammate already closing into the true pocket is not redundantly assigned. Primary carrier pressure, first-touch timing, pass physics, four actions, saves, rosters, persistence and offline play remain unchanged. Mirrored Node and actual-engine desktop/simulated-touch Chromium regressions cover both attack directions, live/fallback leads and already-covered versus retreating markers.",

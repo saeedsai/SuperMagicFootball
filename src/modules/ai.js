@@ -1750,9 +1750,13 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
     if(range<135||range>740||forward<110||forward>650||lateral>285)continue;
     let nearest=Infinity;
     for(const marker of defenders){
-     const mx=marker.x+clampTo(velocity(marker,'x')*markerHorizon,-30,30);
-     const my=marker.y+clampTo(velocity(marker,'y')*markerHorizon,-30,30);
-     nearest=Math.min(nearest,Math.hypot(mx-future.x,my-future.y));
+     const mx=velocity(marker,'x'),my=velocity(marker,'y');
+     const turnHorizon=Math.min(markerHorizon,.18);
+     const turned=carrierTurnAwareVelocity(marker,mx,my,turnHorizon);
+     const remaining=markerHorizon-turnHorizon;
+     const leadX=clampTo((mx+turned.x)*.5*turnHorizon+turned.x*remaining,-30,30);
+     const leadY=clampTo((my+turned.y)*.5*turnHorizon+turned.y*remaining,-30,30);
+     nearest=Math.min(nearest,Math.hypot(marker.x+leadX-future.x,marker.y+leadY-future.y));
     }
     if(nearest<92)continue;
     const forwardRun=clampTo(dir*vx,-80,140);
