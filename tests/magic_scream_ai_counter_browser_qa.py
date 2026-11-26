@@ -33,16 +33,18 @@ with sync_playwright() as pw:
     carrier.src={...carrier.src,magicTrick:'scream'};carrier.dribbleHold=.35;g.options.difficulty=3;
     carrier.down=false;carrier.stun=0;carrier.z=0;g.ball.owner=carrier;
     Object.assign(nearest,{x:carrier.x+dir*55,y:carrier.y,z:0,down:true,stun:0,invuln:0,
-     action:'shotDown',actionTimer:.4,moveVX:0,moveVY:0});
+     action:'shotDown',actionTimer:2,shotImpactKnockdownTimer:2,shotImpactKnockdownTotal:2,moveVX:0,moveVY:0});
     Object.assign(cpu,{x:carrier.x+dir*95,y:carrier.y,z:0,down:false,stun:0,invuln:0,
      action:'idle',actionTimer:0,moveVX:0,moveVY:0,jumpCount:0,aiScreamThreat:null,aiScreamReaction:0});
     for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==nearest)q.stun=1;
     g.matchState='play';g.clock=10;
-    let elapsed=.35,steps=0;const dt=1/60;
-    while(!cpu.jumpCount&&elapsed<1&&steps<60){carrier.dribbleHold=elapsed;g.driveAI(cpu,dt);elapsed+=dt;steps++;}
-    carrier.dribbleHold=1;
+    g.controlled[carrier.t]=carrier.i;g.inControl=team=>team===carrier.t;
+    g.input.state[carrier.t]={dribble:true,x:0,y:0};
+    let steps=0;const dt=1/60;
+    while(cpu.z<20&&carrier.dribbleHold<.95&&steps<60){g.updatePlayers(dt);steps++;}
+    const holdAtCounter=carrier.dribbleHold;carrier.dribbleHold=1;
     const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
-    handoffOut.push({team,jumpCount:cpu.jumpCount,action:cpu.action,z:cpu.z,activated,
+    handoffOut.push({team,jumpCount:cpu.jumpCount,action:cpu.action,z:cpu.z,holdAtCounter,activated,
      countered:event.countered,nearestDown:nearest.down,nearestAction:nearest.action,steps});
    }
    return {out,handoffOut,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
@@ -51,7 +53,7 @@ with sync_playwright() as pw:
   for case in result['out']:
    assert case['jumpCount']==1 and case['action']=='jump' and case['lead']>=.25,(label,'CPU did not start the existing JUMP counter with time to rise before Scream',case)
   for case in result['handoffOut']:
-   assert case['jumpCount']==1 and case['action']=='jump' and case['z']>=20,(label,'next ready defender did not rise into Scream counter',case)
+   assert case['jumpCount']==1 and case['action']=='jump' and case['z']>=20 and case['holdAtCounter']<1,(label,'next ready defender did not rise into Scream counter before the cast',case)
    assert case['activated'] and case['countered'] is True,(label,'actual Scream resolver did not recognize the handed-off JUMP',case)
    assert case['nearestDown'] and case['nearestAction']=='shotDown',(label,'fixture lost unavailable nearest defender',case)
   assert not errors,(label,errors)

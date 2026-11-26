@@ -27,11 +27,32 @@ with sync_playwright() as pw:
     while(!cpu.jumpCount&&elapsed<1){carrier.dribbleHold=elapsed;g.driveAI(cpu,dt);elapsed=Math.min(1,elapsed+dt);steps++;}
     out.push({team,fps,jumpCount:cpu.jumpCount,action:cpu.action,holdAtJump:elapsed,lead:1-elapsed,steps});
    }
-   return {out,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
+   const handoffOut=[];
+   for(const team of [0,1])for(const trick of ['fireball','freeze','bat']){
+    g.init({home:0,away:9,humans:1,mode:'quick',difficulty:3});
+    const carrier=g.player(team,4),cpu=g.player(1-team,3),nearest=g.player(1-team,4),dir=team===0?1:-1;
+    carrier.src={...carrier.src,magicTrick:trick};carrier.dribbleHold=.35;carrier.fatigue=0;carrier.down=false;carrier.stun=0;carrier.z=0;g.ball.owner=carrier;
+    Object.assign(nearest,{x:carrier.x+dir*55,y:carrier.y,z:0,down:false,stun:0,invuln:2,action:'idle',actionTimer:0});
+    Object.assign(cpu,{x:carrier.x+dir*90,y:carrier.y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,jumpCount:0,aiFireballThreat:null,aiFireballReaction:0});
+    for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==nearest)q.stun=1;
+    g.matchState='play';g.clock=10;g.controlled[carrier.t]=carrier.i;g.inControl=side=>side===carrier.t;
+    g.input.state[carrier.t]={dribble:true,x:0,y:0};
+    let steps=0;const dt=1/60;
+    while(cpu.z<20&&carrier.dribbleHold<.95&&steps<60){g.updatePlayers(dt);steps++;}
+    const holdAtCounter=carrier.dribbleHold;carrier.dribbleHold=1;
+    const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
+    handoffOut.push({team,trick,jumpCount:cpu.jumpCount,action:cpu.action,z:cpu.z,holdAtCounter,activated,
+     countered:event.countered,nearestInvulnerable:nearest.invuln>0,steps});
+   }
+   return {out,handoffOut,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert result['actions']==4,(label,'action count changed',result)
   for case in result['out']:
    assert case['jumpCount']==1 and case['action']=='jump' and case['lead']>=.25,(label,'CPU did not jump with time before Fireball',case)
+  for case in result['handoffOut']:
+   assert case['jumpCount']==1 and case['action']=='jump' and case['z']>=20 and case['holdAtCounter']<1,(label,'ready second defender did not rise before the Magic Trick cast',case)
+   assert case['activated'] and case['countered'] is True,(label,'resolver did not recognize the handed-off JUMP',case)
+   assert case['nearestInvulnerable'],(label,'fixture lost unavailable nearest defender',case)
   assert not errors,(label,errors)
   print('MAGIC_FIREBALL_AI_COUNTER_BROWSER_PASS',label,[{key:case[key] for key in ('team','fps','holdAtJump','lead')} for case in result['out']],'actions=',result['actions'],flush=True)
   context.close()

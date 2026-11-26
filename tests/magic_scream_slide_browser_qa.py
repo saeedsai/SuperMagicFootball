@@ -47,10 +47,11 @@ with sync_playwright() as pw:
   }""")
   assert result['buttons']==4 and result['playerCount']==12,(label,'four controls or roster changed',result)
   for case in result['outcomes']:
-   expected=case['action']=='slide' and case['timer']>0 and isinstance(case['height'],(int,float)) and case['height']<20
+   expected=case['height']!='NaN' and case['action']=='slide' and case['timer']>0 and isinstance(case['height'],(int,float)) and case['height']<20
    assert case['activated'] is True,(label,'cast failed',case)
    assert case['countered'] is expected,(label,'Scream slide counter',case)
-   assert case['stun']==(0 if expected else .32),(label,'stun outcome',case)
+   expected_stun=0 if case['height']=='NaN' or expected else .32
+   assert case['stun']==expected_stun,(label,'stun outcome',case)
    assert case['ready']==8 and abs(case['fatigue']-.035)<1e-9,(label,'caster cost changed',case)
   assert not errors,(label,errors)
   print('MAGIC_SCREAM_SLIDE_BROWSER_PASS',label,flush=True)

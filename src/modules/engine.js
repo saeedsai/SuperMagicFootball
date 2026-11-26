@@ -1574,12 +1574,22 @@ class GameEngine{
   const carrier=this.ball?.owner;
   const trick=carrier?.src?.magicTrick;
   const radius=trick==='fireball'?120:95;
-  // Fallen or recovering nearest defenders cannot read the wind-up; let the next active teammate cover.
-  const rivals=carrier&&carrier.t!==p.t&&!carrier.keeper&&(trick==='fireball'||trick==='freeze'||trick==='bat')&&
-   Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1
-   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&!q.down&&
-    q.action!=='shotDown'&&q.action!=='shotGetUp'&&!(q.action==='hurt'&&(q.actionTimer||0)>0))
-    .sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
+  // Match the resolver's ready-target set so CPU wind-up reactions and the
+  // eventual JUMP/SHOOT-slide counter are evaluated against the same player.
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const ready=q=>q&&q.t!==carrier?.t&&!q.keeper&&!q.down&&
+   Number.isFinite(Number(q.stun))&&Number(q.stun)<=0&&timerClear(q.invuln)&&
+   timerClear(q.shotImpactKnockdownPending)&&timerClear(q.shotImpactKnockdownTimer)&&
+   timerClear(q.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(q.action)&&
+   !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='jump'&&(Number(q.actionTimer)||0)>0&&Number.isFinite(Number(q.z))&&Number(q.z)<20)&&
+   (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)>=0))&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y);
+  const rivals=carrier&&carrier.t!==p.t&&!carrier.keeper&&
+   (trick==='fireball'||trick==='freeze'||trick==='bat')&&
+   Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1&&
+   Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&Array.isArray(this.players)
+   ?this.players.filter(ready).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
   const threat=rivals[0]===p&&distance(carrier,p)<radius?carrier:null;
   if(!threat){p.aiFireballThreat=null;p.aiFireballReaction=0;return false;}
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0))return false;
@@ -1974,7 +1984,7 @@ class GameEngine{
     !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
     (defender.z==null||(Number.isFinite(Number(defender.z))&&Number(defender.z)>=0));
   }):rivals;
-  // Scream's single-target shockwave must skip opponents who cannot be hit or rise into a JUMP counter.
+  // Single-target counterable Tricks must skip opponents who cannot be hit or rise into a JUMP counter.
   const screamTargets=id==='scream'?rivals.filter(defender=>{
    const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
    const z=defender.z;
@@ -1983,7 +1993,8 @@ class GameEngine{
     clear(defender.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(defender.action)&&
     !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
     !(defender.action==='jump'&&(Number(defender.actionTimer)||0)>0&&Number.isFinite(Number(z))&&Number(z)<20)&&
-    (z==null||(Number.isFinite(Number(z))&&Number(z)>=0));
+    (z==null||(Number.isFinite(Number(z))&&Number(z)>=0))&&
+   Number.isFinite(defender.x)&&Number.isFinite(defender.y);
   }):rivals;
   const trickRivals=id==='lightning'?lightningTargets:screamTargets;
   const rival=trickRivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;

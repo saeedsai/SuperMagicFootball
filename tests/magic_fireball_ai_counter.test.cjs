@@ -79,9 +79,17 @@ test('Rookie cannot time the close slide; unavailable slide cooldown falls back 
 test('downed or recovering nearest defenders yield Fireball, Freeze and Bat to the next active teammate',()=>{
  const unavailable=[
   ['down flag',p=>{p.down=true;}],
+  ['invulnerable',p=>{p.invuln=.5;}],
+  ['shot-impact pending',p=>{p.shotImpactKnockdownPending=.5;}],
+  ['shot-impact knockdown',p=>{p.shotImpactKnockdownTimer=.5;}],
+  ['shot-impact rise',p=>{p.shotImpactRiseTimer=.5;}],
   ['shot down',p=>{p.action='shotDown';p.actionTimer=.3;}],
   ['getting up',p=>{p.action='shotGetUp';p.actionTimer=.3;}],
-  ['hurt recovery',p=>{p.action='hurt';p.actionTimer=.3;}]
+  ['hurt recovery',p=>{p.action='hurt';p.actionTimer=.3;}],
+  ['early jump below dodge height',p=>{p.action='jump';p.actionTimer=.3;p.z=8;}],
+  ['invalid height',p=>{p.z=NaN;}],
+  ['invalid x',p=>{p.x=NaN;}],
+  ['invalid y',p=>{p.y=NaN;}]
  ];
  for(const side of [0,1])for(const trick of ['fireball','freeze','bat'])for(const [state,mark] of unavailable){
   const {g,carrier,target,other}=fixture(side,.7,{distance:55,trick});
