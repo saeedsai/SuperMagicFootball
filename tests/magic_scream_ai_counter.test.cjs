@@ -12,7 +12,7 @@ function methodSource(name){
 	return engine.slice(start,end);
 }
 function method(name,globals={}){return vm.runInNewContext('({'+methodSource(name)+'})',globals)[name];}
-const react=method('reactToScreamTrick',{distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y)});
+const react=method('reactToScreamTrick',{distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??p[k]??0});
 function fixture(side,hold=.35,nearest=true){
  const carrier={t:1-side,keeper:false,src:{magicTrick:'scream'},x:300,y:240,dribbleHold:hold};
  const target={t:side,keeper:false,src:{},x:nearest?350:550,y:240,z:0,stun:0,action:'idle',actionTimer:0};
@@ -134,6 +134,70 @@ test('Scream does not invent a counter when every nearby defender is unavailable
   target.down=true;other.down=true;
   assert.equal(react.call(g,target,.1,.02),false);assert.equal(react.call(g,other,.1,.02),false);assert.equal(g.jumps,0);
  }
+});
+
+
+test('Scream backs up an idle selected-human marker with the nearest ready CPU teammate',()=>{
+ for(const side of [0,1]){
+  const {g,carrier,target,other}=fixture(side,.7),dir=side===0?1:-1;
+  target.i=3;other.i=4;target.src={defence:20};carrier.src.dribbling=60;
+  target.x=carrier.x+dir*55;target.y=carrier.y;other.x=carrier.x+dir*95;other.y=carrier.y;
+  g.controlled=[0,0];g.controlled[side]=target.i;g.inControl=team=>team===side;
+  let jumped=false;for(let i=0;i<20&&!jumped;i++)jumped=react.call(g,other,1/60,.09);
+  assert.equal(jumped,true,'CPU teammate should take backup duty for side '+side);
+  assert.equal(g.jumps,1);assert.equal(other.action,'jump');assert.equal(other.z,22);
+  assert.equal(target.action,'idle','selected human retains control of the warning target');
+  assert.equal(target.z,0);assert.equal(target.stun,0);
+ }
+});
+
+test('Scream does not duplicate an effective selected-human JUMP, slide or Defence read',()=>{
+ for(const side of [0,1])for(const patch of [
+  {action:'jump',actionTimer:.3,z:22},
+  {action:'slide',actionTimer:.3,z:0},
+  {action:'idle',actionTimer:0,z:0,dx:side===0?-1:1,dy:0,face:side===0?-1:1,src:{defence:90}}
+ ]){
+  const {g,carrier,target,other}=fixture(side,.7),dir=side===0?1:-1;
+  target.i=3;other.i=4;target.x=carrier.x+dir*55;target.y=carrier.y;other.x=carrier.x+dir*95;other.y=carrier.y;
+  Object.assign(target,patch);carrier.src.dribbling=60;
+  g.controlled=[0,0];g.controlled[side]=target.i;g.inControl=team=>team===side;
+  assert.equal(react.call(g,other,.2,.02),false,JSON.stringify(patch));
+  assert.equal(g.jumps,0,'no CPU backup when the selected human already counters');
+ }
+});
+
+test('Scream backup ignores an early non-counter JUMP and fails closed without a ready CPU teammate',()=>{
+ for(const side of [0,1]){
+  const early=fixture(side,.7),dir=side===0?1:-1;
+  early.target.i=3;early.other.i=4;early.target.x=early.carrier.x+dir*55;early.other.x=early.carrier.x+dir*95;
+  early.g.controlled=[0,0];early.g.controlled[side]=early.target.i;early.g.inControl=team=>team===side;
+  early.target.action='jump';early.target.actionTimer=.3;early.target.z=8;
+  assert.equal(react.call(early.g,early.other,.1,.02),true,'early JUMP has not reached the existing 20-unit counter height');
+  assert.equal(early.g.jumps,1);
+  const none=fixture(side,.7);none.target.i=3;none.other.i=4;none.target.x=none.carrier.x+dir*55;
+  none.other.x=none.carrier.x+dir*95;none.other.down=true;
+  none.g.controlled=[0,0];none.g.controlled[side]=none.target.i;none.g.inControl=team=>team===side;
+  assert.equal(react.call(none.g,none.other,.1,.02),false);assert.equal(none.g.jumps,0);
+ }
+});
+
+test('Scream does not assign a second CPU backup when another teammate already counters',()=>{
+ for(const side of [0,1]){
+  const {g,carrier,target,other}=fixture(side,.7),dir=side===0?1:-1;
+  target.i=3;other.i=4;target.x=carrier.x+dir*55;other.x=carrier.x+dir*95;
+  const second={t:side,keeper:false,i:5,src:{defence:20},x:carrier.x+dir*110,y:carrier.y,z:22,stun:0,
+   action:'jump',actionTimer:.3,down:false,invuln:0};
+  other.action='idle';other.z=0;other.actionTimer=0;
+  g.players.push(second);g.controlled=[0,0];g.controlled[side]=target.i;g.inControl=team=>team===side;
+  assert.equal(react.call(g,other,.2,.02),false);assert.equal(g.jumps,0);
+ }
+});
+
+test('Scream resolver accepts the same ready teammate JUMP and SHOOT-slide backup candidates',()=>{
+ const trick=methodSource('tryMagicTrick');
+ assert.match(trick,/const counterRivals=\['fireball','freeze','bat','scream'\]/);
+ assert.match(trick,/screamDodged=id==='scream'&&inRange&&counterRivals\.some/);
+ assert.match(trick,/screamParried=id==='scream'&&inRange&&counterRivals\.some/);
 });
 
 test('Scream CPU reaction fails safely on invalid reaction and frame timing',()=>{

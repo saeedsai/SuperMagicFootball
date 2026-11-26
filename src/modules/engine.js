@@ -1681,11 +1681,37 @@ class GameEngine{
    !(q.action==='jump'&&(Number(q.actionTimer)||0)>0&&Number.isFinite(Number(q.z))&&Number(q.z)<20)&&
    (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)>=0))&&
    Number.isFinite(q.x)&&Number.isFinite(q.y);
-  const target=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='scream'&&
+  const rivals=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='scream'&&
    Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1&&
    Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&Array.isArray(this.players)
-   ?this.players.filter(ready).sort((a,b)=>distance(carrier,a)-distance(carrier,b))[0]:null;
-  const threat=target===p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&distance(carrier,p)<=135?carrier:null;
+   ?this.players.filter(ready).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
+  const target=rivals[0]||null;
+  const selectedHuman=q=>typeof this.inControl==='function'&&this.inControl(q.t)&&
+   Number.isInteger(q.i)&&Number.isInteger(this.controlled?.[q.t])&&this.controlled[q.t]===q.i;
+  const hasCounter=q=>{
+   const inJump=q.action==='jump'&&Number.isFinite(Number(q.z))&&Number(q.z)>=20;
+   const inSlide=q.action==='slide'&&Number.isFinite(Number(q.actionTimer))&&Number(q.actionTimer)>0&&
+    Number.isFinite(Number(q.z))&&Number(q.z)<20;
+   let headingX=Number.isFinite(q.dx)?q.dx:0,headingY=Number.isFinite(q.dy)?q.dy:0;
+   if(Math.hypot(headingX,headingY)<=.1){
+    headingX=Number.isFinite(q.moveVX)?q.moveVX:0;
+    headingY=Number.isFinite(q.moveVY)?q.moveVY:0;
+   }
+   const headingLength=Math.hypot(headingX,headingY);
+   const towardX=carrier.x-q.x,towardY=carrier.y-q.y,gap=Math.hypot(towardX,towardY);
+   const read=headingLength>.1&&gap>1&&
+    headingX*towardX+headingY*towardY>.22*gap*headingLength&&
+    stat(q,'defence')>=stat(carrier,'dribbling');
+   return inJump||inSlide||read;
+  };
+  // A selected human keeps the nearest warning target; a ready CPU teammate
+  // covers the same existing counter window only while nobody else has countered.
+  const teammateAlreadyCounters=target&&rivals.some(q=>q!==target&&hasCounter(q));
+  const backup=target&&selectedHuman(target)&&!hasCounter(target)&&!teammateAlreadyCounters
+   ?rivals.find(q=>q!==target&&!selectedHuman(q)&&distance(carrier,q)<135&&!hasCounter(q))||null
+   :null;
+  const responder=backup||target;
+  const threat=responder===p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&distance(carrier,p)<=135?carrier:null;
   if(!threat){p.aiScreamThreat=null;p.aiScreamReaction=0;return false;}
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0)||(p.action==='slide'&&(p.actionTimer||0)>0))return false;
   if(p.aiScreamThreat!==threat){p.aiScreamThreat=threat;p.aiScreamReaction=Number.isFinite(reactionSeconds)&&reactionSeconds>=0?reactionSeconds:.78;}
@@ -2050,7 +2076,7 @@ class GameEngine{
   const rival=trickRivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
   // A ready teammate can cover a selected human marker with the same existing counter.
-  const counterRivals=['fireball','freeze','bat'].includes(id)?trickRivals.filter(defender=>distance(p,defender)<radius):(rival?[rival]:[]);
+  const counterRivals=['fireball','freeze','bat','scream'].includes(id)?trickRivals.filter(defender=>distance(p,defender)<radius):(rival?[rival]:[]);
   const selectedHuman=defender=>typeof this.inControl==='function'&&this.inControl(defender.t)&&
    Number.isInteger(defender.i)&&Number.isInteger(this.controlled?.[defender.t])&&
    this.controlled[defender.t]===defender.i;
@@ -2106,7 +2132,7 @@ class GameEngine{
   // parries Bat and Freeze, ducks Fireball and slides under Scream. All counters use the existing four buttons and still cost
   // the caster the original cooldown and fatigue.
   const jumpDodged=id==='fireball'&&inRange&&counterRivals.some(defender=>Number.isFinite(defender.z)&&defender.z>=20);
-  const screamDodged=id==='scream'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
+  const screamDodged=id==='scream'&&inRange&&counterRivals.some(defender=>Number.isFinite(defender.z)&&defender.z>=20);
   const freezeDodged=id==='freeze'&&inRange&&counterRivals.some(defender=>Number.isFinite(defender.z)&&defender.z>=20);
   const batDodged=id==='bat'&&inRange&&counterRivals.some(defender=>Number.isFinite(defender.z)&&defender.z>=20);
   // MAGIC-FREEZE-SLIDE-01: an active grounded defensive SHOOT-slide at close
@@ -2118,7 +2144,7 @@ class GameEngine{
   const fireballParried=id==='fireball'&&inRange&&counterRivals.some(defender=>defender.action==='slide'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&Number.isFinite(defender.z)&&defender.z<20);
   // MAGIC-SCREAM-SLIDE-01: an active grounded defensive SHOOT-slide slips under
   // the wide shockwave. Expired or airborne slides do not count.
-  const screamParried=id==='scream'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
+  const screamParried=id==='scream'&&inRange&&counterRivals.some(defender=>defender.action==='slide'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&Number.isFinite(defender.z)&&defender.z<20);
   const batParried=id==='bat'&&inRange&&counterRivals.some(defender=>defender.action==='slide'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&Number.isFinite(defender.z)&&defender.z<20);
   // TELEPORT-SLIDE-01: a grounded SHOOT-slide intercepts only the carrier's
   // forward travel lane; a slide behind or wide of that lane misses.
