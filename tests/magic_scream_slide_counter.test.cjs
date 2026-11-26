@@ -60,7 +60,7 @@ test('Scream slide counter is its own rule; Fireball, Freeze, Bat slide parries 
 });
 test('Scream slide counter is documented without a fifth action or new save field',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/screamParried=id==='scream'&&inRange&&rival\.action==='slide'/);
+ assert.match(engine,/screamParried=id==='scream'&&inRange&&counterRivals\.some/);
  assert.match(engine,/screamDodged\|\|screamParried/);
  assert.match(ui,/scream:'[^']*grounded defensive SHOOT-slide to slide under it/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);

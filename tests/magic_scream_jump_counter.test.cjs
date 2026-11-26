@@ -77,7 +77,7 @@ test('Directional defence still counters grounded Scream; unrelated Tricks keep 
 });
 test('Player Studio documents existing JUMP counter; no extra action or save field',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/screamDodged=id==='scream'&&inRange&&Number\.isFinite\(rival\.z\)&&rival\.z>=20/);
+ assert.match(engine,/screamDodged=id==='scream'&&inRange&&counterRivals\.some/);
  assert.match(ui,/scream:'[^']*JUMP above the shockwave to dodge it/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
  assert.doesNotMatch(engine,/fifthAction/);
