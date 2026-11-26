@@ -980,10 +980,20 @@ function attackingSupportPass(players,team,carrier,supportRun){
    const available=defenders.filter(p=>p.stun==null||Number(p.stun)<=arrivalSeconds);
    if(SHOTFEEL.passingLanePressure(carrier,target,available)>=.12)continue;
    let pocketBlocked=false,nearestMarkGap=Infinity;
+   const projectDefenderPosition=defender=>{
+    let remaining=arrivalSeconds,vx=movementVelocity(defender,'x'),vy=movementVelocity(defender,'y');
+    let leadX=0,leadY=0;
+    while(remaining>1e-6){
+     const step=Math.min(.18,remaining);
+     const turned=carrierTurnAwareVelocity(defender,vx,vy,step);
+     leadX+=(vx+turned.x)*.5*step;leadY+=(vy+turned.y)*.5*step;
+     vx=turned.x;vy=turned.y;remaining-=step;
+    }
+    return {x:defender.x+clampValue(leadX,-55,55),y:defender.y+clampValue(leadY,-55,55)};
+   };
    for(const defender of available){
-    const futureX=defender.x+clampValue(movementVelocity(defender,'x')*arrivalSeconds,-55,55);
-    const futureY=defender.y+clampValue(movementVelocity(defender,'y')*arrivalSeconds,-55,55);
-    const gap=Math.hypot(futureX-target.x,futureY-target.y);
+    const future=projectDefenderPosition(defender);
+    const gap=Math.hypot(future.x-target.x,future.y-target.y);
     nearestMarkGap=Math.min(nearestMarkGap,gap);
     const keeperReach=defender.keeper?clampValue(74+
     (clampValue(Number.isFinite(Number(defender.src?.gkSkill))?Number(defender.src.gkSkill):50,0,100)+

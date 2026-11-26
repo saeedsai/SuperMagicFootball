@@ -105,6 +105,34 @@ test('grounded defenders in the cutback lane or receiving pocket block the pass,
  f.defender.stun=0;f.defender.x=option.target.x+12;f.defender.y=option.target.y+8;
  assert.equal(AI.attackingCutbackPass(f.game.players,0,f.carrier,null,BOUNDS),null);
 });
+
+test('cutback pocket blocks a defender who can turn into the receiver lane but not a low-Agility or neutral one',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),dir=team===0?1:-1,center=(BOUNDS.yMin+BOUNDS.yMax)/2;
+  f.runner.x=f.carrier.x-dir*110;f.runner.y=center-dir*90;
+  Object.assign(f.runner,{moveVX:0,moveVY:0,vx:0,vy:0,dx:0,dy:0,down:false,stun:0,z:0,
+   action:'idle',actionTimer:0,slideTimer:0});
+  for(const p of f.game.players){
+   if(p===f.carrier||p===f.runner||p===f.defender)continue;
+   p.down=true;p.stun=1;
+  }
+  Object.assign(f.defender,{x:f.runner.x+dir*90,y:f.runner.y,down:false,stun:0,z:0,invuln:0,
+   action:'idle',actionTimer:0,slideTimer:0,shotImpactKnockdownPending:0,
+   shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,moveVX:0,moveVY:dir*420,vx:0,vy:dir*420,
+   dx:-dir,dy:0,aiAssistTarget:null});
+  f.defender.src.agility=100;
+  assert.equal(AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS),null,
+   'team '+team+' high-Agility defender should turn into the receiving pocket');
+  f.defender.src.agility=1;
+  const low=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.equal(low?.runner,f.runner,'team '+team+' low-Agility defender should retain the cross-track momentum');
+  f.defender.src.agility=100;f.defender.dx=0;f.defender.dy=0;
+  const neutral=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  assert.equal(neutral?.runner,f.runner,'team '+team+' neutral input must preserve the prior linear pocket read');
+ }
+});
+
 test('AI cutback uses the existing PASS action, targets the predicted receiver point and stays low',async()=>{
  const {AI,ENGINE}=await loadModules();
  const f=fixture(ENGINE);

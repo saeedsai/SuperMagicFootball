@@ -265,7 +265,51 @@ with sync_playwright() as pw:
                     cutbackPassTurnRows.push({attackingTeam,agility,actualSlope,expectedSlope});
                 }
             }
-            return {rows,stationaryRows,turnRows,inputRows,cutbackRows,cutbackTurnRows,cutbackPassTurnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+
+            const cutbackDefenderTurnRows=[];
+            for(const attackingTeam of [0,1]){
+                for(const agility of [100,1]){
+                    game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                    const dir=attackingTeam===0?1:-1;
+                    const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+                    const center=(bounds.yMin+bounds.yMax)/2;
+                    const carrierX=attackingTeam===0?bounds.xMax-220:bounds.xMin+220;
+                    const carrierY=attackingTeam===0?bounds.yMin+140:bounds.yMax-140;
+                    const runnerY=attackingTeam===0?center-180:center+180;
+                    const carrier=game.player(attackingTeam,3),runner=game.player(attackingTeam,4),
+                        defender=game.player(1-attackingTeam,3);
+                    if(!carrier||!runner||!defender)throw new Error('cutback defender-turn fixture is missing a player');
+                    for(const q of game.players){if(q===carrier||q===runner||q===defender)continue;q.down=true;q.stun=1;}
+                    Object.assign(carrier,{x:carrierX,y:carrierY,z:0,down:false,stun:0,invuln:0,
+                        action:'idle',actionTimer:0,cd:0,trickCd:1,aiTimer:0,aiTarget:null,aiAssistTarget:null,
+                        aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiFirstTouchOutletUntil:0,
+                        firstTouchControlTimer:0,firstTouchPressure:0,firstTouchOutletReadTimer:0,
+                        moveVX:0,moveVY:0,vx:0,vy:0,dx:0,dy:0,dribbleHold:0,stamina:100,fatigue:0});
+                    Object.assign(runner,{x:carrierX-dir*110,y:runnerY,z:0,down:false,stun:0,invuln:0,
+                        action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,dx:0,dy:0,
+                        shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+                        aiAssistTarget:null,aiGiveAndGoRun:null});
+                    Object.assign(defender,{x:runner.x+dir*90,y:runner.y,z:0,down:false,stun:0,invuln:0,
+                        action:'idle',actionTimer:0,slideTimer:0,shotImpactKnockdownPending:0,
+                        shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,moveVX:0,moveVY:dir*420,
+                        vx:0,vy:dir*420,dx:-dir,dy:0,aiTarget:null,aiTimer:0,aiAssistTarget:null});
+                    defender.src.agility=agility;
+                    Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,
+                        pass:false,passFrom:null,passTeam:null,passTarget:null,attacker:attackingTeam,
+                        lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+                    game.clock=2;
+                    const originalRandom=Math.random;let randomCalls=0;
+                    Math.random=()=>{randomCalls+=1;return randomCalls===1?1:randomCalls===2?(agility===1?0:1):.5;};
+                    try{game.driveAI(carrier,.016);}finally{Math.random=originalRandom;}
+                    const cutback=game.events.some(event=>event.mode==='cutback');
+                    if(cutback!==(agility===1))
+                        throw new Error('CPU cutback decision did not respect defender turn reach: '+JSON.stringify({attackingTeam,agility,cutback,passTarget:game.ball.passTarget,runner:runner.src.id}));
+                    if(agility===1&&(!game.ball.pass||game.ball.passTarget!==runner.src.id))
+                        throw new Error('low-Agility marker should leave the central cutback PASS available');
+                    cutbackDefenderTurnRows.push({attackingTeam,agility,cutback,passTarget:game.ball.passTarget});
+                }
+            }
+            return {rows,stationaryRows,turnRows,inputRows,cutbackRows,cutbackTurnRows,cutbackPassTurnRows,cutbackDefenderTurnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -277,7 +321,8 @@ with sync_playwright() as pw:
         assert len(result['cutbackRows'])==2,(kind,result)
         assert len(result['cutbackTurnRows'])==4,(kind,result)
         assert len(result['cutbackPassTurnRows'])==4,(kind,result)
+        assert len(result['cutbackDefenderTurnRows'])==4,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'arrival press, Agility-aware defensive cover and attacking cutback pass; possession, four actions and no JS errors',flush=True)
+        print('PASS',kind,'arrival press, Agility-aware defensive cover and receiver/defender cutback pass reads; possession, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()
