@@ -1984,19 +1984,22 @@ class GameEngine{
     !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
     (defender.z==null||(Number.isFinite(Number(defender.z))&&Number(defender.z)>=0));
   }):rivals;
-  // Single-target counterable Tricks must skip opponents who cannot be hit or rise into a JUMP counter.
-  const screamTargets=id==='scream'?rivals.filter(defender=>{
-   const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
-   const z=defender.z;
-   return !defender.down&&clear(defender.invuln)&&
-    clear(defender.shotImpactKnockdownPending)&&clear(defender.shotImpactKnockdownTimer)&&
-    clear(defender.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(defender.action)&&
-    !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
-    !(defender.action==='jump'&&(Number(defender.actionTimer)||0)>0&&Number.isFinite(Number(z))&&Number(z)<20)&&
-    (z==null||(Number.isFinite(Number(z))&&Number(z)>=0))&&
-   Number.isFinite(defender.x)&&Number.isFinite(defender.y);
-  }):rivals;
-  const trickRivals=id==='lightning'?lightningTargets:screamTargets;
+  // Fireball, Freeze, Bat and Scream must resolve against the same ready
+  // defenders that can receive a CPU wind-up reaction. An unavailable nearest
+  // opponent must not soak the target while a ready teammate can still be countered.
+  const readyCounterTargets=['fireball','freeze','bat','scream'].includes(id)
+   ?rivals.filter(defender=>{
+    const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+    const z=defender.z;
+    return !defender.down&&clear(defender.invuln)&&
+     clear(defender.shotImpactKnockdownPending)&&clear(defender.shotImpactKnockdownTimer)&&
+     clear(defender.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(defender.action)&&
+     !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
+     !(defender.action==='jump'&&(Number(defender.actionTimer)||0)>0&&Number.isFinite(Number(z))&&Number(z)<20)&&
+     (z==null||(Number.isFinite(Number(z))&&Number(z)>=0))&&
+     Number.isFinite(defender.x)&&Number.isFinite(defender.y);
+   }):rivals;
+  const trickRivals=id==='lightning'?lightningTargets:readyCounterTargets;
   const rival=trickRivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
   if(id==='lightning'&&!inRange)return false;

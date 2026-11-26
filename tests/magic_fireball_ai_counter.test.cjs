@@ -122,4 +122,6 @@ test('Fireball AI JUMP dispatch preserves the existing human JUMP/slide counter 
  assert.match(engine,/if\(this\.reactToFireballTrick\(p,dt,ai\.reaction\)\|\|p\.aiFireballThreat\)return/);
  assert.match(engine,/jumpDodged=id==='fireball'&&inRange/);assert.match(engine,/fireballParried=id==='fireball'&&inRange&&rival\.action==='slide'/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
+ assert.match(engine,/const readyCounterTargets=\['fireball','freeze','bat','scream'\]\.includes\(id\)/);
+ assert.match(engine,/trickRivals=id==='lightning'\?lightningTargets:readyCounterTargets/);
 });
