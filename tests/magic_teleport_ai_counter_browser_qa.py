@@ -77,18 +77,16 @@ with sync_playwright() as pw:
    assert .88<=case['holdAtSlide']<1,(label,'slide was not timed near Teleport cast',case)
    assert case['slideTimer']>1-case['holdAtSlide'],(label,'grounded slide expired before the held Teleport cast',case)
   assert not errors,(label,errors)
-  for(const case of result['humanBackupOut']){
-   assert.equal(case['cpuAction'],'slide',(label,'CPU teammate did not back up selected human lane marker',case));
-   assert.ok(case['slideTimer']>0&&case['holdAtSlide']>=.88&&case['holdAtSlide']<1,(label,'backup slide timing',case));
-   assert.ok(case['cpuDistance']<95,(label,'backup left existing counter radius',case));
-   assert.ok(case['humanSelected']&&case['humanAction']==='idle'&&case['humanZ']<20,(label,'selected human marker control',case));
-   assert.ok(case['activated']&&case['countered']===true,(label,'actual Teleport resolver did not recognize backup',case));
-  }
-  for(const case of result['humanNoDuplicateOut']){
-   assert.equal(case['response'],false,(label,'CPU backup duplicated existing human counter',case));
-   assert.equal(case['cpuAction'],'idle',(label,'CPU should not duplicate existing counter',case));
-   assert.ok(case['humanSelected']&&case['activated']&&case['countered']===true,(label,'existing human counter was not preserved',case));
-  }
+  for case in result['humanBackupOut']:
+   assert case['cpuAction']=='slide',(label,'CPU teammate did not back up selected human lane marker',case)
+   assert case['slideTimer']>0 and .88<=case['holdAtSlide']<1,(label,'backup slide timing',case)
+   assert case['cpuDistance']<95,(label,'backup left existing counter radius',case)
+   assert case['humanSelected'] and case['humanAction']=='idle' and case['humanZ']<20,(label,'selected human marker control',case)
+   assert case['activated'] and case['countered'] is True,(label,'actual Teleport resolver did not recognize backup',case)
+  for case in result['humanNoDuplicateOut']:
+   assert case['response'] is False,(label,'CPU backup duplicated existing human counter',case)
+   assert case['cpuAction']=='idle',(label,'CPU should not duplicate existing counter',case)
+   assert case['humanSelected'] and case['activated'] and case['countered'] is True,(label,'existing human counter was not preserved',case)
   print('MAGIC_TELEPORT_AI_COUNTER_BROWSER_PASS',label,[{key:case[key] for key in ('team','fps','holdAtSlide','slideTimer')} for case in result['out']],'humanBackup=',result['humanBackupOut'],'actions=',result['actions'],flush=True)
   context.close()
  browser.close()
