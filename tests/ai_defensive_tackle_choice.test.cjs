@@ -176,8 +176,16 @@ test('CPU exposed-ball slide lead respects carrier Agility without changing huma
   assert.ok(dir*elite.x>dir*average.x&&dir*average.x>dir*low.x,
    'the slide must lead farther into the live forward turn for higher-Agility carriers');
   const neutralElite=slideAim(team,100,true,200,false),neutralLow=slideAim(team,1,true,200,false);
-  assert.ok(Math.abs(neutralElite.x-neutralLow.x)<1e-12&&neutralElite.y<neutralLow.y,
-   'neutral input must retain the prior straight-line lead, including the existing Agility horizon');
+  const expectedNeutral=agility=>{
+   const horizon=Math.max(.07,Math.min(.10,.085+(50-agility)*.0003));
+   const x=dir*38,y=20+200*horizon,length=Math.hypot(x,y);
+   return {x:x/length,y:y/length};
+  };
+  for(const [agility,actual] of [[100,neutralElite],[1,neutralLow]]){
+   const expected=expectedNeutral(agility);
+   assert.ok(Math.abs(actual.x-expected.x)<1e-12&&Math.abs(actual.y-expected.y)<1e-12,
+    'neutral input must retain the prior straight-line lead, including the existing Agility horizon');
+  }
   assert.ok(Math.abs(slideAim(team,undefined).y-average.y)<1e-12,'missing Agility uses the 85 ms baseline');
   assert.ok(Math.abs(slideAim(team,NaN).y-average.y)<1e-12,'invalid Agility uses the 85 ms baseline');
   const bodyElite=slideAim(team,100,false),bodyLow=slideAim(team,1,false);

@@ -463,6 +463,30 @@ function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4)
  const fatiguePenalty=fatigue*.075;
  return clamp(base+read*span+skillBias-fatiguePenalty,.12,.76);
 }
+function carrierTurnAwareVelocity(carrier,vx,vy,horizonSeconds=.12){
+ const speed=Math.hypot(vx,vy);
+ const horizon=Math.max(.05,Math.min(.18,Number.isFinite(horizonSeconds)?horizonSeconds:.12));
+ const inputX=Number.isFinite(carrier?.dx)?carrier.dx:0;
+ const inputY=Number.isFinite(carrier?.dy)?carrier.dy:0;
+ const inputLength=Math.hypot(inputX,inputY);
+ if(!Number.isFinite(speed)||speed<75||!Number.isFinite(inputLength)||inputLength<.15)
+  return {x:vx,y:vy};
+ const currentX=vx/speed,currentY=vy/speed;
+ const desiredX=inputX/inputLength,desiredY=inputY/inputLength;
+ const dot=Math.max(-1,Math.min(1,currentX*desiredX+currentY*desiredY));
+ if(dot>.995)return {x:vx,y:vy};
+ const cross=currentX*desiredY-currentY*desiredX;
+ const angle=Math.atan2(cross,dot);
+ const rawAgility=carrier?.src?.agility;
+ const parsedAgility=typeof rawAgility==='number'?rawAgility:
+  typeof rawAgility==='string'&&rawAgility.trim()!==''?Number(rawAgility):NaN;
+ const agility=Math.max(1,Math.min(100,Number.isFinite(parsedAgility)?parsedAgility:50));
+ const maxTurn=(3+agility*.13)*horizon;
+ const turn=Math.abs(angle)<=maxTurn?angle:
+  (Math.sign(angle)||(carrier?.t===0?1:-1))*maxTurn;
+ const cosine=Math.cos(turn),sine=Math.sin(turn);
+ return {x:(currentX*cosine-currentY*sine)*speed,y:(currentX*sine+currentY*cosine)*speed};
+}
 function defensivePokeBallSideRead(defender,carrier,ball){
  // Ground PASS pokes and SHOOT slides must touch a low, live ball, not merely the carrier's body.
  // The carrier and ball must both be grounded, owned and on the defender-facing side.

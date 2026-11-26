@@ -106,7 +106,12 @@ with sync_playwright() as pw:
             assert read['elite']['y']<read['average']['y']<read['low']['y'],(kind,team,read)
             direction=1 if int(team)==0 else -1
             assert direction*read['elite']['x']>direction*read['average']['x']>direction*read['low']['x'],(kind,team,read)
-            assert abs(read['neutralElite']['x']-read['neutralLow']['x'])<1e-12 and read['neutralElite']['y']<read['neutralLow']['y'],(kind,team,read)
+            for agility,sample in ((100,read['neutralElite']),(1,read['neutralLow'])):
+                horizon=max(.07,min(.10,.085+(50-agility)*.0003))
+                expected_x=direction*38
+                expected_y=20+200*horizon
+                expected_length=(expected_x**2+expected_y**2)**.5
+                assert abs(sample['x']-expected_x/expected_length)<1e-12 and abs(sample['y']-expected_y/expected_length)<1e-12,(kind,team,read)
             assert abs(read['missing']['y']-read['average']['y'])<1e-12,(kind,team,read)
             assert abs(read['invalid']['y']-read['average']['y'])<1e-12,(kind,team,read)
             assert abs(read['bodyElite']['y']-read['bodyLow']['y'])<1e-12,(kind,team,read)
