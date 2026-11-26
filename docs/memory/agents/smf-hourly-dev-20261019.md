@@ -1,5 +1,5 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 **Updated:** 2026-11-26
 
 ## Mission
@@ -9,6 +9,7 @@ Prioritize responsive football gameplay and intelligent passing/tackling, then e
 - **0.12.81.334 — AI-FIRST-TOUCH-OUTLET-MARKER-TURN-ARRIVAL-01:** second-defender first-touch outlet coverage now projects ready markers through the existing Agility-limited turn model. High-Agility markers can close a pocket they are actively turning toward; low-Agility markers retain their real turning delay. The existing 0.12–0.35 s arrival horizon, 0.18 s turn phase, ±30-unit per-axis lead cap and 92-unit cover radius remain.
 - Added mirrored Node regressions for both attack directions, high/low Agility and neutral/invalid-input fallback. Existing actual-engine desktop/simulated-touch browser acceptance still covers support assignment and possession.
 - Exact dev HEAD at start: 6708112c7624674065f208fd9675c2a3862b82f8 (.333); Modular QA #45824024024 and Full Regression Census #45824023966 passed. The .333 candidate completed all four Node and four Chromium shards and QA-gated promotion.
+- The first .334 exact-head Node gate (#45826519191) ran 2,959 tests: 2,958 passed; the only failure was this checkpoint's Agent ID missing the required inline-code identity marker. No gameplay regression failed. Corrected the marker; final-head Modular QA and Census reruns are pending.
 - Main is now .333 at 6708112c7624674065f208fd9675c2a3862b82f8; Pages #45825962341 succeeded. Independent main Census #45825975203 is in progress.
 
 ## Next smallest action
