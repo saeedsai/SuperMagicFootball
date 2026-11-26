@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.330',
+ version:'0.12.81.331',
  date:'2026-11-26',
  notes:Object.freeze([
   "KEEPER-CROSS-FUTURE-CONTEST-READ-01: CPU goalkeeper contested high-cross punch decisions now compare eligible attackers with the same bounded 120 ms future ball point used by the descending-height read. A runner who can meet the ball's next point can trigger the existing punch even if outside pressure radius now; a runner moving away from a cross travelling toward the keeper no longer forces an unnecessary punch. Existing keeper contact/height gates, attacker jump eligibility, punch thresholds, rebound, saves, four actions, roster/save compatibility and offline play remain unchanged. Mirrored Node and actual-engine desktop/simulated-touch Chromium regressions cover both goals and approaching/retreating cross flight.",
