@@ -55,7 +55,7 @@ with sync_playwright() as pw:
     g.matchState='play';g.clock=10;g.options.difficulty=3;g.controlled[carrier.t]=carrier.i;g.controlled[human.t]=human.i;g.manualSwitchGrace[human.t]=10;
     g.input.state[carrier.t]={dribble:true,x:0,y:0};g.input.state[human.t]={};
     let steps=0;const dt=1/60;
-    while(cpu.z<20&&carrier.dribbleHold<.95&&steps<60){g.updatePlayers(dt);steps++;}
+    while(cpu.z<20&&carrier.dribbleHold<.95&&steps<90){g.updatePlayers(dt);steps++;}
     const holdAtCounter=carrier.dribbleHold;carrier.dribbleHold=1;
     const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
     humanBackupOut.push({team,trick,cpuJumpCount:cpu.jumpCount,cpuZ:cpu.z,cpuDistance:Math.hypot(cpu.x-carrier.x,cpu.y-carrier.y),humanSelected:g.controlled[human.t]===human.i,

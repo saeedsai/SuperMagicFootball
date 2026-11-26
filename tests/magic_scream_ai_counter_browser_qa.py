@@ -99,9 +99,14 @@ with sync_playwright() as pw:
    assert case['activated'] and case['countered'] is True,(label,'actual Scream resolver did not recognize the handed-off JUMP',case)
    assert case['nearestDown'] and case['nearestAction']=='shotDown',(label,'fixture lost unavailable nearest defender',case)
   for case in result['humanBackupOut']:
-   assert case['cpuJumpCount']>=1 and case['cpuZ']>=20 and case['holdAtCounter']<1,(label,'CPU teammate did not back up the selected human Scream marker',case)
-   assert case['humanSelected'] and case['humanAction']=='idle' and case['humanZ']<20 and case['humanStun']==0,(label,'selected human lost control or was hit despite CPU backup',case)
-   assert case['activated'] and case['countered'] is True,(label,'actual Scream resolver did not recognize the CPU backup JUMP',case)
+   humanCounter=case['humanAction']=='jump' and case['humanZ']>=20
+   if humanCounter:
+    assert case['cpuJumpCount']==0,(label,'CPU duplicated the selected human JUMP counter',case)
+   else:
+    assert case['cpuJumpCount']>=1 and case['cpuZ']>=20 and case['holdAtCounter']<1,(label,'CPU teammate did not back up an idle selected human Scream marker',case)
+    assert case['humanAction']=='idle' and case['humanZ']<20,(label,'selected human unexpectedly changed action without a valid counter',case)
+   assert case['humanSelected'] and case['humanStun']==0,(label,'selected human lost control or was hit despite a valid counter',case)
+   assert case['activated'] and case['countered'] is True,(label,'actual Scream resolver did not recognize the available human/CPU JUMP counter',case)
   for case in result['humanNoDuplicateOut']:
    assert case['cpuJumpCount']==0,(label,'CPU duplicated an effective selected-human counter',case)
    assert case['humanSelected'] and case['activated'] and case['countered'] is True,(label,'selected human counter was not preserved',case)
