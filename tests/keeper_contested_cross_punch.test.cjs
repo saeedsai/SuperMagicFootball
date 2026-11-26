@@ -44,6 +44,26 @@ test('clean crosses and unavailable attackers remain catchable rather than forci
    'unavailable challenger must not force a punch: '+Object.keys(patch).join(','));
  }
 });
+test('high-cross punch pressure is measured at the projected 120 ms ball point',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const approaching=fixture(ENGINE,team);
+  approaching.receiver.x=approaching.ball.x+dir*90;
+  approaching.receiver.moveVX=0;
+  approaching.ball.vx=dir*200;
+  const futureArrival=AI.keeperHighCrossPunchDecision(approaching.keeper,approaching.ball,approaching.players);
+  assert.ok(futureArrival,JSON.stringify({team,futureArrival}));
+  assert.ok(futureArrival.nearestGap<70,'stationary attacker should meet the cross after it travels toward them');
+  assert.ok(futureArrival.nearestGap<Math.hypot(approaching.receiver.x-approaching.ball.x,approaching.receiver.y-approaching.ball.y));
+  const retreating=fixture(ENGINE,team);
+  retreating.receiver.x=retreating.ball.x+dir*52;retreating.receiver.moveVX=0;
+  retreating.ball.vx=-dir*200;
+  assert.equal(AI.keeperHighCrossPunchDecision(retreating.keeper,retreating.ball,retreating.players),null,
+   'an attacker near the current ball must not force a punch when the cross is travelling away toward the keeper');
+ }
+});
+
 test('keeper skill and a second arriving attacker change the punch decision without overriding pressure safety',async()=>{
  const {AI,ENGINE}=await loadModules(),f=fixture(ENGINE,0);
  f.receiver.x=f.ball.x+68;f.keeper.src.gkSkill=100;

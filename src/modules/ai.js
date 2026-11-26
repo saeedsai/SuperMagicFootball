@@ -2578,6 +2578,10 @@ function keeperHighCrossPunchDecision(keeper,ball,players){
   }else return false;
   return true;
  };
+ // The vertical jump read above already looks 120 ms ahead. Compare XY arrivals
+ // with that same future ball point, not the stale current cross position.
+ const futureBallX=ball.x+clampTo(ball.vx*.12,-120,120);
+ const futureBallY=ball.y+clampTo(ball.vy*.12,-120,120);
  const arrivals=[];
  for(const opponent of players){
   if(!activeOutfielder(opponent))continue;
@@ -2587,7 +2591,7 @@ function keeperHighCrossPunchDecision(keeper,ball,players){
    Number.isFinite(opponent.vy)?opponent.vy:0;
   const x=opponent.x+clampTo(vx*.12,-36,36);
   const y=opponent.y+clampTo(vy*.12,-36,36);
-  arrivals.push(Math.hypot(x-ball.x,y-ball.y));
+  arrivals.push(Math.hypot(x-futureBallX,y-futureBallY));
  }
  arrivals.sort((a,b)=>a-b);
  if(!arrivals.length)return null;

@@ -62,7 +62,12 @@ with sync_playwright() as pw:
     g.matchState='play';g.clock=10;g.controlled[carrier.t]=carrier.i;g.controlled[human.t]=human.i;
     g.manualSwitchGrace[carrier.t]=10;g.manualSwitchGrace[human.t]=10;g.input.state[carrier.t]={dribble:true,x:0,y:0};g.input.state[human.t]={};
     let steps=0;const dt=1/60;
-    while(cpu.z<20&&carrier.dribbleHold<.95&&steps<60){g.updatePlayers(dt);steps++;}
+    while(cpu.z<20&&carrier.dribbleHold<.95&&steps<60){
+     g.updatePlayers(dt);steps++;
+     // The controlled caster's human-input update resets this synthetic hold
+     // unless the fixture advances its one-second wind-up between physics frames.
+     carrier.dribbleHold=Math.min(.95,.35+steps*dt);
+    }
     const holdAtCounter=carrier.dribbleHold;
     // The timing loop advances the live CPU JUMP, but its human-input simulation can
     // also clear the caster's owner/hold state. Restore only the trick resolver's
