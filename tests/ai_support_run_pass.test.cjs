@@ -188,17 +188,30 @@ test('AI through ball leads a committed support runner into open space before ar
   'ball trajectory should aim into the space ahead, not at current feet');
 });
 
+function throughBallFixture(ENGINE,team){
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:0});
+ const dir=team===0?1:-1;
+ const carrier=game.players.find(p=>p.t===team&&p.i===3);
+ const runner=game.players.find(p=>p.t===team&&p.i===4);
+ const defender=game.players.find(p=>p.t!==team&&!p.keeper);
+ Object.assign(carrier,{x:1200,y:600,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+  moveVX:0,moveVY:0,dx:dir,dy:0});
+ Object.assign(runner,{x:1200+dir*120,y:600,down:false,stun:0,z:0,action:'run',actionTimer:0,
+  slideTimer:0,moveVX:dir*340,moveVY:0,dx:0,dy:-1,aiAssistTarget:null,aiGiveAndGoRun:null});
+ for(const p of game.players)if(p.t!==team)Object.assign(p,{down:true,stun:1,z:0,
+  action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+ game.ball.owner=carrier;
+ return {game,carrier,runner,defender,dir,
+  supportRun:{runner,target:{x:carrier.x+dir*160,y:carrier.y-112}}};
+}
+
 test('through-ball lead follows the receiver directional cut at the Agility turn rate',async()=>{
- const {AI}=await loadModules();
+ const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){
-  const dir=team===0?1:-1;
-  const carrier=player('turn-carrier-'+team,team,1200,600);
-  const runner=player('turn-runner-'+team,team,1200+dir*120,600,{
-   moveVX:dir*340,moveVY:0,dx:0,dy:-1
-  });
-  const supportRun={runner,target:{x:carrier.x+dir*160,y:carrier.y-112}};
+  const {game,carrier,runner,supportRun}=throughBallFixture(ENGINE,team);
   const targetFor=()=>{
-   const option=AI.attackingThroughBall([carrier,runner],team,carrier,supportRun);
+   const option=AI.attackingThroughBall(game.players,team,carrier,supportRun);
    assert.ok(option,'the committed forward runner should retain a through-ball option');
    return option.target;
   };
@@ -218,6 +231,32 @@ test('through-ball lead follows the receiver directional cut at the Agility turn
   runner.src.agility=100;const invalidHigh=targetFor();
   runner.src.agility=1;const invalidLow=targetFor();
   assert.deepEqual(invalidHigh,invalidLow,'invalid input retains the exact residual-velocity lead');
+ }
+});
+
+test('through-ball collection safety projects active defenders through their Agility turn',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const {game,carrier,runner,defender,dir,supportRun}=throughBallFixture(ENGINE,team);
+  const open=AI.attackingThroughBall(game.players,team,carrier,supportRun);
+  assert.equal(open?.runner,runner,'the pocket is initially open for team '+team);
+  Object.assign(defender,{x:open.target.x-dir*20,y:open.target.y+101,down:false,stun:0,z:0,
+   action:'run',actionTimer:0,slideTimer:0,moveVX:dir*300,moveVY:0,dx:0,dy:-1});
+  defender.src.agility=100;
+  assert.equal(AI.attackingThroughBall(game.players,team,carrier,supportRun),null,
+   'an elite defender turning into the collection pocket blocks team '+team);
+  defender.src.agility=1;
+  const low=AI.attackingThroughBall(game.players,team,carrier,supportRun);
+  assert.equal(low?.runner,runner,
+   'a low-Agility defender retaining residual momentum does not falsely block team '+team);
+  defender.dx=0;defender.dy=0;
+  defender.src.agility=100;const neutralHigh=AI.attackingThroughBall(game.players,team,carrier,supportRun);
+  defender.src.agility=1;const neutralLow=AI.attackingThroughBall(game.players,team,carrier,supportRun);
+  assert.deepEqual(neutralHigh,neutralLow,'neutral input retains the prior linear projection');
+  defender.dx=NaN;defender.dy=Infinity;
+  defender.src.agility=100;const invalidHigh=AI.attackingThroughBall(game.players,team,carrier,supportRun);
+  defender.src.agility=1;const invalidLow=AI.attackingThroughBall(game.players,team,carrier,supportRun);
+  assert.deepEqual(invalidHigh,invalidLow,'invalid input retains the prior linear projection');
  }
 });
 

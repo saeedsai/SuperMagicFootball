@@ -894,11 +894,28 @@ function attackingSupportPass(players,team,carrier,supportRun){
    const fatigue=clampValue(Number.isFinite(rawFatigue)?rawFatigue:0,0,1);
    return clampValue(92+(skill+diving)*.09-fatigue*12,90,110);
   };
+  // A live defender can cut toward the collection pocket during flight.
+  // Integrate the same Agility-limited turn response used by the receiver lead;
+  // retain the existing per-axis displacement cap and collection radii.
+  const projectDefenderPosition=(defender,seconds)=>{
+   let remaining=clampValue(seconds,0,.35);
+   let vx=movementVelocity(defender,'x'),vy=movementVelocity(defender,'y');
+   let travelX=0,travelY=0;
+   while(remaining>1e-6){
+    const step=Math.min(.18,remaining);
+    const turned=carrierTurnAwareVelocity(defender,vx,vy,step);
+    travelX+=(vx+turned.x)*.5*step;
+    travelY+=(vy+turned.y)*.5*step;
+    vx=turned.x;vy=turned.y;
+    remaining-=step;
+   }
+   return {x:defender.x+clampValue(travelX,-65,65),
+    y:defender.y+clampValue(travelY,-65,65)};
+  };
   for(const defender of defenders){
-   const futureX=defender.x+clampValue(movementVelocity(defender,'x')*arrivalSeconds,-65,65);
-   const futureY=defender.y+clampValue(movementVelocity(defender,'y')*arrivalSeconds,-65,65);
+   const future=projectDefenderPosition(defender,arrivalSeconds);
    const reach=defender.keeper?keeperCollectionReach(defender):84;
-   if(Math.hypot(futureX-target.x,futureY-target.y)<reach)return null;
+   if(Math.hypot(future.x-target.x,future.y-target.y)<reach)return null;
   }
   return {runner,target};
  }
