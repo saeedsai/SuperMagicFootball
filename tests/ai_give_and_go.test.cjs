@@ -163,3 +163,32 @@ test('engine stores the runtime return intent and moves the passer only after th
   assert.equal(game.ball.owner,null,'the return pass must enter the existing live ball-flight system');
   assert.equal(receiver.aiGiveAndGoRun,undefined,'the receiver must not create a nested runtime intent');
  });
+
+test('give-and-go return arrival accounts for an Agility-limited marker turn in both directions',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,carrier=player('receiver-'+team,team,team===0?760:240,300);
+  carrier.src={id:'receiver-'+team};
+  const target={x:carrier.x+dir*132,y:404};
+  const runner=player('passer-'+team,team,target.x,target.y);
+  runner.src={id:'passer-'+team};
+  runner.aiGiveAndGoRun={receiverId:carrier.src.id,target,expires:2};
+  const gap=Math.hypot(82,100);
+  const marker=player('marker-'+team,1-team,target.x-dir*82,target.y+100,{
+   moveVX:dir*600,moveVY:0,dx:dir*82/gap,dy:-100/gap,src:{agility:100}
+  });
+  const players=[carrier,runner,marker];
+  assert.equal(AI.attackingGiveAndGoReturnPass(players,team,carrier,bounds,1),null,
+   'a high-Agility marker turning into the return pocket closes team '+team);
+  marker.src.agility=1;
+  const low=AI.attackingGiveAndGoReturnPass(players,team,carrier,bounds,1);
+  assert.equal(low?.runner,runner,
+   'a low-Agility marker retaining momentum does not falsely close team '+team);
+  marker.dx=NaN;marker.dy=Infinity;marker.src.agility=100;
+  const invalidHigh=AI.attackingGiveAndGoReturnPass(players,team,carrier,bounds,1);
+  marker.src.agility=1;
+  const invalidLow=AI.attackingGiveAndGoReturnPass(players,team,carrier,bounds,1);
+  assert.deepEqual(invalidHigh,invalidLow,
+   'invalid input preserves the same bounded linear fallback on team '+team);
+ }
+});

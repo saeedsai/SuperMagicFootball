@@ -1253,8 +1253,19 @@ function attackingGiveAndGoRun(players,team,passer,receiver,bounds){
    const dx=target.x-carrier.x,dy=target.y-carrier.y,segment=dx*dx+dy*dy;
    let blocked=false,nearestMarkGap=Infinity,teammateCrowding=0;
    for(const defender of activeDefenders){
-    const futureX=defender.x+clampTo(velocity(defender,'x')*arrival,-75,75);
-    const futureY=defender.y+clampTo(velocity(defender,'y')*arrival,-75,75);
+    // A defender can turn into this short return lane during flight. Integrate
+    // the existing Agility-limited response, then retain the original ±75-unit cap.
+    let remaining=arrival,defenderVX=velocity(defender,'x'),defenderVY=velocity(defender,'y');
+    let travelX=0,travelY=0;
+    while(remaining>1e-6){
+     const step=Math.min(.18,remaining);
+     const turned=carrierTurnAwareVelocity(defender,defenderVX,defenderVY,step);
+     travelX+=(defenderVX+turned.x)*.5*step;
+     travelY+=(defenderVY+turned.y)*.5*step;
+     defenderVX=turned.x;defenderVY=turned.y;remaining-=step;
+    }
+    const futureX=defender.x+clampTo(travelX,-75,75);
+    const futureY=defender.y+clampTo(travelY,-75,75);
     const gap=Math.hypot(futureX-target.x,futureY-target.y);
     nearestMarkGap=Math.min(nearestMarkGap,gap);
     if(gap<66){blocked=true;break;}
