@@ -376,3 +376,46 @@ test('driveAI sends the second defender into the projected receiver screen while
  assert.ok(Math.abs(support.aiTarget.x-expected.x)<1e-9);
  assert.ok(Math.abs(support.aiTarget.y-expected.y)<1e-9);
 });
+
+test('wide byline defence assigns the second defender to the central cutback pocket while the primary still presses',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const field=ENGINE.WORLD.field;
+ const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+ const center=(bounds.yMin+bounds.yMax)/2;
+ for(const defendingTeam of [0,1]){
+  const attackingTeam=1-defendingTeam,attackDir=attackingTeam===0?1:-1;
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const carrier=game.player(attackingTeam,3),runner=game.player(attackingTeam,4);
+  const [primary,nearBall,cutback]=game.players.filter(p=>p.t===defendingTeam&&!p.keeper);
+  assert.ok(carrier&&runner&&primary&&nearBall&&cutback,'fixture needs a carrier, cutback runner and three active defenders');
+  const carrierX=attackingTeam===0?bounds.xMax-220:bounds.xMin+220,carrierY=bounds.yMin+120;
+  for(const q of game.players)if(!q.keeper)Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
+  Object.assign(carrier,{x:carrierX,y:carrierY,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,vx:0,vy:0,firstTouchControlTimer:0,firstTouchPressure:0,dribbleHold:0});
+  Object.assign(runner,{x:carrierX-attackDir*150,y:center,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,vx:0,vy:0});
+  const place=(p,x,y)=>Object.assign(p,{x,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+   moveVX:0,moveVY:0,vx:0,vy:0,aiTarget:null,aiTimer:0,aiAssistTarget:null,
+   aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
+  place(primary,carrierX-attackDir*25,carrierY);place(nearBall,carrierX-attackDir*50,carrierY+18);
+  const expected=AI.defensiveCutbackCoverTarget(defendingTeam,carrier,bounds,game.players);
+  assert.ok(expected,'wide byline carrier and central runner must produce a cutback pocket');
+  place(cutback,expected.x+8,expected.y+8);
+  const legacy=AI.defensivePressers(game.players,defendingTeam,carrier);
+  assert.equal(legacy.primary,primary);assert.equal(legacy.support,nearBall,'without the cutback read, carrier proximity selects the wrong cover player');
+  const arrival=AI.defensivePressers(game.players,defendingTeam,carrier,null,expected);
+  assert.equal(arrival.primary,primary);assert.equal(arrival.support,cutback,'the pocket-arriving defender must own second-man cover');
+  Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
+   attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+  game.clock=2;game.driveAI(cutback,1/60);
+  assert.ok(cutback.aiTarget&&Math.hypot(cutback.aiTarget.x-expected.x,cutback.aiTarget.y-expected.y)<1e-6,
+   'actual engine must send the selected support player into the cutback pocket');
+  game.driveAI(primary,1/60);
+  assert.ok(primary.aiTarget&&Math.hypot(primary.aiTarget.x-carrier.x,primary.aiTarget.y-carrier.y)<=34.1,
+   'primary presser must continue closing the carrier');
+  assert.equal(game.ball.owner,carrier,'role selection must not change possession');
+ }
+});

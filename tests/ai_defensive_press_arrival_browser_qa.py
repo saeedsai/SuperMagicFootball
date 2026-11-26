@@ -142,7 +142,37 @@ with sync_playwright() as pw:
                     inputRows.push({defendingTeam,agility,laneShift});
                 }
             }
-            return {rows,stationaryRows,turnRows,inputRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            const cutbackRows=[];
+            for(const defendingTeam of [0,1]){
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const attackingTeam=1-defendingTeam,attackDir=attackingTeam===0?1:-1;
+                const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+                const center=(bounds.yMin+bounds.yMax)/2,carrierX=attackingTeam===0?bounds.xMax-220:bounds.xMin+220,carrierY=bounds.yMin+120;
+                const carrier=game.player(attackingTeam,3),runner=game.player(attackingTeam,4),
+                    [primary,nearBall,cutback]=game.players.filter(p=>p.t===defendingTeam&&!p.keeper);
+                if(!carrier||!runner||!primary||!nearBall||!cutback)throw new Error('cutback cover fixture is missing an active player');
+                for(const q of game.players){if(q.keeper)continue;Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0,aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});}
+                const place=(q,x,y)=>Object.assign(q,{x,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,slideTimer:0,
+                    shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,
+                    aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
+                place(carrier,carrierX,carrierY);place(runner,carrierX-attackDir*150,center);
+                const expected={x:Math.max(bounds.xMin+22,Math.min(bounds.xMax-22,carrierX-attackDir*93)),
+                    y:Math.max(bounds.yMin+23,Math.min(bounds.yMax-23,carrierY+(center-carrierY)*.62))};
+                place(primary,carrierX-attackDir*25,carrierY);place(nearBall,carrierX-attackDir*50,carrierY+18);
+                place(cutback,expected.x+8,expected.y+8);
+                Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
+                    attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+                game.clock=2;game.driveAI(cutback,.016);
+                if(!cutback.aiTarget||Math.hypot(cutback.aiTarget.x-expected.x,cutback.aiTarget.y-expected.y)>1e-6)
+                    throw new Error('second defender did not guard the projected cutback pocket: '+JSON.stringify({defendingTeam,expected,actual:cutback.aiTarget}));
+                game.driveAI(primary,.016);
+                if(!primary.aiTarget||Math.hypot(primary.aiTarget.x-carrier.x,primary.aiTarget.y-carrier.y)>34.1)
+                    throw new Error('primary presser left the carrier to cover the cutback: '+JSON.stringify({defendingTeam,target:primary.aiTarget}));
+                if(game.ball.owner!==carrier)throw new Error('cutback cover role selection changed possession');
+                cutbackRows.push({defendingTeam,expected,cover:cutback.aiTarget,primary:primary.aiTarget});
+            }
+            return {rows,stationaryRows,turnRows,inputRows,cutbackRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -151,7 +181,8 @@ with sync_playwright() as pw:
         assert len(result['stationaryRows'])==2,(kind,result)
         assert len(result['turnRows'])==2,(kind,result)
         assert len(result['inputRows'])==4,(kind,result)
+        assert len(result['cutbackRows'])==2,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'moving/stationary arrival press and Agility-limited carrier-input turn lead, possession, four actions and no JS errors',flush=True)
+        print('PASS',kind,'arrival press, Agility turn lead and cutback-pocket support assignment; possession, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()

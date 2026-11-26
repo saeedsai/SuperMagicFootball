@@ -3272,7 +3272,11 @@ class GameEngine{
   // receiver-side interception lane while the primary continues to press the ball.
   const defensivePassCoverHint=!owner&&!concealed&&liveBall.pass===true?
    defensivePassReceiverCoverTarget(t,liveBall,this.players,looseBallBounds):null;
-  const supportReadTarget=defensivePassCoverHint||looseBallSupportTarget;
+  const defensiveCutbackCover=owner&&owner.t!==t?defensiveCutbackCoverTarget(t,owner,
+   {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},this.players):null;
+  // When a wide carrier creates a central cutback lane, select the second defender
+  // for that pocket while the primary remains assigned to the live carrier.
+  const supportReadTarget=defensivePassCoverHint||looseBallSupportTarget||defensiveCutbackCover;
   const controlledDefender=this.inControl(t)?this.controlledPlayer(t):null;
   let pressing=(!owner||owner.t!==t)?defensivePressers(this.players,t,pressTarget,
    controlledDefender,supportReadTarget):null;
@@ -3284,8 +3288,6 @@ class GameEngine{
    controlledDefender,looseBallSupportTarget);
   const styleSpeed=t===1?(aiStyle==='Aggressive'?1.09:aiStyle==='Defensive'?.96:1):1;
   const speed=this.playerSpeed(p)*ai.speed*styleSpeed*(this.terrain==='Sand'?.75:1);
-  const defensiveCutbackCover=owner&&owner.t!==t?defensiveCutbackCoverTarget(t,owner,
-   {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},this.players):null;
   const defensiveGiveAndGoCover=owner&&owner.t!==t?defensiveGiveAndGoCoverTarget(t,owner,this.players,
    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},this.clock):null;
   const defensiveLoftedPassCover=pressing?.support===p&&!owner&&!concealed?
