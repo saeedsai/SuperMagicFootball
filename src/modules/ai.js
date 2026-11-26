@@ -969,8 +969,9 @@ function attackingSupportPass(players,team,carrier,supportRun){
     runner.aiAssistTarget||!ready(runner))continue;
    const vx=movementVelocity(runner,'x'),vy=movementVelocity(runner,'y');
    if(vx*dir< -120)continue;
-   const target={x:runner.x+clampValue(vx*.10,-24,24),
-    y:runner.y+clampValue(vy*.10,-24,24)};
+   const turnedVelocity=carrierTurnAwareVelocity(runner,vx,vy,.10);
+   const target={x:runner.x+clampValue((vx+turnedVelocity.x)*.05,-24,24),
+    y:runner.y+clampValue((vy+turnedVelocity.y)*.05,-24,24)};
    if(target.x<xMin+18||target.x>xMax-18||target.y<yMin+18||target.y>yMax-18)continue;
    const behind=(carrier.x-target.x)*dir,centerOffset=Math.abs(target.y-centerY);
    const range=Math.hypot(target.x-carrier.x,target.y-carrier.y);

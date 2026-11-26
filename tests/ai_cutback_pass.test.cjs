@@ -35,6 +35,42 @@ test('AI selects a driven central cutback from a wide final-third carrier in bot
   assert.ok(Math.abs(option.target.y-340)<=132,'receiver must be in the central lane');
  }
 });
+
+test('cutback pass leads follow the receiver’s Agility-limited turn on both attack sides',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const center=(BOUNDS.yMin+BOUNDS.yMax)/2;
+ const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),dir=team===0?1:-1,cutSign=team===0?1:-1;
+  f.runner.y=center-cutSign*90;
+  f.runner.moveVX=dir*160;f.runner.moveVY=0;f.runner.vx=dir*160;f.runner.vy=0;
+  f.runner.dx=0;f.runner.dy=cutSign;
+  const project=agility=>{
+   f.runner.src.agility=agility;
+   const option=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+   assert.equal(option?.runner,f.runner,'team '+team+' should keep the same eligible receiver');
+   const turn=Math.min(Math.PI/2,(3+agility*.13)*.10);
+   const expected={
+    x:f.runner.x+clamp((dir*160+dir*160*Math.cos(turn))*.05,-24,24),
+    y:f.runner.y+clamp(cutSign*160*Math.sin(turn)*.05,-24,24)
+   };
+   assert.ok(Math.abs(option.target.x-expected.x)<1e-9&&Math.abs(option.target.y-expected.y)<1e-9,
+    'team '+team+' should lead through the Agility-limited turn');
+   return option;
+  };
+  const high=project(100),low=project(1);
+  assert.ok(Math.abs(high.target.y-center)<Math.abs(low.target.y-center),
+   'team '+team+' high Agility should lead farther into the central cutback lane');
+  assert.ok(Math.abs(high.target.x-low.target.x)>5,
+   'team '+team+' turn-aware cutback should preserve less forward momentum for high Agility');
+  f.runner.dx=0;f.runner.dy=0;f.runner.src.agility=100;
+  const neutral=AI.attackingCutbackPass(f.game.players,team,f.carrier,null,BOUNDS);
+  const linear={x:f.runner.x+clamp(dir*160*.10,-24,24),y:f.runner.y};
+  assert.ok(neutral&&Math.abs(neutral.target.x-linear.x)<1e-9&&Math.abs(neutral.target.y-linear.y)<1e-9,
+   'team '+team+' neutral input must retain the previous residual-momentum lead');
+ }
+});
+
 test('cutback preference is limited to a wide carrier near goal and a receiver behind in the central lane',async()=>{
  const {AI,ENGINE}=await loadModules();
  const central=fixture(ENGINE);central.carrier.y=340;
