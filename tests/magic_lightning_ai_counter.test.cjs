@@ -11,7 +11,19 @@ function method(name,globals={}){
 	const b=a+1+tail;
 	return vm.runInNewContext('({'+engine.slice(a,b)+'})',globals)[name];
 }
-const react=method('reactToLightningTrick');
+const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const stat=(p,k)=>p.src?.[k]??0;
+const face2d=(d,a)=>{
+ if(!d||!a||!Number.isFinite(d.x)||!Number.isFinite(d.y)||!Number.isFinite(a.x)||!Number.isFinite(a.y))return false;
+ let x=Number.isFinite(d.dx)?d.dx:0,y=Number.isFinite(d.dy)?d.dy:0,n=Math.hypot(x,y);
+ if(n<=.1){x=Number.isFinite(d.moveVX)?d.moveVX:0;y=Number.isFinite(d.moveVY)?d.moveVY:0;n=Math.hypot(x,y);}
+ if(n<=.1){x=d.face===-1?-1:1;y=0;n=1;}
+ return (x/n)*(a.x-d.x)+(y/n)*(a.y-d.y)>0;
+};
+const helperStart=engine.indexOf('function lightningDefenderCounters('),helperEnd=engine.indexOf('\n}',helperStart)+2;
+assert.ok(helperStart>=0&&helperEnd>helperStart,'Lightning shared counter helper exists');
+const lightningDefenderCounters=vm.runInNewContext('('+engine.slice(helperStart,helperEnd)+')',{defenderFacesCarrier2D:face2d,stat});
+const react=method('reactToLightningTrick',{distance,lightningDefenderCounters});
 function setup(side=0,patch={}){
  const caster={t:1-side,keeper:false,lightningPending:null};
  const cpu={t:side,x:1120,y:620,z:0,stun:0,action:'run',actionTimer:0,
@@ -50,6 +62,43 @@ test('Lightning reaction ignores other targets and avoids interrupting existing 
  }
 });
 
+test('A selected human Lightning marker keeps control while a ready CPU teammate backs them up',()=>{
+ for(const side of [0,1])for(const hz of [30,60,120]){
+  const caster={t:1-side,x:100,y:100,src:{dribbling:60},lightningPending:null};
+  const target={t:side,i:3,x:150,y:100,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,
+   face:-1,dx:0,dy:0,moveVX:0,moveVY:0,src:{defence:20}};
+  const backup={t:side,i:4,x:170,y:100,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,
+   face:-1,dx:0,dy:0,moveVX:0,moveVY:0,aiLightningThreat:null,aiLightningReaction:0,src:{defence:20}};
+  caster.lightningPending={remaining:.32,target,backup};
+  let jumps=0;const game={players:[caster,target,backup],jump(p){jumps++;p.z=4;p.vz=420;p.action='jump';p.actionTimer=.5;return true;}};
+  let remaining=.32,frames=0;
+  while(remaining>1e-9&&frames<hz&&backup.action!=='jump'){
+   remaining=Math.max(0,remaining-1/hz);caster.lightningPending.remaining=remaining;
+   react.call(game,backup,1/hz,.18);frames++;
+  }
+  assert.equal(backup.action,'jump',`side ${side}, ${hz}Hz: backup responds`);
+  assert.ok(remaining>0,'backup starts before the warning expires');
+  assert.equal(target.action,'idle','the selected human retains direct control');
+  assert.equal(jumps,1);
+ }
+});
+test('Lightning backup yields when the selected human has already started an effective counter',()=>{
+ for(const side of [0,1])for(const patch of [
+  {action:'jump',actionTimer:.3,z:20},
+  {action:'slide',actionTimer:.2,z:0},
+  {action:'idle',actionTimer:0,z:0,face:-1,dx:-1,dy:0,src:{defence:80}}
+ ]){
+  const caster={t:1-side,x:100,y:100,src:{dribbling:60},lightningPending:null};
+  const target={t:side,i:3,x:150,y:100,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,
+   face:-1,dx:0,dy:0,moveVX:0,moveVY:0,src:{defence:20},...patch};
+  const backup={t:side,i:4,x:170,y:100,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,
+   face:-1,dx:0,dy:0,moveVX:0,moveVY:0,aiLightningThreat:null,aiLightningReaction:0,src:{defence:20}};
+  caster.lightningPending={remaining:.32,target,backup};
+  let jumps=0;const game={players:[caster,target,backup],jump(){jumps++;return true;}};
+  assert.equal(react.call(game,backup,1/60,.08),false);
+  assert.equal(jumps,0);
+ }
+});
 test('DriveAI dispatches the CPU response through the existing difficulty profile and controls remain unchanged',()=>{
  assert.match(engine,/this\.reactToLightningTrick\(p,dt,ai\.reaction\)/);
  const input=fs.readFileSync('src/modules/input.js','utf8');

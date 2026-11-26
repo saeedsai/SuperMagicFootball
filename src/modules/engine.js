@@ -63,6 +63,24 @@ function defenderFacesCarrier2D(defender,carrier){
  if(Math.hypot(towardX,towardY)<=1)return false;
  return headingX*towardX+headingY*towardY>0;
 }
+
+function lightningDefenderCounters(defender,attacker){
+ if(!defender||!attacker)return false;
+ const inJump=defender.action==='jump'&&Number.isFinite(defender.z)&&defender.z>=20;
+ const inSlide=defender.action==='slide'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&
+  Number.isFinite(defender.z)&&defender.z<20;
+ let closingX=Number.isFinite(defender.dx)?defender.dx:0;
+ let closingY=Number.isFinite(defender.dy)?defender.dy:0;
+ if(Math.hypot(closingX,closingY)<=.1){
+  closingX=Number.isFinite(defender.moveVX)?defender.moveVX:0;
+  closingY=Number.isFinite(defender.moveVY)?defender.moveVY:0;
+ }
+ const closing=closingX*(attacker.x-defender.x)+closingY*(attacker.y-defender.y)>0;
+ const read=defenderFacesCarrier2D(defender,attacker)&&closing&&
+  stat(defender,'defence')>=stat(attacker,'dribbling');
+ return inJump||inSlide||read;
+}
+
 // A receiving outfielder briefly settles a pressured low ground pass. Faster
 // incoming balls add a little settling time; Dribbling skill removes it. Only
 // movement speed is affected, so direction, kicks, tackles and ball flight stay live.
@@ -1557,10 +1575,31 @@ class GameEngine{
   if(p.aiMaceSweepReaction<=1e-9){p.aiMaceSweepReaction=Infinity;return this.jump(p);}
   return false;
  }
+
  reactToLightningTrick(p,dt,reactionSeconds){
-  const threat=this.players.find(q=>q&&q.t!==p.t&&!q.keeper&&q.lightningPending?.target===p);
+  const threat=this.players.find(q=>q&&q.t!==p.t&&!q.keeper&&
+   (q.lightningPending?.target===p||q.lightningPending?.backup===p));
   if(!threat){p.aiLightningThreat=null;p.aiLightningReaction=0;return false;}
-  if((threat.lightningPending.remaining||0)<=1e-9){p.aiLightningThreat=null;p.aiLightningReaction=0;return false;}
+  const pending=threat.lightningPending,target=pending.target,isBackup=pending.backup===p;
+  if((pending.remaining||0)<=1e-9){p.aiLightningThreat=null;p.aiLightningReaction=0;return false;}
+  if(isBackup){
+   const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+   const targetUnavailable=!target||!this.players.includes(target)||target.t!==p.t||target.keeper||
+    target.down===true||!(Number(target.stun)<=0)||!clear(target.invuln)||
+    !clear(target.shotImpactKnockdownPending)||!clear(target.shotImpactKnockdownTimer)||
+    !clear(target.shotImpactRiseTimer)||['shotDown','shotGetUp'].includes(target.action)||
+    (target.action==='hurt'&&(Number(target.actionTimer)||0)>0)||
+    (target.z!=null&&(!Number.isFinite(Number(target.z))||Number(target.z)<0))||
+    !Number.isFinite(target.x)||!Number.isFinite(target.y)||distance(threat,target)>=95;
+   if(targetUnavailable||lightningDefenderCounters(target,threat)||lightningDefenderCounters(p,threat)||
+    p.down===true||!clear(p.invuln)||!clear(p.shotImpactKnockdownPending)||
+    !clear(p.shotImpactKnockdownTimer)||!clear(p.shotImpactRiseTimer)||
+    ['shotDown','shotGetUp'].includes(p.action)||(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)||
+    (p.z!=null&&(!Number.isFinite(Number(p.z))||Number(p.z)<0))||
+    !Number.isFinite(p.x)||!Number.isFinite(p.y)||distance(threat,p)>=95){
+    p.aiLightningThreat=null;p.aiLightningReaction=0;return false;
+   }
+  }
   if(p.keeper||p.z>10||p.stun>0||(p.action==='jump'&&(p.actionTimer||0)>0)||
     (p.action==='slide'&&(p.actionTimer||0)>0)){
    p.aiLightningThreat=threat;p.aiLightningReaction=0;return false;
@@ -2012,6 +2051,13 @@ class GameEngine{
   const inRange=!!rival&&distance(p,rival)<radius;
   // A ready teammate can cover a selected human marker with the same existing counter.
   const counterRivals=['fireball','freeze','bat'].includes(id)?trickRivals.filter(defender=>distance(p,defender)<radius):(rival?[rival]:[]);
+  const selectedHuman=defender=>typeof this.inControl==='function'&&this.inControl(defender.t)&&
+   Number.isInteger(defender.i)&&Number.isInteger(this.controlled?.[defender.t])&&
+   this.controlled[defender.t]===defender.i;
+  const lightningBackup=id==='lightning'&&rival&&selectedHuman(rival)&&
+   !lightningDefenderCounters(rival,p)
+   ?trickRivals.find(defender=>defender!==rival&&!selectedHuman(defender)&&
+    Number.isFinite(defender.x)&&Number.isFinite(defender.y)&&distance(p,defender)<radius):null;
   if(id==='lightning'&&!inRange)return false;
   // Any eligible nearby defender can read a named Trick, not only the nearest marker.
   // Keep the same live 2D approach requirement and Defence-versus-Dribbling threshold.
@@ -2136,7 +2182,7 @@ class GameEngine{
   if(id==='spinBump')p.spinBumpFx=.38;
   if(!countered){
    if(id==='lightning'){
-    p.lightningPending={remaining:.32,target:rival};rival.lightningMark=.32;
+    p.lightningPending={remaining:.32,target:rival,backup:lightningBackup||null};rival.lightningMark=.32;
     this.emit('lightningTrickWindup',{team:p.t,player:p.src.name,target:rival.src.name,seconds:.32,radius:95});
    }else if(id==='banana'){
     this.magicHazards=placeBananaPeel(this.magicHazards,p,F);
@@ -2220,7 +2266,16 @@ class GameEngine{
   }
   const closing=closingX*(p.x-q.x)+closingY*(p.y-q.y)>0;
   const read=facing&&closing&&stat(q,'defence')>=stat(p,'dribbling');
-  if(inJump||inSlide||read){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true});return false;}
+  const backup=pending.backup;
+  const backupAvailable=backup&&backup!==q&&this.players.includes(backup)&&backup.t===q.t&&!backup.keeper&&
+   !backup.down&&Number(backup.stun)<=0&&clear(backup.invuln)&&
+   clear(backup.shotImpactKnockdownPending)&&clear(backup.shotImpactKnockdownTimer)&&
+   clear(backup.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(backup.action)&&
+   !(backup.action==='hurt'&&(Number(backup.actionTimer)||0)>0)&&
+   (backup.z==null||(Number.isFinite(Number(backup.z))&&Number(backup.z)>=0))&&
+   Number.isFinite(backup.x)&&Number.isFinite(backup.y)&&distance(p,backup)<95;
+  const backupCountered=!!(backupAvailable&&lightningDefenderCounters(backup,p));
+  if(inJump||inSlide||read||backupCountered){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true});return false;}
   q.stun=Math.max(q.stun,.32);q.action='hurt';q.actionTimer=Math.max(q.actionTimer||0,.32);q.lightningFx=.32;
   this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:true,countered:false,stun:.32});return true;
  }
