@@ -15,4 +15,12 @@ Deliver player-facing gameplay first, then existing-player graphics/animation, g
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No unapproved concept heroes or copied art. Keep #48 physical acceptance, #86 Render drift and #87 branch protection open. No authenticated online-hosting claim.
 
 ## Next smallest action
-Inspect exact-head .319 Modular QA and four-Node/four-Chromium Full Regression Census. Fix confirmed failures, then allow only a green exact head through the existing QA-gated main pipeline. Verify main Census, Pages deployment and hosted bytes independently.
+Rerun exact-head .319 Modular QA and four-Node/four-Chromium Full Regression Census after the confirmed preflight repairs. Then continue with selected-human Scream backup counterplay if the gate is clear; allow only a green exact head through the existing QA-gated main pipeline. Verify main Census, Pages deployment and hosted bytes independently.
+
+## Evidence
+- Exact dev head at this checkpoint: `34dcffe9576d84c26d06e770d0f80acbe0c4edf7` (.319); main: `e1720386be42b69c068afa0c193148f21abaefe7` (.314).
+- Modular QA #45757954319 and Full Regression Census #45757954374 both failed at Node preflight. Confirmed causes: stale `.318` service-worker header/cache suffix, missing required `## Evidence` heading, a Lightning Studio source-contract still requiring the old pending-target shape, and a VM test extraction that included the adjacent `lightningDefenderCounters` function. No runtime/browser result was reached.
+- Main protection remains disabled/unavailable to this integration (#87); physical two-phone acceptance #48 and Render drift #86 remain open.
+
+## Cleanup
+- No other agent checkpoint was read or modified. No LAN/P2P, roster, art, save-schema or online-hosting changes in this repair.
