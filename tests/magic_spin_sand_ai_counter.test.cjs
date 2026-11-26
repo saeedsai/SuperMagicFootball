@@ -32,6 +32,19 @@ function fixture(side,id='spinBump',distance=60){
   burst(){},emit:(type,data)=>events.push({type,...data})};
  return{game,carrier,target,events};
 }
+function humanBackupFixture(side,id,{humanCounter=null,teammateCounter=false,backupDistance=70}={}){
+ const state=fixture(side,id,45),{game,carrier,target}=state,other=game.players[2];
+ const dir=side?-1:1,heading=-dir;
+ Object.assign(target,{i:3,x:carrier.x+dir*45,y:carrier.y,dx:heading,dy:0,face:heading});
+ Object.assign(other,{i:4,x:carrier.x+dir*backupDistance,y:carrier.y,z:0,stun:0,down:false,invuln:0,
+  action:'idle',actionTimer:0,dx:heading,dy:0,face:heading});
+ game.controlled=[0,0];game.controlled[side]=target.i;game.inControl=team=>team===side;
+ if(humanCounter==='jump')Object.assign(target,{z:22,action:'jump',actionTimer:.3});
+ if(humanCounter==='slide')Object.assign(target,{z:0,action:'slide',actionTimer:.3});
+ if(teammateCounter)game.players.push({t:side,i:5,keeper:false,stun:0,down:false,invuln:0,
+  x:carrier.x+dir*78,y:carrier.y,z:22,action:'jump',actionTimer:.3,src:{defence:40}});
+ return {...state,other};
+}
 
 test('CPU jumps Spin Bump and Sand Trap warnings across difficulty, teams and 30/60/120 Hz',()=>{
  for(const id of ['spinBump','sandTrap'])for(const side of [0,1])for(const fps of [30,60,120])for(let level=1;level<aiData.length;level++){
@@ -59,6 +72,51 @@ test('only the nearest grounded in-range CPU responds; existing jumps/slides are
   react.call(jumping.game,jumping.target,.02,.09);assert.equal(jumping.game.jumps,0);
   const sliding=fixture(side,id);Object.assign(sliding.target,{action:'slide',actionTimer:.3});
   react.call(sliding.game,sliding.target,.02,.09);assert.equal(sliding.game.jumps,0);assert.equal(sliding.target.actionTimer,.3);
+ }
+});
+
+test('a selected human Spin Bump/Sand Trap marker gets one CPU JUMP backup',()=>{
+ for(const id of ['spinBump','sandTrap'])for(const side of [0,1])for(const fps of [30,60,120]){
+  const {game,carrier,target,other}=humanBackupFixture(side,id),dt=1/fps;
+  let hold=.35;
+  while(hold<1&&!game.jumps){
+   carrier.dribbleHold=hold;react.call(game,other,dt,aiData[2].reaction);
+   hold=Math.min(1,hold+dt);
+  }
+  assert.equal(game.jumps,1,id+' side '+side+' '+fps+'Hz: CPU backup jumps');
+  assert.equal(other.action,'jump');assert.ok(other.actionTimer>0);
+  assert.equal(target.action,'idle','selected human keeps direct control');
+  assert.equal(game.controlled[side],target.i);
+  carrier.dribbleHold=1;
+  assert.equal(resolve.call(game,carrier),true,'countered trick still consumes its activation');
+  assert.equal(game.events.at(-1).countered,true,'actual resolver accepts teammate JUMP');
+  assert.equal(game.ball.owner,carrier,'counter does not change possession');
+  assert.equal(carrier.magicReadyAt,8,'caster still pays the existing cooldown');
+  assert.equal(carrier.fatigue,.245,'caster still pays the existing fatigue cost');
+  assert.equal(target.stun,0);
+ }
+});
+
+test('Spin Bump/Sand Trap backup never duplicates an effective human or teammate counter',()=>{
+ for(const id of ['spinBump','sandTrap'])for(const side of [0,1]){
+  for(const state of ['jump','slide']){
+   const {game,carrier,target,other}=humanBackupFixture(side,id,{humanCounter:state});
+   react.call(game,other,.2,.09);
+   assert.equal(game.jumps,0,'existing human '+state+' is not duplicated');
+   carrier.dribbleHold=1;assert.equal(resolve.call(game,carrier),true);
+   assert.equal(game.events.at(-1).countered,true,'existing human '+state+' counters');
+  }
+  const {game,carrier,other}=humanBackupFixture(side,id,{teammateCounter:true});
+  react.call(game,other,.2,.09);
+  assert.equal(game.jumps,0,'another CPU teammate already counters');
+  carrier.dribbleHold=1;assert.equal(resolve.call(game,carrier),true);
+  assert.equal(game.events.at(-1).countered,true,'resolver sees the other teammate');
+  const outside=humanBackupFixture(side,id,{backupDistance:83});
+  react.call(outside.game,outside.other,.2,.09);
+  assert.equal(outside.game.jumps,0,'CPU outside the existing 82-unit radius cannot back up');
+  outside.carrier.dribbleHold=1;assert.equal(resolve.call(outside.game,outside.carrier),true);
+  assert.equal(outside.game.events.at(-1).countered,false,'out-of-range backup cannot cancel the effect');
+  assert.equal(outside.target.stun,.38,'uncountered close-range trick retains its existing effect');
  }
 });
 

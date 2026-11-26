@@ -208,7 +208,7 @@ test('Scream backup is not suppressed by a countering teammate outside the 135-u
 
 test('Scream resolver accepts the same ready teammate JUMP and SHOOT-slide backup candidates',()=>{
  const trick=methodSource('tryMagicTrick');
- assert.match(trick,/const counterRivals=\['fireball','freeze','bat','scream'\]/);
+ assert.match(trick,/const counterRivals=\[[^\]]*'hideBall'[^\]]*\]\.includes\(id\)/);
  assert.match(trick,/screamDodged=id==='scream'&&inRange&&counterRivals\.some/);
  assert.match(trick,/screamParried=id==='scream'&&inRange&&counterRivals\.some/);
 });

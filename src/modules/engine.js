@@ -1701,11 +1701,33 @@ class GameEngine{
   return this.jump(p);
  }
  reactToSpinSandTrick(p,dt,reactionSeconds){
-  const carrier=this.ball?.owner,trick=carrier?.src?.magicTrick;
-  const rivals=carrier&&carrier.t!==p.t&&!carrier.keeper&&(trick==='spinBump'||trick==='sandTrap')&&
-   Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1
-   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
-  const threat=rivals[0]===p&&distance(carrier,p)<82?carrier:null;
+  const carrier=this.ball?.owner,trick=carrier?.src?.magicTrick,hold=Number(carrier?.dribbleHold);
+  const visibleWindup=carrier&&carrier.t!==p.t&&!carrier.keeper&&
+   (trick==='spinBump'||trick==='sandTrap')&&Number.isFinite(hold)&&hold>=.35&&hold<1&&
+   Number.isFinite(carrier.x)&&Number.isFinite(carrier.y);
+  const rivals=visibleWindup&&Array.isArray(this.players)
+   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&
+    Number.isFinite(q.x)&&Number.isFinite(q.y))
+    .sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
+  const target=rivals[0]||null;
+  const selectedHuman=q=>typeof this.inControl==='function'&&this.inControl(q.t)&&
+   Number.isInteger(q.i)&&Number.isInteger(this.controlled?.[q.t])&&this.controlled[q.t]===q.i;
+  const hasCounter=q=>q&&distance(carrier,q)<82&&(
+   q.action==='jump'&&Number.isFinite(q.z)&&q.z>=20||
+   q.action==='slide'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&
+    Number.isFinite(q.z)&&q.z<20);
+  const teammateAlreadyCounters=!!(target&&rivals.some(q=>q!==target&&hasCounter(q)));
+  const backup=target&&selectedHuman(target)&&!hasCounter(target)&&!teammateAlreadyCounters
+   ?rivals.find(q=>q!==target&&!selectedHuman(q)&&distance(carrier,q)<82&&
+    !q.down&&!(Number(q.invuln)>0)&&
+    !(Number(q.shotImpactKnockdownPending)>0)&&!(Number(q.shotImpactKnockdownTimer)>0)&&
+    !(Number(q.shotImpactRiseTimer)>0)&&!['shotDown','shotGetUp'].includes(q.action)&&
+    !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+    !(q.action==='slide'&&(Number(q.actionTimer)||0)>0)&&
+    !(q.action==='jump'&&(Number(q.actionTimer)||0)>0&&Number.isFinite(q.z)&&q.z<20))
+   :null;
+  const responder=backup||target;
+  const threat=!teammateAlreadyCounters&&responder===p&&distance(carrier,p)<82?carrier:null;
   if(!threat){p.aiSpinSandThreat=null;p.aiSpinSandReaction=0;return false;}
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0)||
     (p.action==='slide'&&(p.actionTimer||0)>0))return false;
@@ -2205,7 +2227,7 @@ class GameEngine{
   const rival=trickRivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
   // A ready teammate can cover a selected human marker with the same existing counter.
-  const counterRivals=['fireball','freeze','bat','scream','hideBall'].includes(id)?trickRivals.filter(defender=>distance(p,defender)<radius):(rival?[rival]:[]);
+  const counterRivals=['fireball','freeze','bat','scream','hideBall','spinBump','sandTrap'].includes(id)?trickRivals.filter(defender=>distance(p,defender)<radius):(rival?[rival]:[]);
   const selectedHuman=defender=>typeof this.inControl==='function'&&this.inControl(defender.t)&&
    Number.isInteger(defender.i)&&Number.isInteger(this.controlled?.[defender.t])&&
    this.controlled[defender.t]===defender.i;
@@ -2320,8 +2342,13 @@ class GameEngine{
     return range>1&&((towardX*facing.x+towardY*facing.y)/range)>=(range<=30?.5:.65);
    })());
   const bumpOrSand=id==='spinBump'||id==='sandTrap';
-  const spinBumpSlid=bumpOrSand&&inRange&&rival.action==='slide'&&rival.actionTimer>0&&rival.z<20;
-  const spinBumpJumped=bumpOrSand&&inRange&&rival.action==='jump'&&rival.z>=20;
+  // Spin Bump and Sand Trap are close-range pulses: any defender inside the
+  // existing 82-unit radius can evade them with the same live JUMP/SHOOT slide.
+  const spinBumpSlid=bumpOrSand&&counterRivals.some(defender=>defender.action==='slide'&&
+   Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&
+   Number.isFinite(defender.z)&&defender.z<20);
+  const spinBumpJumped=bumpOrSand&&counterRivals.some(defender=>defender.action==='jump'&&
+   Number.isFinite(defender.z)&&defender.z>=20);
   const fieldTrick=id==='wind'||id==='mud';
   // Wind/Mud is an area effect: any defender in range can counter with an active
   // JUMP or grounded SHOOT slide, not just the nearest (possibly idle) defender.

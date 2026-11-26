@@ -6,22 +6,21 @@
 Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.337 — HIDE-BALL-HUMAN-MARKER-BACKUP-COUNTER-01:** when the nearest ready Hide Ball marker is the selected human and has not started a valid grounded PASS poke, one ready CPU teammate within the existing 70-unit facing cone backs them up using the normal difficulty reaction delay. The human retains control. A valid active human/teammate poke prevents duplication; a misaligned backup cannot cancel the trick.
-- Production changes are in `src/modules/engine.js`: the Hide Ball AI reaction selects the eligible backup and the actual resolver accepts its grounded PASS poke from any ready in-range defender. No new control, auto-tackle, possession, physics, save, roster or offline contract was changed.
-- Focused Node regressions cover both sides, successful handoff, human no-duplicate and misaligned backup. New actual-engine desktop/simulated-touch browser acceptance covers `driveAI`, `tryMagicTrick`, possession, human selection and exactly four actions.
-- First exact-head Census #45871629435 exposed two release-contract assertions, not a gameplay assertion: Studio playbook expected the resolver's local `rival` name, and version policy requires the service-worker first line to match .337. Both are corrected in the follow-up commit; fresh gates are required.
+- **0.12.81.338 — SPIN-SAND-HUMAN-MARKER-BACKUP-COUNTER-01:** during Spin Bump/Sand Trap's visible DRIBBLE wind-up, if the nearest marker is the selected human and no defender has already started an effective JUMP/grounded SHOOT-slide, one ready CPU teammate inside the existing 82-unit radius backs them up after the normal difficulty reaction delay. The human keeps control; active counters suppress duplication, and the resolver accepts any in-range teammate JUMP/slide.
+- Production changes are in `src/modules/engine.js`; focused Node and actual-engine desktop/simulated-touch Chromium regressions cover both tricks, both teams, 30/60/120 Hz, human/teammate no-duplicate, out-of-range rejection, possession, cooldown/fatigue and exactly four actions.
+- This candidate also repairs .337 release-gate fixtures: isolated Hide Ball poke expression now receives its resolver counter set; Fireball/Scream source contracts recognize Hide Ball counter membership.
+- No new control, auto-tackle, save field, roster, formation, save-schema or online protocol change.
 
 ## Next smallest action
-Inspect exact-head .337 follow-up Modular QA and all four Node/four Chromium Census jobs. Fix confirmed failures, then allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with a distinct responsive football/AI or Player Studio improvement; avoid repetitive Agility-only reads.
+Inspect exact-head .338 Modular QA and all four Node/four Chromium Census jobs. Fix confirmed failures, then allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with a distinct responsive football/AI, existing-player art or Player Studio improvement; avoid repetitive Agility-only reads.
 
 ## Ownership and exclusions
 Preserve 223 team and 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept-hero creation or copied art. Keep #48 physical acceptance, #86 Render drift and #87 main protection unresolved until independently verified. Do not claim physical-device certification or authenticated online hosting.
 
 ## Evidence
-- Starting dev/main SHA: `a8edae04834d16a11292617e8d0d52abbd66eb4f`; .336 exact-head dev Census #45836851049 passed all four Node and four Chromium shards and its QA-gated promotion succeeded.
-- Main .336 independent Census #45846445829 passed preflight, preview, hosted-pages smoke, all four Node shards and all four Chromium shards.
-- Pages deployment #45846426105 completed successfully.
-- GitHub REST reports `main.protected=false` and `dev.protected=false`; #87 remains open. #48 and #86 remain open.
+- Starting dev SHA: `5e6d6f001d4668f2a98e9e3cda7683d3c6578e10`; main SHA: `a8edae04834d16a11292617e8d0d52abbd66eb4f`.
+- .337 Modular QA #45872045507 and Census #45872045515 both failed Node preflight on two isolated Hide Ball expression bindings and two stale Fireball/Scream source assertions. No production Hide Ball gameplay assertion failed; these fixtures are corrected in .338.
+- Main .336 predecessor remains independently Census-verified and Pages-deployed. GitHub REST reports `main.protected=false` and `dev.protected=false`; #87 remains open. #48 and #86 remain open.
 
 ## Cleanup
 Only this agent's checkpoint was replaced. No LAN/P2P, roster, concept art, save-schema or online-hosting changes.
