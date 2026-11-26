@@ -94,5 +94,37 @@ with sync_playwright() as pw:
             assert row['stationaryTarget']==row['sentinel'],(kind,row)
         assert not errors,(kind,errors)
         print('PASS',kind,'adaptive mirrored third-man lane and momentum-aware selection; four actions unchanged',flush=True)
+        turn_rows=page.evaluate("""() => {
+            const game=SupermagicFootball.game,rows=[];
+            for(const team of [0,1]){
+                game.init({home:0,away:1,mode:'quick',humans:0});
+                const dir=team===0?1:-1,carrier=game.player(team,3),primary=game.player(team,4),
+                    high=game.player(team,5),low=game.player(team,1);
+                const field={x:150,y:155,w:2260.8,h:1220},x=field.x+field.w*.5,y=field.y+field.h*.5;
+                for(const player of game.players)if(![carrier,primary,high,low].includes(player)){
+                    Object.assign(player,{down:true,stun:1.1,invuln:1.1,z:0,action:'idle',actionTimer:0});
+                }
+                Object.assign(carrier,{x,y,down:false,stun:0,invuln:0,z:0,action:'idle',actionTimer:0});
+                Object.assign(primary,{x:x+dir*40,y:y-110,homeY:y-112,down:false,stun:0,invuln:0,z:0,
+                    action:'run',actionTimer:0,moveVX:0,moveVY:0});
+                const sentinel={x:x+dir*12,y:y-40},expected={x:x+dir*245,y:y+176};
+                Object.assign(high,{x:x+dir*20,y,homeY:y,down:false,stun:0,invuln:0,z:0,
+                    action:'run',actionTimer:0,moveVX:0,moveVY:-180,aiTimer:1,aiTarget:{...sentinel}});
+                Object.assign(low,{x:x+dir*20,y,homeY:y,down:false,stun:0,invuln:0,z:0,
+                    action:'run',actionTimer:0,moveVX:0,moveVY:-180,aiTimer:1,aiTarget:{...sentinel}});
+                high.src={...(high.src||{}),agility:100};
+                low.src={...(low.src||{}),agility:1};
+                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,shot:null,strike:null});
+                game.clock=5;game.driveAI(high,1/60);
+                rows.push({team,highTarget:high.aiTarget,lowTarget:low.aiTarget,sentinel,expected});
+            }
+            return {rows,buttons:document.querySelectorAll('[data-act="pass"],[data-act="shoot"],[data-act="dribble"],[data-act="jump"]').length};
+        }""")
+        assert turn_rows['buttons']==4,(kind,turn_rows)
+        for row in turn_rows['rows']:
+            assert row['highTarget']==row['expected'],(kind,row)
+            assert row['lowTarget']==row['sentinel'],(kind,row)
+        assert not errors,(kind,errors)
+        print('PASS',kind,'third-man Agility turn feasibility and aligned-momentum priority; four actions unchanged',flush=True)
         ctx.close()
     browser.close()

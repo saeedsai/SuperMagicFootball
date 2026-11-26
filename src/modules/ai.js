@@ -740,7 +740,24 @@ function attackingThirdManRun(players,team,carrier,primaryRun,humanControlled=nu
    // Keep the influence bounded so route quality and defensive pressure dominate.
    const laneSpeed=(vx*(target.x-runner.x)+vy*(target.y-runner.y))/pathLength;
    const momentumTieBreak=clampTo(laneSpeed,-180,180)*.05;
-   const score=pathLength+pressure*120+teammateCrowding*85+homeLanePenalty+lanePreferencePenalty-momentumTieBreak;
+   // A runner already moving across the route needs time to turn before it can
+   // accelerate into this pocket. Agility reduces that bounded delay; genuine
+   // momentum toward the target still wins over a merely high rating.
+   const runnerSpeed=Math.hypot(vx,vy);
+   let turnPenalty=0;
+   if(runnerSpeed>=75){
+    const alignment=clampTo((vx*(target.x-runner.x)+vy*(target.y-runner.y))/
+     (runnerSpeed*pathLength),-1,1);
+    const angle=Math.acos(alignment);
+    const rawAgility=runner.src?.agility;
+    const parsedAgility=typeof rawAgility==='number'?rawAgility:
+     typeof rawAgility==='string'&&rawAgility.trim()!==''?Number(rawAgility):NaN;
+    const agility=clampTo(Number.isFinite(parsedAgility)?parsedAgility:50,1,100);
+    const turnRate=3+agility*.13;
+    turnPenalty=clampTo(Math.min(arrival,angle/turnRate)*150,0,48);
+   }
+   const score=pathLength+pressure*120+teammateCrowding*85+homeLanePenalty+
+    lanePreferencePenalty+turnPenalty-momentumTieBreak;
    if(!best||score<best.score-1e-9)best={runner,target,score};
   }
  }

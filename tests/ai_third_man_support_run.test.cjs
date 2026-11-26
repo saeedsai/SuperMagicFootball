@@ -179,6 +179,23 @@ test('third-man selection favors a runner already moving into the complementary 
  }
 });
 
+test('third-man selection prices a moving runner turn time by Agility in both directions',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const {carrier,primary,dir,primaryRun}=fixture(team);
+  const make=(name,agility,vx=0,vy=-180)=>player(name,team,carrier.x+dir*20,carrier.y,{
+   homeY:carrier.y,moveVX:vx,moveVY:vy,src:{agility}
+  });
+  const low=make('low-agility',1),high=make('high-agility',100);
+  const turning=AI.attackingThirdManRun([carrier,primary,low,high],team,carrier,primaryRun,null,bounds);
+  assert.equal(turning?.runner,high,'the faster-turning runner wins an otherwise equal cross-lane route for team '+team);
+  const alignedLow=make('aligned-low-agility',1,dir*140,110);
+  const turningHigh=make('turning-high-agility',100,0,-180);
+  const aligned=AI.attackingThirdManRun([carrier,primary,turningHigh,alignedLow],team,carrier,primaryRun,null,bounds);
+  assert.equal(aligned?.runner,alignedLow,'real momentum into the target beats a higher Agility rating for team '+team);
+ }
+});
+
 test('third-man momentum remains a bounded tie-breaker behind a materially shorter route',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){
