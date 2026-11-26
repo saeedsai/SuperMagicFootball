@@ -54,7 +54,7 @@ test('Fireball slide counter is its own rule; Scream (own slide counter), Freeze
 });
 test('Fireball slide counter is documented without a fifth action or new save field',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/fireballParried=id==='fireball'&&inRange&&rival\.action==='slide'/);
+ assert.match(engine,/fireballParried=id==='fireball'&&inRange&&counterRivals\.some/);
  assert.match(engine,/jumpDodged\|\|fireballParried\|\|screamDodged/);
  assert.match(ui,/fireball:'[^']*grounded defensive SHOOT-slide to duck under it/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);

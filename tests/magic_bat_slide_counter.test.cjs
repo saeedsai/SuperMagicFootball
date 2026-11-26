@@ -53,7 +53,7 @@ test('Facing/closing defence remains available, while other Tricks are unaffecte
 });
 test('Player Studio describes SHOOT parry and game still uses exactly four actions',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/batParried=id==='bat'&&inRange&&rival\.action==='slide'/);
+ assert.match(engine,/batParried=id==='bat'&&inRange&&counterRivals\.some/);
  assert.match(ui,/bat:'[^']*SHOOT-slide parries the bat while grounded/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
  assert.doesNotMatch(engine,/fifthAction/);
@@ -87,7 +87,7 @@ test('Bat JUMP dodge requires height and range; grounded SHOOT-slide still parri
 });
 test('Bat JUMP counter is documented in Player Studio without a fifth action',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/batDodged=id==='bat'&&inRange&&Number\.isFinite\(rival\.z\)&&rival\.z>=20/);
+ assert.match(engine,/batDodged=id==='bat'&&inRange&&counterRivals\.some/);
  assert.match(ui,/bat:'[^']*JUMP above the swing to evade it/);
  assert.match(engine,/freezeDodged\|\|freezeParried\|\|batDodged\|\|batParried/);
 });

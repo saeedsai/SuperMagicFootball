@@ -56,7 +56,7 @@ test('Slide parry is specific to Freeze; other tricks and Bat behaviour unchange
 });
 test('Freeze slide counter is documented without a fifth action or new save field',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/freezeParried=id==='freeze'&&inRange&&rival\.action==='slide'/);
+ assert.match(engine,/freezeParried=id==='freeze'&&inRange&&counterRivals\.some/);
  assert.match(engine,/freezeDodged\|\|freezeParried\|\|batDodged/);
  assert.match(ui,/freeze:'[^']*grounded defensive SHOOT-slide to cut through it/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);

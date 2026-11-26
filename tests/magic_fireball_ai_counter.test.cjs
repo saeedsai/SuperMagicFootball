@@ -112,6 +112,26 @@ test('nearest defender already jumping or sliding keeps the Fireball response wi
  }
 });
 
+test('CPU backs up a selected human defender during Fireball, Freeze and Bat without duplicating an active counter',()=>{
+ for(const side of [0,1])for(const trick of ['fireball','freeze','bat']){
+  const {g,carrier,target,other}=fixture(side,.7,{distance:55,trick});
+  target.i=3;other.i=4;g.controlled=[0,0];g.controlled[side]=target.i;g.inControl=t=>t===side;
+  other.x=carrier.x+90;other.y=carrier.y;
+  react.call(g,other,.2,.09);
+  assert.equal(g.jumps,1,'CPU teammate backs up the idle selected human marker: '+trick+' side '+side);
+  assert.equal(g.slides,0);assert.equal(other.z,22);
+  for(const state of ['jump','slide']){
+   const next=fixture(side,.7,{distance:55,trick});next.target.i=3;next.other.i=4;
+   next.g.controlled=[0,0];next.g.controlled[side]=next.target.i;next.g.inControl=t=>t===side;
+   next.other.x=next.carrier.x+90;next.other.y=next.carrier.y;
+   next.target.action=state;next.target.actionTimer=.3;next.target.z=state==='jump'?22:0;
+   react.call(next.g,next.other,.2,.09);
+   assert.equal(next.g.jumps,0,'no duplicate JUMP when human already counters: '+state+' '+trick);
+   assert.equal(next.g.slides,0,'no duplicate slide when human already counters: '+state+' '+trick);
+  }
+ }
+});
+
 test('close-range slide timing does not expand to defenders outside the short counter window',()=>{
  const state=fixture(0,.35,{distance:65});
  react.call(state.g,state.target,.12,.09);
@@ -120,8 +140,11 @@ test('close-range slide timing does not expand to defenders outside the short co
 
 test('Fireball AI JUMP dispatch preserves the existing human JUMP/slide counter contract',()=>{
  assert.match(engine,/if\(this\.reactToFireballTrick\(p,dt,ai\.reaction\)\|\|p\.aiFireballThreat\)return/);
- assert.match(engine,/jumpDodged=id==='fireball'&&inRange/);assert.match(engine,/fireballParried=id==='fireball'&&inRange&&rival\.action==='slide'/);
+ assert.match(engine,/jumpDodged=id==='fireball'&&inRange&&counterRivals\.some/);assert.match(engine,/fireballParried=id==='fireball'&&inRange&&rival\.action==='slide'/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
  assert.match(engine,/const readyCounterTargets=\['fireball','freeze','bat','scream'\]\.includes\(id\)/);
  assert.match(engine,/trickRivals=id==='lightning'\?lightningTargets:readyCounterTargets/);
+ assert.match(engine,/const humanControlled=q=>/);
+ assert.match(engine,/const responders=rivals\.filter\(q=>!humanControlled\(q\)\)/);
+ assert.match(engine,/const counterRivals=\['fireball','freeze','bat'\]/);
 });

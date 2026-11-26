@@ -1590,7 +1590,15 @@ class GameEngine{
    Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1&&
    Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&Array.isArray(this.players)
    ?this.players.filter(ready).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
-  const threat=rivals[0]===p&&distance(carrier,p)<radius?carrier:null;
+  // The selected human marker keeps input authority; a ready CPU teammate
+  // backs them up if they have not already started an effective JUMP/slide.
+  const humanControlled=q=>typeof this.inControl==='function'&&this.inControl(q.t)&&
+   Number.isInteger(q.i)&&Number.isInteger(this.controlled?.[q.t])&&this.controlled[q.t]===q.i;
+  const alreadyCountering=rivals.some(q=>q!==p&&distance(carrier,q)<radius&&(
+   (Number.isFinite(q.z)&&q.z>=20)||
+   (q.action==='slide'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&Number.isFinite(q.z)&&q.z<20)));
+  const responders=rivals.filter(q=>!humanControlled(q));
+  const threat=!alreadyCountering&&responders[0]===p&&distance(carrier,p)<radius?carrier:null;
   if(!threat){p.aiFireballThreat=null;p.aiFireballReaction=0;return false;}
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0))return false;
   if(p.action==='slide'&&(p.actionTimer||0)>0){p.aiFireballThreat=threat;return false;}
@@ -2002,6 +2010,8 @@ class GameEngine{
   const trickRivals=id==='lightning'?lightningTargets:readyCounterTargets;
   const rival=trickRivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
+  // A ready teammate can cover a selected human marker with the same existing counter.
+  const counterRivals=['fireball','freeze','bat'].includes(id)?trickRivals.filter(defender=>distance(p,defender)<radius):(rival?[rival]:[]);
   if(id==='lightning'&&!inRange)return false;
   // Any eligible nearby defender can read a named Trick, not only the nearest marker.
   // Keep the same live 2D approach requirement and Defence-versus-Dribbling threshold.
@@ -2049,21 +2059,21 @@ class GameEngine{
   // Airborne JUMP counters Fireball, Scream, Freeze and Bat; a grounded SHOOT-slide
   // parries Bat and Freeze, ducks Fireball and slides under Scream. All counters use the existing four buttons and still cost
   // the caster the original cooldown and fatigue.
-  const jumpDodged=id==='fireball'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
+  const jumpDodged=id==='fireball'&&inRange&&counterRivals.some(defender=>Number.isFinite(defender.z)&&defender.z>=20);
   const screamDodged=id==='scream'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
-  const freezeDodged=id==='freeze'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
-  const batDodged=id==='bat'&&inRange&&Number.isFinite(rival.z)&&rival.z>=20;
+  const freezeDodged=id==='freeze'&&inRange&&counterRivals.some(defender=>Number.isFinite(defender.z)&&defender.z>=20);
+  const batDodged=id==='bat'&&inRange&&counterRivals.some(defender=>Number.isFinite(defender.z)&&defender.z>=20);
   // MAGIC-FREEZE-SLIDE-01: an active grounded defensive SHOOT-slide at close
   // range cuts through the freezing pulse, like the Bat parry. Expired or
   // airborne slides do not count; the caster still pays cost.
-  const freezeParried=id==='freeze'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
+  const freezeParried=id==='freeze'&&inRange&&counterRivals.some(defender=>defender.action==='slide'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&Number.isFinite(defender.z)&&defender.z<20);
   // MAGIC-FIREBALL-SLIDE-01: an active grounded defensive SHOOT-slide ducks
   // under the medium-range fireball. Expired or airborne slides do not count.
-  const fireballParried=id==='fireball'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
+  const fireballParried=id==='fireball'&&inRange&&counterRivals.some(defender=>defender.action==='slide'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&Number.isFinite(defender.z)&&defender.z<20);
   // MAGIC-SCREAM-SLIDE-01: an active grounded defensive SHOOT-slide slips under
   // the wide shockwave. Expired or airborne slides do not count.
   const screamParried=id==='scream'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
-  const batParried=id==='bat'&&inRange&&rival.action==='slide'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&Number.isFinite(rival.z)&&rival.z<20;
+  const batParried=id==='bat'&&inRange&&counterRivals.some(defender=>defender.action==='slide'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&Number.isFinite(defender.z)&&defender.z<20);
   // TELEPORT-SLIDE-01: a grounded SHOOT-slide intercepts only the carrier's
   // forward travel lane; a slide behind or wide of that lane misses.
   // TELEPORT-SECOND-DEFENDER-SLIDE-01: evaluate every eligible active

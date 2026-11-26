@@ -46,7 +46,7 @@ test('Directional defence still counters Freeze; Bat and Scream now have JUMP co
 });
 test('Player Studio explains existing JUMP; no fifth action or new save field',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/freezeDodged=id==='freeze'&&inRange&&Number\.isFinite\(rival\.z\)&&rival\.z>=20/);
+ assert.match(engine,/freezeDodged=id==='freeze'&&inRange&&counterRivals\.some/);
  assert.match(ui,/freeze:'[^']*JUMP above the freezing pulse to dodge it/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
  assert.doesNotMatch(engine,/fifthAction/);
