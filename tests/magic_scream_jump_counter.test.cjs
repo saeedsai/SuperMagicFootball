@@ -56,12 +56,15 @@ test('Scream resolves its JUMP counter against the next ready defender when the 
 });
 
 
-test('Grounded, low airborne and invalid-height targets still receive Scream',()=>{
- for(const z of [0,19.9,NaN]){
+test('Grounded and low airborne targets receive Scream; invalid-height targets are skipped',()=>{
+ for(const z of [0,19.9]){
   const {defender,events,fire}=setup({z});
   assert.equal(fire(),true);assert.equal(defender.stun,.32);
   assert.equal(defender.action,'hurt');assert.equal(events[0].countered,false);
  }
+ const invalid=setup({z:NaN});
+ assert.equal(invalid.fire(),true);assert.equal(invalid.defender.stun,0);
+ assert.equal(invalid.events[0].countered,false,'an invalid-height decoy is not selected or struck');
 });
 test('Directional defence still counters grounded Scream; unrelated Tricks keep prior behavior',()=>{
  const {defender,events,fire}=setup({z:0,face:-1});
