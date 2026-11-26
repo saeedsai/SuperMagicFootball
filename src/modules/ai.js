@@ -2478,9 +2478,20 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   // a fixed 100 ms snapshot. The lead is capped so sprinting players are not
   // extrapolated indefinitely, while a genuine runner can still win the race.
   const contestHorizon=Math.max(0,Math.min(.34,landingSeconds));
+  // Project a live defender's committed 2D turn through the same Agility
+  // response used by the pass/press reads. Integrate the curved path in short
+  // slices, then retain the existing 110-unit total lead cap for this race.
   const projected=q=>{
-   let dx=(Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0)*contestHorizon;
-   let dy=(Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0)*contestHorizon;
+   let vx=Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0;
+   let vy=Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0;
+   let remaining=contestHorizon,dx=0,dy=0;
+   while(remaining>1e-6){
+    const step=Math.min(.18,remaining);
+    const turned=step>=.05?carrierTurnAwareVelocity(q,vx,vy,step):{x:vx,y:vy};
+    dx+=(vx+turned.x)*.5*step;
+    dy+=(vy+turned.y)*.5*step;
+    vx=turned.x;vy=turned.y;remaining-=step;
+   }
    const lead=Math.hypot(dx,dy);
    if(lead>110){const scale=110/lead;dx*=scale;dy*=scale;}
    return {x:q.x+dx,y:q.y+dy};
