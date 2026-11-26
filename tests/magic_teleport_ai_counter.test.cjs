@@ -73,7 +73,7 @@ test('Teleport does not duplicate a selected human JUMP, SHOOT-slide or Defence 
  for(const side of [0,1])for(const patch of [
   {action:'jump',actionTimer:.3,z:22},
   {action:'slide',actionTimer:.3,slideTimer:.3,z:0},
-  {action:'idle',actionTimer:0,z:0,dx:side===0?-1:1,dy:0,src:{defence:90}}
+  {action:'idle',actionTimer:0,z:0,dx:side===0?1:-1,dy:0,src:{defence:90}}
  ]){
   const {g,carrier,target,other}=fixture(side,.7),forward=carrier.dx;
   target.i=4;other.i=3;carrier.src.dribbling=60;
