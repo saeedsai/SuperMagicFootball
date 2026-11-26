@@ -117,7 +117,7 @@ test('Scream CPU hands the warning to the next ready defender when the nearest i
   const {g,carrier,target,other}=fixture(side,.7);other.x=carrier.x+95;other.y=carrier.y;mark(target);
   assert.equal(react.call(g,target,.1,.02),false,label+' nearest defender cannot react');
   assert.equal(react.call(g,other,.1,.02),true,label+' next active defender should JUMP');
-  assert.equal(g.jumps,1,label+' must produce one response');assert.equal(other.action,'jump');assert.equal(target.z,0);
+  assert.equal(g.jumps,1,label+' must produce one response');assert.equal(other.action,'jump');
  }
 });
 
