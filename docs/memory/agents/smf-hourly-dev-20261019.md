@@ -3,26 +3,24 @@
 **Updated:** 2026-11-26
 
 ## Mission
-Prioritize responsive football gameplay and intelligent passing/tackling, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve canonical data, four actions, compatible saves and offline play.
+Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.336 — KEEPER-PARRY-REACHABLE-RUNNER-READ-01:** parry-lane selection now includes a runner who begins outside the 360-unit scan but can enter a rebound corridor within the existing ±150-unit-per-axis projection. The broad phase is 360 + √(150² + 150²); farther runners remain excluded.
-- Preserved Agility-aware turn projection, both 230-unit corridors, 24-unit margin, recovery exclusions, catch/parry physics, four actions, saves and offline play. Added mirrored Node and actual-engine desktop/simulated-touch regressions.
-- .335 exact-head Modular QA #45830932238 passed 2,960/2,960 and Keeper Save Event Integrity #45830932035 passed. Census #45830932184 failed only browser shard 1: the elite-turn browser fixture expected the opposite lane but its 120-unit placement did not retain the 24-unit clearance margin after the keeper's real 24-unit contact repositioning. .336 increases that fixture separation and adds a real late-arriving-runner scenario.
-- Start dev/main SHA: `bf7edbab1597599241e83aeee32c8429a79a650f` / `22a8a127b10e3e39e00a78d45c096d738cb87a72`. Main .334 predecessor is deployed; Pages #45829183907 and independent main Census #45829195148 passed, including hosted smoke.
+- **0.12.81.337 — HIDE-BALL-HUMAN-MARKER-BACKUP-COUNTER-01:** when the nearest ready Hide Ball marker is the selected human and has not started a valid grounded PASS poke, one ready CPU teammate within the existing 70-unit facing cone now backs them up using the normal difficulty reaction delay. The human retains control. A valid active human/teammate poke prevents duplication; a misaligned backup cannot cancel the trick.
+- Production changes are in `src/modules/engine.js`: the Hide Ball AI reaction selects the eligible backup and the real resolver accepts its grounded PASS poke from any ready in-range defender. No new control, auto-tackle, possession, physics, save, roster or offline contract was changed.
+- Focused Node regressions cover both sides, successful handoff, human no-duplicate and misaligned backup. New actual-engine desktop/simulated-touch browser acceptance covers `driveAI`, `tryMagicTrick`, possession, human selection and exactly four actions.
 
 ## Next smallest action
-Inspect exact-head .336 Modular QA and all four Node/four Chromium Census jobs. Fix confirmed failures, then allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with a distinct responsive football or goalkeeper improvement, avoiding repeated Agility-only variants.
+Inspect exact-head .337 Modular QA and all four Node/four Chromium Census jobs. Fix confirmed failures, then allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with a distinct responsive football/AI or Player Studio improvement; avoid repetitive Agility-only reads.
 
 ## Ownership and exclusions
-Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept-hero creation or copied art. Keep #48 physical acceptance, #86 Render drift and #87 main protection unresolved until independently verified. Main currently reports protected=false; do not claim protection. No authenticated online-hosting claim.
+Preserve 223 team and 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept-hero creation or copied art. Keep #48 physical acceptance, #86 Render drift and #87 main protection unresolved until independently verified. Do not claim physical-device certification or authenticated online hosting.
 
 ## Evidence
-- .335 Modular QA #45830932238: 2,960/2,960 passed.
-- .335 Keeper Save Event Integrity #45830932035: passed.
-- .335 Census #45830932184: preflight, preview, four Node shards and three Chromium shards passed; browser shard 1 failed the keeper parry lane fixture described above.
-- Main .334 Pages #45829183907 and independent Census #45829195148 passed, including hosted-pages smoke.
-- GitHub REST reported dev/main protected=false; #87, #48 and #86 remain open. No physical-device certification.
+- Starting dev/main SHA: `a8edae04834d16a11292617e8d0d52abbd66eb4f`; .336 exact-head dev Census #45836851049 passed all four Node and four Chromium shards and its QA-gated promotion succeeded.
+- Main .336 independent Census #45846445829 passed preflight, preview, hosted-pages smoke, all four Node shards and all four Chromium shards.
+- Pages deployment #45846426105 completed successfully.
+- GitHub REST reports `main.protected=false` and `dev.protected=false`; #87 remains open. #48 and #86 remain open.
 
 ## Cleanup
-Only this agent checkpoint was replaced. No LAN/P2P, roster, concept art, save-schema or online-hosting changes.
+Only this agent's checkpoint was replaced. No LAN/P2P, roster, concept art, save-schema or online-hosting changes.

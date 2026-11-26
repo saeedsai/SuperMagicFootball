@@ -1766,27 +1766,51 @@ class GameEngine{
  reactToHideBallTrick(p,dt,reactionSeconds){
   const carrier=this.ball?.owner,hold=Number(carrier?.dribbleHold);
   const visibleWindup=carrier&&carrier.t!==p.t&&!carrier.keeper&&carrier.src?.magicTrick==='hideBall'&&
-   Number.isFinite(hold)&&hold>=.35&&hold<1;
-  const rivals=visibleWindup?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0)
-   .sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
-  const threat=rivals[0]===p&&Number.isFinite(p.x)&&Number.isFinite(p.y)&&distance(carrier,p)<=70?carrier:null;
+   Number.isFinite(hold)&&hold>=.35&&hold<1&&Number.isFinite(carrier.x)&&Number.isFinite(carrier.y);
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const ready=q=>q&&q.t!==carrier?.t&&!q.keeper&&!q.down&&timerClear(q.stun)&&timerClear(q.invuln)&&
+   timerClear(q.shotImpactKnockdownPending)&&timerClear(q.shotImpactKnockdownTimer)&&
+   timerClear(q.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(q.action)&&
+   !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='slide'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='jump'&&(Number(q.actionTimer)||0)>0&&Number.isFinite(Number(q.z))&&Number(q.z)<20)&&
+   (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)>=0))&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y);
+  const rivals=visibleWindup&&Array.isArray(this.players)
+   ?this.players.filter(ready).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
+  const target=rivals[0]||null;
   const clear=()=>{p.aiHideBallThreat=null;p.aiHideBallReaction=0;return false;};
+  if(!target)return clear();
+  const selectedHuman=q=>typeof this.inControl==='function'&&this.inControl(q.t)&&
+   Number.isInteger(q.i)&&Number.isInteger(this.controlled?.[q.t])&&this.controlled[q.t]===q.i;
+  const facesCarrier=q=>{
+   if(!q||!Number.isFinite(q.x)||!Number.isFinite(q.y))return false;
+   let dx=Number.isFinite(q.dx)?q.dx:0,dy=Number.isFinite(q.dy)?q.dy:0;
+   let length=Math.hypot(dx,dy);
+   if(length<=.1){dx=q.face===-1?-1:1;dy=0;length=1;}
+   const towardX=carrier.x-q.x,towardY=carrier.y-q.y,range=Math.hypot(towardX,towardY);
+   return range>1&&((towardX*dx+towardY*dy)/(range*length))>=(range<=30?.5:.65);
+  };
+  const hasCounter=q=>q&&q.action==='punch'&&Number.isFinite(q.actionTimer)&&q.actionTimer>0&&
+   Number.isFinite(q.z)&&q.z<20&&distance(carrier,q)<=70&&facesCarrier(q);
+  const teammateAlreadyCounters=rivals.some(q=>q!==target&&hasCounter(q));
+  const backup=selectedHuman(target)&&!hasCounter(target)&&!teammateAlreadyCounters
+   ?rivals.find(q=>q!==target&&!selectedHuman(q)&&distance(carrier,q)<=70&&facesCarrier(q)&&
+    !(q.action==='slide'&&(Number(q.actionTimer)||0)>0)&&
+    !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0))||null
+   :null;
+  const responder=backup||target;
+  const threat=responder===p&&distance(carrier,p)<=70&&facesCarrier(p)?carrier:null;
   if(!threat)return clear();
   if(p.z>=20||p.down||p.stun>0||p.action==='shotDown'||p.action==='shotGetUp'||
     p.action==='hurt'&&(p.actionTimer||0)>0||
     p.action==='jump'&&(p.actionTimer||0)>0||
     p.action==='slide'&&(p.actionTimer||0)>0)return clear();
-  const dx=Number.isFinite(p.dx)?p.dx:0,dy=Number.isFinite(p.dy)?p.dy:0;
-  const movement=Math.hypot(dx,dy),heading=movement>.1?norm(dx,dy):norm(p.face===-1?-1:1,0);
-  const towardX=carrier.x-p.x,towardY=carrier.y-p.y,range=Math.hypot(towardX,towardY);
-  if(!Number.isFinite(range)||range<=1)return clear();
-  const alignment=(towardX*heading.x+towardY*heading.y)/range;
-  if(alignment<(range<=30?.5:.65))return clear();
+  if(p.action==='punch'&&Number.isFinite(p.actionTimer)&&p.actionTimer>0)return true;
   if(p.aiHideBallThreat!==threat){
    p.aiHideBallThreat=threat;
    p.aiHideBallReaction=Number.isFinite(reactionSeconds)&&reactionSeconds>=0?reactionSeconds:.78;
   }
-  if(p.action==='punch'&&Number.isFinite(p.actionTimer)&&p.actionTimer>0)return true;
   const remaining=Number.isFinite(p.aiHideBallReaction)&&p.aiHideBallReaction>=0?p.aiHideBallReaction:.78;
   const step=Number.isFinite(dt)?Math.max(0,dt):0;
   p.aiHideBallReaction=Math.max(0,remaining-step);
@@ -2165,7 +2189,7 @@ class GameEngine{
   // Fireball, Freeze, Bat and Scream must resolve against the same ready
   // defenders that can receive a CPU wind-up reaction. An unavailable nearest
   // opponent must not soak the target while a ready teammate can still be countered.
-  const readyCounterTargets=['fireball','freeze','bat','scream'].includes(id)
+  const readyCounterTargets=['fireball','freeze','bat','scream','hideBall'].includes(id)
    ?rivals.filter(defender=>{
     const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
     const z=defender.z;
@@ -2181,7 +2205,7 @@ class GameEngine{
   const rival=trickRivals[0],radius=(id==='spinBump'||id==='sandTrap')?82:id==='wind'?120:id==='mud'?100:id==='lightning'?95:id==='scream'?135:id==='fireball'?120:id==='shoulderRide'?130:95;
   const inRange=!!rival&&distance(p,rival)<radius;
   // A ready teammate can cover a selected human marker with the same existing counter.
-  const counterRivals=['fireball','freeze','bat','scream'].includes(id)?trickRivals.filter(defender=>distance(p,defender)<radius):(rival?[rival]:[]);
+  const counterRivals=['fireball','freeze','bat','scream','hideBall'].includes(id)?trickRivals.filter(defender=>distance(p,defender)<radius):(rival?[rival]:[]);
   const selectedHuman=defender=>typeof this.inControl==='function'&&this.inControl(defender.t)&&
    Number.isInteger(defender.i)&&Number.isInteger(this.controlled?.[defender.t])&&
    this.controlled[defender.t]===defender.i;
@@ -2286,15 +2310,15 @@ class GameEngine{
   // HIDE-BALL-POKE-CONE-01: PASS poke must face the actual carrier, including
   // diagonal approaches. Close-range pokes get a slightly wider aim cone;
   // sideways and backwards pokes still cannot read the fake ball.
-  const hideBallPoked=id==='hideBall'&&inRange&&distance(p,rival)<=70&&
-   rival.action==='punch'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
-   Number.isFinite(rival.z)&&rival.z<20&&(()=>{
-    const towardX=p.x-rival.x,towardY=p.y-rival.y;
-    const vx=Number.isFinite(rival.dx)?rival.dx:0,vy=Number.isFinite(rival.dy)?rival.dy:0;
-    const facing=Math.hypot(vx,vy)>.1?norm(vx,vy):norm(rival.face||1,0);
+  const hideBallPoked=id==='hideBall'&&counterRivals.some(defender=>distance(p,defender)<=70&&
+   defender.action==='punch'&&Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&
+   Number.isFinite(defender.z)&&defender.z<20&&(()=>{
+    const towardX=p.x-defender.x,towardY=p.y-defender.y;
+    const vx=Number.isFinite(defender.dx)?defender.dx:0,vy=Number.isFinite(defender.dy)?defender.dy:0;
+    const facing=Math.hypot(vx,vy)>.1?norm(vx,vy):norm(defender.face||1,0);
     const range=Math.hypot(towardX,towardY);
     return range>1&&((towardX*facing.x+towardY*facing.y)/range)>=(range<=30?.5:.65);
-   })();
+   })());
   const bumpOrSand=id==='spinBump'||id==='sandTrap';
   const spinBumpSlid=bumpOrSand&&inRange&&rival.action==='slide'&&rival.actionTimer>0&&rival.z<20;
   const spinBumpJumped=bumpOrSand&&inRange&&rival.action==='jump'&&rival.z>=20;

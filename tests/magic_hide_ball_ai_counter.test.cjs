@@ -44,6 +44,58 @@ function fixture(side=0,{hold=.35,gap=56,trick='hideBall',otherNear=false}={}){
  };
  return {game,carrier,defender,other};
 }
+function humanBackupFixture(side=0,{humanCounter=false,backupFacing=true,backupGap=64}={}){
+ const f=fixture(side,{hold:.9,gap:45});
+ const {game,carrier,defender,other}=f,heading=side?1:-1,backupHeading=backupFacing?heading:-heading;
+ Object.assign(defender,{i:3,x:carrier.x+(side?-45:45),y:carrier.y,dx:heading,dy:0,face:heading,
+  src:{...defender.src,defence:20}});
+ Object.assign(other,{i:4,x:carrier.x+(side?-backupGap:backupGap),y:carrier.y,dx:backupHeading,dy:0,
+  face:backupHeading,src:{...other.src,defence:80}});
+ if(humanCounter)Object.assign(defender,{action:'punch',actionTimer:.3,z:0});
+ game.controlled=[null,null];game.controlled[side]=defender.i;game.inControl=team=>team===side;
+ return f;
+}
+test('a selected human nearest marker is backed up by one ready CPU PASS poke',()=>{
+ for(const side of [0,1]){
+  const {game,carrier,defender,other}=humanBackupFixture(side);
+  let elapsed=.35;const dt=1/120;
+  while(elapsed<1&&!game.pokes){
+   carrier.dribbleHold=elapsed;
+   react.call(game,other,dt,0);
+   elapsed=Math.min(1,elapsed+dt);
+  }
+  assert.equal(game.pokes,1,'CPU backup supplies the existing PASS poke on team '+side);
+  assert.equal(game.lastSlide,false);
+  assert.equal(other.action,'punch');
+  assert.equal(defender.action,'idle','the selected human retains input authority');
+  assert.equal(game.controlled[side],defender.i);
+  carrier.dribbleHold=1;
+  assert.equal(resolve.call(game,carrier),true,'the real Hide Ball resolver accepts the backup');
+  assert.equal(game.events.at(-1).countered,true);
+  assert.equal(carrier.hideBallTimer||0,0);
+ }
+});
+test('an already-active selected-human PASS poke prevents a duplicate CPU backup',()=>{
+ for(const side of [0,1]){
+  const {game,carrier,defender,other}=humanBackupFixture(side,{humanCounter:true});
+  react.call(game,other,.02,0);
+  assert.equal(game.pokes,0,'CPU does not duplicate the human counter on team '+side);
+  carrier.dribbleHold=1;
+  assert.equal(resolve.call(game,carrier),true);
+  assert.equal(game.events.at(-1).countered,true,'the human PASS poke remains accepted');
+ }
+});
+test('a backup facing away cannot counter Hide Ball on behalf of an idle human marker',()=>{
+ for(const side of [0,1]){
+  const {game,carrier,other}=humanBackupFixture(side,{backupFacing:false});
+  react.call(game,other,.02,0);
+  assert.equal(game.pokes,0,'misaligned CPU does not poke on team '+side);
+  carrier.dribbleHold=1;
+  assert.equal(resolve.call(game,carrier),true);
+  assert.equal(game.events.at(-1).countered,false);
+  assert.equal(carrier.hideBallTimer,.65,'uncountered Hide Ball still conceals normally');
+ }
+});
 test('AI times a normal PASS poke before Hide Ball casts across sides, difficulties and frame rates',()=>{
  for(const side of [0,1])for(const fps of [30,60,120])for(let level=1;level<aiLevels.length;level++){
   const {game,carrier,defender}=fixture(side),dt=1/fps,reaction=aiLevels[level].reaction;
