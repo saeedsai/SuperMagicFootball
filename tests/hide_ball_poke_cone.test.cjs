@@ -13,7 +13,7 @@ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const evaluate=vm.runInNewContext('(id,inRange,p,rival,counterRivals,distance,norm)=>('+expression+')');
 const attacker={x:100,y:100};
 const defender=(x,y,dx,dy,extra={})=>({x,y,dx,dy,face:1,z:0,action:'punch',actionTimer:.15,...extra});
-const counter=(rival,id='hideBall',inRange=true)=>evaluate(id,inRange,attacker,rival,[rival],distance,norm);
+const counter=(rival,id='hideBall',inRange=true)=>evaluate(id,inRange,attacker,rival,inRange?[rival]:[],distance,norm);
 test('PASS poke counters Hide Ball only inside a facing cone',()=>{
  assert.equal(counter(defender(55,100,1,0)),true,'forward poke');
  assert.equal(counter(defender(65,65,1,1)),true,'diagonal forward poke');

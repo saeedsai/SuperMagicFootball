@@ -34,6 +34,7 @@ function fixture(side,id='spinBump',distance=60){
 }
 function humanBackupFixture(side,id,{humanCounter=null,teammateCounter=false,backupDistance=70}={}){
  const state=fixture(side,id,45),{game,carrier,target}=state,other=game.players[2];
+ carrier.fatigue=.2;
  const dir=side?-1:1,heading=-dir;
  Object.assign(target,{i:3,x:carrier.x+dir*45,y:carrier.y,dx:heading,dy:0,face:heading});
  Object.assign(other,{i:4,x:carrier.x+dir*backupDistance,y:carrier.y,z:0,stun:0,down:false,invuln:0,
