@@ -1338,8 +1338,17 @@ class GameEngine{
   const carrierAgility=clamp(Number.isFinite(parsedCarrierAgility)?parsedCarrierAgility:50,1,100);
   const slideLeadSeconds=slide&&ballTarget?
    clamp(.085+(50-carrierAgility)*.0003,.07,.10):leadSeconds;
-  const leadX=target?clamp((Number.isFinite(target.moveVX)?target.moveVX:0)*slideLeadSeconds,-leadLimit,leadLimit):0;
-  const leadY=target?clamp((Number.isFinite(target.moveVY)?target.moveVY:0)*slideLeadSeconds,-leadLimit,leadLimit):0;
+  const carrierVX=target&&Number.isFinite(target.moveVX)?target.moveVX:0;
+  const carrierVY=target&&Number.isFinite(target.moveVY)?target.moveVY:0;
+  // A CPU slide aimed through a validated exposed ball must anticipate the carrier's live turn,
+  // not extrapolate cross-track momentum as if the runner could not redirect before contact.
+  // Human/contextual slides and ordinary PASS pokes retain their original linear lead.
+  const turnVelocity=slide&&ballTarget?
+   carrierTurnAwareVelocity(target,carrierVX,carrierVY,slideLeadSeconds):{x:carrierVX,y:carrierVY};
+  const leadVX=slide&&ballTarget?(carrierVX+turnVelocity.x)*.5:carrierVX;
+  const leadVY=slide&&ballTarget?(carrierVY+turnVelocity.y)*.5:carrierVY;
+  const leadX=target?clamp(leadVX*slideLeadSeconds,-leadLimit,leadLimit):0;
+  const leadY=target?clamp(leadVY*slideLeadSeconds,-leadLimit,leadLimit):0;
   const aimX=target?(ballTarget?ballTarget.x:target.x):0;
   const aimY=target?(ballTarget?ballTarget.y:target.y):0;
   const dir=target?norm(aimX+leadX-p.x,aimY+leadY-p.y):norm(p.dx||p.face,p.dy||0);

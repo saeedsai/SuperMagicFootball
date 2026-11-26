@@ -63,10 +63,17 @@ with sync_playwright() as pw:
     g.manualSwitchGrace[human.t]=10;g.input.state[carrier.t]={dribble:true,x:0,y:0};g.input.state[human.t]={};
     let steps=0;const dt=1/60;
     while(cpu.z<20&&carrier.dribbleHold<.95&&steps<60){g.updatePlayers(dt);steps++;}
-    const holdAtCounter=carrier.dribbleHold;carrier.dribbleHold=1;
+    const holdAtCounter=carrier.dribbleHold;
+    // The timing loop advances the live CPU JUMP, but its human-input simulation can
+    // also clear the caster's owner/hold state. Restore only the trick resolver's
+    // preconditions so this assertion isolates whether the backup JUMP is accepted.
+    carrier.src={...carrier.src,magicTrick:'scream'};
+    Object.assign(carrier,{dribbleHold:1,magicReadyAt:0,magicHoldLatched:false,down:false,stun:0,keeper:false,z:0});
+    g.ball.owner=carrier;g.clock=10;
     const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
     humanBackupOut.push({team,cpuJumpCount:cpu.jumpCount,cpuZ:cpu.z,humanSelected:g.controlled[human.t]===human.i,
-     humanAction:human.action,humanZ:human.z,humanStun:human.stun,holdAtCounter,activated,countered:event.countered,steps});
+     humanAction:human.action,humanZ:human.z,humanStun:human.stun,holdAtCounter,activated,countered:event.countered,
+     ownerRestored:g.ball.owner===carrier,carrierStun:carrier.stun,magicReadyAt:carrier.magicReadyAt,steps});
    }
    const humanNoDuplicateOut=[];
    for(const team of [0,1])for(const state of ['jump','slide','read']){

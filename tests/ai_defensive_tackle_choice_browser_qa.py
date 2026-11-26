@@ -29,7 +29,7 @@ with sync_playwright() as pw:
         page.wait_for_function('!!window.SupermagicFootball?.game?.cpuTackleSlideChance && !!window.SupermagicFootball?.game?.defensiveTackleSlideBallSideRead')
         result=page.evaluate("""() => {
             const game=SupermagicFootball.game;
-            const liveSlideAim=(team,agility,withLiveBall=true,carrierVY=200,slide=true)=>{
+            const liveSlideAim=(team,agility,withLiveBall=true,carrierVY=200,slide=true,turnInput=true)=>{
                 const match=new game.constructor({halfSeconds:120});
                 match.init({home:0,away:1,mode:'quick',humans:0});
                 const dir=team===0?1:-1,defender=match.player(team,3),carrier=match.player(1-team,3);
@@ -37,7 +37,7 @@ with sync_playwright() as pw:
                     moveVX:dir*220,moveVY:0,dx:dir,dy:0,face:dir});
                 carrier.src={...(carrier.src||{}),agility};
                 Object.assign(carrier,{x:1000+dir*55,y:700,z:0,down:false,stun:0,invuln:0,
-                    moveVX:0,moveVY:carrierVY,action:'idle',actionTimer:0});
+                    moveVX:0,moveVY:carrierVY,dx:turnInput?dir:0,dy:0,action:'idle',actionTimer:0});
                 Object.assign(match.ball,{owner:carrier,x:carrier.x-dir*17,y:carrier.y+20,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 if(withLiveBall&&!match.defensivePokeBallSideRead(defender,carrier,match.ball))throw new Error('fixture ball must be exposed to the defender');
@@ -54,7 +54,8 @@ with sync_playwright() as pw:
                 const bodyElite=liveSlideAim(team,100,false),bodyLow=liveSlideAim(team,1,false);
                 const cappedElite=liveSlideAim(team,100,true,10000),cappedLow=liveSlideAim(team,1,true,10000);
                 const elitePoke=liveSlideAim(team,100,true,200,false),lowPoke=liveSlideAim(team,1,true,200,false);
-                slideAgility[team]={elite,average,low,missing,invalid,bodyElite,bodyLow,cappedElite,cappedLow,elitePoke,lowPoke};
+                const neutralElite=liveSlideAim(team,100,true,200,true,false),neutralLow=liveSlideAim(team,1,true,200,true,false);
+                slideAgility[team]={elite,average,low,missing,invalid,bodyElite,bodyLow,cappedElite,cappedLow,elitePoke,lowPoke,neutralElite,neutralLow};
             }
             const slideRead=(team,agility,crossing=100,straight=false)=>{
                 const dir=team===0?1:-1;
@@ -103,6 +104,9 @@ with sync_playwright() as pw:
         assert not result['slideMissingAgility'] and not result['slideInvalidAgility'],(kind,result)
         for team,read in result['slideAgility'].items():
             assert read['elite']['y']<read['average']['y']<read['low']['y'],(kind,team,read)
+            direction=1 if int(team)==0 else -1
+            assert direction*read['elite']['x']>direction*read['average']['x']>direction*read['low']['x'],(kind,team,read)
+            assert abs(read['neutralElite']['x']-read['neutralLow']['x'])<1e-12 and read['neutralElite']['y']<read['neutralLow']['y'],(kind,team,read)
             assert abs(read['missing']['y']-read['average']['y'])<1e-12,(kind,team,read)
             assert abs(read['invalid']['y']-read['average']['y'])<1e-12,(kind,team,read)
             assert abs(read['bodyElite']['y']-read['bodyLow']['y'])<1e-12,(kind,team,read)

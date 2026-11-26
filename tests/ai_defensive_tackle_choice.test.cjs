@@ -145,11 +145,11 @@ test('CPU slide preference remains bounded for extreme profiles and tuning input
 
 
 test('CPU exposed-ball slide lead respects carrier Agility without changing human slides or PASS pokes',()=>{
- const slideAim=(team,agility,withLiveBall=true,carrierVY=200)=>{
+ const slideAim=(team,agility,withLiveBall=true,carrierVY=200,turnInput=true)=>{
   const dir=team===0?1:-1;
   const defender=player(team,1000,700,{moveVX:dir*220,moveVY:0,dx:dir,dy:0,face:dir,
    src:{id:'slide-lead-defender',role:'DF',speedRating:50,defence:50}});
-  const carrier=player(1-team,1000+dir*55,700,{moveVX:0,moveVY:carrierVY,src:{agility}});
+  const carrier=player(1-team,1000+dir*55,700,{moveVX:0,moveVY:carrierVY,dx:turnInput?dir:0,dy:0,src:{agility}});
   const liveBall={owner:carrier,x:carrier.x-dir*17,y:carrier.y+20,z:12};
   assert.equal(ENGINE.GameEngine.prototype.defensivePokeBallSideRead.call({},defender,carrier,liveBall),true,'fixture must expose the carried ball');
   const game={players:[defender,carrier],ball:{owner:carrier},spendStamina(){},
@@ -170,8 +170,14 @@ test('CPU exposed-ball slide lead respects carrier Agility without changing huma
   return {x:defender.x-1000,y:defender.y-700};
  };
  for(const team of [0,1]){
+  const dir=team===0?1:-1;
   const elite=slideAim(team,100),average=slideAim(team,50),low=slideAim(team,1);
   assert.ok(elite.y<average.y&&average.y<low.y,JSON.stringify({team,elite,average,low}));
+  assert.ok(dir*elite.x>dir*average.x&&dir*average.x>dir*low.x,
+   'the slide must lead farther into the live forward turn for higher-Agility carriers');
+  const neutralElite=slideAim(team,100,true,200,false),neutralLow=slideAim(team,1,true,200,false);
+  assert.ok(Math.abs(neutralElite.x-neutralLow.x)<1e-12&&neutralElite.y<neutralLow.y,
+   'neutral input must retain the prior straight-line lead, including the existing Agility horizon');
   assert.ok(Math.abs(slideAim(team,undefined).y-average.y)<1e-12,'missing Agility uses the 85 ms baseline');
   assert.ok(Math.abs(slideAim(team,NaN).y-average.y)<1e-12,'invalid Agility uses the 85 ms baseline');
   const bodyElite=slideAim(team,100,false),bodyLow=slideAim(team,1,false);

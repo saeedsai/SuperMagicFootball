@@ -6,23 +6,22 @@
 Prioritize player-facing football gameplay, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup depth. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.328 — AI-CUTBACK-DEFENDER-TURN-INTERCEPT-READ-01:** CPU cutback safety now predicts active defenders through the existing Agility-limited turn response. High-Agility markers who can turn into the central pocket close the low PASS; low-Agility markers carrying momentum away do not falsely block it.
-- Preserved the 100–240 ms arrival window, 55-unit per-axis cap, 74-unit pocket, pass-lane pressure, receiver choice, low pass trajectory, possession, four actions, saves, rosters and offline behavior.
-- Node and actual-engine desktop/simulated-touch Chromium regressions cover both teams, high/low Agility, neutral fallback and the real CPU cutback decision.
-- Parent .327 Modular QA passed 2,952/2,952 Node tests and Python browser-script compilation. Its exact-head four-Node/four-Chromium Census was running when .328 began; .328 has its own exact-head gates pending.
+- **0.12.81.329 — AI-SHOOT-SLIDE-CARRIER-TURN-READ-01:** CPU defenders now project a grounded exposed-ball carrier through the existing Agility-limited directional turn response when aiming a SHOOT slide. High-Agility carriers turn farther into live input; low-Agility carriers retain more lateral momentum. Only validated CPU exposed-ball slides change; PASS pokes, human/contextual slides, ball-side eligibility, slide physics/contact and the 22-unit lead cap remain unchanged.
+- Corrected the confirmed .328 Scream browser fixture: after measuring the real CPU JUMP rise, restore the caster's owner/hold/cooldown preconditions before invoking the existing resolver. No production Scream defect was observed.
+- Added mirrored actual-engine Node and desktop/simulated-touch Chromium regressions for both teams, Agility ordering, neutral fallback, human slide/PASS poke isolation and the 22-unit cap.
 
 ## Next smallest action
-Finish .328 Modular QA and Full Regression Census on its exact SHA. Fix confirmed failures, then allow only a green exact head through the QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes.
+Finish .329 Modular QA and Full Regression Census on its exact SHA. Fix every confirmed failure; allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Then move to the next unfinished backlog item outside repeated Breath or routine LAN/P2P work.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept-hero creation or copied art. Keep #48 physical acceptance, #86 Render drift and #87 main protection open. No authenticated online-hosting claim.
 
 ## Evidence
-- .326 Node suite: 2,951/2,952 passed; the only failure was the About-only label missing from the new version-policy banner. .327 corrected that contract.
-- .327 Modular QA #45790082172: 2,952/2,952 passed; Python compile passed.
-- .327 Census #45790082137: preflight and preview passed; Node shards 2 and 3 passed; remaining two Node and four Chromium shards were in progress when .328 started.
-- Main .325 SHA `da3146d83113f82835a6095d0ed814d75d0dbc4c`; Pages deployment #45782390375 and independent main Census #45782401424 passed including hosted-pages smoke.
-- GitHub REST reports `main.protected=false`; #87 remains unresolved. #48 remains open; no physical two-phone certification.
+- Parent .328 exact dev SHA: `a9ff641515d1e56cd1be19af0644f5ed2c9fd20e`.
+- Modular QA #45791392543: passed.
+- Full Regression Census #45791392611: preflight/preview passed; Node shards 0/2/3 passed; browser shard 2 failed magic_scream_ai_counter_browser_qa.py in the selected-human backup fixture; Node shard 1 and browser shards 1/3 were still running at last inspection.
+- Main SHA: `da3146d83113f82835a6095d0ed814d75d0dbc4c`; Pages #45782390375 and independent main Census #45782401424 passed.
+- GitHub REST reports main.protected=false; #87 remains unresolved. #48 remains open; no physical two-phone certification.
 
 ## Cleanup
-Only this agent checkpoint was read/updated. No LAN/P2P, roster, art, save-schema or online-hosting changes.
+Only this agent checkpoint was updated. No LAN/P2P, roster, art, save-schema or online-hosting changes.
