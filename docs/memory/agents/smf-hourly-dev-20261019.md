@@ -7,11 +7,11 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 
 ## Current checkpoint
 - **0.12.81.344 — AI-SUPPORT-RUN-DEFENDER-TURN-ARRIVAL-01:** CPU support-run lane selection now projects moving defenders through the existing Agility-limited turn response over the runner's 0.12–0.45-second route lookahead. High-Agility markers can close the upper lane; low-Agility markers retain lower-lane momentum. The ±100-unit per-axis cap and all support-run scoring weights remain unchanged. Mirrored Node and actual-engine desktop/simulated-touch Chromium regressions added.
-- **0.12.81.343 gate:** Modular QA #45901430088 passed; Census #45901430036 preflight/preview passed, Node shards 2/4 and Chromium shard 1/4 passed, with the remaining shards in progress at last inspection.
-- **0.12.81.342 main:** Pages deployment #45900555489 succeeded; independent main Census #45900563513 was still running at last inspection.
+- **0.12.81.343 gate:** Modular QA #45901430088 passed; Full Census #45901430036 failed only browser shard 2 because the actual-engine high-Agility give-and-go marker fixture remained at 82×100 units and did not enter the 66-unit pocket. The Node fixture already uses 62×90. Test follow-up aligns the browser fixture to 62×90; production turn projection is unchanged.
+- **0.12.81.344:** Modular QA #45903262797 source-and-data job passed; exact-head Census #45903262828 was still running at last inspection.
 
 ## Next smallest action
-Inspect .344 exact-head Modular QA and all four Node/four Chromium Census jobs. Fix any confirmed failure, then allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with the next unblocked gameplay or existing-player presentation item.
+Inspect the .344 exact-head Census after the 62×90 give-and-go browser-fixture correction. Fix any confirmed production or browser failure, then allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with the next unblocked gameplay or existing-player presentation item.
 
 ## Ownership and exclusions
 Preserve 223 team and 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept-hero creation or copied art. Keep #48 physical acceptance, #86 Render drift and #87 main protection unresolved until independently verified. Do not claim physical-device certification or authenticated online hosting.

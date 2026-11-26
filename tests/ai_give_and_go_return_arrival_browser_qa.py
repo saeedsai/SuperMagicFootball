@@ -27,7 +27,7 @@ SCENARIO=r"""() => {
   Object.assign(runner,{x:target.x,y:target.y,down:false,stun:0,z:0,action:'idle',
    actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,dx:0,dy:0,
    aiAssistTarget:null,aiGiveAndGoRun:{receiverId:carrier.src.id,target,expires:3}});
-  Object.assign(marker,{x:target.x-dir*82,y:target.y+100,down:false,stun:0,z:0,
+  Object.assign(marker,{x:target.x-dir*62,y:target.y+90,down:false,stun:0,z:0,
    action:'idle',actionTimer:0,slideTimer:0,moveVX:dir*600,moveVY:0,
    dx:dir*62/gap,dy:-90/gap});
   marker.src={...marker.src,agility};
