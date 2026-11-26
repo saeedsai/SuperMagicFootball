@@ -1706,7 +1706,7 @@ class GameEngine{
   };
   // A selected human keeps the nearest warning target; a ready CPU teammate
   // covers the same existing counter window only while nobody else has countered.
-  const teammateAlreadyCounters=target&&rivals.some(q=>q!==target&&hasCounter(q));
+  const teammateAlreadyCounters=target&&rivals.some(q=>q!==target&&distance(carrier,q)<135&&hasCounter(q));
   const backup=target&&selectedHuman(target)&&!hasCounter(target)&&!teammateAlreadyCounters
    ?rivals.find(q=>q!==target&&!selectedHuman(q)&&distance(carrier,q)<135&&!hasCounter(q))||null
    :null;

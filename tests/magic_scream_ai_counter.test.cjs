@@ -193,6 +193,19 @@ test('Scream does not assign a second CPU backup when another teammate already c
  }
 });
 
+
+test('Scream backup is not suppressed by a countering teammate outside the 135-unit radius',()=>{
+ for(const side of [0,1]){
+  const {g,carrier,target,other}=fixture(side,.7),dir=side===0?1:-1;
+  target.i=3;other.i=4;target.x=carrier.x+dir*55;other.x=carrier.x+dir*95;
+  const far={t:side,keeper:false,i:5,src:{defence:20},x:carrier.x+dir*145,y:carrier.y,z:22,stun:0,
+   action:'jump',actionTimer:.3,down:false,invuln:0};
+  g.players.push(far);g.controlled=[0,0];g.controlled[side]=target.i;g.inControl=team=>team===side;
+  assert.equal(react.call(g,other,.1,.02),true,'only an in-range teammate counter may suppress backup');
+  assert.equal(g.jumps,1);assert.equal(other.z,22);
+ }
+});
+
 test('Scream resolver accepts the same ready teammate JUMP and SHOOT-slide backup candidates',()=>{
  const trick=methodSource('tryMagicTrick');
  assert.match(trick,/const counterRivals=\['fireball','freeze','bat','scream'\]/);
