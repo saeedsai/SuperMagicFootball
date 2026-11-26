@@ -2134,6 +2134,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const allies=players.filter(q=>q&&q.t===team&&q!==carrier&&!q.keeper&&!q.aiAssistTarget&&ready(q));
   let best=null;
   for(const runner of allies){
+   const vx=velocity(runner,'x'),vy=velocity(runner,'y');
    const currentRange=Math.hypot(runner.x-carrier.x,runner.y-carrier.y);
    const leadSeconds=requestedLead??clampTo(currentRange/1400,.12,.35);
    const target={
