@@ -25,7 +25,7 @@ JS=r'''() => {
    const view=views[vi],[lane,diveDy]=lanes[li],phase=phases[pi],x=pi*320,y=(vi*lanes.length+li)*220;
    c.fillStyle='#e8eef3';c.fillRect(x,y,320,220);
    c.fillStyle='#203244';c.font='bold 11px system-ui';c.textAlign='center';c.fillText(view+' · '+lane+' · '+labels[pi],x+160,y+16);
-   c.save();c.beginPath();c.rect(x,y,320,220);c.clip();c.translate(x+160,y+146);r.time=.31;
+   c.save();c.beginPath();c.rect(x,y,320,220);c.clip();c.translate(x+160,y+144);r.time=.31;
    const face=base.t===0?1:-1;
    const p={...base,x:0,y:0,z:0,face,dx:0,dy:0,visualFacing:{kind:view,side:face},action:phase==='recover'?'keeperRecover':'keeperDive',actionTimer:phase==='recover'?.34:.60-(Number(phase)||0),diveElapsed:phase==='recover'?0:phase,diveDy,controlled:false,preview:true,keeper:true,stun:0,cryTimer:0};
    r.drawPlayer(c,p,{getTeam:()=>g.getTeam(base.t),options:{showNames:false,reducedFlash:false}});c.restore();
