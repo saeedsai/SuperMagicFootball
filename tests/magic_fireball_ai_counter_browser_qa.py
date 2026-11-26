@@ -33,7 +33,7 @@ with sync_playwright() as pw:
     const carrier=g.player(team,4),cpu=g.player(1-team,3),nearest=g.player(1-team,4),dir=team===0?1:-1;
     carrier.src={...carrier.src,magicTrick:trick};carrier.dribbleHold=.35;carrier.fatigue=0;carrier.down=false;carrier.stun=0;carrier.z=0;g.ball.owner=carrier;
     Object.assign(nearest,{x:carrier.x+dir*55,y:carrier.y,z:0,down:false,stun:0,invuln:2,action:'idle',actionTimer:0});
-    Object.assign(cpu,{x:carrier.x+dir*90,y:carrier.y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,jumpCount:0,aiFireballThreat:null,aiFireballReaction:0});
+    Object.assign(cpu,{x:carrier.x+dir*70,y:carrier.y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,jumpCount:0,aiFireballThreat:null,aiFireballReaction:0});
     for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==nearest)q.stun=1;
     g.matchState='play';g.clock=10;g.controlled[carrier.t]=carrier.i;g.inControl=side=>side===carrier.t;
     g.input.state[carrier.t]={dribble:true,x:0,y:0};
@@ -58,7 +58,7 @@ with sync_playwright() as pw:
     while(cpu.z<20&&carrier.dribbleHold<.95&&steps<60){g.updatePlayers(dt);steps++;}
     const holdAtCounter=carrier.dribbleHold;carrier.dribbleHold=1;
     const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
-    humanBackupOut.push({team,trick,cpuJumpCount:cpu.jumpCount,cpuZ:cpu.z,humanSelected:g.controlled[human.t]===human.i,
+    humanBackupOut.push({team,trick,cpuJumpCount:cpu.jumpCount,cpuZ:cpu.z,cpuDistance:Math.hypot(cpu.x-carrier.x,cpu.y-carrier.y),humanSelected:g.controlled[human.t]===human.i,
      humanAction:human.action,humanZ:human.z,humanStun:human.stun,holdAtCounter,activated,countered:event.countered,steps});
    }
    return {out,handoffOut,humanBackupOut,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
@@ -72,6 +72,7 @@ with sync_playwright() as pw:
    assert case['nearestInvulnerable'],(label,'fixture lost unavailable nearest defender',case)
   for case in result['humanBackupOut']:
    assert case['cpuJumpCount']>=1 and case['cpuZ']>=20 and case['holdAtCounter']<1,(label,'CPU teammate did not back up selected human defender',case)
+   assert case['cpuDistance']<120,(label,'backup moved outside the existing Fireball radius before impact',case)
    assert case['humanSelected'] and case['humanZ']<20 and case['humanStun']==0,(label,'selected human marker was not preserved',case)
    assert case['activated'] and case['countered'] is True,(label,'backup JUMP was not recognized by the actual resolver',case)
   assert not errors,(label,errors)
