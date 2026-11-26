@@ -7,7 +7,7 @@ Deliver real player-facing gameplay first, then existing-player graphics/animati
 
 ## Current checkpoint
 - **0.12.81.312 — KEEPER-OUTLET-AGILITY-TURN-READ-01:** goalkeeper short/long outlet safety integrates the existing Agility-limited turn response over the bounded pass-flight read. High-Agility defenders turning toward the flight corridor can invalidate a seemingly safe outlet; low-Agility defenders retain more residual momentum. Existing projection caps, flight horizon, safety thresholds and pass physics remain unchanged.
-- .312 feature source, mirrored Node regressions and actual-engine desktop/simulated-touch Chromium acceptance are committed on the existing dev branch. Exact-head Modular QA and Full Regression Census are pending.
+- .312 feature source and mirrored Node/desktop/simulated-touch Chromium acceptance are committed on the existing dev branch. First Modular QA #45735221379 exposed legacy VM-extracted keeper helpers that lack the shared turn function; the live engine itself was not the source of the ReferenceError. A local equivalent fallback now keeps those isolated fixtures compatible while production still uses the shared helper. Exact-head reruns are pending.
 - **.311 promoted to main** at `d6f8f925a921a3ee3eeb1f6c55c24a8db5a4eb7b`: Modular QA #45722554272 and dev Census #45722554366 passed; Pages #45724068937 and independent main Census #45724077445 succeeded.
 - Main and dev were identical at .311 start. GitHub still reports `main.protected=false`, `dev.protected=false`, and no rulesets; #87 remains open.
 
@@ -21,7 +21,7 @@ Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six form
 - .312 adds turn-aware opponent path integration only to keeper outlet safety; player movement, pass trajectory and distribution physics are unchanged.
 - .311 Modular QA #45722554272 and Full Regression Census #45722554366: success.
 - .311 Pages deployment #45724068937 and independent main Census #45724077445: success.
-- Exact .312 SHA and CI: pending after commit.
+- Initial .312 Modular QA #45735221379: failed on isolated-test helper scope (`carrierTurnAwareVelocity` missing); corrected in the next dev commit, exact-head reruns pending.
 
 ## Cleanup
 Keep this file below 4 KiB with these headings and exact Agent ID. Never bypass CI, security or QA promotion.

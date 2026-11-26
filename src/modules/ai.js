@@ -2266,6 +2266,29 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   const legacy=axis==='x'?player?.vx:player?.vy;
   return Number.isFinite(legacy)?legacy:0;
  };
+ const turnVelocity=(opponent,vx,vy,horizon)=>{
+  if(typeof carrierTurnAwareVelocity==='function')
+   return carrierTurnAwareVelocity(opponent,vx,vy,horizon);
+  // Keep legacy VM-extracted helper tests self-contained; live AI uses the
+  // shared carrierTurnAwareVelocity function above.
+  const magnitude=Math.hypot(vx,vy),turnHorizon=Math.max(.05,Math.min(.18,Number.isFinite(horizon)?horizon:.12));
+  const inputX=Number.isFinite(opponent?.dx)?opponent.dx:0;
+  const inputY=Number.isFinite(opponent?.dy)?opponent.dy:0;
+  const inputLength=Math.hypot(inputX,inputY);
+  if(!Number.isFinite(magnitude)||magnitude<75||!Number.isFinite(inputLength)||inputLength<.15)
+   return {x:vx,y:vy};
+  const currentX=vx/magnitude,currentY=vy/magnitude,desiredX=inputX/inputLength,desiredY=inputY/inputLength;
+  const dot=Math.max(-1,Math.min(1,currentX*desiredX+currentY*desiredY));
+  if(dot>.995)return {x:vx,y:vy};
+  const angle=Math.atan2(currentX*desiredY-currentY*desiredX,dot);
+  const raw=opponent?.src?.agility;
+  const parsed=typeof raw==='number'?raw:typeof raw==='string'&&raw.trim()!==''?Number(raw):NaN;
+  const agility=Math.max(1,Math.min(100,Number.isFinite(parsed)?parsed:50));
+  const maxTurn=(3+agility*.13)*turnHorizon;
+  const turn=Math.abs(angle)<=maxTurn?angle:(Math.sign(angle)||1)*maxTurn;
+  const cosine=Math.cos(turn),sine=Math.sin(turn);
+  return {x:(currentX*cosine-currentY*sine)*magnitude,y:(currentX*sine+currentY*cosine)*magnitude};
+ };
  const speed=clampTo(Number.isFinite(flightSpeed)&&flightSpeed>0?flightSpeed:480,300,1100);
  const explicitLead=Number.isFinite(receiverLeadSeconds)?clampTo(receiverLeadSeconds,0,.5):null;
  const leadXSeconds=explicitLead??(speed>=800?.34:.17);
@@ -2285,7 +2308,7 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   while(remaining>1e-6){
    const step=Math.min(.18,remaining);
    if(step>=.05){
-    const turned=carrierTurnAwareVelocity(opponent,vx,vy,step);
+    const turned=turnVelocity(opponent,vx,vy,step);
     travelX+=(vx+turned.x)*.5*step;
     travelY+=(vy+turned.y)*.5*step;
     vx=turned.x;vy=turned.y;
