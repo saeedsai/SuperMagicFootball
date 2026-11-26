@@ -55,6 +55,27 @@ test('Agility tunes only the lateral-cut SHOOT-slide read in both directions',()
  }
 });
 
+test('live carrier turn changes CPU slide-versus-poke choice without changing neutral momentum',()=>{
+ for(const dir of [1,-1]){
+  const decide=(agility,input='turn')=>{
+   const defendingTeam=dir===1?0:1;
+   const defender=player(defendingTeam,1000,700,{moveVX:dir*40,moveVY:0,
+    dx:dir,dy:0,face:dir,sprintCharge:.2,src:{agility:50}});
+   const carrier=player(1-defendingTeam,1000+dir*60,700,{
+    moveVX:0,moveVY:150,dx:input==='turn'?-dir:input==='invalid'?NaN:0,dy:0,src:{agility}
+   });
+   return AI.defensiveTackleSlide(defender,carrier,200);
+  };
+  assert.equal(decide(100),false,'an elite carrier turning into the defender should keep the shorter PASS poke');
+  assert.equal(decide(50),false,'average turn reach does not manufacture a lateral escape');
+  assert.equal(decide(1),true,'a low-Agility carrier retains the lateral cut that justifies a slide');
+  assert.equal(decide(1,'neutral'),true,'neutral input retains the prior lateral-momentum slide read');
+  assert.equal(decide(1,'invalid'),true,'invalid input fails back to the prior lateral-momentum read');
+  assert.equal(decide(undefined),false,'missing carrier Agility uses the neutral turn profile');
+  assert.equal(decide(NaN),false,'invalid carrier Agility uses the neutral turn profile');
+ }
+});
+
 test('retreating and side-on run-ups keep the short poke; a diagonal forward run-up can still slide',()=>{
  const carrier=player(1,1060,700,{moveVX:300,moveVY:0});
  const retreating=player(0,1000,700,{moveVX:-220,moveVY:0,dx:-1,dy:0,face:-1});

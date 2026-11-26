@@ -60,7 +60,7 @@ with sync_playwright() as pw:
      action:'idle',actionTimer:0,moveVX:0,moveVY:0,jumpCount:0,aiScreamThreat:null,aiScreamReaction:0});
     for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==human&&!q.keeper)q.stun=1;
     g.matchState='play';g.clock=10;g.controlled[carrier.t]=carrier.i;g.controlled[human.t]=human.i;
-    g.manualSwitchGrace[human.t]=10;g.input.state[carrier.t]={dribble:true,x:0,y:0};g.input.state[human.t]={};
+    g.manualSwitchGrace[carrier.t]=10;g.manualSwitchGrace[human.t]=10;g.input.state[carrier.t]={dribble:true,x:0,y:0};g.input.state[human.t]={};
     let steps=0;const dt=1/60;
     while(cpu.z<20&&carrier.dribbleHold<.95&&steps<60){g.updatePlayers(dt);steps++;}
     const holdAtCounter=carrier.dribbleHold;
@@ -110,7 +110,7 @@ with sync_playwright() as pw:
    if humanCounter:
     assert case['cpuJumpCount']==0,(label,'CPU duplicated the selected human JUMP counter',case)
    else:
-    assert case['cpuJumpCount']>=1 and case['cpuZ']>=20 and case['holdAtCounter']<1,(label,'CPU teammate did not back up an idle selected human Scream marker',case)
+    assert case['cpuJumpCount']>=1 and case['cpuZ']>=20 and .35<case['holdAtCounter']<1,(label,'CPU teammate did not back up an idle selected human Scream marker during the live wind-up',case)
     assert case['humanAction']=='idle' and case['humanZ']<20,(label,'selected human unexpectedly changed action without a valid counter',case)
    assert case['humanSelected'] and case['humanStun']==0,(label,'selected human lost control or was hit despite a valid counter',case)
    assert case['activated'] and case['countered'] is True,(label,'actual Scream resolver did not recognize the available human/CPU JUMP counter',case)

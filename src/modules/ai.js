@@ -432,7 +432,11 @@ function defensiveTackleSlide(defender,carrier,baseSpeed=0){
  const headingY=inputLength>.15?inputY/inputLength:0;
  if(headingX*ux+headingY*uy<.25)return false;
  if(movementSpeed>24&&(defenderVX*ux+defenderVY*uy)/movementSpeed<.25)return false;
- const relativeX=carrierVX-defenderVX,relativeY=carrierVY-defenderVY;
+ // A fast carrier who has already turned toward the defender is no longer
+ // escaping across the lane at its old velocity. Use the same bounded 120 ms
+ // Agility read as slide aiming so style selection can prefer the shorter poke.
+ const projectedCarrier=carrierTurnAwareVelocity(carrier,carrierVX,carrierVY,.12);
+ const relativeX=projectedCarrier.x-defenderVX,relativeY=projectedCarrier.y-defenderVY;
  const escaping=relativeX*ux+relativeY*uy;
  const crossing=Math.abs(relativeX*(-uy)+relativeY*ux);
  const rawAgility=defender.src?.agility;

@@ -66,6 +66,15 @@ with sync_playwright() as pw:
                 const ball={owner:carrier,x:carrier.x-dir*17,y:carrier.y,z:12};
                 return game.defensiveTackleSlideBallSideRead(defender,carrier,ball,160);
             };
+            const slideTurnRead=(team,agility,input='turn')=>{
+                const dir=team===0?1:-1;
+                const defender={t:team,x:1000,y:700,keeper:false,down:false,stun:0,invuln:0,z:0,
+                    moveVX:dir*40,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:.2,src:{agility:50}};
+                const carrier={t:1-team,x:1000+dir*60,y:700,keeper:false,down:false,stun:0,invuln:0,z:0,
+                    moveVX:0,moveVY:150,dx:input==='turn'?-dir:input==='invalid'?NaN:0,dy:0,src:{agility}};
+                const ball={owner:carrier,x:carrier.x-dir*17,y:carrier.y+20,z:12};
+                return game.defensiveTackleSlideBallSideRead(defender,carrier,ball,200);
+            };
             const profile=(defence,aggression,fatigue=0)=>({fatigue,src:{
                 id:'slide-profile-'+defence+'-'+aggression,role:'DF',defence,aggression
             }});
@@ -86,6 +95,11 @@ with sync_playwright() as pw:
                 slideHighLeft:slideRead(1,100),slideAverageLeft:slideRead(1,50),slideLowLeft:slideRead(1,20),
                 slideLowWideCut:slideRead(0,1,120),slideMissingAgility:slideRead(0,undefined),
                 slideInvalidAgility:slideRead(1,NaN),slideStraightLow:slideRead(0,1,0,true),slideAgility,
+                slideTurnChoice:Object.fromEntries([0,1].map(team=>[team,{
+                    high:slideTurnRead(team,100),average:slideTurnRead(team,50),low:slideTurnRead(team,1),
+                    neutral:slideTurnRead(team,1,'neutral'),invalidInput:slideTurnRead(team,1,'invalid'),
+                    missingAgility:slideTurnRead(team,undefined)
+                }])),
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -102,6 +116,10 @@ with sync_playwright() as pw:
         assert not result['slideLowRight'] and not result['slideLowLeft'],(kind,result)
         assert result['slideLowWideCut'] and result['slideStraightLow'],(kind,result)
         assert not result['slideMissingAgility'] and not result['slideInvalidAgility'],(kind,result)
+        for team,read in result['slideTurnChoice'].items():
+            assert not read['high'] and not read['average'],(kind,team,read)
+            assert read['low'] and read['neutral'] and read['invalidInput'],(kind,team,read)
+            assert not read['missingAgility'],(kind,team,read)
         for team,read in result['slideAgility'].items():
             assert read['elite']['y']<read['average']['y']<read['low']['y'],(kind,team,read)
             direction=1 if int(team)==0 else -1
