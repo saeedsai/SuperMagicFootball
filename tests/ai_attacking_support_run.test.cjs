@@ -102,3 +102,35 @@ test('orientation is only a tie-breaker and never rejects a sole safe runner',as
   assert.equal(AI.attackingSupportRun([carrier,sole],team,carrier,null,bounds)?.runner,sole);
  }
 });
+
+
+test('support-run lane selection projects defender turns using Agility in both attack directions',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,carrier=player('carrier',team,team===0?400:600,300);
+  const runner=player('runner',team,carrier.x+dir*50,300);
+  const marker=agility=>player('marker-'+agility,1-team,carrier.x+dir*80,320,{
+   moveVX:dir*300,moveVY:300,dx:dir,dy:-1,src:{agility}
+  });
+  const elite=AI.attackingSupportRun([carrier,runner,marker(100)],team,carrier,null,bounds);
+  const limited=AI.attackingSupportRun([carrier,runner,marker(1)],team,carrier,null,bounds);
+  assert.equal(elite?.runner,runner);
+  assert.equal(limited?.runner,runner);
+  assert.equal(elite.target.y,412,'an elite marker turning into the upper route makes the runner use the lower lane for team '+team);
+  assert.equal(limited.target.y,188,'a low-Agility marker retains lower-lane momentum, leaving the upper route safer for team '+team);
+ }
+});
+
+test('neutral and invalid defender input preserve linear support-run threat projection',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,carrier=player('carrier',team,team===0?400:600,300);
+  const runner=player('runner',team,carrier.x+dir*50,300);
+  const resultFor=(dx,dy)=>AI.attackingSupportRun([carrier,runner,player('marker',1-team,
+   carrier.x+dir*80,320,{moveVX:dir*300,moveVY:300,dx,dy,src:{agility:100}})],
+   team,carrier,null,bounds);
+  const neutral=resultFor(0,0),invalid=resultFor(NaN,NaN);
+  assert.deepEqual(invalid,neutral,'invalid directional input must retain the neutral linear fallback for team '+team);
+  assert.equal(neutral?.target.y,188,'linear momentum still identifies the lower-lane threat for team '+team);
+ }
+});

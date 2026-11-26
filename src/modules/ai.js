@@ -610,10 +610,19 @@ function attackingSupportRun(players,team,carrier,humanControlled=null,bounds=nu
     // Score where a moving defender is likely to be when the runner reaches this lane.
     const vx=movementVelocity(defender,'x'),vy=movementVelocity(defender,'y');
     const moving=Math.hypot(vx,vy)>35;
-    const threat=moving?{
-     x:defender.x+clampTo(vx*defenderLookahead,-100,100),
-     y:defender.y+clampTo(vy*defenderLookahead,-100,100)
-    }:defender;
+    let threat=defender;
+    if(moving){
+     // A defender may turn into the support lane before the runner arrives.
+     // Integrate the existing Agility-limited turn for at most 180 ms, then
+     // carry that velocity through the remaining lookahead under the same cap.
+     const turnWindow=Math.min(.18,defenderLookahead);
+     const turned=carrierTurnAwareVelocity(defender,vx,vy,turnWindow);
+     const remaining=defenderLookahead-turnWindow;
+     threat={
+      x:defender.x+clampTo((vx+turned.x)*.5*turnWindow+turned.x*remaining,-100,100),
+      y:defender.y+clampTo((vy+turned.y)*.5*turnWindow+turned.y*remaining,-100,100)
+     };
+    }
     const corridor=pointSegmentDistance(threat,p,target);
     if(corridor<92)corridorPressure+=(92-corridor)/92;
     const arrival=Math.hypot(threat.x-target.x,threat.y-target.y);

@@ -51,7 +51,33 @@ with sync_playwright() as pw:
                 game.driveAI(facing,1/60);
                 rows.push({team,dir,carrier:{x,y},target:facing.aiTarget,sentinel});
             }
-            return {rows,buttons:document.querySelectorAll(
+            const turnRows=[];
+            for(const team of [0,1]){
+                for(const agility of [100,1]){
+                    game.init({home:0,away:1,mode:'quick',humans:0});
+                    const dir=team===0?1:-1,carrier=game.player(team,3),
+                        runner=game.player(team,4),marker=game.player(1-team,3);
+                    const x=1280.4,y=765;
+                    for(const p of game.players)if(![carrier,runner,marker].includes(p)){
+                        Object.assign(p,{down:true,stun:1.1,invuln:1.1,z:0,action:'idle',actionTimer:0});
+                    }
+                    Object.assign(carrier,{x,y,down:false,stun:0,invuln:0,z:0,action:'idle',actionTimer:0,
+                        face:dir,dx:dir,dy:0,moveVX:0,moveVY:0,homeX:x,homeY:y,
+                        aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null});
+                    Object.assign(runner,{x:x+dir*50,y,down:false,stun:0,invuln:0,z:0,action:'idle',actionTimer:0,
+                        face:dir,dx:0,dy:0,moveVX:0,moveVY:0,homeX:x+dir*50,homeY:y,
+                        aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,
+                        aiTimer:1,aiTarget:null,comboCooldown:10,magicReadyAt:10,trickCd:10});
+                    Object.assign(marker,{x:x+dir*80,y:y+20,down:false,stun:0,invuln:0,z:0,
+                        action:'idle',actionTimer:0,slideTimer:0,moveVX:dir*300,moveVY:300,dx:dir,dy:-1,
+                        src:{...marker.src,agility}});
+                    Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,shot:null,strike:null});
+                    game.clock=5;
+                    game.driveAI(runner,1/60);
+                    turnRows.push({team,dir,agility,carrier:{x,y},target:runner.aiTarget});
+                }
+            }
+            return {rows,turnRows,buttons:document.querySelectorAll(
                 '#touchButtons button[data-act="pass"],#touchButtons button[data-act="shoot"],'+
                 '#touchButtons button[data-act="dribble"],#touchButtons button[data-act="jump"]').length};
         }""")
@@ -61,7 +87,11 @@ with sync_playwright() as pw:
             assert target and target['x']!=row['sentinel']['x'],(kind,row)
             assert abs(target['x']-(row['carrier']['x']+row['dir']*160))<1e-6,(kind,row)
             assert abs(abs(target['y']-row['carrier']['y'])-112)<1e-6,(kind,row)
+        for row in result['turnRows']:
+            target=row['target']
+            expected=row['carrier']['y']+112 if row['agility']==100 else row['carrier']['y']-112
+            assert target and abs(target['y']-expected)<1e-6,(kind,row,expected)
         assert not errors,(kind,errors)
-        print('PASS',kind,'goal-facing support receiver selected in both attack directions; four actions unchanged',flush=True)
+        print('PASS',kind,'goal-facing and Agility-aware support lanes in both directions; four actions unchanged',flush=True)
         ctx.close()
     browser.close()
