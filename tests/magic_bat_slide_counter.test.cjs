@@ -32,11 +32,15 @@ test('MAGIC-BAT-SLIDE-01: active grounded SHOOT-slide parries Bat from both side
  }
 });
 test('Expired, non-slide, low-jump and invalid-height defenders cannot parry Bat',()=>{
- for(const opts of [{timer:0},{timer:-.01},{timer:NaN},{action:'run'},{z:19.9,action:'run'},{z:NaN}]){
+ for(const opts of [{timer:0},{timer:-.01},{timer:NaN},{action:'run'},{z:19.9,action:'run'}]){
   const {defender,events,fire}=setup(opts);
   assert.equal(fire(),true);assert.equal(defender.stun,.32);
   assert.equal(defender.action,'hurt');assert.equal(events[0].countered,false);
  }
+});
+test('Invalid-height defender is excluded from the Bat target pool without a phantom hit',()=>{
+ const {defender,events,fire}=setup({z:NaN,action:'run',timer:0});
+ assert.equal(fire(),true);assert.equal(defender.stun,0);assert.equal(events[0].countered,false);
 });
 test('Facing/closing defence remains available, while other Tricks are unaffected',()=>{
  const {defender,events,fire}=setup({action:'run',timer:0,face:-1});
@@ -66,11 +70,14 @@ test('MAGIC-BAT-JUMP-01: airborne JUMP evades Bat from both sides with original 
  }
 });
 test('Bat JUMP dodge requires height and range; grounded SHOOT-slide still parries',()=>{
- for(const z of [0,19.99,NaN]){
+ for(const z of [0,19.99]){
   const {defender,events,fire}=setup({z,action:'run',timer:0});
   assert.equal(fire(),true);assert.equal(defender.stun,.32);
   assert.equal(events[0].countered,false);
  }
+ const invalid=setup({z:NaN,action:'run',timer:0});assert.equal(invalid.fire(),true);
+ assert.equal(invalid.defender.stun,0,'invalid-height defender is not selected for Bat');
+ assert.equal(invalid.events[0].countered,false);
  const far=setup({z:30,action:'run',timer:0});far.defender.x=far.attacker.x+200;
  assert.equal(far.fire(),true);assert.equal(far.events[0].countered,false);
  const slide=setup({z:0,action:'slide',timer:.25});
