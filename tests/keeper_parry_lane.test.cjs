@@ -44,6 +44,19 @@ test('parry anticipates an attacker moving into the preferred rebound lane',()=>
 test('parry movement projection mirrors for the away-side keeper',()=>{
  assert.equal(helper(keeper(1),[rival(1350,470,{t:0,moveVX:0,moveVY:-300})],1),-1);
 });
+
+test('parry includes a runner outside the current radius when bounded motion can enter the rebound corridor',()=>{
+ const k=keeper(0),runner=rival(450,450,{moveVX:-300,moveVY:0});
+ assert.ok(Math.hypot(runner.x-k.x,runner.y-k.y)>360,'runner starts outside the old scan radius');
+ assert.ok(Math.hypot(runner.x-144-k.x,runner.y-k.y)<360,'the existing capped lead enters the keeper neighborhood');
+ assert.equal(helper(k,[runner],1),-1,'the late runner occupies the preferred lower rebound lane');
+});
+
+test('parry excludes runners beyond the maximum per-axis projected scan envelope',()=>{
+ const k=keeper(0),runner=rival(700,450,{moveVX:-300,moveVY:0});
+ assert.ok(Math.hypot(runner.x-k.x,runner.y-k.y)>360+Math.SQRT2*150);
+ assert.equal(helper(k,[runner],1),1,'a runner that cannot enter the bounded neighborhood does not bias the lane');
+});
 test('parry movement projection falls back to legacy velocity fields',()=>{
  assert.equal(helper(keeper(0),[rival(250,470,{vx:0,vy:-300})],1),-1);
 });

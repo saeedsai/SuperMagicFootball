@@ -53,7 +53,7 @@ with sync_playwright() as pw:
     rows.push({side,kind:'impact-rise',...run(side,{shotImpactRiseTimer:.4})});
     rows.push({side,kind:'shot-get-up',...run(side,{action:'shotGetUp',actionTimer:.4})});
    }
-   const turnRows=[];
+   const turnRows=[],lateRows=[];
    const runTurn=(side,agility,turning=true)=>{
     g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='paused';g.cooldown=0;
@@ -66,7 +66,7 @@ with sync_playwright() as pw:
      Object.assign(p,{down:true,stun:1,action:'idle',actionTimer:0});
     }
     const marker=g.player(1-side,3);
-    Object.assign(marker,{x:k.x+dir*120,y:goalY,z:0,stun:0,down:false,
+    Object.assign(marker,{x:k.x+dir*180,y:goalY,z:0,stun:0,down:false,
      action:'idle',actionTimer:0,moveVX:0,moveVY:-300,vx:0,vy:-300,
      dx:turning?dir*.01:0,dy:turning?1:0,
      src:{...(marker.src||{}),agility}});
@@ -76,12 +76,34 @@ with sync_playwright() as pw:
     const parried=g.tryKeeperDive(k,false);
     return {parried,vy:b.vy,agility,turning};
    };
+   const runLateRunner=side=>{
+    g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+    g.matchState='paused';g.cooldown=0;
+    const k=g.player(side,0),b=g.ball,dir=side===0?1:-1,goalY=765;
+    Object.assign(k,{x:side===0?255:2305,y:goalY,z:0,stun:0,down:false,
+     action:'idle',actionTimer:0,diveCooldown:0,diveIntentCooldown:0,
+     diveIntentPending:false,moveVX:0,moveVY:0});
+    for(const p of g.players){
+     if(p===k||p.keeper)continue;
+     Object.assign(p,{down:true,stun:1,action:'idle',actionTimer:0});
+    }
+    const marker=g.player(1-side,3);
+    Object.assign(marker,{x:k.x+dir*394,y:goalY+100,z:0,stun:0,down:false,
+     action:'idle',actionTimer:0,moveVX:-dir*300,moveVY:0,
+     vx:-dir*300,vy:0,dx:-dir,dy:0});
+    Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,
+     x:k.x+dir*24,y:goalY,z:0,vx:-dir*2500,vy:0,vz:0,power:60,
+     ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[],pass:false});
+    const parried=g.tryKeeperDive(k,false);
+    return {parried,vy:b.vy,markerX:marker.x,markerY:marker.y};
+   };
    for(const side of [0,1]){
     turnRows.push({side,kind:'elite-turn',...runTurn(side,100,true)});
     turnRows.push({side,kind:'low-agility',...runTurn(side,1,true)});
     turnRows.push({side,kind:'neutral-fallback',...runTurn(side,100,false)});
+    lateRows.push({side,kind:'late-arriving-runner',...runLateRunner(side)});
    }
-   return {rows,turnRows,teams:SupermagicFootball.teams.filter(team=>
+   return {rows,turnRows,lateRows,teams:SupermagicFootball.teams.filter(team=>
      !['concept_demo','crown_royals_reference'].includes(team.group)).length,
      buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
@@ -102,6 +124,9 @@ with sync_playwright() as pw:
     assert row['vy']<0,(kind,row)
    else:
     assert row['vy']>0,(kind,row)
-  print('PASS',kind,'parry turn-read: elite threat redirected, low-Agility/neutral fallback retained; 223 teams and four actions',flush=True)
+  assert len(result['lateRows'])==2,(kind,result)
+  for row in result['lateRows']:
+   assert row['parried'] and row['vy']<0,(kind,row)
+  print('PASS',kind,'parry turn-read and late-arriving runner: bounded approach redirects; 223 teams and four actions',flush=True)
   ctx.close()
  browser.close()

@@ -406,7 +406,8 @@ function keeperParrySide(keeper,players,shotOffset){
       q.action==='shotDown'||q.action==='shotGetUp'||
       (q.action==='hurt'&&(q.actionTimer||0)>0)||
       (q.z||0)>28||!Number.isFinite(q.x)||!Number.isFinite(q.y)||
-      distance(keeper,q)>360)continue;
+      // A runner just outside the current neighborhood may still enter it within the maximum per-axis lead.
+      distance(keeper,q)>360+Math.SQRT2*150)continue;
    consider(q.x,q.y);
    // A parry travels into this corridor over the next few tenths of a second.
    // Include bounded runner projections so a currently-open lane is not chosen
