@@ -172,7 +172,57 @@ with sync_playwright() as pw:
                 if(game.ball.owner!==carrier)throw new Error('cutback cover role selection changed possession');
                 cutbackRows.push({defendingTeam,expected,cover:cutback.aiTarget,primary:primary.aiTarget});
             }
-            return {rows,stationaryRows,turnRows,inputRows,cutbackRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            const cutbackTurnRows=[];
+            for(const defendingTeam of [0,1]){
+                for(const agility of [100,1]){
+                    game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                    const attackingTeam=1-defendingTeam,attackDir=attackingTeam===0?1:-1,
+                        cutSign=attackingTeam===0?1:-1;
+                    const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+                    const center=(bounds.yMin+bounds.yMax)/2;
+                    const carrierX=attackingTeam===0?bounds.xMax-220:bounds.xMin+220;
+                    const carrierY=attackingTeam===0?bounds.yMin+140:bounds.yMax-140;
+                    const runnerY=attackingTeam===0?center-180:center+180;
+                    const carrier=game.player(attackingTeam,3),runner=game.player(attackingTeam,4),
+                        [primary,nearBall,cutback]=game.players.filter(p=>p.t===defendingTeam&&!p.keeper);
+                    if(!carrier||!runner||!primary||!nearBall||!cutback)
+                        throw new Error('Agility cutback fixture is missing an active player');
+                    for(const q of game.players){if(q.keeper)continue;Object.assign(q,{down:true,stun:1,z:0,
+                        action:'idle',actionTimer:0,moveVX:0,moveVY:0,aiTarget:null,aiTimer:0,
+                        aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});}
+                    const place=(q,x,y)=>Object.assign(q,{x,y,z:0,down:false,stun:0,cd:1,action:'idle',
+                        actionTimer:0,slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
+                        shotImpactRiseTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,aiTarget:null,aiTimer:0,
+                        aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
+                    place(carrier,carrierX,carrierY);
+                    place(runner,carrierX-attackDir*150,runnerY);
+                    Object.assign(runner,{moveVX:attackDir*160,moveVY:0,dx:0,dy:cutSign});
+                    runner.src.agility=agility;
+                    const turn=Math.min(Math.PI/2,(3+agility*.13)*.12);
+                    const projectedX=runner.x+Math.max(-18,Math.min(18,attackDir*160*Math.cos(turn)*.12));
+                    const projectedY=runner.y+Math.max(-18,Math.min(18,cutSign*160*Math.sin(turn)*.12));
+                    const behind=(projectedX-carrierX)*attackDir;
+                    const retreat=Math.max(48,Math.min(110,-behind*.62));
+                    const expected={x:carrierX-attackDir*retreat,y:carrierY+(projectedY-carrierY)*.62};
+                    place(primary,carrierX-attackDir*25,carrierY);
+                    place(nearBall,carrierX-attackDir*50,carrierY+18);
+                    place(cutback,expected.x+8,expected.y+8);
+                    Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,
+                        pass:false,passTarget:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,
+                        age:0,shot:null,strike:null,ordinaryShot:false});
+                    game.clock=2;game.driveAI(cutback,.016);
+                    if(!cutback.aiTarget||Math.hypot(cutback.aiTarget.x-expected.x,cutback.aiTarget.y-expected.y)>1e-6)
+                        throw new Error('second defender did not read the Agility-projected cutback lane: '+
+                            JSON.stringify({defendingTeam,agility,expected,actual:cutback.aiTarget}));
+                    game.driveAI(primary,.016);
+                    if(!primary.aiTarget||Math.hypot(primary.aiTarget.x-carrier.x,primary.aiTarget.y-carrier.y)>34.1)
+                        throw new Error('primary presser left the carrier during Agility cutback cover: '+
+                            JSON.stringify({defendingTeam,agility,target:primary.aiTarget}));
+                    if(game.ball.owner!==carrier)throw new Error('Agility cutback cover changed possession');
+                    cutbackTurnRows.push({defendingTeam,agility,expected,cover:cutback.aiTarget});
+                }
+            }
+            return {rows,stationaryRows,turnRows,inputRows,cutbackRows,cutbackTurnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -182,7 +232,8 @@ with sync_playwright() as pw:
         assert len(result['turnRows'])==2,(kind,result)
         assert len(result['inputRows'])==4,(kind,result)
         assert len(result['cutbackRows'])==2,(kind,result)
+        assert len(result['cutbackTurnRows'])==4,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'arrival press, Agility turn lead and cutback-pocket support assignment; possession, four actions and no JS errors',flush=True)
+        print('PASS',kind,'arrival press, Agility turn lead and Agility-aware cutback receiver cover; possession, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()

@@ -531,8 +531,9 @@ function defensiveCutbackCoverTarget(team,carrier,bounds,players=null){
     Number.isFinite(runner.vx)?runner.vx:0;
    const vy=Number.isFinite(runner.moveVY)?runner.moveVY:
     Number.isFinite(runner.vy)?runner.vy:0;
-   const projectedX=runner.x+clampTo(vx*.12,-18,18);
-   const projectedY=runner.y+clampTo(vy*.12,-18,18);
+   const projectedVelocity=carrierTurnAwareVelocity(runner,vx,vy,.12);
+   const projectedX=runner.x+clampTo(projectedVelocity.x*.12,-18,18);
+   const projectedY=runner.y+clampTo(projectedVelocity.y*.12,-18,18);
    const projectedBehind=(projectedX-carrier.x)*attackDir;
    const projectedDepth=attackDir===1?xMax-projectedX:projectedX-xMin;
    if(projectedBehind>-20||projectedDepth<80||projectedDepth>430)continue;

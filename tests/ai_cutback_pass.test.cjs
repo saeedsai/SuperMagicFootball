@@ -344,6 +344,57 @@ test('defensive cover follows the projected central receiver lane on both attack
  }
 });
 
+test('defensive cutback cover projects receiver turns using Agility on both attacking sides',async()=>{
+ const {AI}=await loadModules();
+ const center=(MATCH_BOUNDS.yMin+MATCH_BOUNDS.yMax)/2;
+ const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+ for(const attackingTeam of [0,1]){
+  const defendingTeam=1-attackingTeam,attackDir=attackingTeam===0?1:-1,cutSign=attackingTeam===0?1:-1;
+  const carrier={t:attackingTeam,keeper:false,
+   x:attackingTeam===0?MATCH_BOUNDS.xMax-186:MATCH_BOUNDS.xMin+186,
+   y:attackingTeam===0?MATCH_BOUNDS.yMin+140:MATCH_BOUNDS.yMax-140,
+   down:false,stun:0,z:0,action:'idle'};
+  const runner={t:attackingTeam,keeper:false,x:carrier.x-attackDir*150,
+   y:attackingTeam===0?center-180:center+180,
+   moveVX:attackDir*160,moveVY:0,dx:0,dy:cutSign,
+   down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+   src:{agility:100}};
+  const projected=(agility)=>{
+   const turn=Math.min(Math.PI/2,(3+agility*.13)*.12);
+   return {
+    x:runner.x+clamp(attackDir*160*Math.cos(turn)*.12,-18,18),
+    y:runner.y+clamp(cutSign*160*Math.sin(turn)*.12,-18,18)
+   };
+  };
+  const expected=(point)=>{
+   const behind=(point.x-carrier.x)*attackDir;
+   const retreat=clamp(-behind*.62,48,110);
+   return {x:carrier.x-attackDir*retreat,y:carrier.y+(point.y-carrier.y)*.62};
+  };
+  const highPoint=projected(100);
+  const high=AI.defensiveCutbackCoverTarget(defendingTeam,carrier,MATCH_BOUNDS,[carrier,runner]);
+  runner.src.agility=1;
+  const lowPoint=projected(1);
+  const low=AI.defensiveCutbackCoverTarget(defendingTeam,carrier,MATCH_BOUNDS,[carrier,runner]);
+  const highExpected=expected(highPoint),lowExpected=expected(lowPoint);
+  assert.ok(high&&low,'both Agility ratings should retain an eligible cutback receiver');
+  assert.ok(Math.abs(high.x-highExpected.x)<1e-9&&Math.abs(high.y-highExpected.y)<1e-9,
+   'high Agility should project the receiver through its full reachable turn');
+  assert.ok(Math.abs(low.x-lowExpected.x)<1e-9&&Math.abs(low.y-lowExpected.y)<1e-9,
+   'low Agility should retain more of the receiver’s existing momentum');
+  assert.ok(Math.abs(high.y-center)<Math.abs(low.y-center),
+   'the high-Agility receiver should pull the cover farther into the central cutback lane');
+  assert.ok(Math.abs(high.x-low.x)>5,'turn projection should also adjust the bounded longitudinal screen');
+  const neutralRunner={...runner,dx:0,dy:0,src:{agility:100}};
+  const neutralPoint={x:runner.x+clamp(attackDir*160*.12,-18,18),y:runner.y};
+  const neutral=AI.defensiveCutbackCoverTarget(defendingTeam,carrier,MATCH_BOUNDS,[carrier,neutralRunner]);
+  const neutralExpected=expected(neutralPoint);
+  assert.ok(neutral&&Math.abs(neutral.x-neutralExpected.x)<1e-9&&Math.abs(neutral.y-neutralExpected.y)<1e-9,
+   'neutral input must retain the prior residual-momentum projection');
+ }
+});
+
 test('driveAI sends the second defender into the projected receiver screen while the primary still presses',async()=>{
  const {AI,ENGINE}=await loadModules();
  const game=new ENGINE.GameEngine({halfSeconds:120});

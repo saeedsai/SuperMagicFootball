@@ -6,21 +6,21 @@
 Deliver player-facing football gameplay first, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup improvements. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.324 — AI-CUTBACK-SUPPORT-ARRIVAL-ASSIGNMENT-01:** during wide opponent byline possession, driveAI now computes the existing central cutback pocket before selecting defensive roles and supplies it to defensivePressers. The primary remains on the carrier; the second CPU defender is chosen for the actual receiver lane rather than merely proximity to the ball. No auto-tackle or possession change.
-- Added mirrored Node helper/actual-engine cases in tests/ai_cutback_pass.test.cjs and desktop/simulated-touch Chromium acceptance in tests/ai_defensive_press_arrival_browser_qa.py. Both sides verify support pocket, primary press, possession, four actions and team catalog.
-- Parent dev SHA: 8ceb0dd00a137f4aed3d2d6e24b8d9e61bbfd5e2. Parent Modular QA #45775910639 passed; parent Full Regression Census #45775910637 completed preflight/preview and all four Chromium shards, with Node shard 1 still running at last observation. The first .324 gates exposed a test-fixture cooldown issue and this checkpoint's missing registry backticks; both are being corrected without changing production behavior. This candidate's exact-head QA/Census are triggered by its commit and remain pending until observed.
+- **0.12.81.325 — AI-CUTBACK-RECEIVER-AGILITY-TURN-READ-01:** defensive cutback cover now predicts the central receiver through the existing Agility-limited turn response. High-Agility runners cutting centrally draw the second defender farther into their reachable lane; low-Agility runners retain more existing momentum. The primary still presses the carrier.
+- Added mirrored Node and actual-engine desktop/simulated-touch Chromium regressions for both attack directions, high/low Agility and neutral-input fallback. Existing ±18-unit per-axis projection, receiver eligibility, cover bounds, possession and four actions remain.
+- Parent .324 exact dev SHA: `ca975d1b3723edc9333b771c11240f82fb122ef3`. Modular QA #45778461528 passed. Full Census #45778461585 was still running at last observation: preflight and preview passed; Node shards 0/2/3 passed, Node shard 1 running; Chromium shards 0/1/2/3 passed. .325 exact-head gates are triggered by the current commit.
 
 ## Next smallest action
-Inspect exact-head Modular QA and all four Node/four Chromium Full Regression Census jobs. Fix confirmed feature or gate failures on the existing dev branch, then allow only a green exact head through the QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes.
+Inspect exact-head .325 Modular QA and all four Node/four Chromium Census jobs. Fix confirmed failures on existing dev, then allow only a fully green exact head through the QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Preserve 223 teams, 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept-hero creation or copied art. Keep #48 physical acceptance, #86 Render drift and #87 main protection open. No authenticated online-hosting claim.
 
 ## Evidence
-- Parent .323 Modular QA #45775910639: passed on 8ceb0dd00a137f4aed3d2d6e24b8d9e61bbfd5e2.
-- Parent .323 Full Regression Census #45775910637: queued at latest observation; no pass claimed.
-- Main SHA: e1720386be42b69c068afa0c193148f21abaefe7; Pages deployment #45740394957 and independent main Census #45740402228 passed for .314.
-- Branch-protection API returned 403; #87 remains unresolved. #48 remains open; no physical two-phone certification.
+- Parent .324 Modular QA #45778461528: passed on its exact dev head.
+- Parent .324 Full Regression Census #45778461585: preflight, preview and three Node shards plus all four Chromium shards passed; Node shard 1 was still running. No full pass claimed.
+- Main SHA: `e1720386be42b69c068afa0c193148f21abaefe7`; previous .314 Pages/Census evidence is historical and does not certify newer dev candidates.
+- Main branch-protection API returned 403; #87 remains unresolved. #48 remains open; no physical two-phone certification.
 
 ## Cleanup
 Read only this agent's checkpoint. No LAN/P2P, roster, art, save-schema or online-hosting changes in this increment.
