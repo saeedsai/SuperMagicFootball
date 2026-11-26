@@ -4,11 +4,16 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('src/modules/engine.js','utf8');
+const aiSource=fs.readFileSync('src/modules/ai.js','utf8');
+const turnStart=aiSource.indexOf('function carrierTurnAwareVelocity(');
+const turnEnd=aiSource.indexOf('\n\n// Assign the closest available AI player',turnStart);
+assert.ok(turnStart>=0&&turnEnd>turnStart,'locate the production Agility-turn helper');
+const turnVelocity=vm.runInNewContext('(function(){'+aiSource.slice(turnStart,turnEnd)+';return carrierTurnAwareVelocity;})()');
 const start=source.indexOf('function keeperParrySide(');
 const end=source.indexOf('function keeperOutletScore(',start);
 assert.ok(start>=0&&end>start,'locate production keeper parry helper');
-const helper=vm.runInNewContext('(function(F,clamp,distance){'+source.slice(start,end)+';return keeperParrySide;})',{})(
- {y:0,h:680},(v,a,b)=>Math.max(a,Math.min(b,v)),(a,b)=>Math.hypot(a.x-b.x,a.y-b.y)
+const helper=vm.runInNewContext('(function(F,clamp,distance,defensiveCarrierTurnVelocity){'+source.slice(start,end)+';return keeperParrySide;})',{})( 
+ {y:0,h:680},(v,a,b)=>Math.max(a,Math.min(b,v)),(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),turnVelocity
 );
 const keeper=(t=0)=>({t,x:t===0?80:1520,y:340,keeper:true});
 const rival=(x,y,extra={})=>({t:1,x,y,stun:0,z:0,down:false,...extra});
@@ -61,6 +66,25 @@ test('no-pressure rebound preserves the original shot-angle direction and magnit
   assert.equal(reboundVy,Math.sign(dy||1)*(115+Math.abs(dy)*4));
  }
 });
+test('keeper parry chooses the clear lane from Agility-limited attacker turns on both goals',()=>{
+ for(const team of [0,1]){
+  const k=keeper(team),dir=team===0?1:-1;
+  const marker=(agility,turning=true,invalid=false)=>rival(k.x+dir*120,k.y,{
+   t:1-team,moveVX:0,moveVY:-300,
+   dx:invalid?NaN:(turning?dir*.01:0),dy:invalid?Infinity:(turning?1:0),
+   src:{agility}
+  });
+  assert.equal(helper(k,[marker(100)],1),-1,
+   'an elite runner turning into the preferred lower lane must make the keeper use the upper lane (team '+team+')');
+  assert.equal(helper(k,[marker(1)],1),1,
+   'a low-Agility runner still moving away must not falsely block the lower lane (team '+team+')');
+  assert.equal(helper(k,[marker(100,false)],1),1,
+   'neutral input must preserve the exact linear fallback (team '+team+')');
+  assert.equal(helper(k,[marker(100,true,true)],1),1,
+   'invalid input must preserve the exact linear fallback (team '+team+')');
+ }
+});
+
 test('actual dive deflection uses the selected side without changing outward speed or catch threshold',()=>{
  assert.ok(source.includes('b.vy=keeperParrySide(p,this.players,dy)*(115+Math.abs(dy)*4)'));
  assert.ok(source.includes('b.vx=sign*(290+skill*4.1)'));

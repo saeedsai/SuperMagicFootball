@@ -419,8 +419,18 @@ function keeperParrySide(keeper,players,shotOffset){
    };
    const vx=velocity('x'),vy=velocity('y');
    for(const seconds of [.24,.48]){
-    consider(q.x+clamp(vx*seconds,-150,150),
-     q.y+clamp(vy*seconds,-150,150));
+    const turnSeconds=Math.min(seconds,.18);
+    const turned=defensiveCarrierTurnVelocity(q,vx,vy,turnSeconds);
+    if(turned.x===vx&&turned.y===vy){
+     // Preserve the exact legacy projection for neutral/invalid input and slow movement.
+     consider(q.x+clamp(vx*seconds,-150,150),
+      q.y+clamp(vy*seconds,-150,150));
+     continue;
+    }
+    const remaining=seconds-turnSeconds;
+    const leadX=(vx+turned.x)*.5*turnSeconds+turned.x*remaining;
+    const leadY=(vy+turned.y)*.5*turnSeconds+turned.y*remaining;
+    consider(q.x+clamp(leadX,-150,150),q.y+clamp(leadY,-150,150));
    }
   }
   return clearance;
