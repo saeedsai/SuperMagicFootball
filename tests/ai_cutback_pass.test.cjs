@@ -396,7 +396,7 @@ test('wide byline defence assigns the second defender to the central cutback poc
    moveVX:0,moveVY:0,vx:0,vy:0,firstTouchControlTimer:0,firstTouchPressure:0,dribbleHold:0});
   Object.assign(runner,{x:carrierX-attackDir*150,y:center,down:false,stun:0,z:0,action:'idle',actionTimer:0,
    moveVX:0,moveVY:0,vx:0,vy:0});
-  const place=(p,x,y)=>Object.assign(p,{x,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+  const place=(p,x,y)=>Object.assign(p,{x,y,down:false,stun:0,z:0,cd:1,action:'idle',actionTimer:0,
    slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
    moveVX:0,moveVY:0,vx:0,vy:0,aiTarget:null,aiTimer:0,aiAssistTarget:null,
    aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});

@@ -153,7 +153,7 @@ with sync_playwright() as pw:
                 if(!carrier||!runner||!primary||!nearBall||!cutback)throw new Error('cutback cover fixture is missing an active player');
                 for(const q of game.players){if(q.keeper)continue;Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0,
                     moveVX:0,moveVY:0,aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});}
-                const place=(q,x,y)=>Object.assign(q,{x,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,slideTimer:0,
+                const place=(q,x,y)=>Object.assign(q,{x,y,z:0,down:false,stun:0,cd:1,action:'idle',actionTimer:0,slideTimer:0,
                     shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,
                     aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
                 place(carrier,carrierX,carrierY);place(runner,carrierX-attackDir*150,center);
