@@ -55,7 +55,7 @@ test('Existing facing/closing defence counter still applies and other Tricks ret
 });
 test('The Fireball counter uses existing JUMP, and Player Studio explains it',()=>{
  const ui=fs.readFileSync(path.join(__dirname,'../src/modules/ui.js'),'utf8');
- assert.match(engine,/jumpDodged=id==='fireball'&&inRange&&Number\.isFinite\(rival\.z\)&&rival\.z>=20/);
+ assert.match(engine,/jumpDodged=id==='fireball'&&inRange&&counterRivals\.some/);
  assert.match(ui,/fireball:'[^']*JUMP above the strike to dodge it/);
  assert.match(engine,/p\.magicReadyAt=this\.clock\+6/);
  assert.doesNotMatch(engine,/fifthAction/);

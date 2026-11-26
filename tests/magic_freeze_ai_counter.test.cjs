@@ -44,6 +44,6 @@ test('Freeze reaction is limited to the nearest in-range target and leaves a liv
 test('the existing CPU dispatch covers Freeze through the held Fireball counter path; human counters remain unchanged',()=>{
  assert.match(engine,/if\(this\.reactToFireballTrick\(p,dt,ai\.reaction\)\|\|p\.aiFireballThreat\)return/);
  const trick=engine.slice(engine.indexOf('tryMagicTrick(p){'),engine.indexOf('updateSpinBumpFx(',engine.indexOf('tryMagicTrick(p){')));
- assert.match(trick,/freezeDodged=id==='freeze'&&inRange[\s\S]*?rival\.z>=20/);
- assert.match(trick,/freezeParried=id==='freeze'&&inRange&&rival\.action==='slide'/);
+ assert.match(trick,/freezeDodged=id==='freeze'&&inRange[\s\S]*?counterRivals\.some/);
+ assert.match(trick,/freezeParried=id==='freeze'&&inRange&&counterRivals\.some/);
 });

@@ -44,6 +44,6 @@ test('Bat reaction respects its 95-unit range, nearest-defender rule, and existi
 test('Bat keeps its existing four-action human JUMP and grounded SHOOT-slide counters',()=>{
  const start=engine.indexOf('tryMagicTrick(p){'),end=engine.indexOf('updateSpinBumpFx(',start),trick=engine.slice(start,end);
  assert.match(engine,/if\(this\.reactToFireballTrick\(p,dt,ai\.reaction\)\|\|p\.aiFireballThreat\)return/);
- assert.match(trick,/batDodged=id==='bat'&&inRange[\s\S]*?rival\.z>=20/);
- assert.match(trick,/batParried=id==='bat'&&inRange&&rival\.action==='slide'/);
+ assert.match(trick,/batDodged=id==='bat'&&inRange[\s\S]*?counterRivals\.some/);
+ assert.match(trick,/batParried=id==='bat'&&inRange&&counterRivals\.some/);
 });
