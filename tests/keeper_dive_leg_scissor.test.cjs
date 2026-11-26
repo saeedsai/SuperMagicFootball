@@ -9,7 +9,7 @@ const source=fs.readFileSync('src/modules/characterart.js','utf8')
 const CHARACTER_ART=vm.runInNewContext(source+'\nCHARACTER_ART',{});
 const pose=CHARACTER_ART.keeperDiveLegPose;
 const keys=['phase','travel','raise','tuck','extend','toePitch'];
-const values=value=>Object.fromEntries(keys.map(key=>[key,value[key]]));
+const values=value=>Object.fromEntries(keys.map(key=>[key,Object.is(value[key],-0)?0:value[key]]));
 
 test('keeper dive folds the lead knee while the far leg trails through the real dive phase',()=>{
  for(const action of ['keeperDive','keeperDiveCatch']){
