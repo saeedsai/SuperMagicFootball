@@ -1696,10 +1696,19 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   return target;
  }
 
+  // Keep first-touch outlet attack and defence on the exact receiver lead used by support PASS.
+  // GameEngine.pass uses movement velocity when available, otherwise the legacy dx/dy * 90 fallback.
+  function supportPassReceiverLead(runner,axis,seconds,clampTo){
+   const movement=axis==='x'?runner?.moveVX:runner?.moveVY;
+   if(Number.isFinite(movement))return clampTo(movement*seconds,-65,65);
+   const input=axis==='x'?runner?.dx:runner?.dy;
+   return (Number.isFinite(input)?input:0)*90;
+  }
+
   // After a CPU interception's settling touch, the second defender shades a
   // plausible forward outlet using only visible positions and movement. It does
   // not inspect the carrier's private AI outlet target or preferred receiver.
-  function defensiveFirstTouchOutletCoverTarget(team,carrier,players,bounds,defender,primary,human=null,horizonSeconds=.14){
+  function defensiveFirstTouchOutletCoverTarget(team,carrier,players,bounds,defender,primary,human=null,horizonSeconds=null){
    const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
    const grounded=p=>p&&(p.z==null||(Number.isFinite(Number(p.z))&&Number(p.z)<=18));
    const active=p=>p&&!p.keeper&&!p.down&&timerClear(p.stun)&&timerClear(p.slideTimer)&&
@@ -1720,7 +1729,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
    if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax||!active(primary))return null;
    const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value)),dir=carrier.t===0?1:-1;
-   const horizon=clampTo(Number.isFinite(horizonSeconds)?horizonSeconds:.14,.08,.18);
+   const markerHorizonOverride=Number.isFinite(horizonSeconds)?clampTo(horizonSeconds,.08,.35):null;
    const velocity=(p,axis)=>{
     const current=axis==='x'?p?.moveVX:p?.moveVY;
     if(Number.isFinite(current))return current;
@@ -1732,15 +1741,17 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    for(const runner of players){
     if(!runner||runner.t!==carrier.t||runner===carrier||!active(runner))continue;
     const vx=velocity(runner,'x'),vy=velocity(runner,'y');
-    const future={x:clampTo(runner.x+clampTo(vx*horizon,-28,28),xMin+24,xMax-24),
-     y:clampTo(runner.y+clampTo(vy*horizon,-28,28),yMin+24,yMax-24)};
+    const currentRange=Math.hypot(runner.x-carrier.x,runner.y-carrier.y);
+    const leadSeconds=clampTo(currentRange/1400,.12,.35),markerHorizon=markerHorizonOverride??leadSeconds;
+    const future={x:clampTo(runner.x+supportPassReceiverLead(runner,'x',leadSeconds,clampTo),xMin+24,xMax-24),
+     y:clampTo(runner.y+supportPassReceiverLead(runner,'y',leadSeconds,clampTo),yMin+24,yMax-24)};
     const dx=future.x-carrier.x,dy=future.y-carrier.y,range=Math.hypot(dx,dy),
      forward=dir*dx,lateral=Math.abs(dy);
     if(range<135||range>740||forward<110||forward>650||lateral>285)continue;
     let nearest=Infinity;
     for(const marker of defenders){
-     const mx=marker.x+clampTo(velocity(marker,'x')*horizon,-30,30);
-     const my=marker.y+clampTo(velocity(marker,'y')*horizon,-30,30);
+     const mx=marker.x+clampTo(velocity(marker,'x')*markerHorizon,-30,30);
+     const my=marker.y+clampTo(velocity(marker,'y')*markerHorizon,-30,30);
      nearest=Math.min(nearest,Math.hypot(mx-future.x,my-future.y));
     }
     if(nearest<92)continue;
@@ -2079,12 +2090,6 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   };
   // Match GameEngine.pass: use the same receiver lead and cap that will be applied at release.
   const requestedLead=Number.isFinite(horizonSeconds)?clampTo(horizonSeconds,.12,.35):null;
-  const receiverLead=(runner,axis,seconds)=>{
-   const movement=axis==='x'?runner?.moveVX:runner?.moveVY;
-   if(Number.isFinite(movement))return clampTo(movement*seconds,-65,65);
-   const input=axis==='x'?runner?.dx:runner?.dy;
-   return (Number.isFinite(input)?input:0)*90;
-  };
   const defenders=players.filter(q=>q&&q.t!==team&&!keeperUnavailableForGroundPass(q)&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
    !q.down&&timerClear(q.slideTimer)&&timerClear(q.shotImpactKnockdownPending)&&
    timerClear(q.shotImpactKnockdownTimer)&&timerClear(q.shotImpactRiseTimer)&&grounded(q)&&
@@ -2138,8 +2143,8 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    const currentRange=Math.hypot(runner.x-carrier.x,runner.y-carrier.y);
    const leadSeconds=requestedLead??clampTo(currentRange/1400,.12,.35);
    const target={
-    x:clampTo(runner.x+receiverLead(runner,'x',leadSeconds),xMin+24,xMax-24),
-    y:clampTo(runner.y+receiverLead(runner,'y',leadSeconds),yMin+24,yMax-24)
+    x:clampTo(runner.x+supportPassReceiverLead(runner,'x',leadSeconds,clampTo),xMin+24,xMax-24),
+    y:clampTo(runner.y+supportPassReceiverLead(runner,'y',leadSeconds,clampTo),yMin+24,yMax-24)
    };
    const dx=target.x-carrier.x,dy=target.y-carrier.y,range=Math.hypot(dx,dy);
    const forward=dir*dx;
