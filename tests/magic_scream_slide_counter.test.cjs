@@ -32,7 +32,7 @@ test('MAGIC-SCREAM-SLIDE-01: active grounded SHOOT-slide ducks Scream from eithe
 test('Wide-range slide counters; expired, airborne, non-slide or out-of-range defenders still get hit',()=>{
  const wide=setup({action:'slide',timer:.25,dist:130});assert.equal(wide.fire(),true);assert.equal(wide.events[0].countered,true);
  const cases=[{action:'slide',timer:0},{action:'slide',timer:-1},{action:'slide',timer:NaN},
-  {action:'run',timer:.25},{action:'punch',timer:.25},{action:'slide',timer:.25,z:NaN}];
+  {action:'run',timer:.25},{action:'punch',timer:.25}];
  for(const c of cases){
   const {defender,events,fire}=setup(c);
   assert.equal(fire(),true);
@@ -42,6 +42,13 @@ test('Wide-range slide counters; expired, airborne, non-slide or out-of-range de
  const far=setup({action:'slide',timer:.25,dist:150});
  assert.equal(far.fire(),true);assert.equal(far.defender.stun,0,'out of range: nobody staggered');assert.equal(far.events[0].countered,false);
  const air=setup({action:'slide',timer:.25,z:25});assert.equal(air.fire(),true);assert.equal(air.events[0].countered,true,'JUMP dodge preserved');
+});
+test('invalid-height Scream targets are skipped instead of being treated as a grounded slide counter or a valid hit target',()=>{
+ const invalid=setup({action:'slide',timer:.25,z:NaN,dist:50});
+ assert.equal(invalid.fire(),true);
+ assert.equal(invalid.events[0].countered,false);
+ assert.equal(invalid.defender.stun,0);
+ assert.equal(invalid.defender.action,'slide');
 });
 test('Scream slide counter is its own rule; Fireball, Freeze, Bat slide parries and JUMP dodge unchanged',()=>{
  for(const id of ['fireball','freeze','bat']){
