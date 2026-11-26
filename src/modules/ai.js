@@ -844,11 +844,23 @@ function attackingSupportPass(players,team,carrier,supportRun){
   const minimumLead=perpendicularSquared>=110*110?48:
    Math.max(48,-runnerProjection+Math.sqrt(110*110-perpendicularSquared));
   if(minimumLead>100)return null;
-  const leadDistance=clampValue(Math.min(gap-16,runSpeed*estimatedFlightSeconds),minimumLead,100);
-  // Meet a receiver who is drifting across the planned lane, not only one
-  // advancing along it. Keep lateral projection separate and tightly bounded.
-  const lateralSpeed=vx*(-leadDirectionY)+vy*leadDirectionX;
-  const lateralLead=clampValue(lateralSpeed*estimatedFlightSeconds,-32,32);
+  // Project the receiver's current intent through the same bounded turn-rate
+  // model used by CPU movement. Segment integration preserves residual momentum
+  // for lower-Agility cuts while a more agile runner can reach the new lane sooner.
+  let remaining=estimatedFlightSeconds,projectedVX=vx,projectedVY=vy,travelX=0,travelY=0;
+  while(remaining>1e-6){
+   const step=Math.min(.18,remaining);
+   const turned=carrierTurnAwareVelocity(runner,projectedVX,projectedVY,step);
+   travelX+=(projectedVX+turned.x)*.5*step;
+   travelY+=(projectedVY+turned.y)*.5*step;
+   projectedVX=turned.x;projectedVY=turned.y;
+   remaining-=step;
+  }
+  const leadDistance=clampValue(Math.min(gap-16,
+   travelX*leadDirectionX+travelY*leadDirectionY),minimumLead,100);
+  // Keep the receiver's perpendicular cut separate from the forward lead.
+  const lateralLead=clampValue(
+   travelX*(-leadDirectionY)+travelY*leadDirectionX,-32,32);
   const target={
    x:runner.x+leadDirectionX*leadDistance-leadDirectionY*lateralLead,
    y:runner.y+leadDirectionY*leadDistance+leadDirectionX*lateralLead

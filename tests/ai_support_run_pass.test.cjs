@@ -188,6 +188,39 @@ test('AI through ball leads a committed support runner into open space before ar
   'ball trajectory should aim into the space ahead, not at current feet');
 });
 
+test('through-ball lead follows the receiver directional cut at the Agility turn rate',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const carrier=player('turn-carrier-'+team,team,1200,600);
+  const runner=player('turn-runner-'+team,team,1200+dir*120,600,{
+   moveVX:dir*340,moveVY:0,dx:0,dy:-1
+  });
+  const supportRun={runner,target:{x:carrier.x+dir*160,y:carrier.y-112}};
+  const targetFor=()=>{
+   const option=AI.attackingThroughBall([carrier,runner],team,carrier,supportRun);
+   assert.ok(option,'the committed forward runner should retain a through-ball option');
+   return option.target;
+  };
+  runner.src.agility=100;const high=targetFor();
+  runner.src.agility=50;const average=targetFor();
+  runner.src.agility=1;const low=targetFor();
+  assert.ok(high.y<average.y&&average.y<low.y,JSON.stringify({team,high,average,low}));
+  delete runner.src.agility;
+  assert.deepEqual(targetFor(),average,'missing Agility uses the neutral turn profile');
+  runner.src.agility=NaN;
+  assert.deepEqual(targetFor(),average,'invalid Agility uses the neutral turn profile');
+  runner.dx=0;runner.dy=0;
+  runner.src.agility=100;const neutralHigh=targetFor();
+  runner.src.agility=1;const neutralLow=targetFor();
+  assert.deepEqual(neutralHigh,neutralLow,'neutral input retains the exact residual-velocity lead');
+  runner.dx=NaN;runner.dy=Infinity;
+  runner.src.agility=100;const invalidHigh=targetFor();
+  runner.src.agility=1;const invalidLow=targetFor();
+  assert.deepEqual(invalidHigh,invalidLow,'invalid input retains the exact residual-velocity lead');
+ }
+});
+
 test('through ball requires genuine forward run momentum and preserves arrived-runner fallback',async()=>{
  const {AI,ENGINE}=await loadModules();
  const {game,carrier,runner}=fixture(ENGINE);

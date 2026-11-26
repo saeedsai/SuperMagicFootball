@@ -66,7 +66,36 @@ with sync_playwright() as pw:
     const event=g.events.at(-1)||{};
     rows.push({team,kind,mode:event.mode,target:g.ball.passTarget,expected:runner.src.id});
    }
-   return {rows,teams:SupermagicFootball.teams.length,
+   const turnRows=[];
+   for(const team of [0,1])for(const agility of [100,50,1]){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+    const dir=team===0?1:-1,carrier=g.players.find(p=>p.t===team&&p.i===3),
+     runner=g.players.find(p=>p.t===team&&p.i===4);
+    const carrierX=1280;
+    Object.assign(carrier,{x:carrierX,y:600,homeX:carrierX,homeY:600,down:false,stun:0,z:0,
+     action:'idle',actionTimer:0,cd:0,aiTimer:0,aiTarget:null,comboActive:false,trickCd:10,
+     dribbleHold:0,firstTouchControlTimer:0,firstTouchPressure:0,firstTouchOutletUntil:0,
+     moveVX:0,moveVY:0,face:dir,dx:dir,dy:0,breath:1});
+    Object.assign(runner,{x:carrierX+dir*120,y:600,homeX:carrierX+dir*160,homeY:488,
+     down:false,stun:0,z:0,action:'run',actionTimer:0,slideTimer:0,
+     moveVX:dir*340,moveVY:0,aiAssistTarget:null,aiGiveAndGoRun:null,face:dir,dx:0,dy:-1});
+    runner.src={...runner.src,agility};
+    for(const q of g.players){
+     if(q===carrier||q===runner)continue;
+     Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:0,moveVY:0});
+    }
+    Object.assign(g.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,
+     pass:false,passTeam:null,passTarget:null,attacker:team,lastTouchTeam:team,
+     shot:null,strike:null,ordinaryShot:false,age:0,canCollect:0});
+    g.matchState='play';g.clock=10;
+    const originalRandom=Math.random;Math.random=()=>0;
+    try{g.driveAI(carrier,1/60);}finally{Math.random=originalRandom;}
+    const event=g.events.at(-1)||{},slope=g.ball.vy/g.ball.vx;
+    turnRows.push({team,agility,mode:event.mode,target:g.ball.passTarget,
+     expected:runner.src.id,turn:-dir*slope});
+   }
+   return {rows,turnRows,teams:SupermagicFootball.teams.length,
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   assert result['teams']>=223,(kind,result)
@@ -75,6 +104,12 @@ with sync_playwright() as pw:
    expected='throughBall' if row['kind']=='weak' else 'supportRun'
    assert row['mode']==expected,(kind,row,expected)
    assert row['target']==row['expected'],(kind,row)
+  for team in [0,1]:
+   profiles={row['agility']:row for row in result['turnRows'] if row['team']==team}
+   for agility in [100,50,1]:
+    assert profiles[agility]['mode']=='throughBall',(kind,profiles[agility])
+    assert profiles[agility]['target']==profiles[agility]['expected'],(kind,profiles[agility])
+   assert profiles[100]['turn']>profiles[50]['turn']>profiles[1]['turn'],(kind,profiles)
   assert not errors,(kind,errors)
   print('PASS',kind,'mirrored keeper-aware through-ball and safe support PASS fallback, four actions and no JavaScript errors',flush=True)
   ctx.close()
