@@ -46,10 +46,12 @@ with sync_playwright() as pw:
     let elapsed=.35,steps=0;const dt=1/60;
     while(cpu.action!=='punch'&&elapsed<.99&&steps<80){
      carrier.dribbleHold=elapsed;
-     g.driveAI(cpu,dt);
+     g.reactToHideBallTrick(cpu,dt,.32);
      elapsed=Math.min(.99,elapsed+dt);steps++;
     }
     const holdAtPoke=elapsed;
+    const cpuDistance=Math.hypot(carrier.x-cpu.x,carrier.y-cpu.y);
+    if(cpuDistance>70)throw Error('AI backup left the existing 70-unit PASS-poke cone '+JSON.stringify({team,cpuDistance,steps,holdAtPoke}));
     carrier.dribbleHold=1;carrier.magicReadyAt=0;carrier.fatigue=0;
     carrier.down=false;carrier.stun=0;carrier.z=0;g.ball.owner=carrier;g.clock=10;
     const facingLength=Math.hypot(cpu.dx||0,cpu.dy||0);
@@ -57,12 +59,12 @@ with sync_playwright() as pw:
     const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
     backupOut.push({team,steps,holdAtPoke,cpuAction:cpu.action,cpuTimer:cpu.actionTimer,cpuFacingDot:facingDot,
      humanAction:human.action,humanStillSelected:g.controlled[human.t]===human.i,
-     activated,countered:event.countered,ownerRetained:g.ball.owner===carrier,hideBallTimer:carrier.hideBallTimer||0});
+     activated,countered:event.countered,ownerRetained:g.ball.owner===carrier,cpuDistance,hideBallTimer:carrier.hideBallTimer||0});
    }
    const noDuplicate=[];
    for(const team of [0,1]){
     const {carrier,human,cpu}=setup(team,{humanPoking:true});
-    g.driveAI(cpu,.2);
+    g.reactToHideBallTrick(cpu,.2,0);
     carrier.dribbleHold=1;carrier.magicReadyAt=0;g.ball.owner=carrier;g.clock=10;
     const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
     noDuplicate.push({team,cpuAction:cpu.action,humanAction:human.action,

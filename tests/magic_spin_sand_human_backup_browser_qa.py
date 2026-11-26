@@ -55,7 +55,7 @@ SCRIPT=r"""() => {
  const duplicates=[];
  for(const trick of ['spinBump','sandTrap'])for(const team of [0,1])for(const state of ['jump','slide']){
   const {carrier,human,cpu}=setup(team,trick,{humanCounter:state});
-  g.driveAI(cpu,.2);
+  g.reactToSpinSandTrick(cpu,.2,.09);
   if(cpu.action==='jump')throw Error('CPU duplicated effective human '+state+' '+trick);
   // driveAI is used only to verify no duplicate CPU response. Re-establish the
   // selected human's already-active counter immediately before the resolver so

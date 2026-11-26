@@ -35,7 +35,8 @@ with sync_playwright() as pw:
     Object.assign(nearest,{x:carrier.x+dir*55,y:carrier.y,z:0,down:true,stun:0,invuln:0,
      action:'shotDown',actionTimer:2,shotImpactKnockdownTimer:2,shotImpactKnockdownTotal:2,moveVX:0,moveVY:0});
     Object.assign(cpu,{x:carrier.x+dir*95,y:carrier.y,z:0,down:false,stun:0,invuln:0,
-     action:'idle',actionTimer:0,moveVX:0,moveVY:0,jumpCount:0,aiScreamThreat:null,aiScreamReaction:0});
+     action:'idle',actionTimer:0,dx:0,dy:0,face:-dir,moveVX:0,moveVY:0,jumpCount:0,
+     aiScreamThreat:null,aiScreamReaction:0,src:{...cpu.src,defence:20}});
     for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==nearest)q.stun=1;
     g.matchState='play';g.clock=10;
     g.controlled[carrier.t]=carrier.i;g.inControl=team=>team===carrier.t;

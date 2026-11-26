@@ -498,6 +498,21 @@ function carrierTurnAwareVelocity(carrier,vx,vy,horizonSeconds=.12){
  const cosine=Math.cos(turn),sine=Math.sin(turn);
  return {x:(currentX*cosine-currentY*sine)*speed,y:(currentX*sine+currentY*cosine)*speed};
 }
+function defensiveShotBlockerPoint(defender,seconds,maxLead=45){
+ if(!defender||!Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+  !Number.isFinite(seconds)||seconds<=0)return null;
+ const vx=Number.isFinite(defender.moveVX)?defender.moveVX:
+  Number.isFinite(defender.vx)?defender.vx:0;
+ const vy=Number.isFinite(defender.moveVY)?defender.moveVY:
+  Number.isFinite(defender.vy)?defender.vy:0;
+ const turnSeconds=Math.min(.18,seconds);
+ const turned=turnSeconds>=.05?carrierTurnAwareVelocity(defender,vx,vy,turnSeconds):{x:vx,y:vy};
+ const remaining=Math.max(0,seconds-turnSeconds);
+ const cap=Number.isFinite(maxLead)?Math.max(0,maxLead):45;
+ const leadX=clamp((vx+turned.x)*.5*turnSeconds+turned.x*remaining,-cap,cap);
+ const leadY=clamp((vy+turned.y)*.5*turnSeconds+turned.y*remaining,-cap,cap);
+ return {x:defender.x+leadX,y:defender.y+leadY};
+}
 function defensivePokeBallSideRead(defender,carrier,ball){
  // Ground PASS pokes and SHOOT slides must touch a low, live ball, not merely the carrier's body.
  // The carrier and ball must both be grounded, owned and on the defender-facing side.
@@ -938,10 +953,18 @@ class GameEngine{
  const laneScore=y=>{
   const keeperGap=keeper?Math.abs(y-keeper.y):goalSpan*.5;
   let score=SHOTFEEL.lanePreference(p.x,p.y,goalX,y,laneKeeper,accuracy)-(Math.abs(y-goalY)*.06);
-  for(const q of blockers){const progress=(q.x-p.x)/(goalX-p.x||1);
+  for(const q of blockers){
+   const currentProgress=(q.x-p.x)/(goalX-p.x||1);
+   if(currentProgress<=.04||currentProgress>=.99)continue;
+   // CPU finishers compare a blocker at the time the shot reaches its current
+   // longitudinal lane. Human aim and the existing keeper read stay unchanged.
+   const blockerPoint=cpuShooter?
+    defensiveShotBlockerPoint(q,keeperFlightSeconds*currentProgress):q;
+   const blockerX=blockerPoint?.x??q.x,blockerY=blockerPoint?.y??q.y;
+   const progress=(blockerX-p.x)/(goalX-p.x||1);
    if(progress<=.04||progress>=.99)continue;
    const projectedY=p.y+(y-p.y)*progress;
-   const clearance=Math.abs(q.y-projectedY);
+   const clearance=Math.abs(blockerY-projectedY);
    if(clearance<85)score-=(85-clearance)*(1.1+progress*.5);
   }
   return score;

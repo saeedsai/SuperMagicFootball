@@ -1,7 +1,7 @@
 // Authoritative player-facing release metadata. Advance with each game candidate; certification requires exact-head QA and hosted verification.
 // Internal Git SHAs remain in GitHub Actions and release audit; never infer a deployed build from remote dev.
 const RELEASE=Object.freeze({
- version:'0.12.81.339',
+ version:'0.12.81.340',
  date:'2026-11-26',
  notes:Object.freeze([
   "PASS-POKE-STRIKE-DIRECTION-STATE-01: a normal PASS poke now records its actual target vector in the defender's live 2D facing before the existing short advance. The punch animation and subsequent counter checks therefore use the same direction as target selection instead of stale movement input; the forward-arc/range gates, 55 ms lead, 12-unit cap, 16-unit step, contact chance, stun, ball release, cooldown/stamina, SHOOT-slide physics, four actions, saves, rosters, persistence and offline play remain unchanged. Focused Node and actual-engine desktop/simulated-touch Chromium regressions cover diagonal strike facing and Hide Ball backup resolution.",
