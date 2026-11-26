@@ -17,7 +17,7 @@ with sync_playwright() as pw:
   result=page.evaluate('''() => {
    const g=SupermagicFootball.game,out=[],humanBackupOut=[],humanNoDuplicateOut=[];
    for(const team of [0,1])for(const fps of [30,60,120]){
-    g.init({home:0,away:9,humans:1,mode:'quick',difficulty:3});
+    g.init({home:0,away:9,humans:0,mode:'quick',difficulty:3});
     const carrier=g.player(team,4),cpu=g.player(1-team,3),forward=team===0?1:-1;
     g.ball.owner=carrier;carrier.src={...carrier.src,magicTrick:'teleport'};carrier.dx=forward;carrier.dy=0;carrier.face=forward;
     carrier.dribbleHold=.35;g.options.difficulty=3;carrier.x=1000;carrier.y=520;

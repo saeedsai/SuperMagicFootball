@@ -15,7 +15,7 @@ with sync_playwright() as pw:
   page=context.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
   page.set_content(html,wait_until='load');page.wait_for_function('!!window.SupermagicFootball?.game',timeout=60000)
   result=page.evaluate('''() => {
-   const g=SupermagicFootball.game,out=[];
+   const g=SupermagicFootball.game,out=[],driveAIOriginal=g.driveAI.bind(g);
    for(const team of [0,1])for(const fps of [30,60,120]){
     g.init({home:0,away:9,humans:0,mode:'quick',difficulty:3});
     const carrier=g.player(team,4),cpu=g.player(1-team,3),forward=team===0?1:-1;
@@ -46,17 +46,21 @@ with sync_playwright() as pw:
    }
    const humanBackupOut=[];
    for(const team of [0,1])for(const trick of ['fireball','freeze','bat']){
-    g.init({home:0,away:9,humans:2,mode:'quick',difficulty:3});
+    g.init({home:0,away:9,humans:0,mode:'quick',difficulty:3});
     const carrier=g.player(team,4),cpu=g.player(1-team,3),human=g.player(1-team,4),dir=team===0?1:-1;
     carrier.src={...carrier.src,magicTrick:trick};carrier.dribbleHold=.35;carrier.fatigue=0;carrier.breath=1;carrier.down=false;carrier.stun=0;carrier.z=0;carrier.x=1000;carrier.y=520;g.ball.owner=carrier;
     Object.assign(human,{x:carrier.x+dir*55,y:carrier.y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0});
     Object.assign(cpu,{x:carrier.x+dir*90,y:carrier.y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,jumpCount:0,aiFireballThreat:null,aiFireballReaction:0});
     for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==human&&!q.keeper)q.stun=1;
-    g.matchState='play';g.clock=10;g.options.difficulty=3;g.controlled[carrier.t]=carrier.i;g.controlled[human.t]=human.i;g.manualSwitchGrace[human.t]=10;
-    g.input.state[carrier.t]={dribble:true,x:0,y:0};g.input.state[human.t]={};
-    let steps=0;const dt=1/60;
-    while(cpu.z<20&&carrier.dribbleHold<.95&&steps<90){g.updatePlayers(dt);steps++;}
-    const holdAtCounter=carrier.dribbleHold;carrier.dribbleHold=1;
+    g.matchState='play';g.clock=10;g.options.difficulty=3;g.controlled[human.t]=human.i;g.manualSwitchGrace[human.t]=10;
+    // Only the defending marker is locally controlled. Keep the carrier's hold
+    // clock explicit so synthetic input cancellation cannot erase the wind-up.
+    g.inControl=side=>side===human.t;g.playerSpeed=()=>0;
+    g.driveAI=(p,dt)=>p===carrier?false:driveAIOriginal(p,dt);
+    g.input.state[human.t]={};
+    let steps=0,hold=.35;const dt=1/60;
+    while(cpu.z<20&&hold<.95&&steps<90){carrier.dribbleHold=hold;g.updatePlayers(dt);hold=Math.min(.95,hold+dt);steps++;}
+    const holdAtCounter=hold;carrier.dribbleHold=1;
     const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
     humanBackupOut.push({team,trick,cpuJumpCount:cpu.jumpCount,cpuZ:cpu.z,cpuDistance:Math.hypot(cpu.x-carrier.x,cpu.y-carrier.y),humanSelected:g.controlled[human.t]===human.i,
      humanAction:human.action,humanZ:human.z,humanStun:human.stun,holdAtCounter,activated,countered:event.countered,steps});
