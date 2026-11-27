@@ -139,3 +139,24 @@ test('CPU trick treats a live second-defender slide as an arriving exit-lane thr
   assert.ok(row.yDelta*dir<0,JSON.stringify({team,row}));
  }
 });
+
+
+test('AI-DRIBBLE-PRIMARY-SLIDE-ESCAPE-READ-01: CPU avoids a committed primary slide while human feints stay deliberate',()=>{
+ for(const team of [0,1]){
+  const slide={action:'slide',actionTimer:.3,slideTimer:.3,slideRemaining:120,
+   slideSpeed:720,slideDX:0,slideDY:1,z:0};
+  const common={nearestPatch:slide,carrierSrcPatch:{dribbling:96,agility:96},random:0};
+  const cpu=attempt(team,common);
+  assert.equal(cpu.event.success,true,JSON.stringify({team,cpu}));
+  assert.ok(cpu.yDelta<0,JSON.stringify({team,cpu}));
+  const human=attempt(team,{...common,byAI:false});
+  assert.equal(human.event.success,true,JSON.stringify({team,human}));
+  assert.ok(human.yDelta>0,JSON.stringify({team,human}));
+  const expired=attempt(team,{...common,nearestPatch:{...slide,actionTimer:0,slideTimer:0}});
+  assert.equal(expired.event.success,true,JSON.stringify({team,expired}));
+  assert.ok(expired.yDelta>0,JSON.stringify({team,expired}));
+  const retreating=attempt(team,{...common,nearestPatch:{...slide,slideDY:-1}});
+  assert.equal(retreating.event.success,true,JSON.stringify({team,retreating}));
+  assert.ok(retreating.yDelta>0,JSON.stringify({team,retreating}));
+ }
+});

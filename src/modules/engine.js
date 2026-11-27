@@ -2818,9 +2818,23 @@ class GameEngine{
    }
    return risk;
   };
-  // CPU tricks retain their existing defender-aware safer-side selection.
-  if(byAI&&close&&opponents.length>1&&Math.abs(style.lateral)>1){
-   const negativeRisk=escapeRisk(-1),positiveRisk=escapeRisk(1);
+  // A committed primary slide is a real lane threat, not just a duel at the
+  // carrier's current point. Let CPU tricks read its swept path and escape the
+  // opposite side; ordinary pressure and human-directed exits stay unchanged.
+  const primaryCommittedSlide=!!rival&&rival.action==='slide'&&
+   Number.isFinite(rival.z)&&rival.z<20&&
+   Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
+   Number.isFinite(rival.slideTimer)&&rival.slideTimer>0&&
+   Number.isFinite(rival.slideRemaining)&&rival.slideRemaining>0&&
+   Number.isFinite(rival.slideSpeed)&&rival.slideSpeed>=200&&
+   Number.isFinite(rival.slideDX)&&Number.isFinite(rival.slideDY)&&
+   Math.hypot(rival.slideDX,rival.slideDY)>=.5;
+  // CPU tricks retain their defender-aware safer-side selection. When the
+  // primary is actively sliding, include its timed swept path with all other
+  // ready defenders; otherwise preserve the established secondary-only read.
+  if(byAI&&close&&Math.abs(style.lateral)>1&&(primaryCommittedSlide||opponents.length>1)){
+   const candidates=primaryCommittedSlide?opponents:opponents.slice(1);
+   const negativeRisk=escapeRisk(-1,candidates),positiveRisk=escapeRisk(1,candidates);
    if(positiveRisk+2<negativeRisk)side=1;
    else if(negativeRisk+2<positiveRisk)side=-1;
   }

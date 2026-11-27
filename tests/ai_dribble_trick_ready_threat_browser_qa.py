@@ -69,6 +69,18 @@ with sync_playwright() as pw:
                 rows.push({team,kind:'rainbow-2d-facing-toward',...run(team,
                     {moveVX:-dir*220,moveVY:220,dx:-dir,dy:1},{stun:1},true,false,.623,'rainbow',
                     {dribbling:95,agility:90},{defence:80,aggression:80})});
+                const primarySlide={action:'slide',actionTimer:.3,slideTimer:.3,slideRemaining:120,
+                    slideSpeed:720,slideDX:0,slideDY:1,z:0};
+                rows.push({team,kind:'primary-slide-closing',...run(team,primarySlide,{},true,false,0,'stepovers',
+                    {dribbling:96,agility:96})});
+                rows.push({team,kind:'primary-slide-human',...run(team,primarySlide,{},false,false,0,'stepovers',
+                    {dribbling:96,agility:96})});
+                rows.push({team,kind:'primary-slide-expired',...run(team,
+                    {...primarySlide,actionTimer:0,slideTimer:0},{},true,false,0,'stepovers',
+                    {dribbling:96,agility:96})});
+                rows.push({team,kind:'primary-slide-away',...run(team,
+                    {...primarySlide,slideDY:-1},{},true,false,0,'stepovers',
+                    {dribbling:96,agility:96})});
             }
             return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 canonicalTeams:SupermagicFootball.teams.filter(team=>
@@ -76,7 +88,7 @@ with sync_playwright() as pw:
         }""")
         assert result['buttons']==4,(kind,result)
         assert result['canonicalTeams']==223,(kind,result)
-        assert len(result['rows'])==24,(kind,result)
+        assert len(result['rows'])==32,(kind,result)
         for row in result['rows']:
             assert row['attempted'],(kind,row)
             if row['kind'] in ('downed','invulnerable','shot-down'):
@@ -101,6 +113,12 @@ with sync_playwright() as pw:
                 assert row['ai'] is True and row['success'] is True and row['owner'],(kind,row)
             elif row['kind']=='rainbow-2d-facing-toward':
                 assert row['ai'] is True and row['success'] is False and row['owner'],(kind,row)
+            elif row['kind']=='primary-slide-closing':
+                assert row['ai'] is True and row['success'] is True and row['owner'] and row['yDelta']<0,(kind,row)
+            elif row['kind']=='primary-slide-human':
+                assert row['ai'] is False and row['success'] is True and row['owner'] and row['yDelta']>0,(kind,row)
+            elif row['kind'] in ('primary-slide-expired','primary-slide-away'):
+                assert row['ai'] is True and row['success'] is True and row['owner'] and row['yDelta']>0,(kind,row)
         assert not errors,(kind,errors)
         print('PASS',kind,'CPU active-threat duel, escape-side selection, human compatibility, 223 teams and four actions',flush=True)
         ctx.close()
