@@ -12,8 +12,10 @@ const receiverReady=vm.runInNewContext('(function(){'+source.slice(helperStart,h
 test('keeper receiver readiness rejects airborne, down, stunned and active recovery states',()=>{
  const base={keeper:false,down:false,stun:0,z:0,x:10,y:20,action:'idle',actionTimer:0};
  assert.equal(receiverReady(base),true);
+ assert.equal(receiverReady({...base,firstTouchControlTimer:0}),true);
+ assert.equal(receiverReady({...base,firstTouchControlTimer:null}),true);
  const unavailable=[
-  {down:true},{keeper:true},{stun:.1},{z:19},{z:NaN},
+  {down:true},{keeper:true},{stun:.1},{z:19},{z:NaN},{firstTouchControlTimer:.16},{firstTouchControlTimer:NaN},{firstTouchControlTimer:Infinity},
   {slideTimer:.1},{shotImpactKnockdownPending:.1},
   {shotImpactKnockdownTimer:.1},{shotImpactRiseTimer:.1},
   {action:'shotDown'},{action:'shotGetUp'},
@@ -92,4 +94,35 @@ test('keeper uses open turf rather than an airborne or recovering teammate when 
  assert.equal(event.emptySpace,true);
  assert.ok(mates.every(q=>q.down||q.z>18||q.action==='shotGetUp'||q.action==='slide'||
   q.action==='hurt'||q.shotImpactKnockdownTimer>0));
+});
+
+
+test('keeper short distribution skips a receiver still settling first touch on both sides',async()=>{
+ const ENGINE=await loadEngine();
+ for(const team of [0,1]){
+  const {game,keeper,mates,ready}=prepare(ENGINE,team,false);
+  Object.assign(mates[0],{action:'idle',actionTimer:0,firstTouchControlTimer:.16});
+  Object.assign(ready,{firstTouchControlTimer:0});
+  const originalRandom=Math.random;let distributed=false;
+  try{Math.random=()=>.5;distributed=game.distributeKeeper(keeper,'short');}
+  finally{Math.random=originalRandom;}
+  const event=game.events.find(e=>e.type==='keeperDistribution');
+  assert.equal(distributed,true);assert.equal(event?.mode,'short');
+  assert.equal(event?.target,ready.src.name,JSON.stringify({team,event}));
+ }
+});
+
+test('keeper clears to empty turf when every available teammate is still settling first touch',async()=>{
+ const ENGINE=await loadEngine();
+ for(const team of [0,1]){
+  const {game,keeper,mates}=prepare(ENGINE,team,false);
+  for(const q of mates)Object.assign(q,{down:false,z:0,stun:0,action:'idle',actionTimer:0,
+   firstTouchControlTimer:.16,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+  const originalRandom=Math.random;let distributed=false;
+  try{Math.random=()=>.5;distributed=game.distributeKeeper(keeper,'short');}
+  finally{Math.random=originalRandom;}
+  const event=game.events.find(e=>e.type==='keeperDistribution');
+  assert.equal(distributed,true);assert.equal(event?.mode,'long');
+  assert.equal(event?.target,null);assert.equal(event?.emptySpace,true);
+ }
 });

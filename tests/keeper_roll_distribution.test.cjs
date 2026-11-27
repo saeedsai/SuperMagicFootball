@@ -72,6 +72,15 @@ test('stunned, airborne, opposing, rear and distant outlets cannot receive roll'
  g.players.push({t:0,keeper:false,x:keeper.x+1100,y:650,stun:0,z:0,src:{id:'distant'}});
  assert.equal(g.rollKeeper(keeper),false);assert.equal(g.free.length,0);
 });
+test('keeper roll skips a receiver still settling first touch and chooses the ready outlet',()=>{
+ const {g,keeper,near,far}=setup();near.firstTouchControlTimer=.16;
+ assert.equal(g.rollKeeper(keeper),true);assert.equal(g.ball.passTarget,far.src.id);
+});
+test('keeper retains catch when every rollout receiver is still settling first touch',()=>{
+ const {g,keeper,near,far}=setup();near.firstTouchControlTimer=.16;far.firstTouchControlTimer=.22;
+ const before=JSON.stringify(g.ball);assert.equal(g.rollKeeper(keeper),false);
+ assert.equal(JSON.stringify(g.ball),before);assert.equal(g.free.length,0);assert.equal(g.events.length,0);
+});
 test('only a live non-stunned human keeper with possession may initiate',()=>{
  const {g,keeper,near,enemy}=setup();
  const run=()=>g.rollKeeper(keeper);
