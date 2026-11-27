@@ -96,6 +96,41 @@ with sync_playwright() as pw:
    assert row['kicked'],(kind,row)
    expected=row['open'] if row['agility']==100 else row['near']
    assert row['target']==expected,(kind,row,expected)
+
+  turn_result=page.evaluate("""() => {
+   const g=SupermagicFootball.game,rows=[],field={x:0,y:0,w:2260.8,h:1530};
+   for(const team of [0,1])for(const agility of [1,100]){
+    g.init({home:0,away:1,mode:'quick',humans:0});
+    const dir=team===0?1:-1,carrier=g.player(team,3),runner=g.player(team,4);
+    const carrierX=team===0?field.x+700:field.x+field.w-700;
+    Object.assign(carrier,{x:carrierX,y:field.y+field.h/2,down:false,stun:0,z:0,
+     action:'idle',actionTimer:0,cd:0,moveVX:0,moveVY:0,dx:dir,dy:0});
+    Object.assign(runner,{x:carrierX+dir*170,y:carrier.y-112,down:false,stun:0,z:0,
+     action:'idle',actionTimer:0,slideTimer:0,moveVX:dir*300,moveVY:0,dx:0,dy:-1,
+     src:{...runner.src,agility},aiAssistTarget:null,aiGiveAndGoRun:null});
+    for(const q of g.players)if(q!==carrier&&q!==runner)
+     Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+    Object.assign(g.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,
+     pass:false,passTeam:null,passTarget:null,attacker:team,lastTouchTeam:team,
+     shot:null,strike:null,ordinaryShot:false,age:0,canCollect:0});
+    const originalRandom=Math.random;Math.random=()=>.5;
+    let kicked=false;try{kicked=g.pass(carrier,false,false,{preferredTarget:runner,supportRun:true});}
+    finally{Math.random=originalRandom;}
+    rows.push({team,agility,kicked,target:g.ball.passTarget,expected:runner.src.id,
+     mode:g.events.at(-1)?.mode,slope:g.ball.vy/g.ball.vx});
+   }
+   return {rows,teams:SupermagicFootball.teams.length,
+    buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }""")
+  assert turn_result['teams']>=223,(kind,turn_result)
+  assert turn_result['buttons']==4,(kind,turn_result)
+  for team in (0,1):
+   high=next(row for row in turn_result['rows'] if row['team']==team and row['agility']==100)
+   low=next(row for row in turn_result['rows'] if row['team']==team and row['agility']==1)
+   for row in (high,low):
+    assert row['kicked'] and row['target']==row['expected'] and row['mode']=='supportRun',(kind,row)
+   assert abs(high['slope'])>abs(low['slope']),(kind,team,high,low)
+  print('PASS',kind,'actual support-run PASS follows receiver Agility turn for both teams; four actions and 223 teams',flush=True)
   assert not errors,(kind,errors)
   print('PASS',kind,'real directed PASS follows high/low Agility defender turn reads on both teams; four actions and no JavaScript errors',flush=True)
   print('PASS',kind,'mirrored projected support-pass arrival safety and fallback exclusion; four actions and no JavaScript errors',flush=True)

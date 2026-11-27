@@ -455,3 +455,66 @@ test('through-ball keeper prediction rewards closing movement and respects a kee
    'a keeper moving away from the landing pocket must not over-defend it');
  }
 });
+
+
+function supportTurnFixture(ENGINE,team){
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:0});
+ const dir=team===0?1:-1,field=ENGINE.WORLD.field;
+ const carrier=game.players.find(p=>p.t===team&&p.i===3);
+ const runner=game.players.find(p=>p.t===team&&p.i===4);
+ const carrierX=team===0?field.x+700:field.x+field.w-700;
+ Object.assign(carrier,{x:carrierX,y:field.y+field.h/2,down:false,stun:0,z:0,
+  action:'idle',actionTimer:0,cd:0,moveVX:0,moveVY:0,dx:dir,dy:0});
+ Object.assign(runner,{x:carrierX+dir*170,y:carrier.y-112,down:false,stun:0,z:0,
+  action:'idle',actionTimer:0,slideTimer:0,moveVX:dir*300,moveVY:0,dx:0,dy:-1,
+  aiAssistTarget:null,aiGiveAndGoRun:null});
+ for(const p of game.players)if(p!==carrier&&p!==runner)
+  Object.assign(p,{down:true,stun:1,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+ game.ball.owner=carrier;
+ return {game,carrier,runner,dir};
+}
+
+test('support-run PASS leads the receiver through their Agility-limited turn in both directions',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const originalRandom=Math.random;
+ try{
+  Math.random=()=>.5;
+  for(const team of [0,1]){
+   const high=supportTurnFixture(ENGINE,team),low=supportTurnFixture(ENGINE,team),
+    neutral=supportTurnFixture(ENGINE,team);
+   high.runner.src={...high.runner.src,agility:100};
+   low.runner.src={...low.runner.src,agility:1};
+   neutral.runner.src={...neutral.runner.src,agility:50};
+   const flight=f=>Math.max(.12,Math.min(.35,Math.hypot(f.runner.x-f.carrier.x,f.runner.y-f.carrier.y)/1400));
+   const highLead=AI.supportRunReceiverLead(high.runner,flight(high));
+   const lowLead=AI.supportRunReceiverLead(low.runner,flight(low));
+   const neutralLead=AI.supportRunReceiverLead(neutral.runner,flight(neutral));
+   const linear={x:Math.max(-65,Math.min(65,neutral.runner.moveVX*flight(neutral))),
+    y:Math.max(-65,Math.min(65,neutral.runner.moveVY*flight(neutral)))};
+   assert.ok(Math.abs(highLead.y)>Math.abs(lowLead.y),
+    'high Agility turns the support lead further into the receiver cut for team '+team);
+   assert.ok(Math.abs(highLead.x)<Math.abs(lowLead.x),
+    'high Agility spends more of the lead turning laterally for team '+team);
+   assert.deepEqual(neutralLead,linear,'neutral Agility preserves the bounded linear baseline');
+   delete neutral.runner.src.agility;
+   assert.deepEqual(AI.supportRunReceiverLead(neutral.runner,flight(neutral)),linear,
+    'missing Agility uses neutral turn behavior');
+   neutral.runner.src.agility=NaN;
+   assert.deepEqual(AI.supportRunReceiverLead(neutral.runner,flight(neutral)),linear,
+    'invalid Agility uses neutral turn behavior');
+   for(const f of [high,low]){
+    assert.equal(f.game.pass(f.carrier,false,false,{preferredTarget:f.runner,supportRun:true}),true);
+    assert.equal(f.game.ball.passTarget,f.runner.src.id);
+    assert.equal(f.game.events.at(-1)?.mode,'supportRun');
+    const lead=AI.supportRunReceiverLead(f.runner,flight(f));
+    const expected=(f.runner.y+lead.y-f.carrier.y)/(f.runner.x+lead.x-f.carrier.x);
+    assert.ok(Math.abs(f.game.ball.vy/f.game.ball.vx-expected)<1e-9,
+     'actual support PASS must use the same projected receiver point for team '+team);
+   }
+   const highSlope=Math.abs(high.game.ball.vy/high.game.ball.vx);
+   const lowSlope=Math.abs(low.game.ball.vy/low.game.ball.vx);
+   assert.ok(highSlope>lowSlope,'actual pass aim follows the higher-Agility cut for team '+team);
+  }
+ }finally{Math.random=originalRandom;}
+});

@@ -43,6 +43,30 @@ function carrierTurnAwareVelocity(carrier,vx,vy,horizonSeconds=.12){
  };
 }
 
+// Predict the same bounded receiver lead for both support-pass safety and dispatch.
+// A moving runner turns toward live input at the existing Agility rate; neutral,
+// invalid or unavailable movement retains the previous linear lead exactly.
+function supportRunReceiverLead(receiver,seconds=.2,cap=65){
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ const limit=Number.isFinite(cap)?Math.max(0,Math.abs(cap)):65;
+ const duration=clampTo(Number.isFinite(seconds)?seconds:.12,.12,.35);
+ const hasX=Number.isFinite(receiver?.moveVX),hasY=Number.isFinite(receiver?.moveVY);
+ if(!hasX||!hasY){
+  const x=hasX?receiver.moveVX*duration:(Number.isFinite(receiver?.dx)?receiver.dx:0)*90;
+  const y=hasY?receiver.moveVY*duration:(Number.isFinite(receiver?.dy)?receiver.dy:0)*90;
+  return {x:clampTo(x,-limit,limit),y:clampTo(y,-limit,limit)};
+ }
+ let vx=receiver.moveVX,vy=receiver.moveVY,remaining=duration,travelX=0,travelY=0;
+ while(remaining>1e-6){
+  const step=Math.min(.18,remaining);
+  const turned=carrierTurnAwareVelocity(receiver,vx,vy,step);
+  travelX+=(vx+turned.x)*.5*step;
+  travelY+=(vy+turned.y)*.5*step;
+  vx=turned.x;vy=turned.y;remaining-=step;
+ }
+ return {x:clampTo(travelX,-limit,limit),y:clampTo(travelY,-limit,limit)};
+}
+
 // Assign the closest available AI player as primary presser. A player already
 // committed to a slide, knockdown or recovery cannot press this frame; skip them
 // before choosing both the primary and cover defender.
@@ -795,11 +819,8 @@ function attackingSupportPass(players,team,carrier,supportRun){
   Math.hypot(point.x-runner.x,point.y-runner.y)>145)return null;
  const clampValue=(value,min,max)=>Math.max(min,Math.min(max,value));
  const arrivalSeconds=Math.min(.35,Math.max(.12,range/1400));
- const receiverLeadX=Number.isFinite(runner.moveVX)?clampValue(runner.moveVX*arrivalSeconds,-65,65):
-  (Number.isFinite(runner.dx)?runner.dx:0)*90;
- const receiverLeadY=Number.isFinite(runner.moveVY)?clampValue(runner.moveVY*arrivalSeconds,-65,65):
-  (Number.isFinite(runner.dy)?runner.dy:0)*90;
- const receiverPoint={x:runner.x+receiverLeadX,y:runner.y+receiverLeadY};
+ const receiverLead=supportRunReceiverLead(runner,arrivalSeconds);
+ const receiverPoint={x:runner.x+receiverLead.x,y:runner.y+receiverLead.y};
  const passDx=receiverPoint.x-carrier.x,passDy=receiverPoint.y-carrier.y;
  const segment=passDx*passDx+passDy*passDy;
  if(!Number.isFinite(segment)||segment<=0)return null;
@@ -2808,6 +2829,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensiveCarrierTurnVelocity:carrierTurnAwareVelocity,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensiveCarrierTurnVelocity:carrierTurnAwareVelocity,supportRunReceiverLead,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
 
 export {AI};
