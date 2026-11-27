@@ -210,8 +210,8 @@ with sync_playwright() as pw:
      return {laneClear:lane.clear,receiverTarget:lane.receiverTarget,distributed,mode:event?.mode,target:event?.target,
       expected:receiver.src.name,alignment};
     }
-    receiverTurnRows.push({side,dir,    turnRows.push({side,low:turnLane(side,1),high:turnLane(side,100),neutral:turnLane(side,100,false)});
-
+    turnRows.push({side,low:turnLane(side,1),high:turnLane(side,100),neutral:turnLane(side,100,false)});
+    receiverTurnRows.push({side,dir,
      short:{low:receiverTurn(1),high:receiverTurn(100),neutral:receiverTurn(100,false)},
      long:{low:receiverTurn(1,true,'long'),high:receiverTurn(100,true,'long'),neutral:receiverTurn(100,false,'long')}});
    }

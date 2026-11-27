@@ -10,7 +10,7 @@ Prioritize responsive gameplay, intelligent passing/tackling and counterable Mag
 - Production: src/modules/engine.js; no new player state or save-schema change.
 - Regressions: tests/human_exposed_ball_slide.test.cjs and actual-GameEngine desktop/simulated-touch human_exposed_ball_slide_browser_qa.py; both teams, poke/slide, CPU teammate and selected-human fallback.
 - .369 Full Regression Census #46032851799 exposed one confirmed browser-fixture omission: keeper_outlet_lane_browser_qa.py defined turnLane but never populated turnRows. .370 invokes its mirrored low/high/neutral cases; production keeper code is unchanged.
-- First .370 exact-head QA failed Node preflight because the helper was nested inside tackle(); a follow-up moves the unchanged helper to class scope. Fresh exact-head gates pending.
+- First .370 exact-head QA failed Node preflight because the helper was nested inside tackle(); the follow-up moved it to class scope. The same fixture repair had also placed turnRows.push inside a receiverTurnRows object literal; that call is now before the object. Fresh exact-head gates pending.
 
 ## Next smallest action
 Inspect .370 exact-head Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then continue the next distinct football gameplay or existing-player animation improvement.
