@@ -43,7 +43,7 @@ test('directional first-touch cushion rewards skilled movement into space and st
  assert(Math.abs(highAway-highBase-.08)<1e-9,JSON.stringify({highBase,highAway}));
  assert(Math.abs(lowAway-lowBase-.0008)<1e-9,JSON.stringify({lowBase,lowAway}));
  assert.equal(firstTouchControlScale(.24,1,100,.24,-1),highBase);
- assert.equal(firstTouchControlScale(.24,1,100,.24,2),1);
+ assert.equal(firstTouchControlScale(.24,1,100,.24,2),highAway);
  assert.equal(firstTouchControlScale(.24,0,100,.24,1),1);
  assert.equal(firstTouchControlScale(0,1,100,.24,1),1);
  assert.equal(firstTouchControlScale(.24,1,100,.24,NaN),highBase);

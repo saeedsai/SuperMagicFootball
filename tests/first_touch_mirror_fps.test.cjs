@@ -24,7 +24,7 @@ function sample({team=0,fps=60,skill=55,agility=65,pressure=true,mode='ground',s
  const player={t:team,i:3,keeper:mode==='keeper',stun:mode==='stunned'?1:0,
   x,y:500,face,src:{id:'recipient',dribbling:skill,agility},
   moveVX:0,moveVY:0};
- const enemy={t:1-team,keeper:false,stun:0,x:x+19,y:500,src:{id:'def'}};
+ const enemy={t:1-team,keeper:false,stun:0,x:x+(team===0?19:-19),y:500,src:{id:'def'}};
  if(!pressure){enemy.x=x+900;enemy.y=1200;}
  const ball={owner:null,pass:true,passFrom:'sender',passTeam:mode==='opposing'?1-team:team,
   passTarget:'recipient',x,y:500,z:mode==='aerial'?60:14,vx:team===0?speed:-speed,vy:0,strike:null};
