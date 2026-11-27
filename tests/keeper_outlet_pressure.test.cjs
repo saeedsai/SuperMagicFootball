@@ -12,7 +12,11 @@ const laneFor=vm.runInNewContext('(function(){'+ai.slice(helperStart,helperEnd)+
 const start=engine.indexOf('function keeperOutletScore(');
 const end=engine.indexOf('class GameEngine{',start);
 assert.ok(start>=0&&end>start);
-const score=vm.runInNewContext('(function(distance){'+engine.slice(start,end)+'return keeperOutletScore;})',{})((a,b)=>Math.hypot(a.x-b.x,a.y-b.y));
+const score=vm.runInNewContext('(function(distance,stat,clamp){'+engine.slice(start,end)+'return keeperOutletScore;})',{})(
+ (a,b)=>Math.hypot(a.x-b.x,a.y-b.y),
+ (p,key)=>Number(p?.src?.[key]),
+ (n,lo,hi)=>Math.max(lo,Math.min(hi,n))
+);
 const keeper={x:0,y:0,t:0,keeper:true},near={x:180,y:0},far={x:310,y:0};
 const lane=(receiver,defenders)=>laneFor(keeper,receiver,defenders,480);
 test('keeper favors a clear farther outlet over a shorter outlet under endpoint pressure',()=>{
@@ -58,6 +62,26 @@ test('a marginally clear flight corridor is ranked below a wider safe corridor',
  assert.equal(open.clear,true);
  assert.ok(marginal.interception<open.interception);
  assert.ok(score(keeper,receiver,marginal)>score(keeper,receiver,open));
+});
+
+test('short keeper outlets prefer stronger first-touch control when safety and facing tie',()=>{
+ const safe={pressure:0,interception:Infinity};
+ const low={x:280,y:0,dx:-1,dy:0,src:{dribbling:10,agility:10}};
+ const high={x:280,y:0,dx:-1,dy:0,src:{dribbling:90,agility:90}};
+ assert.ok(score(keeper,high,safe)<score(keeper,low,safe));
+ assert.ok(Math.abs((score(keeper,low,safe)-score(keeper,high,safe))-12.8)<1e-9);
+});
+test('keeper control preference is capped and cannot outweigh materially greater lane pressure',()=>{
+ const safe={pressure:0,interception:Infinity},pressured={pressure:17,interception:Infinity};
+ const low={x:280,y:0,dx:-1,dy:0,src:{dribbling:1,agility:1}};
+ const high={x:280,y:0,dx:-1,dy:0,src:{dribbling:100,agility:100}};
+ const spread=score(keeper,low,safe)-score(keeper,high,safe);
+ assert.ok(spread>15.8&&spread<=16);
+ assert.ok(score(keeper,low,safe)<score(keeper,high,pressured));
+});
+test('point-only rollout targets retain a neutral control contribution',()=>{
+ const safe={pressure:0,interception:Infinity};
+ assert.equal(score(keeper,{x:280,y:0},safe),280);
 });
 test('long clearance fallback and safe lane requirement are retained',()=>{
  assert.match(engine,/const shortSpeed=390\+quality\*1\.2/);
