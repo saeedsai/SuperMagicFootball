@@ -2812,8 +2812,12 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
   if(ballAtZ<playerHeight-10||ballAtZ>playerHeight+126)continue;
   const vx=Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0;
   const vy=Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0;
-  const futureX=q.x+clampTo(vx*horizon,-52,52);
-  const futureY=q.y+clampTo(vy*horizon,-52,52);
+  // A live jumper can redirect into the cross. Reuse the same bounded
+  // Agility-limited turn projection as support runs when both motion axes exist.
+  const turnArrival=Number.isFinite(q.moveVX)&&Number.isFinite(q.moveVY)?
+   supportRunReceiverLead(q,horizon,52):null;
+  const futureX=q.x+(turnArrival?turnArrival.x:clampTo(vx*horizon,-52,52));
+  const futureY=q.y+(turnArrival?turnArrival.y:clampTo(vy*horizon,-52,52));
   if(Math.hypot(futureX-ballAtX,futureY-ballAtY)<=72)return null;
  }
  const dir=keeper.t===0?1:-1,ownGoalX=dir===1?xMin:xMax;

@@ -47,7 +47,7 @@ with sync_playwright() as pw:
      buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
    }
    const aerialRows=[];
-   for(const state of ['overlap','above','below','not-jumping'])for(const team of [0,1]){
+   for(const state of ['overlap','above','below','not-jumping','turning-overlap','low-agility-turn'])for(const team of [0,1]){
     const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax,goalY=765;
     const target={x:ownGoalX+dir*190,y:goalY+78};
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
@@ -64,10 +64,13 @@ with sync_playwright() as pw:
      vx:-dir*190,vy:48,vz:below?-80:10,age:.15,canCollect:0,shot:null,strike:null,ordinaryShot:false});
     const flight=(g.ball.vz+Math.sqrt(g.ball.vz*g.ball.vz+1000*g.ball.z))/500;
     const horizon=Math.min(.22,flight);
-    Object.assign(challenger,{x:g.ball.x+g.ball.vx*horizon+38,y:g.ball.y+g.ball.vy*horizon,
+    const turning=state==='turning-overlap'||state==='low-agility-turn';
+    Object.assign(challenger,{x:g.ball.x+g.ball.vx*horizon+(turning?dir*90:38),
+     y:g.ball.y+g.ball.vy*horizon,
      z:state==='above'?250:state==='below'?20:55,vz:0,
      jumpCount:state==='not-jumping'?0:1,stun:0,down:false,action:'jump',actionTimer:0,
-     slideTimer:0,moveVX:0,moveVY:0});
+     slideTimer:0,moveVX:0,moveVY:turning?200:0,dx:turning?-dir:0,dy:0});
+    if(turning)challenger.src.agility=state==='turning-overlap'?100:1;
     g.clock=.2;g.driveAI(keeper,.016);
     const claim=keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null;
     aerialRows.push({team,state,claimActive:keeper.aiKeeperClaimTargetActive===true,claim,
@@ -195,9 +198,9 @@ with sync_playwright() as pw:
    assert row['returnActive'] is False,(kind,row)
    assert row['returnTarget'] and abs(row['returnTarget']['x']-row['homeX'])<2,(kind,row)
    assert row['dir']*row['returnMoveVX']<0,(kind,row)
-  assert len(result['aerialRows'])==8,(kind,result['aerialRows'])
+  assert len(result['aerialRows'])==12,(kind,result['aerialRows'])
   for row in result['aerialRows']:
-   if row['state']=='overlap':
+   if row['state'] in ('overlap','turning-overlap'):
     assert row['claimActive'] is False,(kind,row)
    else:
     assert row['claimActive'] is True,(kind,row)

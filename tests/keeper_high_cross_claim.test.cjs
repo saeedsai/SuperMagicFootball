@@ -295,3 +295,25 @@ test('keeper yields to a teammate who can reach the high-cross landing during th
    'a retreating teammate must not suppress a safe keeper claim');
  }
 });
+
+
+test('keeper yields to an airborne challenger turning into the cross according to Agility',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  const flight=(f.ball.vz+Math.sqrt(f.ball.vz*f.ball.vz+1000*f.ball.z))/500;
+  const horizon=Math.min(.22,flight);
+  const ballX=f.ball.x+f.ball.vx*horizon,ballY=f.ball.y+f.ball.vy*horizon;
+  const challenger=agility=>player('turning-cross-'+team+'-'+agility,1-team,
+   ballX+f.dir*90,ballY,{z:55,vz:0,jumpCount:1,action:'jump',
+    moveVX:0,moveVY:200,dx:-f.dir,dy:0,src:{id:'turning-cross-'+team+'-'+agility,agility}});
+  const elite=challenger(100),low=challenger(1);
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,elite],f.bounds),null,
+   'an agile airborne opponent turning into the cross must block an unsafe keeper claim');
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,low],f.bounds),
+   'a low-Agility jumper must not be projected through an unrealistically sharp turn');
+  const aligned={...elite,dx:0,dy:1};
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,[...f.players,aligned],f.bounds),
+   'aligned motion retains the previous linear contest read');
+ }
+});
