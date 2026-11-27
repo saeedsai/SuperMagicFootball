@@ -198,7 +198,7 @@ def cpu_shot_read_script():
     return r"""() => {
       const g=SupermagicFootball.game,field=SupermagicFootball.world?.field||{x:150,w:2260.8};
       const middle=765,rows=[],savedRandom=Math.random;
-      function aim(team,keeperVelocity,controlled){
+      function aim(team,keeperVelocity,controlled,steering={dx:0,dy:0}){
         g.init({home:0,away:1,humans:0,mode:'quick'});
         const direction=team===0?1:-1;
         const goalX=direction===1?field.x+field.w:field.x;
@@ -209,6 +209,7 @@ def cpu_shot_read_script():
           fatigue:0,dx:0,dy:0});
         Object.assign(keeper,{x:goalX-direction*24,y:middle,z:0,stun:0,down:false,
           action:'run',actionTimer:0,moveVX:0,moveVY:keeperVelocity,
+          dx:steering.dx,dy:steering.dy,src:{...keeper.src,agility:80,gkSkill:80},
           diveIntentPending:false,fatigue:0});
         g.ball.owner=shooter;
         const previousFreeBall=g.freeBall,previousInControl=g.inControl;
@@ -228,7 +229,13 @@ def cpu_shot_read_script():
         for(const team of [0,1]){
           const cpuUp=aim(team,220,false),cpuDown=aim(team,-220,false);
           const humanUp=aim(team,220,true),humanDown=aim(team,-220,true);
-          rows.push({team,cpuUp,cpuDown,humanUp,humanDown,
+          const cpuStraight=aim(team,400,false,{dx:0,dy:0});
+          const cpuTurning=aim(team,400,false,{dx:1,dy:-1});
+          const cpuAligned=aim(team,400,false,{dx:0,dy:1});
+          const humanStraight=aim(team,400,true,{dx:0,dy:0});
+          const humanTurning=aim(team,400,true,{dx:1,dy:-1});
+          rows.push({team,cpuUp,cpuDown,humanUp,humanDown,cpuStraight,cpuTurning,
+            cpuAligned,humanStraight,humanTurning,
             buttons:document.querySelectorAll('#touchButtons button[data-act]').length});
         }
       }finally{Math.random=savedRandom}
@@ -342,7 +349,10 @@ with sync_playwright() as pw:
         assert shotRead['teams']>=223,(device,'canonical team catalog',shotRead)
         for row in shotRead['rows']:
             assert row['cpuUp']<row['cpuDown'],(device,'CPU shot must read mirrored keeper momentum',row)
+            assert row['cpuTurning']!=row['cpuStraight'],(device,'CPU shot must read keeper steering turns',row)
+            assert row['cpuAligned']==row['cpuStraight'],(device,'aligned keeper steering preserves the linear read',row)
             assert row['humanUp']==row['humanDown'],(device,'human shot aim must ignore keeper momentum',row)
+            assert row['humanTurning']==row['humanStraight'],(device,'human shot aim must ignore keeper steering',row)
             assert row['buttons']==4,(device,'gameplay action count',row)
         assert not errors,(device,'CPU shot-read browser errors',errors)
         print('CPU_SHOT_KEEPER_BRAKING_READ_PASS',json.dumps({'device':device,'rows':shotRead['rows'],'teams':shotRead['teams']},sort_keys=True),flush=True)

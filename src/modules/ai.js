@@ -2525,6 +2525,8 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   keeper.diveIntentPending||['keeperDive','keeperDiveCatch','keeperRecover','keeperHold',
    'shotDown','shotGetUp','hurt'].includes(keeper.action);
  if(inactive)return keeper.y;
+ const velocityX=Number.isFinite(keeper.moveVX)?keeper.moveVX:
+  Number.isFinite(keeper.vx)?keeper.vx:0;
  const velocity=Number.isFinite(keeper.moveVY)?keeper.moveVY:
   Number.isFinite(keeper.vy)?keeper.vy:0;
  const horizon=Math.max(0,Math.min(.34,Number.isFinite(flightSeconds)?flightSeconds:.22));
@@ -2541,9 +2543,30 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
  // reduces that braking, leaving a tired keeper committed to the current run.
  const quality=(agility*.55+skill*.45)/100;
  const brakingRate=(250+quality*500)*(1-fatigue*.4);
- const travel=Math.abs(velocity)*horizon;
+ // CPU shot selection should read the keeper's live steering turn, not only
+ // stale lateral momentum. Neutral/aligned/slow inputs retain the exact
+ // previous linear braking projection.
+ let projectedTravelY=velocity*horizon;
+ const speed=Math.hypot(velocityX,velocity);
+ const inputX=Number.isFinite(keeper.dx)?keeper.dx:0;
+ const inputY=Number.isFinite(keeper.dy)?keeper.dy:0;
+ const inputLength=Math.hypot(inputX,inputY);
+ if(speed>=75&&inputLength>=.15){
+  const dot=(velocityX/speed)*(inputX/inputLength)+(velocity/speed)*(inputY/inputLength);
+  if(dot<=.995){
+   let vx=velocityX,vy=velocity,travelY=0;
+   const steps=Math.max(1,Math.ceil(horizon/.18)),step=horizon/steps;
+   for(let index=0;index<steps;index++){
+    const turned=carrierTurnAwareVelocity(keeper,vx,vy,step);
+    travelY+=(vy+turned.y)*.5*step;
+    vx=turned.x;vy=turned.y;
+   }
+   projectedTravelY=travelY;
+  }
+ }
+ const travel=Math.abs(projectedTravelY);
  const brakingDistance=Math.min(travel,.5*brakingRate*horizon*horizon);
- const lead=Math.sign(velocity)*Math.min(65,Math.max(0,travel-brakingDistance));
+ const lead=Math.sign(projectedTravelY)*Math.min(65,Math.max(0,travel-brakingDistance));
  const world=GAME_ASSETS.mechanics.world;
  const min=Number.isFinite(world.goalTop)?world.goalTop+8:-Infinity;
  const max=Number.isFinite(world.goalBottom)?world.goalBottom-8:Infinity;
