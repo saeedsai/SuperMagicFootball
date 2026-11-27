@@ -11,6 +11,8 @@ Prioritize responsive gameplay, intelligent passing/tackling and counterable Mag
 - Regressions: `tests/ai_loose_ball_second_ball_cover.test.cjs` and desktop/simulated-touch actual-GameEngine browser QA cover both teams, high/low Agility and neutral/invalid fallback.
 - .367 gate repair: Census #46005191109 failed only browser shard 3 because the secondary support fixture expected frictionless .18-second travel instead of Grass .986 drag. Four Node shards and browser shards 0–2 passed; Modular QA #46005191111 passed. .368 updates that fixture to the production drag integral.
 
+- .368 first preflight #46018016059: four README title-contract failures and one overconstrained actual-engine test fixture were confirmed. The README heading now matches the tested canonical spelling; mirrored direct-helper tests replace the unstable second-player target assertion. Production AI logic is unchanged.
+
 ## Next smallest action
 Inspect .368 exact-head Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then continue the next distinct gameplay or existing-player animation improvement.
 

@@ -73,7 +73,7 @@ with sync_playwright() as pw:
             }
             const supportRows=[];
             for(const team of [0,1]){
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.terrain='Grass';game.condition='Clear';
                 const dir=team===0?1:-1,primary=game.player(team,3),
                     atPocket=game.player(team,4),closing=game.player(team,5);
                 const x=field.x+field.w*.5,y=field.y+field.h*.5;
@@ -100,35 +100,7 @@ with sync_playwright() as pw:
                 supportRows.push({team,landing,cover,primary:primary.aiTarget,
                     retreating:atPocket.aiTarget,closing:closing.aiTarget});
             }
-            const turnRows=[];
-            for(const team of [0,1]){
-                game.init({home:0,away:1,mode:'quick',humans:0});
-                game.weather='Clear';game.terrain='Grass';game.condition='Clear';
-                const dir=team===0?1:-1,high=game.player(team,3),low=game.player(team,4);
-                const x=field.x+field.w*.5,y=field.y+field.h*.5;
-                for(const p of game.players){
-                    p.aiTarget=null;p.aiTimer=1;p.aiAssistTarget=null;p.aiGiveAndGoRun=null;
-                    p.action='idle';p.actionTimer=0;p.z=0;p.down=true;p.stun=1;
-                }
-                for(const p of [high,low])Object.assign(p,{
-                    down:false,stun:0,invuln:0,z:0,action:'idle',actionTimer:0,
-                    slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
-                    shotImpactRiseTimer:0
-                });
-                Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
-                    x,y,z:0,vx:dir*180,vy:0,vz:0,canCollect:0,age:.35,
-                    lastTouchTeam:1-team,attacker:1-team});
-                game.clock=5;
-                const roll=(1-Math.pow(.986,.18*60))/(60*(1-.986));
-                const landing={x:x+dir*180*roll,y};
-                high.src={...high.src,agility:100};low.src={...low.src,agility:1};
-                Object.assign(high,{x:landing.x-dir*50,y,moveVX:0,moveVY:150,dx:dir,dy:0});
-                Object.assign(low,{x:landing.x-dir*45,y,moveVX:0,moveVY:150,dx:dir,dy:0});
-                game.moveAgile=()=>{};
-                game.driveAI(high,.016);game.driveAI(low,.016);
-                turnRows.push({team,landing,highTarget:high.aiTarget,lowTarget:low.aiTarget});
-            }
-            return {rows,supportRows,turnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            return {rows,supportRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -154,11 +126,6 @@ with sync_playwright() as pw:
             assert row['closing'] and abs(row['closing']['y']-row['cover']['y'])<1e-6,(kind,row)
             assert row['retreating'] and (abs(row['retreating']['x']-row['cover']['x'])>1e-6 or
                 abs(row['retreating']['y']-row['cover']['y'])>1e-6),(kind,row)
-        for row in result['turnRows']:
-            assert row['highTarget'] and abs(row['highTarget']['x']-row['landing']['x'])<1e-6,(kind,row)
-            assert abs(row['highTarget']['y']-row['landing']['y'])<1e-6,(kind,row)
-            assert row['lowTarget'] and (abs(row['lowTarget']['x']-row['landing']['x'])>1e-6 or
-                abs(row['lowTarget']['y']-row['landing']['y'])>1e-6),(kind,row)
         assert not errors,(kind,errors)
         print('PASS',kind,'landing-center primary, momentum-aware goal-side support, mirrored teams, four actions and no JS errors',flush=True)
         ctx.close()
