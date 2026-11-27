@@ -9,7 +9,7 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 - 0.12.81.367 — GROUND-SPILL-SURFACE-DRAG-READ-01: CPU primary and goal-side support now project fresh low rolling tackle spills using live Grass/Wet/Sand ball drag (.986/.96/.94), rather than a single linear roll estimate.
 - Production: src/modules/ai.js and src/modules/engine.js; no new state, save-schema or roster change.
 - Regressions: tests/ai_loose_ball_second_ball_cover.test.cjs and desktop/simulated-touch browser QA cover both teams, all three surfaces, airborne parity, 26-unit support split and four-action/data contracts.
-- Previous .366 Modular QA #46002294829 passed. Its Full Regression Census #46002294636 was still running at last inspection (all four Node shards passed; three Chromium shards passed, one running).
+- .367 first Modular QA #46004667398 found 3,021/3,022 Node tests passing; the new actual-driveAI surface test placed its ball at a fixed test coordinate instead of field center, so the support defender correctly chose its ordinary formation target. The fixture now centers the ball before checking actual primary/support dispatch; production source and surface projection assertions were not changed. Exact-head reruns required.
 
 ## Next smallest action
 Inspect .367 exact-head Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then advance the next distinct gameplay or existing-player animation improvement.

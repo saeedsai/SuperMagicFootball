@@ -283,7 +283,8 @@ test('rolling spill interception follows live Grass, Wet and Sand drag while air
     p.slideTimer=0;p.shotImpactKnockdownPending=0;p.shotImpactKnockdownTimer=0;
     p.shotImpactRiseTimer=0;p.aiTimer=1;
    }
-   Object.assign(game.ball,{...ball});
+   const engineBall={...ball,x:field.x+field.w*.5,y:field.y+field.h*.5};
+   Object.assign(game.ball,{...engineBall});
    game.clock=5;
    const liveBounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
    const primaryExpected=AI.defensiveGroundSpillPrimaryTarget(team,game.ball,liveBounds,surface.friction);
