@@ -52,9 +52,9 @@ function supportRunReceiverLead(receiver,seconds=.2,cap=65){
  const duration=clampTo(Number.isFinite(seconds)?seconds:.12,.12,.35);
  const hasX=Number.isFinite(receiver?.moveVX),hasY=Number.isFinite(receiver?.moveVY);
  if(!hasX||!hasY){
-  const x=hasX?receiver.moveVX*duration:(Number.isFinite(receiver?.dx)?receiver.dx:0)*90;
-  const y=hasY?receiver.moveVY*duration:(Number.isFinite(receiver?.dy)?receiver.dy:0)*90;
-  return {x:clampTo(x,-limit,limit),y:clampTo(y,-limit,limit)};
+  const x=hasX?clampTo(receiver.moveVX*duration,-limit,limit):(Number.isFinite(receiver?.dx)?receiver.dx:0)*90;
+  const y=hasY?clampTo(receiver.moveVY*duration,-limit,limit):(Number.isFinite(receiver?.dy)?receiver.dy:0)*90;
+  return {x,y};
  }
  let vx=receiver.moveVX,vy=receiver.moveVY,remaining=duration,travelX=0,travelY=0;
  while(remaining>1e-6){

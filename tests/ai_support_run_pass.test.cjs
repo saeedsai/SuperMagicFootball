@@ -518,3 +518,26 @@ test('support-run PASS leads the receiver through their Agility-limited turn in 
   }
  }finally{Math.random=originalRandom;}
 });
+
+
+test('support-run receiver lead preserves the legacy direction fallback when movement axes are unavailable',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const {game,carrier,runner}=supportTurnFixture(ENGINE,team);
+  runner.moveVX=NaN;runner.moveVY=NaN;runner.dx=1.2;runner.dy=-1.1;
+  const lead=AI.supportRunReceiverLead(runner,.25);
+  assert.deepEqual(lead,{x:108,y:-99},
+   'missing movement axes retain the original direction-vector lead without a new cap');
+  const supportRun={runner,target:{x:runner.x,y:runner.y}};
+  assert.equal(AI.attackingSupportPass(game.players,team,carrier,supportRun),runner,
+   'support safety uses the same legacy receiver fallback');
+  const originalRandom=Math.random;
+  try{
+   Math.random=()=>.5;
+   assert.equal(game.pass(carrier,false,false,{preferredTarget:runner,supportRun:true}),true);
+  }finally{Math.random=originalRandom;}
+  const expected=(runner.y+lead.y-carrier.y)/(runner.x+lead.x-carrier.x);
+  assert.ok(Math.abs(game.ball.vy/game.ball.vx-expected)<1e-9,
+   'actual support PASS preserves the same legacy fallback for team '+team);
+ }
+});
