@@ -48,6 +48,9 @@ with sync_playwright() as pw:
     handoffOut.push({team,jumpCount:cpu.jumpCount,action:cpu.action,z:cpu.z,holdAtCounter,activated,
      countered:event.countered,nearestDown:nearest.down,nearestAction:nearest.action,steps});
    }
+   // The one-human handoff scenario overrides the instance method; restore the
+   // prototype's two-human control policy before testing the selected-human backup.
+   delete g.inControl;
 
    const humanBackupOut=[];
    for(const team of [0,1]){

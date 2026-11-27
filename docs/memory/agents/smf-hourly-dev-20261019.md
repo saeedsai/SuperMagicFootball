@@ -6,13 +6,13 @@
 Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics/animation, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players, exact ordering and roster ratios, six formations, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.355 — CARRY-SHIELD-BRACE-01:** a held-DRIBBLE carrier with the owned ball close and an active nearby defender receives a bounded procedural torso brace and pressure-side arm extension. The pose fades with distance and ignores unavailable/downed/airborne/recovering opponents. No simulation or save state changes.
-- **Feature files:** src/modules/artpose.js, src/modules/characterart.js, src/modules/render.js; focused Node and actual-renderer desktop/simulated-touch browser regressions; release metadata, backlog and this checkpoint.
-- **Previous .354 exact-head validation:** Modular QA #45946055211 passed; Full Regression Census #45946055254 passed preflight, preview, all four Node shards and all four Chromium shards. QA-gated promotion succeeded and dev/main advanced to the same .354 SHA. Pages #45946957553 succeeded; independent main Census #45946964587 was still running at last inspection.
-- **.355 validation:** feature commit triggers fresh exact-head Modular QA and Full Regression Census. Do not claim pass, promotion or deployment until observed. Browser screenshot QA is automated; no owner visual approval is claimed.
+- **0.12.81.355 — CARRY-SHIELD-BRACE-01:** held-DRIBBLE carriers with the ball close and an active nearby defender now show a bounded procedural torso brace and pressure-side arm extension. The pose fades with distance and ignores unavailable/downed/airborne/recovering opponents. No simulation or save state changes.
+- **Feature commit:** 5a7a824e46531b2029368f50de33c26ff8e495d9. Feature files: src/modules/artpose.js, src/modules/characterart.js, src/modules/render.js; Node and actual-renderer desktop/simulated-touch Chromium regressions; release metadata, backlog and this checkpoint.
+- **Confirmed .354 main Census failure:** browser shard 1 failed only magic_scream_ai_counter_browser_qa.py. The one-human handoff fixture left an instance-level g.inControl override in place before the two-human selected-marker/CPU-backup scenario, so selectedHuman() was evaluated under the previous scenario's control policy. No Scream production counter failure was established. Test-only repair restores the prototype method before the next scenario.
+- **.355 exact-head gates:** Modular QA #45948114287, Full Regression Census #45948114284 and current-player graphics QA #45948114317 were in progress at last inspection. Do not claim pass, promotion or deployment until observed. Browser screenshot QA is automated; no owner visual approval is claimed.
 
 ## Next smallest action
-Complete .355 Modular QA and all four Node/four Chromium Census shards on the exact candidate SHA. Fix only confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline to promote, then independently verify main Census, Pages deployment and hosted bytes. Continue next with a distinct passing/through-ball or defensive-tackle gameplay increment, not another keeper-outlet change.
+Complete the Scream fixture repair, then finish exact-head .355 Modular QA and all four Node/four Chromium Census shards. Fix only confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline to promote, then independently verify main Census, Pages deployment and hosted bytes. Continue next with a distinct through-ball or defensive-tackle gameplay increment, not another keeper-outlet change.
 
 ## Ownership and exclusions
 - Read only this agent's checkpoint. Never overwrite another agent's memory or claim another agent's lock.
@@ -20,10 +20,11 @@ Complete .355 Modular QA and all four Node/four Chromium Census shards on the ex
 - #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Evidence
-- Previous .354 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45946055211
-- Previous .354 dev Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45946055254
-- .354 Pages deployment: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45946957553
-- .354 independent main Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45946964587
+- .354 dev Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45946055211
+- .354 dev Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45946055254
+- .354 main Census failure: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45946964587
+- .355 Modular QA: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45948114287
+- .355 Full Regression Census: https://github.com/saeedsai/SuperMagicFootball/actions/runs/45948114284
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent's handover; leave other checkpoints untouched.
