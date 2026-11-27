@@ -14,7 +14,8 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 ## Exact-head QA evidence
 - Parent .385 final SHA: `9684599fe72ab1235806ca65e56a50c6d1670e6a`; main SHA: `ffc4ca5122abfd16849b69c705fa5f341cb52e7a`.
 - .385 Modular QA #46081106746 passed 3,045/3,045 after correcting a team-1 test fixture that had been outside the synthetic field. No production code was changed by that repair.
-- .385 Full Regression Census #46081106692 passed preflight and preview; Node shards 2 and 3 passed; Node shards 0 and 1 and all four Chromium shards were still running at the start of .386. Do not claim .385 certification or promotion without final eight-shard results.
+- .385 Full Regression Census #46081106692 passed preflight, preview and all four Node shards; all four Chromium shards were still running at the start of .386. Do not claim .385 certification or promotion without final eight-shard results.
+- .386 first Modular QA #46081694656 ran 3,050 tests: 3,049 passed; the only failure was the new high-cross test's landing geometry, which left the keeper-gap threshold too short to distinguish the 180-unit turn profiles. The test now shifts only its fixture ball to a 190-unit landing depth; production code is unchanged. Exact-head rerun pending.
 - Earlier .384 Census #46077778146 failed browser shard 0 because a one-frame 16 ms sidestep assertion did not account for Agility-smoothed movement. .385 retains the run-lane heading and tests multi-frame actual movement.
 
 ## Next smallest action

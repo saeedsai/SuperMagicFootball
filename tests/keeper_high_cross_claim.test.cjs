@@ -255,6 +255,8 @@ test('keeper yields a high-cross claim to a grounded runner who can arrive durin
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){
   const f=fixture(ENGINE,team);
+  const ownGoalX=f.keeper.x-f.dir*40;
+  f.ball.x=ownGoalX+f.dir*308;
   const flight=(f.ball.vz+Math.sqrt(f.ball.vz*f.ball.vz+1000*f.ball.z))/500;
   const target={x:f.ball.x+f.ball.vx*flight,y:f.ball.y+f.ball.vy*flight};
   const keeperGap=Math.hypot(target.x-f.keeper.x,target.y-f.keeper.y);
