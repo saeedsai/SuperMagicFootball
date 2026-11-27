@@ -1069,7 +1069,7 @@ AI defenders facing away from a Wind/Mud DRIBBLE wind-up no longer make an omnis
 
 # SuperMagicFootball — master plan and backlog
 
-**Canonical plan and status ledger. Updated 27 November 2026 for candidate 0.12.81.353; exact-head gates pending. Current dev head is `e3f44564758dce32460cd64aecc22039d396a782`; main remains `f83d578e597703eee7ff2f958b0d971aa92e81a6` (0.12.81.349). Candidate .353 is not certified, promoted or deployed. The last recorded successful main .349 Pages deployment and independent Census are #45932990259 and #45932996471; no .353 exact-head Census/Modular QA result is available from the connected run lookup.
+**Canonical plan and status ledger. Updated 27 November 2026 for candidate 0.12.81.353; exact-head gates pending. Current dev branch is on candidate 0.12.81.353; main remains `f83d578e597703eee7ff2f958b0d971aa92e81a6` (0.12.81.349). Candidate .353 is not certified, promoted or deployed. The last recorded successful main .349 Pages deployment and independent Census are #45932990259 and #45932996471; no .353 exact-head Census/Modular QA result is available from the connected run lookup.
 
 ## Owner priorities and invariants
 
