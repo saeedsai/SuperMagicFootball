@@ -1410,9 +1410,9 @@ class GameEngine{
   // Ordinary PASS pokes use a shorter, tighter prediction; SHOOT slides retain
   // their existing longer run-up lead. Missing/invalid motion stays neutral.
   const leadSeconds=slide ? .085 : .055,leadLimit=slide?22:12;
-  // Qualified CPU PASS pokes and SHOOT slides may steer through the exposed live ball.
-  // Keep the same carrier-momentum lead and fail closed to body aim for human/contextual calls,
-  // shielded balls, stale ownership or invalid coordinates.
+  // Qualified CPU decisions and explicit human Pass/Shoot actions may steer through the exposed live ball.
+  // Calls without a live-ball argument, shielded balls, stale ownership or invalid coordinates
+  // retain the existing carrier-body aim and movement lead.
   const ballTarget=target&&slideBall&&slideBall.owner===target&&
    defensivePokeBallSideRead(p,target,slideBall)?slideBall:null;
   // A nimble carrier can redirect sooner after the read, so CPU slides lead
@@ -2883,8 +2883,10 @@ class GameEngine{
   return true;
  }
 
- command(p,a){if(a==='dribble'){const holder=this.hostOfBall();if(holder?.keeper&&holder.t===p.t&&this.inControl(p.t)){this.rollKeeper(holder);return;}this.dribble(p);return}if(a==='shoot'){if(this.tryFlipKick(p,false)||this.tryHeader(p))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p){if(mate.keeper)this.distributeKeeper(mate,'long');else this.shoot(mate,false)}else if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,'long');else this.shoot(p,false,p.z>65)}else this.tackle(p,true)}
- if(a==='pass'){const mate=this.hostOfBall();if(mate&&mate.t===p.t){this.performTeamPass(p,false);}else {if(distance(p,this.ball)<140)this.tackle(p,true);else{p.chase=1.8;p.action='sprint';p.actionTimer=.3}}}
+ // Human Pass/Shoot defensive slides use the same bounded exposed-ball read as CPU tackles.
+ // Far-side shielding and stale ownership retain the original carrier-body aim.
+ command(p,a){if(a==='dribble'){const holder=this.hostOfBall();if(holder?.keeper&&holder.t===p.t&&this.inControl(p.t)){this.rollKeeper(holder);return;}this.dribble(p);return}if(a==='shoot'){if(this.tryFlipKick(p,false)||this.tryHeader(p))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p){if(mate.keeper)this.distributeKeeper(mate,'long');else this.shoot(mate,false)}else if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,'long');else this.shoot(p,false,p.z>65)}else this.tackle(p,true,this.ball)}
+ if(a==='pass'){const mate=this.hostOfBall();if(mate&&mate.t===p.t){this.performTeamPass(p,false);}else {if(distance(p,this.ball)<140)this.tackle(p,true,this.ball);else{p.chase=1.8;p.action='sprint';p.actionTimer=.3}}}
  if(a==='special'){if(this.tryFlipKick(p,true))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p)this.shoot(mate,true);else if(this.ball.owner===p)this.shoot(p,true,p.z>60);else if(!this.requestKeeperSuper(p.t)&&!this.activateDefence(p))this.tackle(p,true)}
  if(a==='jump')this.jump(p);
  }

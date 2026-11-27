@@ -3,23 +3,24 @@
 **Updated:** 2026-11-27
 
 ## Mission
-Prioritize responsive gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players, exact ordering/ratios, six formations, four actions, saves and offline play.
+Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players, exact ordering/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.356 — AI-UNSETTLED-RECEIVER-PASS-READ-01:** CPU support-run and through-ball selection reject receivers with active or malformed `firstTouchControlTimer`; missing, null, zero and expired timers remain eligible. This avoids leading a pass to a teammate still settling a prior pressured reception.
-- **Feature files:** `src/modules/ai.js`; mirrored Node coverage in `tests/ai_support_run_pass.test.cjs`; actual-engine desktop/simulated-touch acceptance in `tests/ai_through_ball_keeper_safety_browser_qa.py`.
-- **Confirmed .355 CI repairs:** the receive-gaze source contract now checks the actual Character Art draw props, including carry-shield lean/side/strength and reduced-flash; this replaces a stale argument-order regex. This checkpoint now uses the indexed Agent ID's required code formatting.
-- **.356 exact-head gates:** pending fresh Modular QA and Full Regression Census. Do not claim pass, promotion or deployment before observed results.
+- **0.12.81.357 — HUMAN-EXPOSED-BALL-SLIDE-AIM-01:** Human Pass and Shoot defensive slides now use the existing exposed-ball-side read when the opponent's low live ball is on the defender-facing foot. Shielded, airborne, stale and invalid balls retain body aim. No new controls or physics.
+- **Production:** `src/modules/engine.js`; the human command paths pass the current ball to the existing `tackle` method.
+- **Regression:** `tests/human_exposed_ball_slide.test.cjs` and extended `tests/ai_defensive_poke_commit_browser_qa.py` cover both teams, both actions and shielded fallback.
+- **.356 gate repair:** Full Regression Census #45950271414 failed only `player_carry_shield_pose_browser_qa.py`: its 180×190 screenshot canvas drew the player at world coordinates (900,420), entirely off-canvas. The fixture now offsets world coordinates to the local player center; no production renderer defect was established.
 
 ## Next smallest action
-Complete .356 Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline, then independently verify main Census, Pages deployment and hosted bytes. Continue with a distinct through-ball or defensive-tackle improvement.
+Run .357 exact-head Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then choose a distinct tackling or Magic Trick counterplay increment.
 
 ## Ownership and exclusions
 Read and update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Evidence
-- .355 failed Modular QA #45948668313 and Census #45948668387: stale renderer forwarding assertion and checkpoint identity contract; both are repaired in .356.
-- .354 Pages deployment #45946957553 succeeded; independent main Census #45946964587 failed. This is not a .356 deployment result.
+- .356 Modular QA #45950271405 passed 3,008/3,008 Node tests.
+- .356 Full Regression Census #45950271414: all four Node shards and three Chromium shards passed; browser shard 2 failed only the off-canvas carry-shield fixture.
+- .357 exact-head CI pending; no promotion or deployment claimed.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent's handover; leave other checkpoints untouched.

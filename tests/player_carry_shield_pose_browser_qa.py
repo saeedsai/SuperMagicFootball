@@ -26,7 +26,7 @@ JS=r"""()=>{
   game.ball={...old.ball,owner:carrier,x:carrier.x+face*17,y:carrier.y+12,z:0,vx:0,vy:0,vz:0,shot:null,strike:null};
   const canvas=document.createElement('canvas');canvas.width=180;canvas.height=190;
   const ctx=canvas.getContext('2d');ctx.fillStyle='#101b28';ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.save();ctx.translate(90,176);renderer.drawPlayer(ctx,carrier,game);ctx.restore();
+  ctx.save();ctx.translate(90-carrier.x,176-carrier.y);renderer.drawPlayer(ctx,carrier,game);ctx.restore();
   return {canvas,pixels:ctx.getImageData(0,0,canvas.width,canvas.height).data};
  }
  const diff=(a,b)=>{let n=0;for(let i=0;i<a.length;i+=4)

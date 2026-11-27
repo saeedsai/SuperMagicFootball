@@ -207,12 +207,35 @@ with sync_playwright() as pw:
                 noBall:runTurnAwareCommit(team,100,{ball:false}),
                 slow:runTurnAwareCommit(team,100,{carrierSpeed:60})
             }));
+            const runHumanCommandAim=(defendingTeam,action,exposed)=>{
+                const dir=defendingTeam===0?1:-1,x=1000,y=700;
+                game.init({home:0,away:1,mode:'quick',humans:1});game.weather='Clear';
+                const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+                for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+                Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0});
+                Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0});
+                const ballX=carrier.x+(exposed?-dir*17:dir*17),ballY=y+12;
+                Object.assign(game.ball,{owner:carrier,x:ballX,y:ballY,z:12,vx:0,vy:0,vz:0,
+                    pass:false,shot:null,strike:null,ordinaryShot:false});
+                game.slideContact=()=>{};
+                game.command(defender,action);
+                const targetX=exposed?ballX:carrier.x,targetY=exposed?ballY:carrier.y;
+                const length=Math.hypot(targetX-x,targetY-y);
+                return {team:defendingTeam,action,exposed,actionState:defender.action,
+                    dx:defender.slideDX,dy:defender.slideDY,
+                    expectedX:(targetX-x)/length,expectedY:(targetY-y)/length};
+            };
+            const humanCommandAimRows=[];
+            for(const team of [0,1])for(const action of ['pass','shoot'])for(const exposed of [true,false])
+                humanCommandAimRows.push(runHumanCommandAim(team,action,exposed));
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,turnAwareRows,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
                 closeBallSideRows,ballHeightRows,closeContactEngineRows,actualPokeAimRows,closeContactSlideRows,firstTouchSlideRows,
-                airborneGroundChallengeRows,
+                airborneGroundChallengeRows,humanCommandAimRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -254,8 +277,12 @@ with sync_playwright() as pw:
         for row in result['airborneGroundChallengeRows']:
             assert row['closeContact20']==[] and row['closeContact45']==[],(kind,row)
             assert row['ordinarySlide20']==[] and row['firstTouchSlide20']==[],(kind,row)
+        for row in result['humanCommandAimRows']:
+            assert row['actionState']=='slide',(kind,row)
+            assert abs(row['dx']-row['expectedX'])<1e-6,(kind,row)
+            assert abs(row['dy']-row['expectedY'])<1e-6,(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'adaptive poke, exposed-ball slide and first-touch reads, airborne ground-challenge rejection, shielded-carrier counterplay, 223 teams and four actions',flush=True)
+        print('PASS',kind,'adaptive poke, exposed-ball CPU and human Pass/Shoot slides, and first-touch reads, airborne ground-challenge rejection, shielded-carrier counterplay, 223 teams and four actions',flush=True)
         ctx.close()
     browser.close()
