@@ -270,13 +270,13 @@ with sync_playwright() as pw:
                     pass:false,shot:null,strike:null,ordinaryShot:false});
                 const sideRead=game.defensivePokeBallSideRead(defender,carrier,game.ball);
                 const expectedX=ballX-x,expectedY=ballY-y,length=Math.hypot(expectedX,expectedY);
+                const bodyDot=dir*(carrier.x-x)/Math.hypot(carrier.x-x,carrier.y-y);
+                const ballDot=dir*(ballX-x)/Math.hypot(ballX-x,ballY-y);
                 const originalRandom=Math.random;Math.random=()=>0;
                 try{game.tackle(defender,false,passLiveBall?game.ball:null);}finally{Math.random=originalRandom;}
                 return {team:defendingTeam,exposed,passLiveBall,sideRead,released:game.ball.owner===null,
                     vx:game.ball.vx,vy:game.ball.vy,expectedVx:expectedX/length*150,expectedVy:expectedY/length*150,
-                    dx:defender.dx,dy:defender.dy,
-                    bodyDot:dir*(carrier.x-x)/Math.hypot(carrier.x-x,carrier.y-y),
-                    ballDot:dir*(ballX-x)/Math.hypot(ballX-x,ballY-y)};
+                    dx:defender.dx,dy:defender.dy,bodyDot,ballDot};
             };
             const humanPokeBallArcRows=[];
             for(const team of [0,1]){
