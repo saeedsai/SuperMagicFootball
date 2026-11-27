@@ -55,14 +55,18 @@ with sync_playwright() as pw:
                 const landing={x:x+dir*260*flight,y};
                 Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
                     x,y,z:54,vx:dir*260,vy:0,vz:-40,canCollect:0,age:0,lastTouchTeam:1-team,attacker:1-team});
-                Object.assign(primary,{x:landing.x-dir*100,y,moveVX:-dir*220,moveVY:0,aiTarget:null,aiTimer:1,
+                Object.assign(primary,{x:landing.x-dir*100,y,moveVX:-dir*220,moveVY:0,dx:dir,dy:0,aiTarget:null,aiTimer:1,
                     down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0});
-                Object.assign(support,{x:landing.x-dir*110,y,moveVX:dir*220,moveVY:0,aiTarget:null,aiTimer:1,
+                Object.assign(support,{x:landing.x-dir*110,y,moveVX:dir*220,moveVY:0,dx:dir,dy:0,aiTarget:null,aiTimer:1,
                     down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0});
                 game.clock=5;game.moveAgile=()=>{};
                 const nearBallDistance=Math.hypot(primary.x-x,primary.y-y);
                 const closingBallDistance=Math.hypot(support.x-x,support.y-y);
-                game.driveAI(primary,.016);game.driveAI(support,.016);
+                game.driveAI(primary,.016);
+                // driveAI consumes this frame's input; restore both live steering intents
+                // before the second call so role selection sees the same decision snapshot.
+                Object.assign(primary,{dx:dir,dy:0});
+                game.driveAI(support,.016);
                 momentumRows.push({team,dir,landing,cover:{x:landing.x-dir*26,y},
                     near:primary.aiTarget,closing:support.aiTarget,nearBallDistance,closingBallDistance});
             }

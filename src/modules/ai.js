@@ -2427,7 +2427,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
 function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSeconds=null){
  if(!keeper||!target||!Array.isArray(opponents)||
   ![keeper.x,keeper.y,target.x,target.y].every(Number.isFinite))
-  return {endpoint:0,interception:0,pressure:Infinity,flightSeconds:0,clear:false};
+  return {endpoint:0,interception:0,pressure:Infinity,flightSeconds:0,clear:false,receiverTarget:null};
  const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
  const velocity=(player,axis)=>{
   const actual=axis==='x'?player?.moveVX:player?.moveVY;
@@ -2462,10 +2462,16 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
  const explicitLead=Number.isFinite(receiverLeadSeconds)?clampTo(receiverLeadSeconds,0,.5):null;
  const leadXSeconds=explicitLead??(speed>=800?.34:.17);
  const leadYSeconds=explicitLead??.17;
- const end={
-  x:target.x+clampTo((Number.isFinite(target.moveVX)?target.moveVX:0)*leadXSeconds,-90,90),
-  y:target.y+clampTo((Number.isFinite(target.moveVY)?target.moveVY:0)*leadYSeconds,-90,90)
+ const receiverLead=seconds=>{
+  if(seconds<=0)return {x:0,y:0};
+  const hasX=Number.isFinite(target.moveVX),hasY=Number.isFinite(target.moveVY);
+  if(hasX&&hasY&&typeof supportRunReceiverLead==='function'&&seconds>=.12)
+   return supportRunReceiverLead(target,seconds,90);
+  return {x:clampTo((hasX?target.moveVX:0)*seconds,-90,90),
+   y:clampTo((hasY?target.moveVY:0)*seconds,-90,90)};
  };
+ const xLead=receiverLead(leadXSeconds),yLead=receiverLead(leadYSeconds);
+ const end={x:target.x+xLead.x,y:target.y+yLead.y};
  const dx=end.x-keeper.x,dy=end.y-keeper.y,lengthSquared=dx*dx+dy*dy;
  const flightSeconds=clampTo(Math.sqrt(lengthSquared)/speed,.12,.72);
  // Integrate the same bounded Agility turn response used by CPU press reads.
@@ -2510,7 +2516,7 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   endpoint=Math.min(endpoint,endpointGap);
   if(endpointGap<175)pressure+=(175-endpointGap)*2.4;
  }
- return {endpoint,interception,pressure,flightSeconds,clear:endpoint>145&&interception>95};
+ return {endpoint,interception,pressure,flightSeconds,clear:endpoint>145&&interception>95,receiverTarget:end};
 }
 
  function keeperShotReadY(keeper,flightSeconds=.22){

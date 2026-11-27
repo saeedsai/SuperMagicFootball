@@ -34,6 +34,24 @@ test('receiver movement is included in the predicted arrival pocket',()=>{
  assert.ok(result.endpoint<145);
 });
 
+test('keeper outlet projects short and long receiver leads through Agility-limited turn intent in both directions',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,origin=team===0?0:2400,keeperPlayer=keeper(origin,0);
+  const make=(agility,active=true)=>({x:origin+dir*500,y:0,moveVX:0,moveVY:220,dx:active?-dir:0,dy:0,src:{agility}});
+  for(const speed of [480,950]){
+   const low=helper(keeperPlayer,make(1),[],speed),high=helper(keeperPlayer,make(100),[],speed);
+   const neutral=helper(keeperPlayer,make(100,false),[],speed);
+   const invalid=helper(keeperPlayer,{...make(100),dx:NaN,dy:Infinity},[],speed);
+   assert.ok(low.receiverTarget&&high.receiverTarget);
+   assert.ok(high.receiverTarget.y<low.receiverTarget.y-8,JSON.stringify({team,speed,low:low.receiverTarget,high:high.receiverTarget}));
+   assert.ok((high.receiverTarget.x-(origin+dir*500))*dir<0);
+   assert.ok(Math.abs(neutral.receiverTarget.y-37.4)<1e-9);
+   assert.ok(Math.abs(neutral.receiverTarget.x-(origin+dir*500))<1e-9);
+   assert.deepEqual(invalid.receiverTarget,neutral.receiverTarget);
+  }
+ }
+});
+
 test('a faster long clearance can pass a corridor that is unsafe for a slower short throw',()=>{
  const defender=[rival(480,190,{moveVY:-70})];
  const short=helper(keeper(),target,defender,480);
@@ -113,6 +131,9 @@ test('the real engine uses projected lane safety for short, long and rollout dis
  assert.ok(engine.includes("const flightSpeed=mode==='long'||pressured?950:480;"));
  assert.ok(engine.includes('this.keeperPassingLane(p,{x,y},950)'));
  assert.ok(engine.includes('keeperOutletScore(p,a.q,a.safe)-keeperOutletScore(p,b.q,b.safe)'));
+ assert.ok(engine.includes('safe.receiverTarget'));
+ assert.ok(engine.includes('const shortTarget=shortOptions[0]?.safe?.receiverTarget'));
+ assert.ok(engine.includes('this.freeBall(p,option.x-p.x+ex,\n   option.y-p.y+ey,'));
  assert.ok(engine.includes('keeperOutletScore(p,a.landing,a.safe)'));
  assert.ok(engine.includes('keeperOutletScore(p,b.landing,b.safe)'));
  assert.ok(engine.includes('this.keeperPassingLane(p,landing,480,0)'));

@@ -494,7 +494,9 @@ function keeperOutletScore(keeper,receiver,lane){
  const hasControlStats=Number.isFinite(dribbling)&&Number.isFinite(agility);
  const controlQuality=hasControlStats?clamp(dribbling*.7+agility*.3,1,100):50;
  const controlPenalty=hasControlStats?clamp((50-controlQuality)*.16,-8,8):0;
- return distance(keeper,receiver)+pressure+corridorRisk+receptionPenalty+controlPenalty;
+ const destination=lane?.receiverTarget&&Number.isFinite(lane.receiverTarget.x)&&Number.isFinite(lane.receiverTarget.y)?
+  lane.receiverTarget:receiver;
+ return distance(keeper,destination)+pressure+corridorRisk+receptionPenalty+controlPenalty;
 }
 function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4){
  // Keep average-player behavior identical to the existing difficulty/anticipation threshold.
@@ -2865,9 +2867,11 @@ class GameEngine{
    // A marked teammate or an intercepted route is never a clearance target.
    // Unsafe teammates must not outscore an open patch of turf.
    if(!v.safe.clear||v.q.x*dir<=p.x*dir+175)continue;
-   const d=distance(p,v.q);
+   const destination=v.safe?.receiverTarget&&Number.isFinite(v.safe.receiverTarget.x)&&Number.isFinite(v.safe.receiverTarget.y)?
+    v.safe.receiverTarget:v.q;
+   const d=distance(p,destination);
    const safe=Math.min(v.safe.endpoint,v.safe.interception*1.5);
-   candidates.push({x:v.q.x,y:v.q.y,receiver:v.q,score:safe*1.5+d*.05+(v.q.x-p.x)*dir*.14});
+   candidates.push({x:destination.x,y:destination.y,receiver:v.q,score:safe*1.5+d*.05+(destination.x-p.x)*dir*.14});
   }
   // Prefer a corridor that makes forward progress while staying away from defenders.
   for(const factor of [.50,.67,.82])for(const lane of [.22,.50,.78]){
@@ -2926,13 +2930,16 @@ class GameEngine{
     .sort((a,b)=>keeperOutletScore(p,a.q,a.safe)-keeperOutletScore(p,b.q,b.safe));
   const shortAllowed=mode!=='long'&&!immediatePressure&&shortOptions.length>0;
   const long=!shortAllowed;
+  const shortTarget=shortOptions[0]?.safe?.receiverTarget;
   const option=long?this.keeperClearanceTarget(p,scored,opponents):{
-   x:shortOptions[0].q.x,y:shortOptions[0].q.y,receiver:shortOptions[0].q};
+   x:Number.isFinite(shortTarget?.x)?shortTarget.x:shortOptions[0].q.x,
+   y:Number.isFinite(shortTarget?.y)?shortTarget.y:shortOptions[0].q.y,
+   receiver:shortOptions[0].q};
   const target=option.receiver;
   const error=(100-quality)*(long?1.2:.55);
   const ex=(Math.random()-.5)*error,ey=(Math.random()-.5)*error;
-  this.freeBall(p,option.x-p.x+ex+(target?.moveVX||0)*(long?.34:.17),
-   option.y-p.y+ey+(target?.moveVY||0)*.17,
+  this.freeBall(p,option.x-p.x+ex,
+   option.y-p.y+ey,
    long?855+quality*1.3:390+quality*1.2,
    {power:long?17:6,z:long?36:46,vz:long?315:45,pass:true});
   p.keeperHold=0;

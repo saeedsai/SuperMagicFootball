@@ -23,7 +23,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[],marginRows=[],orientationRows=[],controlRows=[],settleRows=[],turnRows=[];
+   const g=SupermagicFootball.game,rows=[],marginRows=[],orientationRows=[],controlRows=[],settleRows=[],turnRows=[],receiverTurnRows=[];
    for(const side of [0,1]){
     g.init({home:0,away:9,humans:2,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='play';
@@ -188,8 +188,34 @@ with sync_playwright() as pw:
     const lane=g.keeperPassingLane(keeper,{x:origin+dir*500,y:0},480);
     return {clear:lane.clear,interception:lane.interception,endpoint:lane.endpoint};
    }
-   for(const side of [0,1])turnRows.push({side,low:turnLane(side,1),high:turnLane(side,100),neutral:turnLane(side,100,false)});
-   return {rows,marginRows,orientationRows,controlRows,settleRows,turnRows,teamCount:SupermagicFootball.teams.length,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
+   for(const side of [0,1]){
+    const dir=side===0?1:-1,origin=side===0?0:2400;
+    function receiverTurn(agility,activeInput=true,mode='short'){
+     g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+     g.matchState='play';
+     const keeper=g.player(side,0),receiver=g.player(side,1);
+     for(const p of g.players)Object.assign(p,{down:true,stun:1,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:0,dy:0,
+      shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+     Object.assign(keeper,{x:origin,y:0,keeper:true,down:false,stun:0,z:0,cd:0});
+     Object.assign(receiver,{x:origin+dir*500,y:0,keeper:false,down:false,stun:0,z:0,moveVX:0,moveVY:220,
+      dx:activeInput?-dir:0,dy:0,src:{...(receiver.src||{}),agility}});
+     const lane=g.keeperPassingLane(keeper,receiver,mode==='long'?950:480);
+     const events=[];g.onEvent=event=>events.push(event);
+     Object.assign(g.ball,{owner:keeper,x:keeper.x,y:keeper.y,z:0,vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+     const random=Math.random;let distributed=false;
+     try{Math.random=()=>.5;distributed=g.distributeKeeper(keeper,mode);}finally{Math.random=random;}
+     const event=events.find(item=>item.type==='keeperDistribution');
+     const actual={x:g.ball.vx,y:g.ball.vy},wanted={x:lane.receiverTarget.x-keeper.x,y:lane.receiverTarget.y-keeper.y};
+     const alignment=(actual.x*wanted.x+actual.y*wanted.y)/(Math.hypot(actual.x,actual.y)*Math.hypot(wanted.x,wanted.y));
+     return {laneClear:lane.clear,receiverTarget:lane.receiverTarget,distributed,mode:event?.mode,target:event?.target,
+      expected:receiver.src.name,alignment};
+    }
+    receiverTurnRows.push({side,dir,
+     short:{low:receiverTurn(1),high:receiverTurn(100),neutral:receiverTurn(100,false)},
+     long:{low:receiverTurn(1,true,'long'),high:receiverTurn(100,true,'long'),neutral:receiverTurn(100,false,'long')}});
+   }
+   return {rows,marginRows,orientationRows,controlRows,settleRows,turnRows,receiverTurnRows,
+    teamCount:SupermagicFootball.teams.length,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   assert not errors,(kind,errors)
   assert result['teamCount']>=223,(kind,result)
@@ -217,6 +243,16 @@ with sync_playwright() as pw:
    assert row['goodClear'] is True and row['poorClear'] is True,(kind,row)
    assert row['distributed'] is True and row['mode']=='short',(kind,row)
    assert row['selected']==row['expected'],(kind,row)
+  assert len(result['receiverTurnRows'])==2,(kind,result['receiverTurnRows'])
+  for row in result['receiverTurnRows']:
+   for mode in ('short','long'):
+    low,high,neutral=row[mode]['low'],row[mode]['high'],row[mode]['neutral']
+    for outlet in (low,high,neutral):
+     assert outlet['laneClear'] and outlet['distributed'] and outlet['mode']==mode,(kind,row,mode)
+     assert outlet['target']==outlet['expected'] and outlet['alignment']>0.99999,(kind,row,mode)
+    assert high['receiverTarget']['y']<low['receiverTarget']['y']-8,(kind,row,mode)
+    assert (high['receiverTarget']['x']-low['receiverTarget']['x'])*row['dir']<0,(kind,row,mode)
+    assert abs(neutral['receiverTarget']['y']-37.4)<1e-9,(kind,row,mode)
   assert len(result['turnRows'])==2,(kind,result['turnRows'])
   for row in result['turnRows']:
    assert row['low']['clear'] is True and row['low']['interception']>95,(kind,row)
@@ -229,6 +265,6 @@ with sync_playwright() as pw:
    assert row['fallback'] is True and row['fallbackMode']=='long' and row['fallbackEmptySpace'] is True,(kind,row)
    assert row['settlingTimer']>0 and row['readyTimer']==0,(kind,row)
   assert result['actions']==4,(kind,result)
-  print('PASS',kind,'mirrored safe short/roll, wider-lane ranking, facing/control/settling-aware keeper outlets, and Agility turn-aware safety',flush=True)
+  print('PASS',kind,'mirrored safe short/roll, wider-lane ranking, facing/control/settling-aware keeper outlets, Agility turn-aware safety and short/long receiver arrival alignment',flush=True)
   ctx.close()
  browser.close()
