@@ -85,11 +85,15 @@ with sync_playwright() as pw:
                 carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:ballZ,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+                const prototype=Object.getPrototypeOf(game);
+                const originalTackle=prototype.tackle,originalActivateDefence=prototype.activateDefence;
                 game.clock=.5;game.activateDefence=()=>false;
                 const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,slide,
                      liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.i===carrier.i&&slideBall.owner?.src?.id===carrier.src?.id,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
-                try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
+                try{game.driveAI(defender,.016);}finally{
+                    Math.random=originalRandom;game.tackle=originalTackle;game.activateDefence=originalActivateDefence;
+                }
                 return calls;
             };
             const closeContactEngineRows=[];
@@ -132,11 +136,15 @@ with sync_playwright() as pw:
                     firstTouchControlTimer:firstTouch ? .16 : 0,firstTouchPressure:firstTouch ? .8 : 0});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:ballZ,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+                const prototype=Object.getPrototypeOf(game);
+                const originalTackle=prototype.tackle,originalActivateDefence=prototype.activateDefence;
                 game.clock=.5;game.activateDefence=()=>false;
                 const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,slide,
-                     liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.src?.id===carrier.src?.id,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
+                     liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.i===carrier.i&&slideBall.owner?.src?.id===carrier.src?.id,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
-                try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
+                try{game.driveAI(defender,.016);}finally{
+                    Math.random=originalRandom;game.tackle=originalTackle;game.activateDefence=originalActivateDefence;
+                }
                 return calls;
             };
             const closeContactSlideRows=[],firstTouchSlideRows=[];
@@ -163,8 +171,9 @@ with sync_playwright() as pw:
                     action:'idle',actionTimer:0,moveVX:dir*carrierSpeed,moveVY:0,firstTouchControlTimer:0,firstTouchPressure:0});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+                const prototype=Object.getPrototypeOf(game);
+                const originalTackle=prototype.tackle,originalActivateDefence=prototype.activateDefence;
                 game.clock=.5;game.activateDefence=()=>false;
-                const originalTackle=game.tackle,originalActivateDefence=game.activateDefence;
                 const calls=[];game.tackle=(who,slide,slideBall)=>{
                     calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,slide,liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.src?.id===carrier.src?.id});
                     who.cd=.5;return true;

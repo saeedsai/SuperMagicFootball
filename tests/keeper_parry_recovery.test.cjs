@@ -8,12 +8,18 @@ async function loadEngine(){
  const {ENGINE}=await import('../src/modules/engine.js');
  return ENGINE;
 }
-function fixture(ENGINE,team,speed,power){
+function fixture(ENGINE,team,speed,power,profile=null){
  const game=new ENGINE.GameEngine({halfSeconds:120});
  game.init({home:0,away:1,humans:0,mode:'quick'});
  const keeper=game.player(team,0),direction=team===0?-1:1;
  Object.assign(keeper,{stun:0,diveCooldown:0,diveIntentCooldown:0,
   diveIntentPending:false,fatigue:.15,z:0});
+ if(profile){
+  const src={...keeper.src,gkSkill:50,gkDiving:50};
+  if(Object.hasOwn(profile,'agility'))src.agility=profile.agility;
+  else delete src.agility;
+  keeper.src=src;
+ }
  Object.assign(game.ball,{owner:null,attacker:1-team,
   x:keeper.x-direction*24,y:keeper.y,z:0,vx:direction*speed,vy:0,vz:0,
   power,ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[]});

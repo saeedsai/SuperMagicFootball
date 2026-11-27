@@ -9,7 +9,7 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 - 0.12.81.364 — KEEPER-PARRY-AGILITY-RECOVERY-01: existing Agility adjusts the next-save scramble after a parried shot or contested-cross punch by up to 35 ms around neutral 50. High-Agility keepers recover sooner; low-Agility keepers need slightly longer. Existing dive/get-up floor, clean-catch recovery, save/contact outcomes, rebound physics and four actions remain unchanged.
 - Production: `src/modules/engine.js`, `keeperParryRecoverySeconds`; adjustment is bounded by the existing 0.12–0.30-second reduction and the dive-animation + 400 ms get-up floor.
 - Regressions: mirrored actual-GameEngine Node and desktop/simulated-touch Chromium checks for both goals, low/neutral/high and missing/invalid Agility, get-up floor, and unchanged clean catches.
-- .363 exact-head Modular QA #45990951305 passed on SHA `dd14cc030669b9d24f589c176e58c3c22af41ca9`. Full Regression Census #45990951348 was in progress at last inspection: preflight/preview and Node shards 2/3 passed; Node shards 0/1 and all four Chromium shards were running. No .363 full certification claimed.
+- .363 Modular QA #45990951305 passed on SHA `dd14cc030669b9d24f589c176e58c3c22af41ca9`. Census #45990951348 failed only browser shard 1: the artifact isolated `ai_defensive_poke_commit_browser_qa.py` instance-stub leakage into `firstTouchSlide20`. The .364 follow-up restores prototype methods in each stubbed scenario; no production poke thresholds changed.
 
 ## Next smallest action
 Inspect .364 exact-head Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then advance the next distinct gameplay or existing-player animation improvement.
@@ -20,7 +20,7 @@ Read and update only this checkpoint. No new branches, force-push, history rewri
 ## Evidence
 - Feature base dev: `dd14cc030669b9d24f589c176e58c3c22af41ca9`; main: `f5c473c799589a34798dc29c24bdcdc554ab6791`.
 - .363 Modular QA #45990951305: success. .363 Census #45990951348: in progress at last inspection; exact-head result pending.
-- .364 is a candidate only until exact-head QA/Census and independently verified main deployment/hosted bytes.
+- Initial .364 exact-head runs exposed the Node fixture's ignored Agility profile and the poke-browser stub leak; both test-only defects are corrected in the follow-up. .364 remains a candidate until fresh exact-head QA/Census and independently verified main deployment/hosted bytes.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent's handover; leave other checkpoints untouched.
