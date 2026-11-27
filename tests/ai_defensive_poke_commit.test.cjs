@@ -380,3 +380,56 @@ test('driveAI dispatches the early poke only when the Agility-limited live-ball 
   assert.equal(run(1),0,'low Agility cannot turn into the lane quickly enough');
  }
 });
+
+
+test('live-ball early poke credits a defender turning into the lane according to Agility',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const read=(agility,{ball=true,input='toward',speed=220}={})=>{
+   const defender=player(team,1000,700,{dx:input==='toward'?dir:input==='away'?-dir:0,dy:0,face:dir,
+    moveVX:0,moveVY:speed,src:{defence:50,agility}});
+   const carrier=player(1-team,1000+dir*83,700,{moveVX:0,moveVY:0});
+   const liveBall={owner:carrier,x:carrier.x-dir*17,y:carrier.y+12,z:12};
+   return commit(defender,carrier,ball?liveBall:null);
+  };
+  assert.equal(read(100),true,'high Agility can turn a cross-track run-up into the early poke window');
+  assert.equal(read(50),false,'average Agility does not invent the missing closing speed');
+  assert.equal(read(1),false,'low Agility retains the conservative timing');
+  assert.equal(read(NaN),false,'invalid Agility uses the neutral turn profile');
+  assert.equal(read(100,{input:'neutral'}),false,'neutral input cannot claim a cross-track turn');
+  assert.equal(read(100,{input:'away'}),false,'retreating input fails the existing forward arc');
+  assert.equal(read(100,{speed:60}),false,'sub-threshold movement cannot create a turn read');
+  assert.equal(read(100,{ball:false}),false,'legacy no-ball callers retain the exact linear decision');
+ }
+});
+
+test('driveAI issues one ordinary early PASS poke when a high-Agility defender turns into the exposed ball',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  for(const agility of [100,1]){
+   const game=new ENGINE.GameEngine({halfSeconds:120});
+   game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+   game.cpuLevel=()=>2;
+   const defender=game.player(team,3),carrier=game.player(1-team,3),x=1000,y=700;
+   for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+   Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,aiTarget:null,
+    aiAssistTarget:null,aiDetour:null,action:'idle',actionTimer:0,moveVX:0,moveVY:220,dx:dir,dy:0,face:dir,
+    sprintCharge:0,dashTimer:0,magicReadCounterpressTimer:0,src:{...defender.src,defence:50,agility}});
+   carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;
+   Object.assign(carrier,{x:x+dir*83,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+    moveVX:0,moveVY:0,firstTouchControlTimer:0,firstTouchPressure:0});
+   Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,vx:0,vy:0,vz:0,
+    pass:false,shot:null,strike:null,ordinaryShot:false});
+   game.clock=.5;game.activateDefence=()=>false;
+   const calls=[];game.tackle=(who,slide,liveBall)=>{calls.push({who,slide,liveBall});who.cd=.5;return true;};
+   const originalRandom=Math.random;Math.random=()=>0;
+   try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
+   assert.equal(calls.length,agility===100?1:0,JSON.stringify({team,agility,calls:calls.length}));
+   if(agility===100){
+    assert.equal(calls[0].who,defender);
+    assert.equal(calls[0].slide,false,'the 83-unit cross-track approach remains an ordinary PASS poke');
+    assert.equal(calls[0].liveBall,game.ball,'the validated exposed ball must reach the poke aim');
+   }
+  }
+ }
+});

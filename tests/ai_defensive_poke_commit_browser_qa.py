@@ -219,6 +219,36 @@ with sync_playwright() as pw:
                 noBall:runTurnAwareCommit(team,100,{ball:false}),
                 slow:runTurnAwareCommit(team,100,{carrierSpeed:60})
             }));
+            const runDefenderTurnAwareDriveAI=(defendingTeam,agility)=>{
+                const dir=defendingTeam===0?1:-1;
+                game.init({home:0,away:1,mode:'quick',humans:0});game.matchState='paused';game.weather='Clear';
+                game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
+                const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3),x=1000,y=700;
+                for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+                Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,
+                    aiDetour:null,action:'idle',actionTimer:0,moveVX:0,moveVY:220,dx:dir,dy:0,face:dir,
+                    sprintCharge:0,dashTimer:0,magicReadCounterpressTimer:0,src:{...(defender.src||{}),defence:50,agility}});
+                carrier.src={...(carrier.src||{}),magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;
+                Object.assign(carrier,{x:x+dir*83,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0,firstTouchControlTimer:0,firstTouchPressure:0});
+                Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,vx:0,vy:0,vz:0,
+                    pass:false,shot:null,strike:null,ordinaryShot:false});
+                const prototype=Object.getPrototypeOf(game),originalTackle=prototype.tackle,
+                    originalActivateDefence=prototype.activateDefence,originalCpuLevel=prototype.cpuLevel;
+                game.clock=.5;game.cpuLevel=()=>2;game.activateDefence=()=>false;
+                const calls=[];game.tackle=(who,slide,liveBall)=>{
+                    calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,
+                        slide,liveBall:liveBall===game.ball});who.cd=.5;return true;
+                };
+                const originalRandom=Math.random;Math.random=()=>0;
+                try{game.driveAI(defender,.016);}finally{
+                    Math.random=originalRandom;game.tackle=originalTackle;game.activateDefence=originalActivateDefence;
+                    game.cpuLevel=originalCpuLevel;
+                }
+                return {team:defendingTeam,agility,calls};
+            };
+            const defenderTurnRows=[];
+            for(const team of [0,1])for(const agility of [100,50,1])defenderTurnRows.push(runDefenderTurnAwareDriveAI(team,agility));
             const runHumanCommandAim=(defendingTeam,action,exposed)=>{
                 const dir=defendingTeam===0?1:-1,x=1000,y=700;
                 game.init({home:0,away:1,mode:'quick',humans:1});game.matchState='paused';game.weather='Clear';
@@ -327,7 +357,7 @@ with sync_playwright() as pw:
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,turnAwareRows,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
                 closeBallSideRows,ballHeightRows,closeContactEngineRows,actualPokeAimRows,closeContactSlideRows,firstTouchSlideRows,
-                airborneGroundChallengeRows,humanCommandAimRows,humanBallArcSlideRows,humanPokeBallArcRows,humanPokeBallFirstContactRows,
+                airborneGroundChallengeRows,defenderTurnRows,humanCommandAimRows,humanBallArcSlideRows,humanPokeBallArcRows,humanPokeBallFirstContactRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -340,6 +370,11 @@ with sync_playwright() as pw:
             assert row['elite'] and not row['average'] and not row['low'],(kind,row)
             assert not row['invalidAgility'] and not row['neutral'] and not row['invalidInput'],(kind,row)
             assert not row['noBall'] and row['slow'],(kind,row)
+        for row in result['defenderTurnRows']:
+            expected=row['agility']==100
+            assert len(row['calls'])==(1 if expected else 0),(kind,row)
+            if expected:
+                assert row['calls'][0]['same'] and not row['calls'][0]['slide'] and row['calls'][0]['liveBall'],(kind,row)
         assert result['right'] and result['left'],(kind,result)
         assert not result['retreat'] and not result['lateral'] and not result['sideOn'] and not result['staleVelocity'],(kind,result)
         assert result['low'] and not result['high'],(kind,result)

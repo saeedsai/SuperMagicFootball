@@ -619,9 +619,13 @@ function defensivePokeCommitWindow(defender,carrier,ball=null){
   defensiveCarrierTurnVelocity(carrier,rawCarrierVX,rawCarrierVY,.055):
   {x:rawCarrierVX,y:rawCarrierVY};
  const vx=carrierMotion.x,vy=carrierMotion.y;
- // Relative closing includes a defender already accelerating into the carrier.
- // Cap the defender's contribution to one plausible player-speed envelope.
- const relativeVX=vx-defenderVX,relativeVY=vy-defenderVY;
+ // The defender's own steering turn matters too: a high-Agility defender cutting
+ // into the lane can build real closing speed during this same 55 ms window.
+ // Legacy callers without a validated live ball retain the exact linear read.
+ const defenderMotion=ball!==null?
+  defensiveCarrierTurnVelocity(defender,defenderVX,defenderVY,.055):
+  {x:defenderVX,y:defenderVY};
+ const relativeVX=vx-defenderMotion.x,relativeVY=vy-defenderMotion.y;
  const closing=-(relativeVX*ux+relativeVY*uy);
  const rawDefence=stat(defender,'defence');
  const defence=Number.isFinite(rawDefence)?clamp(rawDefence,1,100):50;
