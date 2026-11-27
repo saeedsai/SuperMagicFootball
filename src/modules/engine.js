@@ -441,8 +441,12 @@ function keeperParrySide(keeper,players,shotOffset){
  const current=laneClearance(preferred),alternate=laneClearance(-preferred);
  return alternate>current+24?-preferred:preferred;
 }
+function keeperFirstTouchReady(receiver){
+ const value=receiver?.firstTouchControlTimer;
+ return value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+}
 function keeperDistributionReceiverReady(receiver){
- if(!receiver||receiver.keeper||receiver.down)return false;
+ if(!receiver||receiver.keeper||receiver.down||!keeperFirstTouchReady(receiver))return false;
  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
  if(!timerClear(receiver.stun)||!timerClear(receiver.slideTimer)||
   !timerClear(receiver.shotImpactKnockdownPending)||
@@ -2846,7 +2850,7 @@ class GameEngine{
  rollKeeper(p){
   if(!p?.keeper||this.matchState!=='play'||this.ball.owner!==p||p.stun>0||!this.inControl(p.t))return false;
   const forward=p.t===0?1:-1;
-  const candidates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0&&q.z<=20&&
+  const candidates=this.players.filter(q=>q.t===p.t&&!q.keeper&&q.stun<=0&&q.z<=20&&keeperFirstTouchReady(q)&&
    q!==p&&!(q.action==='slide'&&(q.actionTimer||0)>0)&&
    !(q.action==='hurt'&&(q.actionTimer||0)>0)&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
    (q.x-p.x)*forward>70&&distance(p,q)>=120&&distance(p,q)<920)

@@ -83,6 +83,19 @@ test('point-only rollout targets retain a neutral control contribution',()=>{
  const safe={pressure:0,interception:Infinity};
  assert.equal(score(keeper,{x:280,y:0},safe),280);
 });
+const readinessStart=engine.indexOf('function keeperFirstTouchReady(');
+const readinessEnd=engine.indexOf('function keeperOutletScore(',readinessStart);
+assert.ok(readinessStart>=0&&readinessEnd>readinessStart,'production keeper first-touch readiness helper exists');
+const readiness=vm.runInNewContext('(function(){'+engine.slice(readinessStart,readinessEnd)+'return {keeperFirstTouchReady,keeperDistributionReceiverReady};})()',{});
+test('keeper distribution excludes teammates still settling a previous first touch',()=>{
+ const receiver={x:180,y:0};
+ for(const timer of [undefined,null,0,-.01])assert.equal(readiness.keeperFirstTouchReady({...receiver,firstTouchControlTimer:timer}),true);
+ for(const timer of [.001,.12,1,NaN,Infinity])assert.equal(readiness.keeperFirstTouchReady({...receiver,firstTouchControlTimer:timer}),false);
+ assert.equal(readiness.keeperDistributionReceiverReady(receiver),true,'legacy receivers without the new runtime timer remain eligible');
+ assert.equal(readiness.keeperDistributionReceiverReady({...receiver,firstTouchControlTimer:.16}),false,'active reception settling is not a ready outlet');
+ assert.equal(readiness.keeperDistributionReceiverReady({...receiver,firstTouchControlTimer:0}),true,'settled receiver remains eligible');
+});
+
 test('long clearance fallback and safe lane requirement are retained',()=>{
  assert.match(engine,/const shortSpeed=390\+quality\*1\.2/);
  assert.match(engine,/mates\.map\(q=>\(\{q,safe:this\.keeperPassingLane\(p,q,shortSpeed\)\}\)\)/);
