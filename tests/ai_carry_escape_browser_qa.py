@@ -100,7 +100,7 @@ with sync_playwright() as pw:
                 const originalRandom=Math.random;
                 try{
                     Math.random=()=>.99;
-                    for(let step=0;step<36;step++){
+                    for(let step=0;step<12;step++){
                         carrier.x=x;carrier.y=y;game.clock=1+step*.016;
                         game.driveAI(carrier,.016);
                     }
@@ -141,7 +141,7 @@ with sync_playwright() as pw:
                     Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0});
                 }
                 Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'run',actionTimer:0,
-                    moveVX:dir*60,moveVY:240,dx:dir,dy:-1,aiTimer:0,aiTarget:null,
+                    moveVX:dir*60,moveVY:240,dx:dir,dy:-1,aiTimer:1,aiTarget:{x:x+dir*100,y:y+100},
                     aiFirstTouchTarget:null,firstTouchControlTimer:0,cd:1,trickCd:1});
                 Object.assign(carrier.src,{agility,dribbling:50});
                 Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0,

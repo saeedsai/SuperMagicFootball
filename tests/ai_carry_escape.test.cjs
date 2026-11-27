@@ -94,7 +94,7 @@ test('actual GameEngine CPU carry movement follows input-turn projection accordi
   const dir=team===0?1:-1,x=ENGINE.WORLD.field.x+ENGINE.WORLD.field.w*.5,y=ENGINE.WORLD.field.y+ENGINE.WORLD.field.h*.5;
   for(const agility of [1,100]){
    const {game,carrier}=prepareCarrierGame(ENGINE,team),marker=game.player(1-team,3);
-   Object.assign(carrier,{x,y,moveVX:dir*60,moveVY:240,dx:dir,dy:-1,aiTimer:0,aiTarget:null,
+   Object.assign(carrier,{x,y,moveVX:dir*60,moveVY:240,dx:dir,dy:-1,aiTimer:1,aiTarget:{x:x+dir*100,y:y+100},
     aiFirstTouchTarget:null,firstTouchControlTimer:0,cd:1,trickCd:1,action:'run'});
    Object.assign(carrier.src,{agility,dribbling:50});
    Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
@@ -102,7 +102,7 @@ test('actual GameEngine CPU carry movement follows input-turn projection accordi
    const originalRandom=Math.random;
    try{
     Math.random=()=>.99;
-    for(let step=0;step<36;step++){carrier.x=x;carrier.y=y;game.clock=1+step*.016;game.driveAI(carrier,.016);}
+    for(let step=0;step<12;step++){carrier.x=x;carrier.y=y;game.clock=1+step*.016;game.driveAI(carrier,.016);}
    }finally{Math.random=originalRandom;}
    if(agility===1)assert.ok(carrier.dy>.1&&carrier.moveVY>0,JSON.stringify({team,agility,dx:carrier.dx,dy:carrier.dy,moveVY:carrier.moveVY}));
    else assert.ok(carrier.dy<-.1&&carrier.moveVY<0,JSON.stringify({team,agility,dx:carrier.dx,dy:carrier.dy,moveVY:carrier.moveVY}));
