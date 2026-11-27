@@ -43,6 +43,24 @@ function carrierTurnAwareVelocity(carrier,vx,vy,horizonSeconds=.12){
  };
 }
 
+function keeperOutfielderTurnLead(player,horizonSeconds=.42,cap=110){
+ const maxLead=Number.isFinite(cap)?Math.max(0,Math.abs(cap)):110;
+ const horizon=Math.max(0,Math.min(.42,Number.isFinite(horizonSeconds)?horizonSeconds:.42));
+ let vx=Number.isFinite(player?.moveVX)?player.moveVX:Number.isFinite(player?.vx)?player.vx:0;
+ let vy=Number.isFinite(player?.moveVY)?player.moveVY:Number.isFinite(player?.vy)?player.vy:0;
+ let remaining=horizon,dx=0,dy=0;
+ while(remaining>1e-6){
+  const step=Math.min(.18,remaining);
+  const turned=step>=.05?carrierTurnAwareVelocity(player,vx,vy,step):{x:vx,y:vy};
+  dx+=(vx+turned.x)*.5*step;
+  dy+=(vy+turned.y)*.5*step;
+  vx=turned.x;vy=turned.y;remaining-=step;
+ }
+ const lead=Math.hypot(dx,dy);
+ if(lead>maxLead){const scale=maxLead/lead;dx*=scale;dy*=scale;}
+ return {x:dx,y:dy};
+}
+
 // Predict the same bounded receiver lead for both support-pass safety and dispatch.
 // A moving runner turns toward live input at the existing Agility rate; neutral,
 // invalid or unavailable movement retains the previous linear lead exactly.
@@ -2698,19 +2716,8 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   // response used by the pass/press reads. Integrate the curved path in short
   // slices, then retain the existing 110-unit total lead cap for this race.
   const projected=q=>{
-   let vx=Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0;
-   let vy=Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0;
-   let remaining=contestHorizon,dx=0,dy=0;
-   while(remaining>1e-6){
-    const step=Math.min(.18,remaining);
-    const turned=step>=.05?carrierTurnAwareVelocity(q,vx,vy,step):{x:vx,y:vy};
-    dx+=(vx+turned.x)*.5*step;
-    dy+=(vy+turned.y)*.5*step;
-    vx=turned.x;vy=turned.y;remaining-=step;
-   }
-   const lead=Math.hypot(dx,dy);
-   if(lead>110){const scale=110/lead;dx*=scale;dy*=scale;}
-   return {x:q.x+dx,y:q.y+dy};
+   const lead=keeperOutfielderTurnLead(q,contestHorizon,110);
+   return {x:q.x+lead.x,y:q.y+lead.y};
   };
   for(const opponent of players){
    if(opponent?.t===keeper.t||!activeOutfielder(opponent))continue;
@@ -2913,11 +2920,8 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  // through the whole lofted flight.
  const contestHorizon=Math.min(.42,flight);
  const projectedOutfielder=q=>{
-  let dx=(Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0)*contestHorizon;
-  let dy=(Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0)*contestHorizon;
-  const lead=Math.hypot(dx,dy);
-  if(lead>110){const scale=110/lead;dx*=scale;dy*=scale;}
-  return {x:q.x+dx,y:q.y+dy};
+  const lead=keeperOutfielderTurnLead(q,contestHorizon,110);
+  return {x:q.x+lead.x,y:q.y+lead.y};
  };
  for(const q of players){
   if(q===keeper||!activeOutfielder(q))continue;

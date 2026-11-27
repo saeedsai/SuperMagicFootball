@@ -317,3 +317,27 @@ test('keeper yields to an airborne challenger turning into the cross according t
    'aligned motion retains the previous linear contest read');
  }
 });
+
+test('grounded high-cross claim follows Agility-limited receiver turns in both directions',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  const flight=(f.ball.vz+Math.sqrt(f.ball.vz*f.ball.vz+1000*f.ball.z))/500;
+  const target={x:f.ball.x+f.ball.vx*flight,y:f.ball.y+f.ball.vy*flight};
+  f.receiver.x=target.x+f.dir*180;f.receiver.y=target.y+10;
+  f.receiver.moveVY=0;f.receiver.moveVX=-f.dir*300;
+  f.receiver.dx=f.dir;f.receiver.dy=0;f.receiver.src.agility=100;
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),
+   'a high-Agility runner turning away must not falsely block a safe keeper claim');
+  f.receiver.src.agility=1;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),null,
+   'a low-Agility runner still travelling toward the cross can win the landing race');
+  f.receiver.moveVX=f.dir*300;f.receiver.dx=-f.dir;f.receiver.src.agility=100;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),null,
+   'a high-Agility runner turning into the cross must contest the claim');
+  f.receiver.src.agility=1;
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),
+   'a low-Agility runner cannot turn into the cross quickly enough to suppress the claim');
+ }
+});
+
