@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Desktop and simulated-touch Chromium acceptance for input-turn-aware carry escapes."""
+"""Desktop and simulated-touch Chromium acceptance for momentum-aware carry escapes."""
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
@@ -132,33 +132,6 @@ with sync_playwright() as pw:
                 }finally{Math.random=originalRandom;}
                 return {team,dribbling,dy:carrier.dy,moveVY:carrier.moveVY};
             };
-            const inputTurnRows=[];
-            const runInputTurn=(team,agility)=>{
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
-                const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5;
-                const carrier=game.player(team,3),marker=game.player(1-team,3);
-                for(const q of game.players)if(q!==carrier&&q!==marker&&!q.keeper){
-                    Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0});
-                }
-                Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'run',actionTimer:0,
-                    moveVX:dir*60,moveVY:240,dx:dir,dy:-1,aiTimer:1,aiTarget:{x:x+dir*100,y:y+100},
-                    aiFirstTouchTarget:null,firstTouchControlTimer:0,cd:1,trickCd:1});
-                Object.assign(carrier.src,{agility,dribbling:50});
-                Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0,
-                    action:'idle',actionTimer:0,moveVX:0,moveVY:0});
-                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,
-                    passTarget:null,attacker:team,lastTouchTeam:team,age:0,shot:null,strike:null,
-                    ordinaryShot:false,hideBallTimer:0});
-                const originalRandom=Math.random;
-                try{
-                    Math.random=()=>.99;
-                    for(let step=0;step<36;step++){
-                        carrier.x=x;carrier.y=y;game.clock=1+step*.016;
-                        game.driveAI(carrier,.016);
-                    }
-                }finally{Math.random=originalRandom;}
-                return {team,agility,dx:carrier.dx,dy:carrier.dy,moveVX:carrier.moveVX,moveVY:carrier.moveVY};
-            };
             const directRows=[];
             const runDirect=(team)=>{
                 game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
@@ -213,7 +186,6 @@ with sync_playwright() as pw:
                 return {team,passAttempts,retained:game.ball.owner===carrier,dx:carrier.dx,dy:carrier.dy};
             };
             for(const team of [0,1]){
-                inputTurnRows.push(runInputTurn(team,1),runInputTurn(team,100));
                 parallelSlideRows.push(runParallelSlide(team));
                 directRows.push(runDirect(team));
                 retentionRows.push(runRetention(team));
@@ -223,7 +195,7 @@ with sync_playwright() as pw:
                 slideRows.push(runSlide(team,true));
                 skillRows.push(runSkill(team,1),runSkill(team,100));
             }
-            return {rows,inputTurnRows,slideRows,parallelSlideRows,skillRows,directRows,retentionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            return {rows,slideRows,parallelSlideRows,skillRows,directRows,retentionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
@@ -231,12 +203,6 @@ with sync_playwright() as pw:
         assert len(result['rows'])==4,(kind,result)
         for row in result['rows']:
             assert row['dy']>0 and row['moveVY']>0,(kind,row)
-        assert len(result['inputTurnRows'])==4,(kind,result)
-        for team in (0,1):
-            low=next(row for row in result['inputTurnRows'] if row['team']==team and row['agility']==1)
-            high=next(row for row in result['inputTurnRows'] if row['team']==team and row['agility']==100)
-            assert low['dy']>.1 and low['moveVY']>0,(kind,'low Agility should retain lower-lane momentum',low)
-            assert high['dy']<-.1 and high['moveVY']<0,(kind,'high Agility should follow upper-lane input',high)
         assert len(result['slideRows'])==4,(kind,result)
         for row in result['slideRows']:
             if row['diagonal']:

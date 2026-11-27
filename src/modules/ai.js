@@ -2312,10 +2312,15 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    Number.isFinite(carrier.vx)?carrier.vx:0;
   const carrierVY=Number.isFinite(carrier.moveVY)?carrier.moveVY:
    Number.isFinite(carrier.vy)?carrier.vy:0;
-  // Predict the carrier's existing directional input over the same short,
-  // Agility-limited turn horizon used by defensive reads. This affects only
-  // escape-lane scoring; slow/neutral/invalid input retains residual momentum.
-  const turnRead=carrierTurnAwareVelocity(carrier,carrierVX,carrierVY,horizon);
+  // Use the CPU's current steering target when available; dx/dy is only the
+  // fallback. The latter is a movement heading after moveAgile, not a future
+  // target, so projecting toward aiTarget keeps the read useful under inertia.
+  const steeringTarget=carrier.aiTarget;
+  const steeringX=Number.isFinite(steeringTarget?.x)?steeringTarget.x-carrier.x:0;
+  const steeringY=Number.isFinite(steeringTarget?.y)?steeringTarget.y-carrier.y:0;
+  const turnCarrier=Math.hypot(steeringX,steeringY)>.15?
+   {dx:steeringX,dy:steeringY,src:carrier.src}:carrier;
+  const turnRead=carrierTurnAwareVelocity(turnCarrier,carrierVX,carrierVY,horizon);
   const escapeVX=Number.isFinite(turnRead.x)?turnRead.x:carrierVX;
   const escapeVY=Number.isFinite(turnRead.y)?turnRead.y:carrierVY;
   const carrierSpeed=Math.hypot(escapeVX,escapeVY);

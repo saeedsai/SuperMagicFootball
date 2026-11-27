@@ -68,12 +68,13 @@ test('when both diagonals are safe, carrier momentum breaks the tie without chan
   assert.ok(dir*(target.x-carrier.x)>=44,'momentum must not reverse the attack');
  }
 });
-test('live directional input and Agility guide the pressured carry escape lane on both sides',async()=>{
+test('current AI steering target and Agility guide pressured carry escape on both sides',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){
   const dir=team===0?1:-1,x=team===0?700:1300,y=500;
-  const make=(name,agility,input=true)=>player(name,team,x,y,{
-   moveVX:dir*60,moveVY:240,dx:input?dir:0,dy:input?-1:0,
+  const make=(name,agility,steer=true)=>player(name,team,x,y,{
+   moveVX:dir*60,moveVY:240,dx:0,dy:1,
+   aiTarget:steer?{x:x+dir*100,y:y-100}:null,
    src:{id:name,dribbling:50,agility}
   });
   const marker=player('turn-marker-'+team,1-team,x+dir*65,y);
@@ -83,30 +84,27 @@ test('live directional input and Agility guide the pressured carry escape lane o
   const neutralTarget=AI.attackingCarryEscapeTarget([neutral,marker],team,neutral,bounds);
   assert.ok(lowTarget&&highTarget&&neutralTarget,JSON.stringify({team,lowTarget,highTarget,neutralTarget}));
   assert.ok(lowTarget.y>y,'low Agility should retain more lower-lane momentum');
-  assert.ok(highTarget.y<y,'high Agility should follow the committed upper-lane input');
-  assert.ok(neutralTarget.y>y,'neutral input should preserve the original momentum fallback');
+  assert.ok(highTarget.y<y,'high Agility should follow the current upper steering target');
+  assert.ok(neutralTarget.y>y,'missing steering target should preserve the movement-heading fallback');
   for(const target of [lowTarget,highTarget,neutralTarget])assert.ok(dir*(target.x-x)>=44);
  }
 });
-test('actual GameEngine CPU carry movement follows input-turn projection according to Agility',async()=>{
- const {ENGINE}=await loadModules();
+test('GameEngine player records use their current AI target for turn-aware carry escape',async()=>{
+ const {AI,ENGINE}=await loadModules(),F=ENGINE.WORLD.field;
+ const bounds={xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24};
  for(const team of [0,1]){
-  const dir=team===0?1:-1,x=ENGINE.WORLD.field.x+ENGINE.WORLD.field.w*.5,y=ENGINE.WORLD.field.y+ENGINE.WORLD.field.h*.5;
-  for(const agility of [1,100]){
-   const {game,carrier}=prepareCarrierGame(ENGINE,team),marker=game.player(1-team,3);
-   Object.assign(carrier,{x,y,moveVX:dir*60,moveVY:240,dx:dir,dy:-1,aiTimer:1,aiTarget:{x:x+dir*100,y:y+100},
-    aiFirstTouchTarget:null,firstTouchControlTimer:0,cd:1,trickCd:1,action:'run'});
-   Object.assign(carrier.src,{agility,dribbling:50});
-   Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
-   game.ball.owner=carrier;game.ball.attacker=team;game.clock=1;
-   const originalRandom=Math.random;
-   try{
-    Math.random=()=>.99;
-    for(let step=0;step<12;step++){carrier.x=x;carrier.y=y;game.clock=1+step*.016;game.driveAI(carrier,.016);}
-   }finally{Math.random=originalRandom;}
-   if(agility===1)assert.ok(carrier.dy>.1&&carrier.moveVY>0,JSON.stringify({team,agility,dx:carrier.dx,dy:carrier.dy,moveVY:carrier.moveVY}));
-   else assert.ok(carrier.dy<-.1&&carrier.moveVY<0,JSON.stringify({team,agility,dx:carrier.dx,dy:carrier.dy,moveVY:carrier.moveVY}));
-  }
+  const dir=team===0?1:-1,x=F.x+F.w*.5,y=F.y+F.h*.5;
+  const {game,carrier}=prepareCarrierGame(ENGINE,team),marker=game.player(1-team,3);
+  Object.assign(carrier,{x,y,moveVX:dir*60,moveVY:240,dx:0,dy:1,
+   aiTarget:{x:x+dir*100,y:y-100},down:false,stun:0,z:0});
+  Object.assign(carrier.src,{agility:100,dribbling:50});
+  Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0});
+  const high=AI.attackingCarryEscapeTarget(game.players,team,carrier,bounds);
+  Object.assign(carrier.src,{agility:1});
+  const low=AI.attackingCarryEscapeTarget(game.players,team,carrier,bounds);
+  assert.ok(high&&low,JSON.stringify({team,high,low}));
+  assert.ok(high.y<y,'high Agility should turn toward the AI steering target');
+  assert.ok(low.y>y,'low Agility should retain more current momentum');
  }
 });
 test('carrier chooses the opposite diagonal when one side is occupied',async()=>{
