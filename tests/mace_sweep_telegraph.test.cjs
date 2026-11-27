@@ -19,9 +19,9 @@ function method(name,next,globals={}){
 }
 const stat=(p,k)=>p.src?.[k]??55;
 const helperStart=engine.indexOf('function maceSweepDefensiveRead(');
-const helperEnd=engine.indexOf('\\n}',helperStart)+2;
+const helperEnd=engine.indexOf('\n}',helperStart)+2;
 assert.ok(helperStart>=0&&helperEnd>helperStart,'extract Mace Sweep read helper');
-const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\\nmaceSweepDefensiveRead',{stat});
+const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\nmaceSweepDefensiveRead',{stat});
 const globals={fieldAbility:ABILITIES.fieldAbility,abilityReady:(p,m)=>!!(m&&p.stun<=0&&p.abilityCd<=0&&p.fatigue+m.cost<=.98),
  abilityLevel:()=>2,levelModifiers:()=>({stun:1}),distance,norm,clamp,F,stat,maceSweepDefensiveRead,impactStun:()=>.8};
 const activate=method('activateDefence','activateKeeperSuper',globals);
