@@ -1,6 +1,7 @@
 'use strict';
 const {test}=require('node:test');
 const assert=require('node:assert/strict');
+const fs=require('node:fs');
 
 let ENGINE;
 test.before(async()=>{
@@ -78,4 +79,53 @@ test('Pass and Shoot slides can select an exposed ball inside the forward arc be
   assert.ok(Math.abs(shielded.dx-(team===0?1:-1))<1e-9,JSON.stringify({team,action,shielded}));
   assert.ok(Math.abs(shielded.dy)<1e-9,JSON.stringify({team,action,shielded}));
  }
+});
+
+
+function runHumanPokeBallArc(team,exposed,passLiveBall=true){
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:0});
+ game.weather='Clear';
+ const dir=team===0?1:-1,x=1000,y=700;
+ const defender=game.player(team,3),carrier=game.player(1-team,3);
+ for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+ Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+  moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+ Object.assign(carrier,{x:x+dir*15,y:y+62,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+  moveVX:0,moveVY:0});
+ const ballX=exposed?carrier.x+dir*2:carrier.x+dir*12;
+ const ballY=exposed?carrier.y-12:carrier.y;
+ Object.assign(game.ball,{owner:carrier,x:ballX,y:ballY,z:12,vx:0,vy:0,vz:0,
+  pass:false,shot:null,strike:null,ordinaryShot:false});
+ const sideRead=game.defensivePokeBallSideRead(defender,carrier,game.ball);
+ const expectedX=ballX-x,expectedY=ballY-y,length=Math.hypot(expectedX,expectedY);
+ const originalRandom=Math.random;Math.random=()=>0;
+ try{game.tackle(defender,false,passLiveBall?game.ball:null);}finally{Math.random=originalRandom;}
+ return {released:game.ball.owner===null,vx:game.ball.vx,vy:game.ball.vy,
+  expectedVx:expectedX/length*150,expectedVy:expectedY/length*150,
+  dx:defender.dx,dy:defender.dy,sideRead,
+  bodyDot:dir*(carrier.x-x)/Math.hypot(carrier.x-x,carrier.y-y),
+  ballDot:dir*(ballX-x)/Math.hypot(ballX-x,ballY-y)};
+}
+
+test('short PASS pokes can read an exposed ball entering the forward arc before the carrier body',()=>{
+ for(const team of [0,1]){
+  const exposed=runHumanPokeBallArc(team,true,true);
+  assert.ok(exposed.bodyDot<.25&&exposed.ballDot>.25,JSON.stringify({team,exposed}));
+  assert.ok(exposed.sideRead&&exposed.released,JSON.stringify({team,exposed}));
+  assert.ok(Math.abs(exposed.vx-exposed.expectedVx)<1e-9,JSON.stringify({team,exposed}));
+  assert.ok(Math.abs(exposed.vy-exposed.expectedVy)<1e-9,JSON.stringify({team,exposed}));
+  const shielded=runHumanPokeBallArc(team,false,true);
+  assert.ok(!shielded.sideRead&&!shielded.released,JSON.stringify({team,shielded}));
+  assert.ok(Math.abs(shielded.dx-(team===0?1:-1))<1e-9&&Math.abs(shielded.dy)<1e-9,JSON.stringify({team,shielded}));
+  const missingBall=runHumanPokeBallArc(team,true,false);
+  assert.ok(missingBall.sideRead&&!missingBall.released,JSON.stringify({team,missingBall}));
+  assert.ok(Math.abs(missingBall.dx-(team===0?1:-1))<1e-9&&Math.abs(missingBall.dy)<1e-9,JSON.stringify({team,missingBall}));
+ }
+});
+
+test('held PASS release and close chase short pokes forward the current live ball',()=>{
+ const source=fs.readFileSync('src/modules/engine.js','utf8');
+ assert.match(source,/else this\.tackle\(p,false,this\.ball\)/);
+ assert.match(source,/this\.tackle\(p,false,this\.ball\);p\.chase=0/);
 });

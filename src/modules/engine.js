@@ -1405,19 +1405,18 @@ class GameEngine{
   // Avoid locking a poke onto a far carrier while an opponent is right in front.
   // Slides can chase farther than short pokes, but both retain their physical travel budget.
   const carrierReach=slide?220:130;
-  // A live exposed ball can enter the forward slide arc just before the
-  // carrier's body centre does. Let that ball-side read select its owner,
-  // but keep the existing reach envelope and never follow a shielded/off-arc ball.
+  // A validated exposed ball can enter the forward tackle arc before the carrier's body does.
+  // Use it for short PASS pokes and SHOOT slides, but retain each action's existing reach.
   const ownerDistance=owner?distance(p,owner):Infinity;
-  const exposedBallVector=slide&&slideBall&&owner&&slideBall.owner===owner&&
+  const exposedBallVector=slideBall&&owner&&slideBall.owner===owner&&
    defensivePokeBallSideRead(p,owner,slideBall)?{x:slideBall.x-p.x,y:slideBall.y-p.y}:null;
   const exposedBallRange=exposedBallVector?Math.hypot(exposedBallVector.x,exposedBallVector.y):NaN;
   const exposedBallInArc=!!exposedBallVector&&Number.isFinite(exposedBallRange)&&
    exposedBallRange>0&&exposedBallRange<280&&
    (exposedBallVector.x*headingX+exposedBallVector.y*headingY)/exposedBallRange>=.25;
-  const ownerWithinSlideReach=ownerDistance<=carrierReach||
+  const ownerWithinTackleReach=ownerDistance<=carrierReach||
    (exposedBallInArc&&exposedBallRange<=carrierReach);
-  const target=ownerWithinSlideReach&&(inArc(owner)||exposedBallInArc)?owner:
+  const target=ownerWithinTackleReach&&(inArc(owner)||exposedBallInArc)?owner:
    near.filter(inArc).sort((a,b)=>distance(p,a)-distance(p,b))[0];
   // Lead a moving ball carrier without changing the physical poke/slide travel budget.
   // Ordinary PASS pokes use a shorter, tighter prediction; SHOOT slides retain
@@ -1907,7 +1906,7 @@ class GameEngine{
   p.aiHideBallReaction=Math.max(0,remaining-step);
   if(p.aiHideBallReaction<=1e-9&&hold>=.84&&p.cd<=0){
    p.aiHideBallReaction=Infinity;
-   return this.tackle(p,false);
+   return this.tackle(p,false,this.ball);
   }
   return false;
  }
@@ -3240,7 +3239,7 @@ class GameEngine{
   if(!s.dribble||this.ball.owner!==p)p.magicHoldLatched=false;
   if(!s.dribble)p.ballLiftLock=false;
   p.jumpHold=s.jump?elapsedJump+dt:0;const defensiveSprint=this.ball.owner!==p&&!!s.jump;const running=defensiveSprint||(this.ball.owner===p&&p.jumpHold>.16);let spd=this.playerSpeed(p)*(running?1.37:1)*(p.dashTimer>0?1.7:1)*(.88+p.src.power*.0015)*(this.terrain==='Sand'?.69:1)*(this.condition==='Wet'?.86:1);
- if((p.chase||0)>0&&this.ball.owner!==p&&p.z<=0){p.chase=Math.max(0,p.chase-dt);const target=this.ball.owner||this.ball,dist=Math.hypot(target.x-p.x,target.y-p.y);if(dist>57){dx=(target.x-p.x)/dist;dy=(target.y-p.y)/dist;}else if(p.cd<=0&&(!this.ball.owner||this.ball.owner.t!==p.t)){this.tackle(p,false);p.chase=0}}else p.chase=0;
+ if((p.chase||0)>0&&this.ball.owner!==p&&p.z<=0){p.chase=Math.max(0,p.chase-dt);const target=this.ball.owner||this.ball,dist=Math.hypot(target.x-p.x,target.y-p.y);if(dist>57){dx=(target.x-p.x)/dist;dy=(target.y-p.y)/dist;}else if(p.cd<=0&&(!this.ball.owner||this.ball.owner.t!==p.t)){this.tackle(p,false,this.ball);p.chase=0}}else p.chase=0;
  // Sustained movement + sprint is deliberate to prevent accidental hyperdash.
  if(running&&Math.hypot(dx,dy)>.52&&this.ball.owner!==p){p.sprintCharge=(p.sprintCharge||0)+dt;if(p.sprintCharge>.56)this.triggerHyperdash(p);}else p.sprintCharge=0;
  this.moveAgile(p,dx,dy,spd,dt);if(p.dashTimer>0){p.action='hyperdash';p.actionTimer=.17;}
@@ -3292,7 +3291,7 @@ class GameEngine{
   else if((p.passHold||0)>0||this.input.released?.(p.t,'pass')){
    if(!p.passUsed||this.ball.owner?.t===p.t){const held=Math.max(Number(p.passHold)||0,this.input.tapDuration?.(p.t,'pass')||0),longPass=held>.24;
     const direction=Math.hypot(s.x||0,s.y||0)>.16?{x:s.x,y:s.y}:p.passDirection;
-    if(this.ball.owner?.t===p.t)this.performTeamPass(p,longPass,false,direction,held);else this.tackle(p,false);}
+    if(this.ball.owner?.t===p.t)this.performTeamPass(p,longPass,false,direction,held);else this.tackle(p,false,this.ball);}
    p.passHold=0;p.passUsed=false;p.passDirection=null;
   }
   // Hold DRIBBLE for >=1s with possession to trigger an equipped Magic Trick

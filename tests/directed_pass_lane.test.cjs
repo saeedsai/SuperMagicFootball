@@ -100,7 +100,7 @@ test('fast defender crossing the whole pass lane remains an interception risk',(
 });
 
 test('tackles and slides choose forward targets without snapping backwards',()=>{
- const segment=engine.match(/const mx=Number\.isFinite\(p\.dx\)[\s\S]*?const carrierReach=slide\?220:130;[\s\S]*?const target=ownerWithinSlideReach&&\(inArc\(owner\)\|\|exposedBallInArc\)\?owner:near\.filter\(inArc\)\.sort\(\(a,b\)=>distance\(p,a\)-distance\(p,b\)\)\[0\];/);
+ const segment=engine.match(/const mx=Number\.isFinite\(p\.dx\)[\s\S]*?const carrierReach=slide\?220:130;[\s\S]*?const target=ownerWithinTackleReach&&\(inArc\(owner\)\|\|exposedBallInArc\)\?owner:\s*near\.filter\(inArc\)\.sort\(\(a,b\)=>distance\(p,a\)-distance\(p,b\)\)\[0\];/);
  assert.ok(segment,'production tackle targeting is present');
  const select=vm.runInNewContext('(p,near,owner,slide=false,slideBall=null)=>{const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);const defensivePokeBallSideRead=()=>false;'+segment[0]+'return target;}');
  const p={x:0,y:0,face:1,dx:0,dy:0},back={x:-20,y:0},front={x:90,y:0},side={x:80,y:25};
@@ -147,7 +147,7 @@ test('directed pass avoids receiver sprinting sideways out of the lane',()=>{
 
 
 test('tackle carrier priority respects action reach and nearby forward defenders',()=>{
- const segment=engine.match(/const mx=Number\.isFinite\(p\.dx\)[\s\S]*?const target=ownerWithinSlideReach&&\(inArc\(owner\)\|\|exposedBallInArc\)\?owner:near\.filter\(inArc\)\.sort\(\(a,b\)=>distance\(p,a\)-distance\(p,b\)\)\[0\];/);
+ const segment=engine.match(/const mx=Number\.isFinite\(p\.dx\)[\s\S]*?const target=ownerWithinTackleReach&&\(inArc\(owner\)\|\|exposedBallInArc\)\?owner:\s*near\.filter\(inArc\)\.sort\(\(a,b\)=>distance\(p,a\)-distance\(p,b\)\)\[0\];/);
  assert.ok(segment,'real engine includes bounded carrier targeting');
  const select=vm.runInNewContext('(p,near,owner,slide=false,slideBall=null)=>{const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);const defensivePokeBallSideRead=()=>false;'+segment[0]+'return target;}');
  const p={x:0,y:0,face:1,dx:0,dy:0},close={x:55,y:8},far={x:240,y:0},mid={x:170,y:0},nearCarrier={x:100,y:0};

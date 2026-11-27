@@ -254,12 +254,42 @@ with sync_playwright() as pw:
             const humanBallArcSlideRows=[];
             for(const team of [0,1])for(const action of ['pass','shoot'])for(const exposed of [true,false])
                 humanBallArcSlideRows.push(runHumanBallArcSlide(team,action,exposed));
+            const runHumanPokeBallArc=(defendingTeam,exposed,passLiveBall=true)=>{
+                const dir=defendingTeam===0?1:-1,x=1000,y=700;
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                game.tackle=Object.getPrototypeOf(game).tackle;
+                const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+                for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+                Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+                Object.assign(carrier,{x:x+dir*15,y:y+62,z:0,down:false,stun:0,invuln:0,
+                    action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+                const ballX=exposed?carrier.x+dir*2:carrier.x+dir*12;
+                const ballY=exposed?carrier.y-12:carrier.y;
+                Object.assign(game.ball,{owner:carrier,x:ballX,y:ballY,z:12,vx:0,vy:0,vz:0,
+                    pass:false,shot:null,strike:null,ordinaryShot:false});
+                const sideRead=game.defensivePokeBallSideRead(defender,carrier,game.ball);
+                const expectedX=ballX-x,expectedY=ballY-y,length=Math.hypot(expectedX,expectedY);
+                const originalRandom=Math.random;Math.random=()=>0;
+                try{game.tackle(defender,false,passLiveBall?game.ball:null);}finally{Math.random=originalRandom;}
+                return {team:defendingTeam,exposed,passLiveBall,sideRead,released:game.ball.owner===null,
+                    vx:game.ball.vx,vy:game.ball.vy,expectedVx:expectedX/length*150,expectedVy:expectedY/length*150,
+                    dx:defender.dx,dy:defender.dy,
+                    bodyDot:dir*(carrier.x-x)/Math.hypot(carrier.x-x,carrier.y-y),
+                    ballDot:dir*(ballX-x)/Math.hypot(ballX-x,ballY-y)};
+            };
+            const humanPokeBallArcRows=[];
+            for(const team of [0,1]){
+                humanPokeBallArcRows.push(runHumanPokeBallArc(team,true,true));
+                humanPokeBallArcRows.push(runHumanPokeBallArc(team,false,true));
+                humanPokeBallArcRows.push(runHumanPokeBallArc(team,true,false));
+            }
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,turnAwareRows,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
                 closeBallSideRows,ballHeightRows,closeContactEngineRows,actualPokeAimRows,closeContactSlideRows,firstTouchSlideRows,
-                airborneGroundChallengeRows,humanCommandAimRows,humanBallArcSlideRows,
+                airborneGroundChallengeRows,humanCommandAimRows,humanBallArcSlideRows,humanPokeBallArcRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -313,8 +343,17 @@ with sync_playwright() as pw:
             else:
                 assert row['bodyDot']<.25 and row['ballDot']<.25,(kind,row)
                 assert abs(row['dx']-(1 if row['team']==0 else -1))<1e-6 and abs(row['dy'])<1e-6,(kind,row)
+        for row in result['humanPokeBallArcRows']:
+            if row['exposed'] and row['passLiveBall']:
+                assert row['bodyDot']<.25 and row['ballDot']>.25 and row['sideRead'],(kind,row)
+                assert row['released'],(kind,row)
+                assert abs(row['vx']-row['expectedVx'])<1e-6 and abs(row['vy']-row['expectedVy'])<1e-6,(kind,row)
+            else:
+                assert not row['released'],(kind,row)
+                assert row['sideRead']==row['exposed'],(kind,row)
+                assert abs(row['dx']-(1 if row['team']==0 else -1))<1e-6 and abs(row['dy'])<1e-6,(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'adaptive poke, exposed-ball CPU and human Pass/Shoot slides, and first-touch reads, airborne ground-challenge rejection, shielded-carrier counterplay, 223 teams and four actions',flush=True)
+        print('PASS',kind,'adaptive poke, exposed-ball CPU and human Pass/Shoot slides, exposed-ball short pokes, first-touch reads, airborne ground-challenge rejection, shielded-carrier counterplay, 223 teams and four actions',flush=True)
         ctx.close()
     browser.close()
