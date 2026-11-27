@@ -330,13 +330,13 @@ test('grounded high-cross claim follows Agility-limited receiver turns in both d
   assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),
    'a high-Agility runner turning away must not falsely block a safe keeper claim');
   f.receiver.src.agility=1;
-  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),null,
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
    'a low-Agility runner still travelling toward the cross can win the landing race');
   f.receiver.moveVX=f.dir*300;f.receiver.dx=-f.dir;f.receiver.src.agility=100;
-  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),null,
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
    'a high-Agility runner turning into the cross must contest the claim');
   f.receiver.src.agility=1;
-  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),
    'a low-Agility runner cannot turn into the cross quickly enough to suppress the claim');
  }
 });

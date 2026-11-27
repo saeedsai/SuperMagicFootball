@@ -39,6 +39,31 @@ with sync_playwright() as pw:
   assert result['frames']<=15 and result['warning']>0,(label,'CPU response exceeded .24s tell',result)
   assert result['actionButtons']==4,(label,'four-button grammar changed',result)
   assert not errors,(label,errors)
+  read_result=page.evaluate('''() => {
+   const api=SupermagicFootball,g=api.game,rows=[];
+   for(const side of [0,1]){
+    g.init({home:0,away:9,humans:0,mode:'quick'});g.matchState='paused';g.events.length=0;
+    const face=side===0?1:-1,caster=g.player(side,2),target=g.player(1-side,2);
+    if(!caster||!target)throw Error('Missing Mace Sweep read fixture players');
+    Object.assign(caster,{x:1100,y:620,face,z:0,stun:0,action:'defenceSuper',actionTimer:.24});
+    caster.src={...caster.src,role:'DF',dribbling:55,superAbility:{type:'defence',id:'maceSweep',level:2}};
+    Object.assign(target,{x:1100+face*92,y:632,face:-face,dx:0,dy:0,moveVX:-face*180,moveVY:0,
+     z:0,stun:0,invuln:0,dashTimer:0,action:'run',actionTimer:0,src:{...target.src,defence:80}});
+    g.ball.owner=target;g.ball.x=target.x;g.ball.y=target.y;g.ball.z=0;
+    caster.maceSweepPending={remaining:.24,target};
+    const reacted=g.reactToMaceSweep(target,.016,.18);
+    const jumped=target.action==='jump'||target.z>20;
+    const resolved=g.resolveMaceSweep(caster);
+    const outcome=g.events.filter(event=>event.type==='maceSweepResolved').at(-1);
+    if(reacted||jumped||resolved||!outcome?.countered||outcome.counter!=='read'||
+       g.ball.owner!==target||target.stun!==0)
+     throw Error('Live closing momentum did not preserve the Mace Sweep read '+JSON.stringify({side,reacted,jumped,resolved,outcome}));
+    rows.push({side,reacted,jumped,resolved,counter:outcome.counter,ballRetained:g.ball.owner===target});
+   }
+   return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }''')
+  assert len(read_result['rows'])==2 and read_result['buttons']==4,(label,read_result)
+  print('MACE_SWEEP_MOMENTUM_READ_BROWSER_PASS',label,read_result,flush=True)
   print('MACE_SWEEP_AI_COUNTER_BROWSER_PASS',label,result,flush=True)
   context.close()
  browser.close()

@@ -81,6 +81,20 @@ function lightningDefenderCounters(defender,attacker){
  return inJump||inSlide||read;
 }
 
+function maceSweepDefensiveRead(defender,caster){
+ if(!defender||!caster||!Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+  !Number.isFinite(caster.x)||!Number.isFinite(caster.y))return false;
+ const facing=(defender.face||1)*(caster.x-defender.x)>0;
+ let headingX=Number.isFinite(defender.dx)?defender.dx:0;
+ let headingY=Number.isFinite(defender.dy)?defender.dy:0;
+ if(Math.hypot(headingX,headingY)<=.1){
+  headingX=Number.isFinite(defender.moveVX)?defender.moveVX:0;
+  headingY=Number.isFinite(defender.moveVY)?defender.moveVY:0;
+ }
+ const closing=headingX*(caster.x-defender.x)+headingY*(caster.y-defender.y)>0;
+ return facing&&closing&&stat(defender,'defence')>=stat(caster,'dribbling');
+}
+
 // A receiving outfielder briefly settles a pressured low ground pass. Faster
 // incoming balls add a little settling time; Dribbling and Agility improve control.
 // Only movement speed is affected; a skilled receiver can steer that first touch
@@ -1710,9 +1724,7 @@ class GameEngine{
    (q.x-p.x)*(p.face||1)>0&&Math.abs(q.y-p.y)<=Math.abs((q.x-p.x)*(p.face||1));
   if(!valid){this.emit('maceSweepResolved',{team:p.t,player:p.src.name,target:q?.src?.name,hit:false,countered:false});return false;}
   const slide=q.action==='slide'&&q.actionTimer>0&&q.z<20;
-  const facing=(q.face||1)*(p.x-q.x)>0;
-  const closing=((q.dx||0)*(p.x-q.x)+(q.dy||0)*(p.y-q.y))>0;
-  const read=facing&&closing&&stat(q,'defence')>=stat(p,'dribbling');
+  const read=maceSweepDefensiveRead(q,p);
   if(slide||read){
    this.emit('maceSweepResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true,
     counter:slide?'slide':'read'});return false;
@@ -1753,6 +1765,9 @@ class GameEngine{
   if(!threat){p.aiMaceSweepThreat=null;p.aiMaceSweepReaction=0;return false;}
   if(p.z>20||(p.dashTimer||0)>0||(p.action==='jump'&&(p.actionTimer||0)>0)||
     (p.action==='slide'&&(p.actionTimer||0)>0)){
+   p.aiMaceSweepThreat=threat;p.aiMaceSweepReaction=0;return false;
+  }
+  if(maceSweepDefensiveRead(p,threat)){
    p.aiMaceSweepThreat=threat;p.aiMaceSweepReaction=0;return false;
   }
   if(p.aiMaceSweepThreat!==threat){p.aiMaceSweepThreat=threat;p.aiMaceSweepReaction=Math.max(0,Number(reactionSeconds)||0);}
