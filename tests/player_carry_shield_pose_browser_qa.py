@@ -1,11 +1,27 @@
 #!/usr/bin/env python3
 """Actual-renderer carry-shield pose QA at desktop and simulated-touch game scale."""
 from pathlib import Path
+import base64
 from playwright.sync_api import sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
 HTML=ROOT/'tests/.generated/play.html'
 OUT=ROOT/'docs/qa_runs_full_regression'
+
+# The generated file:// fixture intentionally omits optional Home-only resources.
+def ensure_optional_fixture_assets():
+    config=ROOT/'tests/.generated/online-config.js'
+    config.parent.mkdir(parents=True,exist_ok=True)
+    if not config.exists():
+        config.write_text('window.ONLINE_CONFIG = {};',encoding='utf-8')
+    hero=ROOT/'tests/.generated/assets/ui/home-hero-player.webp'
+    hero.parent.mkdir(parents=True,exist_ok=True)
+    if not hero.exists():
+        hero.write_bytes(base64.b64decode(
+            'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/r9sAAAAASUVORK5CYII='
+        ))
+
+ensure_optional_fixture_assets()
 JS=r"""()=>{
  const {game,renderer}=window.SupermagicFootball||{};
  if(!game||!renderer?.drawPlayer)throw Error('actual player renderer unavailable');

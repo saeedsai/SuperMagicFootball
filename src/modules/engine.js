@@ -2678,9 +2678,16 @@ class GameEngine{
   const success=!threat||Math.random()<Math.max(.08,dribbleOdds(skill,threat,style));
   // Face/movement determines forward axis. Escape toward the side *away* from
   // the closest defender, so style-specific movement is purposeful, not random.
-  const forward=norm(p.dx||p.face,p.dy||0),lateral={x:-forward.y,y:forward.x};
+  // A clear up/down stick input is a deliberate lateral feint for human players.
+  // It reuses DRIBBLE and does not add an action button; CPU escape selection stays unchanged.
+  const inputX=Number(p.dx),inputY=Number(p.dy),face=p.face===-1?-1:1;
+  const verticalFeint=!byAI&&Number.isFinite(inputX)&&Number.isFinite(inputY)&&
+   Math.abs(inputX)<=.35&&Math.abs(inputY)>=.65&&Math.abs(style.lateral)>.1;
+  const forward=verticalFeint?{x:face,y:0}:norm(p.dx||p.face,p.dy||0),lateral={x:-forward.y,y:forward.x};
   const relativeY=rival?(rival.x-p.x)*lateral.x+(rival.y-p.y)*lateral.y:0;
-  let side=close?(relativeY>=0?-1:1):(p.dy<-0.05?-1:1);
+  const automaticSide=close?(relativeY>=0?-1:1):(p.dy<-.05?-1:1);
+  const requestedSide=verticalFeint?Math.sign(inputY*face)*Math.sign(style.lateral):0;
+  let side=requestedSide||automaticSide;
   const quality=(.69+stat(p,'dribbling')*.006)*endurance(p);
   // The nearest ready rival still owns the duel odds and baseline escape side.
   // A second defender may redirect a CPU trick only when their live movement

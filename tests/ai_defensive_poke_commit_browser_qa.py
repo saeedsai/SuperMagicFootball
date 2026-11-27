@@ -76,18 +76,18 @@ with sync_playwright() as pw:
             }
             const runCloseContactPoke=(defendingTeam,exposed,ballZ=12)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,aiTarget:null,aiDetour:null,
                     action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0});
-                Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+                carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:ballZ,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
-                const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who===defender,slide,
-                     liveBall:!!slideBall&&slideBall.owner===carrier,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
+                const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,slide,
+                     liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.src?.id===carrier.src?.id,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
                 try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
                 return calls;
@@ -97,14 +97,14 @@ with sync_playwright() as pw:
                 exposed:runCloseContactPoke(defendingTeam,true),shielded:runCloseContactPoke(defendingTeam,false)});
             const runActualPokeAim=(defendingTeam,exposed)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
                 game.tackle=Object.getPrototypeOf(game).tackle;
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
                     moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
-                Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+                carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
                     moveVX:0,moveVY:0});
                 const ballX=carrier.x+(exposed?-dir*17:dir*17),ballY=y+12;
                 Object.assign(game.ball,{owner:carrier,x:ballX,y:ballY,z:12,vx:0,vy:0,vz:0,
@@ -121,20 +121,20 @@ with sync_playwright() as pw:
                 exposed:runActualPokeAim(team,true),shielded:runActualPokeAim(team,false)});
             const runCpuSlide=(defendingTeam,exposed,range=55,firstTouch=false,ballZ=12)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700,carrierX=x+dir*range;
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,aiTarget:null,aiDetour:null,
                     action:'idle',actionTimer:0,moveVX:dir*240,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0});
-                Object.assign(carrier,{x:carrierX,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+                carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;Object.assign(carrier,{x:carrierX,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
                     moveVX:dir*(firstTouch?100:340),moveVY:0,
                     firstTouchControlTimer:firstTouch ? .16 : 0,firstTouchPressure:firstTouch ? .8 : 0});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x+(exposed?-dir*17:dir*17),y:y+12,z:ballZ,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
-                const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who===defender,slide,
-                     liveBall:!!slideBall&&slideBall.owner===carrier,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
+                const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,slide,
+                     liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.src?.id===carrier.src?.id,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
                 try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
                 return calls;
@@ -152,20 +152,20 @@ with sync_playwright() as pw:
                 firstTouchSlide20:runCpuSlide(team,true,85,true,20)});
             const runApproachCommit=(defendingTeam,defenderSpeed,carrierSpeed=0,range=88)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];game.weather='Clear';
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,aiTimer:0,
                     aiTarget:null,aiDetour:null,action:'idle',actionTimer:0,moveVX:dir*defenderSpeed,
                     moveVY:0,dx:0,dy:0,face:-dir,sprintCharge:0,dashTimer:0,magicReadCounterpressTimer:0});
-                Object.assign(carrier,{x:x+dir*range,y,z:0,down:false,stun:0,invuln:0,
+                carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;Object.assign(carrier,{x:x+dir*range,y,z:0,down:false,stun:0,invuln:0,
                     action:'idle',actionTimer:0,moveVX:dir*carrierSpeed,moveVY:0});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
                 const calls=[];game.tackle=(who,slide,slideBall)=>{
-                    calls.push({same:who===defender,slide,liveBall:!!slideBall&&slideBall.owner===carrier});
+                    calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,slide,liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.src?.id===carrier.src?.id});
                     who.cd=.5;return true;
                 };
                 const originalRandom=Math.random;Math.random=()=>0;
@@ -182,13 +182,13 @@ with sync_playwright() as pw:
             const runTurnAwareCommit=(defendingTeam,agility,options={})=>{
                 const dir=defendingTeam===0?1:-1;
                 const input=options.input||'cut';
-                game.init({home:0,away:1,mode:'quick',humans:0});
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,
                     moveVX:dir*(options.defenderSpeed??200),moveVY:0,dx:dir,dy:0,face:dir,
                     src:{...(defender.src||{}),defence:50}});
-                Object.assign(carrier,{x:x+dir*83,y,z:0,down:false,stun:0,invuln:0,
+                carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;Object.assign(carrier,{x:x+dir*83,y,z:0,down:false,stun:0,invuln:0,
                     moveVX:dir*(options.carrierSpeed??110),moveVY:0,
                     dx:input==='cut'?0:input==='neutral'?0:NaN,
                     dy:input==='cut'?1:input==='neutral'?0:Infinity});
@@ -214,7 +214,7 @@ with sync_playwright() as pw:
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
                     moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0});
-                Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+                carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;Object.assign(carrier,{x:x+dir*52,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
                     moveVX:0,moveVY:0});
                 const ballX=carrier.x+(exposed?-dir*17:dir*17),ballY=y+12;
                 Object.assign(game.ball,{owner:carrier,x:ballX,y:ballY,z:12,vx:0,vy:0,vz:0,
