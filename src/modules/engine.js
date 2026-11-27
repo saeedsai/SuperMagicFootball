@@ -377,8 +377,12 @@ function keeperDiveRecoverySeconds(keeper){
 function keeperParryRecoverySeconds(keeper){
  const skill=clamp(stat(keeper,'gkSkill'),0,100);
  const diving=clamp(stat(keeper,'gkDiving'),0,100);
+ const rawAgility=stat(keeper,'agility');
+ const agility=clamp(Number.isFinite(rawAgility)?rawAgility:50,1,100);
  const fatigue=clamp(Number.isFinite(keeper?.fatigue)?keeper.fatigue:0,0,1);
- const reduction=clamp(.12+skill*.0009+diving*.0009-fatigue*.08,.12,.30);
+ // Agility affects only the post-parry scramble; the existing get-up floor still wins.
+ const agilityAdjustment=(agility-50)*.0007;
+ const reduction=clamp(.12+skill*.0009+diving*.0009+agilityAdjustment-fatigue*.08,.12,.30);
  return Math.max(keeperDiveAnimationSeconds(keeper)+.34+.06,
   keeperDiveRecoverySeconds(keeper)-reduction);
 }

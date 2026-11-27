@@ -41,3 +41,34 @@ test('a parried save shortens the next-dive recovery on both sides without skipp
    'the keeper must finish the dive and get-up pose before another save is available');
  }
 });
+
+
+test('keeper Agility changes only post-parry scramble recovery and preserves the get-up floor',async()=>{
+ const ENGINE=await loadEngine();
+ for(const team of [0,1]){
+  const parry=profile=>{
+   const f=fixture(ENGINE,team,2500,60,profile);
+   assert.equal(f.game.tryKeeperDive(f.keeper,false),true,'strong shot must be parried');
+   assert.equal(f.game.ball.owner,null);
+   assert.equal(f.game.ball.attacker,team);
+   return {cooldown:f.keeper.diveCooldown,actionTimer:f.keeper.actionTimer};
+  };
+  const low=parry({agility:1}),average=parry({agility:50}),high=parry({agility:100});
+  const missing=parry({}),invalid=parry({agility:NaN});
+  assert.ok(high.cooldown<average.cooldown&&average.cooldown<low.cooldown,
+   JSON.stringify({team,low,average,high}));
+  assert.equal(missing.cooldown,average.cooldown,'missing Agility uses neutral 50');
+  assert.equal(invalid.cooldown,average.cooldown,'invalid Agility uses neutral 50');
+  for(const sample of [low,average,high,missing,invalid])
+   assert.ok(sample.cooldown>=sample.actionTimer+.34+.06-1e-6,
+    JSON.stringify({team,sample}));
+  const catchLow=fixture(ENGINE,team,700,0,{agility:1});
+  const catchHigh=fixture(ENGINE,team,700,0,{agility:100});
+  assert.equal(catchLow.game.tryKeeperDive(catchLow.keeper,false),true);
+  assert.equal(catchHigh.game.tryKeeperDive(catchHigh.keeper,false),true);
+  assert.equal(catchLow.game.ball.owner,catchLow.keeper);
+  assert.equal(catchHigh.game.ball.owner,catchHigh.keeper);
+  assert.equal(catchLow.keeper.diveCooldown,catchHigh.keeper.diveCooldown,
+   'Agility must not alter clean-catch recovery');
+ }
+});
