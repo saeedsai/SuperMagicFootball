@@ -2718,12 +2718,12 @@ class GameEngine{
   // bounded read helps CPU lane choice; for human feints it becomes a counter
   // only when a ready second defender is actively closing the requested exit.
   const escapeHorizon=.12;
-  const escapeRisk=candidateSide=>{
+  const escapeRisk=(candidateSide,candidates=opponents.slice(1))=>{
    const endX=clamp(p.x+(forward.x*style.forward+lateral.x*style.lateral*candidateSide)*quality,F.x+23,F.x+F.w-23);
    const endY=clamp(p.y+(forward.y*style.forward+lateral.y*style.lateral*candidateSide)*quality,F.y+24,F.y+F.h-24);
    const dx=endX-p.x,dy=endY-p.y,segmentSquared=dx*dx+dy*dy;
    let risk=0;
-   for(const opponent of opponents.slice(1)){
+   for(const opponent of candidates){
     if(!Number.isFinite(opponent.x)||!Number.isFinite(opponent.y))continue;
     if(!byAI&&(opponent.down||!timerClear(opponent.invuln)||
       !timerClear(opponent.shotImpactKnockdownPending)||!timerClear(opponent.shotImpactKnockdownTimer)||
@@ -2768,12 +2768,17 @@ class GameEngine{
    if(positiveRisk+2<negativeRisk)side=1;
    else if(negativeRisk+2<positiveRisk)side=-1;
   }
+  // The nearest human-side marker can counter only by actively closing the
+  // selected escape lane; generic pressure is already represented by dribbleOdds.
+  // This lane-specific read is capped at 10 percentage points.
+  const primaryMarkerPenalty=!byAI&&close&&rival&&Math.abs(style.lateral)>1
+   ?Math.min(.10,Math.max(0,escapeRisk(side,[rival])-20)*.00125):0;
   // A second human-side marker can shave at most 16 percentage points from
   // success, and only after closing at least 20 risk units into the chosen lane.
   // Stationary, retreating, airborne, downed and recovering markers add no penalty.
   const secondMarkerPenalty=!byAI&&close&&opponents.length>1&&Math.abs(style.lateral)>1
    ?Math.min(.16,Math.max(0,escapeRisk(side)-20)*.002):0;
-  const success=Math.random()<Math.max(.08,baseSuccessChance-secondMarkerPenalty);
+  const success=Math.random()<Math.max(.08,baseSuccessChance-primaryMarkerPenalty-secondMarkerPenalty);
   const factor=success?1:.22;
   p.x=clamp(p.x+(forward.x*style.forward+lateral.x*style.lateral*side)*quality*factor,F.x+23,F.x+F.w-23);
   p.y=clamp(p.y+(forward.y*style.forward+lateral.y*style.lateral*side)*quality*factor,F.y+24,F.y+F.h-24);

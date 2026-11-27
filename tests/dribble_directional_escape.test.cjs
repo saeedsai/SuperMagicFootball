@@ -90,3 +90,46 @@ test('HUMAN-DRIBBLE-SECOND-MARKER-READ-01: a closing second defender can counter
   }
  }
 });
+
+
+function runPrimaryMarkerFeint(team,mode,byAI=false){
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:byAI?0:1});
+ const player=game.player(team,3),rival=game.player(1-team,3),face=team===0?1:-1;
+ for(const q of game.players)if(q!==player&&q!==rival){q.down=true;q.stun=1;}
+ player.src={...player.src,dribbleType:'rainbow',dribbling:96,agility:96};
+ Object.assign(player,{x:1000,y:700,z:0,face,dx:0,dy:1,down:false,stun:0,cd:0,
+  trickCd:0,dribbleCooldown:0,fatigue:0,breath:100});
+ rival.src={...rival.src,defence:50,aggression:50,agility:50};
+ const closing=mode==='closing'||mode==='downed'||mode==='recovering';
+ Object.assign(rival,{x:1000+face*40,y:760,z:0,down:mode==='downed',stun:0,invuln:0,cd:0,
+  face:-face,action:mode==='recovering'?'hurt':'idle',actionTimer:mode==='recovering'?.2:0,
+  moveVX:0,moveVY:closing?-240:mode==='retreating'?240:0,
+  vx:0,vy:closing?-240:mode==='retreating'?240:0});
+ game.ball.owner=player;game.ball.x=player.x;game.ball.y=player.y;game.ball.z=0;
+ const originalRandom=Math.random;Math.random=()=>.80;
+ let performed=false;
+ try{performed=game.tryDribbleTrick(player,byAI);}finally{Math.random=originalRandom;}
+ return {performed,dy:player.y-700,guard:player.trickGuard,owner:game.ball.owner===player,
+  event:game.events.filter(e=>e.type==='dribbleTrick').at(-1)?.success};
+}
+
+test('HUMAN-DRIBBLE-PRIMARY-MARKER-LANE-READ-01: nearest defender counters only while actively closing the selected feint lane',()=>{
+ for(const team of [0,1]){
+  const closing=runPrimaryMarkerFeint(team,'closing');
+  const retreating=runPrimaryMarkerFeint(team,'retreating');
+  const stationary=runPrimaryMarkerFeint(team,'stationary');
+  const downed=runPrimaryMarkerFeint(team,'downed');
+  const recovering=runPrimaryMarkerFeint(team,'recovering');
+  const cpu=runPrimaryMarkerFeint(team,'closing',true);
+  assert.equal(closing.performed,true);
+  assert.equal(closing.event,false,JSON.stringify({team,closing}));
+  assert.equal(closing.guard,0);
+  assert.ok(closing.dy>0&&closing.dy<retreating.dy*.3,JSON.stringify({team,closing,retreating}));
+  for(const [mode,result] of [['retreating',retreating],['stationary',stationary],
+   ['downed',downed],['recovering',recovering],['CPU',cpu]]){
+   assert.equal(result.event,true,JSON.stringify({team,mode,result}));
+   assert.ok(result.guard>0,JSON.stringify({team,mode,result}));
+  }
+ }
+});

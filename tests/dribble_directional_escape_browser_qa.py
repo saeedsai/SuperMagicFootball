@@ -46,7 +46,30 @@ CHECK=r"""()=>{
   for(const team of [0,1])secondRows.push({team,closing:secondRead(team,'closing'),
    retreating:secondRead(team,'retreating'),stationary:secondRead(team,'stationary'),
    downed:secondRead(team,'downed'),recovering:secondRead(team,'recovering')});
-  return {rows,secondRows,buttons:document.querySelectorAll('#touchButtons [data-act]').length,
+  const primaryRead=(team,mode,byAI=false)=>{
+   g.init({home:0,away:1,mode:'quick',humans:byAI?0:1});
+   const p=g.player(team,3),r=g.player(1-team,3),face=team===0?1:-1;
+   for(const q of g.players)if(q!==p&&q!==r){q.down=true;q.stun=1;}
+   p.src={...p.src,dribbleType:'rainbow',dribbling:96,agility:96};
+   Object.assign(p,{x:1000,y:700,z:0,face,dx:0,dy:1,down:false,stun:0,cd:0,
+    trickCd:0,dribbleCooldown:0,fatigue:0,breath:100});
+   r.src={...r.src,defence:50,aggression:50,agility:50};
+   const closing=mode==='closing'||mode==='downed'||mode==='recovering';
+   Object.assign(r,{x:1000+face*40,y:760,z:0,down:mode==='downed',stun:0,invuln:0,cd:0,
+    face:-face,action:mode==='recovering'?'hurt':'idle',actionTimer:mode==='recovering'?.2:0,
+    moveVX:0,moveVY:closing?-240:mode==='retreating'?240:0,
+    vx:0,vy:closing?-240:mode==='retreating'?240:0});
+   g.ball.owner=p;g.ball.x=p.x;g.ball.y=p.y;g.ball.z=0;
+   const old=Math.random;Math.random=()=>.80;
+   let ok=false;try{ok=g.tryDribbleTrick(p,byAI);}finally{Math.random=old;}
+   return {ok,dy:p.y-700,guard:p.trickGuard,success:g.events.filter(e=>e.type==='dribbleTrick').at(-1)?.success};
+  };
+  const primaryRows=[];
+  for(const team of [0,1])primaryRows.push({team,closing:primaryRead(team,'closing'),
+   retreating:primaryRead(team,'retreating'),stationary:primaryRead(team,'stationary'),
+   downed:primaryRead(team,'downed'),recovering:primaryRead(team,'recovering'),
+   cpu:primaryRead(team,'closing',true)});
+  return {rows,secondRows,primaryRows,buttons:document.querySelectorAll('#touchButtons [data-act]').length,
   teams:SupermagicFootball.teams.filter(t=>!['concept_demo','crown_royals_reference'].includes(t.group)).length};
 }"""
 with sync_playwright() as pw:
@@ -74,6 +97,12 @@ with sync_playwright() as pw:
    assert row['retreating']['success'] and row['retreating']['guard']>0,(name,row)
    assert row['closing']['dy']>0 and row['closing']['dy']<row['retreating']['dy']*.3,(name,row)
    assert row['stationary']['success'] and row['downed']['success'] and row['recovering']['success'],(name,row)
+  for row in result['primaryRows']:
+   assert not row['closing']['success'] and row['closing']['guard']==0,(name,row)
+   assert row['retreating']['success'] and row['retreating']['guard']>0,(name,row)
+   assert row['stationary']['success'] and row['downed']['success'] and row['recovering']['success'],(name,row)
+   assert row['cpu']['success'] and row['cpu']['guard']>0,(name,row)
+   assert row['closing']['dy']>0 and row['closing']['dy']<row['retreating']['dy']*.3,(name,row)
   assert not errors,(name,errors)
   print('DIRECTIONAL_DRIBBLE_FEINT_PASS',name,flush=True)
   context.close()

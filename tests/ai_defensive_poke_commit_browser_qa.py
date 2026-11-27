@@ -164,12 +164,15 @@ with sync_playwright() as pw:
                 Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
+                const originalTackle=game.tackle,originalActivateDefence=game.activateDefence;
                 const calls=[];game.tackle=(who,slide,slideBall)=>{
                     calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,slide,liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.src?.id===carrier.src?.id});
                     who.cd=.5;return true;
                 };
                 const originalRandom=Math.random;Math.random=()=>0;
-                try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
+                try{game.driveAI(defender,.016);}finally{
+                    Math.random=originalRandom;game.tackle=originalTackle;game.activateDefence=originalActivateDefence;
+                }
                 return {team:defendingTeam,defenderSpeed,carrierSpeed,range,calls};
             };
             const relativeApproachRows=[
