@@ -4,6 +4,7 @@ const assert=require('node:assert/strict');
 const {pathToFileURL}=require('node:url');
 const path=require('node:path');
 const artposePromise=import(pathToFileURL(path.resolve(__dirname,'../src/modules/artpose.js')).href);
+const characterArtPromise=import(pathToFileURL(path.resolve(__dirname,'../src/modules/characterart.js')).href);
 const player=(patch={})=>({x:100,y:100,action:'receive',actionTimer:.2,preview:false,...patch});
 const ball=(patch={})=>({x:180,y:100,z:0,owner:null,...patch});
 test('receiving eyes track the incoming ball in local facing coordinates on both sides',async()=>{
@@ -48,16 +49,36 @@ test('receive gaze rejects distant, owned, preview, non-receiving and invalid st
  const before=JSON.stringify({p,incoming});ARTPOSE.receiveGaze(p,incoming,{side:1});
  assert.equal(JSON.stringify({p,incoming}),before);
 });
-test('production renderer forwards receive gaze and preserves the idle fallback',()=>{
+test('standard Character Art fallback turns the shared reception brace into bounded knee, stance and balance-arm articulation',async()=>{
+ const {CHARACTER_ART}=await characterArtPromise;
+ const neutral=CHARACTER_ART.receiveArticulation({brace:0});
+ const half=CHARACTER_ART.receiveArticulation({brace:.5});
+ const full=CHARACTER_ART.receiveArticulation({brace:1});
+ const invalid=CHARACTER_ART.receiveArticulation({brace:NaN});
+ const over=CHARACTER_ART.receiveArticulation({brace:4});
+ assert.deepEqual(neutral,{brace:0,kneeFlex:0,ankleSet:0,stance:0,armOpen:0,armDrop:0});
+ assert.deepEqual(invalid,neutral,'invalid pressure fails safely to neutral');
+ assert.equal(half.brace,.5);
+ assert.equal(half.kneeFlex,1.6);
+ assert.equal(half.ankleSet,.6);
+ assert.equal(half.stance,.9);
+ assert.equal(half.armOpen,2.6);
+ assert.equal(half.armDrop,1.2);
+ assert.deepEqual(over,full,'pressure is bounded to the existing unit envelope');
+ assert.equal(full.kneeFlex,3.2);
+ assert.equal(full.armOpen,5.2);
+});
+test('production renderer forwards receive gaze and the shared receive pose to the standard fallback',()=>{
  const fs=require('node:fs'),render=fs.readFileSync(path.resolve(__dirname,'../src/modules/render.js'),'utf8');
  const character=fs.readFileSync(path.resolve(__dirname,'../src/modules/characterart.js'),'utf8');
  assert.match(render,/const receiveGaze=ARTPOSE\.receiveGaze\(p,game\.ball,view\)/);
  const drawArgs=render.match(/CHARACTER_ART\.draw\(ctx,p,av,team,view,\{([\s\S]*?)\}\);/);
  assert.ok(drawArgs,'the production Character Art draw call must remain present');
- assert.match(drawArgs[1],/receiveGaze,carryShieldLean:/);
+ assert.match(drawArgs[1],/receiveGaze,receivePose:p\.action==='receive'\?ARTPOSE\.receivePose\(p\.actionTimer,p\.firstTouchPressure\|\|0\):null,carryShieldLean:/);
  assert.match(drawArgs[1],/carryShieldSide:/);
  assert.match(drawArgs[1],/carryShieldStrength:/);
  assert.match(drawArgs[1],/reducedFlash:/);
  assert.match(character,/const gaze=receiveGaze\|\|idleGazePose/);
+ assert.match(character,/receiveArticulation\(opt\.receivePose\)/);
  assert.match(character,/clamp\(Number\(gazeX\)\|\|0,-2\.1,2\.1\)/);
 });

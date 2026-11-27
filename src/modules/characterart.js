@@ -417,6 +417,14 @@ const CHARACTER_ART=(()=>{
   if(!Number.isFinite(stride))return 0;
   return clamp(-stride*(Number(sign)<0?-1:1)*12,-12,12);
  }
+ // Translate the shared pressure-scaled reception sample into small, bounded
+ // procedural articulation. The premium renderer already uses this same brace
+ // envelope for its knees; the standard fallback adds a wider base and balance arms.
+ function receiveArticulation(pose){
+  const brace=clamp(Number(pose?.brace)||0,0,1);
+  return {brace,kneeFlex:brace*3.2,ankleSet:brace*1.2,stance:brace*1.8,
+   armOpen:brace*5.2,armDrop:brace*2.4};
+ }
  // A deterministic normal/double-jump pose consumes existing movement samples;
  // it never advances time or writes back to the player. Apex tuck eases into a
  // leg extension on descent. Special aerial actions intentionally bypass it.
@@ -443,6 +451,7 @@ const CHARACTER_ART=(()=>{
   const diveLeg=p.keeper?keeperDiveLegPose(p.action,p.diveElapsed,near,p.actionTimer):null;
   const divePhase=diveLeg?.phase||0,diveTuck=diveLeg?.tuck||0,diveExtend=diveLeg?.extend||0;
   const airWeight=airPose?.weight||0,tuck=airPose?.tuck||0,extend=airPose?.extend||0,landingBrace=airPose?.landingBrace||0;
+  const receive=!p.keeper&&p.action==='receive'&&airWeight<=0?receiveArticulation(opt.receivePose):null;
   const legTuck=tuck+diveTuck,legExtend=extend+diveExtend;
   const run=rawRun*(1-airWeight);
   const gait=run*(sign===1?1:-1),strike=opt.kick&&sign===1;
@@ -451,14 +460,14 @@ const CHARACTER_ART=(()=>{
   // leg tucks. This keeps the knockback airborne pose from reading as a rigid
   // plank; all motion is paint-only and returns to neutral at the timer ends.
   const launchKick=launch*(sign===1?1:-.55),launchFold=launch*(sign===1?.22:.72);
-  const travel=(side?20:quarter?15:13)*gait+(strike?14:0)+launchKick*17+(diveLeg?.travel||0);
+  const travel=(side?20:quarter?15:13)*gait+(strike?14:0)+launchKick*17+(diveLeg?.travel||0)+sign*(receive?.stance||0);
   const raise=Math.max(0,gait)*9+(strike?11:0)+launch*(sign===1?4:10)+(diveLeg?.raise||0);
   // During the shot recovery push, plant one bent knee/boot under the hips
   // while the far leg stays extended. This asymmetry makes the get-up read as
   // a push from the turf instead of a rigid torso rotation; paint only.
   const recoveryBrace=shotRecoveryBrace(p.action,p.actionTimer);
   const plantedLeg=sign===1?recoveryBrace:recoveryBrace*.14;
-  const thighX=sign*spread,knee=[thighX+travel*.48-sign*10*plantedLeg-sign*legTuck*spread*.24-sign*landingBrace*2.6,-11-raise*.43-11*plantedLeg+launchFold*4-legTuck*7+landingBrace*3.4],ankle=[thighX+travel-sign*18*plantedLeg+sign*legTuck*spread*.12-sign*landingBrace*1.4,-2-raise+launchFold*11-legTuck*2+legExtend*5+landingBrace*2.1];
+  const thighX=sign*spread,knee=[thighX+travel*.48-sign*10*plantedLeg-sign*legTuck*spread*.24-sign*landingBrace*2.6,-11-raise*.43-11*plantedLeg+launchFold*4-legTuck*7+landingBrace*3.4+(receive?.kneeFlex||0)],ankle=[thighX+travel-sign*18*plantedLeg+sign*legTuck*spread*.12-sign*landingBrace*1.4,-2-raise+launchFold*11-legTuck*2+legExtend*5+landingBrace*2.1+(receive?.ankleSet||0)];
   const bright=near?colors.skin:blend(colors.skin,-.15);
   stroke(c,[[thighX,-19],[knee[0],knee[1]]],bright,10.6,dark);
   oval(c,knee[0],knee[1],5.1,5,bright,dark,1.15);
@@ -527,6 +536,7 @@ const CHARACTER_ART=(()=>{
   const launch=clamp(Number(opt.shotLaunchPose?.armSpread)||0,0,1);
   const recoveryBrace=!p.keeper?shotRecoveryBrace(p.action,p.actionTimer):0;
   const gettingUp=!p.keeper&&p.action==='shotGetUp';
+  const receive=!p.keeper&&p.action==='receive'&&airWeight<=0?receiveArticulation(opt.receivePose):null;
   const macePhase=sign===1&&Number.isFinite(opt.defenceSweepPhase)?clamp(opt.defenceSweepPhase,0,1):null;
   const bumperPhase=Number.isFinite(opt.spinBumperPhase)?clamp(opt.spinBumperPhase,0,1):null;
   const bumperImpactPhase=Number.isFinite(opt.spinBumperImpactPhase)?clamp(opt.spinBumperImpactPhase,0,1):null;
@@ -623,6 +633,10 @@ const CHARACTER_ART=(()=>{
    :gettingUp?[elbow[0]+sign*5,-24+sw+(near?5:13)*recoveryBrace]
    :launch>0?(launchGuard?[sh-sign*(6+launch*10),-24-launch*28+sw]:[elbow[0]+sign*(5+launch*15),-24-launch*17+sw]):airWeight>0
     ?[elbow[0]+sign*(5+airPose.armOpen*.55*(1-landingBrace*.45)),-24-airPose.armLift*(1-landingBrace*.6)-airPose.armDrop*(near?.35:.65)+landingBrace*3.5]:[elbow[0]+sign*5,-24+sw]));
+  if(receive?.brace>0){
+   elbow[0]+=sign*receive.armOpen*.58;elbow[1]+=receive.armDrop*.42;
+   hand[0]+=sign*receive.armOpen;hand[1]+=receive.armDrop;
+  }
   if(shieldArm>0){elbow[0]+=sign*4.5*shieldArm;elbow[1]+=1.5*shieldArm;hand[0]+=sign*10*shieldArm;hand[1]+=3*shieldArm;}
   const kit=near?grad(c,sh-20,-57,sh+18,-38,[[0,blend(col.main,.34)],[.44,col.main],[1,blend(col.main,-.32)]]):blend(col.main,-.33);
   stroke(c,[[sh,-51],[elbow[0],elbow[1]]],kit,15,dark);
@@ -778,6 +792,6 @@ const CHARACTER_ART=(()=>{
   const mirror=Number(side)<0?-1:1;
   return clamp(turn*.14*mirror,-.095,.095);
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,keeperCatchSettle,keeperDiveLegPose,idleBlink,idleGaze,runToePitch,runArmSwing,jumpAirPose,turnCounterLean,headTurnCounterLean,version:3};
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,keeperCatchSettle,keeperDiveLegPose,idleBlink,idleGaze,runToePitch,runArmSwing,receiveArticulation,jumpAirPose,turnCounterLean,headTurnCounterLean,version:3};
 })();
 export {CHARACTER_ART};
