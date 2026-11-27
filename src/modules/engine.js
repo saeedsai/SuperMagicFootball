@@ -1424,6 +1424,7 @@ class GameEngine{
    this.ball.canCollect=.15;this.ball.pass=false;this.ball.passTeam=null;this.ball.passTarget=null;
    this.burst(this.ball.x,this.ball.y,'#ffdf81',7);this.shake=.06;
    this.emit('tackleBallTouch',{team:p.t,player:p.src.name,slide:true});
+   this.wakeCpuAfterCleanBallTouch(p);
    p.slideTimer=0;p.slideRemaining=0;p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;
    return true;
   }
@@ -1439,6 +1440,12 @@ class GameEngine{
   return true;
  }
  tackle(p,slide=false,slideBall=null){
+ wakeCpuAfterCleanBallTouch(p){
+  if(!p||(this.inControl(p.t)&&this.controlled[p.t]===p.i))return false;
+  p.aiTimer=0;p.aiTarget=null;p.aiAssistTarget=null;
+  return true;
+ }
+
   if(p.cd>0||p.stun>0)return false;
   p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;
   this.spendStamina(p,slide?'slide':'tackle');p.cd=slide?.68:.57;p.action=slide?'slide':'punch';p.actionTimer=slide?.48:.4;
@@ -1532,7 +1539,7 @@ class GameEngine{
     // A clean poke takes the ball without body-checking or stunning the carrier.
     this.ball.owner=null;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=0;
     this.ball.canCollect=.15;this.ball.pass=false;this.ball.passTeam=null;this.ball.passTarget=null;
-    this.burst(this.ball.x,this.ball.y,'#ffdf81',7);this.shake=.06;
+    this.burst(this.ball.x,this.ball.y,'#ffdf81',7);this.shake=.06;this.wakeCpuAfterCleanBallTouch(p);
    }else{
     target.stun=Math.max(target.stun,tackleStunDuration(stat(target,'strength'),false,contest(p,target,false).duration));target.action='hurt';target.actionTimer=target.stun;target.invuln=1.1;
     target.x+=dir.x*36;target.y+=dir.y*21;this.burst(target.x,target.y,'#ffdf81',11);this.shake=.12;

@@ -47,7 +47,33 @@ JS=r"""() => {
  };
  for(const team of [0,1])for(const action of ['pass','shoot'])
   for(const profile of ['inside','outside','shielded','missing','body'])results.push(run(team,action,profile));
- return {results,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+
+ const recoveryRows=[];
+ const runRecovery=(team,kind,humanSelected)=>{
+  g.init({home:0,away:1,mode:'quick',humans:2,options:{...g.options,weather:'Clear',terrain:'Grass',condition:'Good'}});
+  g.matchState='play';g.events=[];
+  const dir=team===0?1:-1,x=1000,y=700,defender=g.player(team,3),carrier=g.player(1-team,3);
+  for(const q of g.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+  g.controlled[team]=humanSelected?defender.i:4;
+  const bodyGap=kind==='slide'?86:78,ballOffset=kind==='slide'?36:34;
+  const oldTarget={x:x+500,y:y+100},oldAssist={x:x+350,y:y-100};
+  Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+   moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0,
+   aiTimer:.6,aiTarget:oldTarget,aiAssistTarget:oldAssist});
+  Object.assign(carrier,{x:x+dir*bodyGap,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+  Object.assign(g.ball,{owner:carrier,x:carrier.x-dir*ballOffset,y,z:12,vx:0,vy:0,vz:0,
+   pass:true,passTeam:carrier.t,passTarget:carrier.src.id,shot:null,strike:null,ordinaryShot:false});
+  const originalRandom=Math.random;Math.random=()=>0;
+  try{if(kind==='slide'){g.tackle(defender,true,g.ball);defender.x+=dir*20;g.slideContact(defender);}
+   else g.tackle(defender,false,g.ball);
+  }finally{Math.random=originalRandom;}
+  return {team,kind,humanSelected,released:g.ball.owner===null,carrierStun:carrier.stun,aiTimer:defender.aiTimer,
+   targetCleared:defender.aiTarget===null,assistCleared:defender.aiAssistTarget===null,
+   targetPreserved:defender.aiTarget===oldTarget,assistPreserved:defender.aiAssistTarget===oldAssist};
+ };
+ for(const team of [0,1])for(const kind of ['poke','slide'])for(const humanSelected of [false,true])
+  recoveryRows.push(runRecovery(team,kind,humanSelected));
+ return {results,recoveryRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
 }"""
 with sync_playwright() as pw:
  browser=pw.chromium.launch(headless=True,executable_path='/usr/bin/chromium',
@@ -73,6 +99,12 @@ with sync_playwright() as pw:
    else:
     assert r['started'] and not r['contact'] and r['ownerRetained'] and r['carrierStun']==0,(device,r)
     assert r['ballTouches']==0 and r['slideTimer']>0,(device,r)
+
+  assert len(report['recoveryRows'])==8,(device,report['recoveryRows'])
+  for r in report['recoveryRows']:
+   assert r['released'] and r['carrierStun']==0,(device,r)
+   if r['humanSelected']:assert r['aiTimer']==.6 and r['targetPreserved'] and r['assistPreserved'],(device,r)
+   else:assert r['aiTimer']==0 and r['targetCleared'] and r['assistCleared'],(device,r)
   assert not errors,(device,errors)
   print('SLIDE_EXPOSED_BALL_CLEAN_TOUCH_PASS',device,'20 actual-engine scenarios; both teams; Pass/Shoot; 4 actions',flush=True)
   context.close()

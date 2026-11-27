@@ -249,3 +249,40 @@ test('human Pass/Shoot slides can nick a validated exposed ball without body-che
   assert.equal(body.ballTouches,0,JSON.stringify({team,action,body}));
  }
 });
+ 
+function runCleanBallTouchRecovery(team,kind,humanSelected){
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:2});
+ game.matchState='play';game.weather='Clear';game.events=[];
+ const dir=team===0?1:-1,x=1000,y=700;
+ const defender=game.player(team,3),carrier=game.player(1-team,3);
+ for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+ game.controlled[team]=humanSelected?defender.i:4;
+ const bodyGap=kind==='slide'?86:78,ballOffset=kind==='slide'?36:34;
+ Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+  moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0,
+  aiTimer:.6,aiTarget:{x:x+500,y:y+100},aiAssistTarget:{x:x+350,y:y-100}});
+ const oldTarget=defender.aiTarget,oldAssist=defender.aiAssistTarget;
+ Object.assign(carrier,{x:x+dir*bodyGap,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+  moveVX:0,moveVY:0});
+ Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*ballOffset,y,z:12,vx:0,vy:0,vz:0,
+  pass:true,passTeam:carrier.t,passTarget:carrier.src.id,shot:null,strike:null,ordinaryShot:false});
+ const originalRandom=Math.random;Math.random=()=>0;
+ try{if(kind==='slide'){game.tackle(defender,true,game.ball);defender.x+=dir*20;game.slideContact(defender);}
+  else game.tackle(defender,false,game.ball);
+ }finally{Math.random=originalRandom;}
+ return {released:game.ball.owner===null,carrierStun:carrier.stun,aiTimer:defender.aiTimer,
+  targetCleared:defender.aiTarget===null,assistCleared:defender.aiAssistTarget===null,
+  targetPreserved:defender.aiTarget===oldTarget,assistPreserved:defender.aiAssistTarget===oldAssist};
+}
+test('a clean ball-only poke or slide immediately wakes CPU recovery without overriding selected human control',()=>{
+ for(const team of [0,1])for(const kind of ['poke','slide'])for(const humanSelected of [false,true]){
+  const result=runCleanBallTouchRecovery(team,kind,humanSelected);
+  assert.equal(result.released,true,JSON.stringify({team,kind,humanSelected,result}));
+  assert.equal(result.carrierStun,0,JSON.stringify({team,kind,humanSelected,result}));
+  if(humanSelected){assert.equal(result.aiTimer,.6,JSON.stringify({team,kind,humanSelected,result}));
+   assert.ok(result.targetPreserved&&result.assistPreserved,JSON.stringify({team,kind,humanSelected,result}));}
+  else{assert.equal(result.aiTimer,0,JSON.stringify({team,kind,humanSelected,result}));
+   assert.ok(result.targetCleared&&result.assistCleared,JSON.stringify({team,kind,humanSelected,result}));}
+ }
+});
