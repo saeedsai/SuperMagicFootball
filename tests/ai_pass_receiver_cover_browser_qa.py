@@ -15,7 +15,7 @@ with sync_playwright() as pw:
   page.evaluate("""() => {const v=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>v.get(k)||null,setItem:(k,x)=>v.set(k,String(x)),removeItem:k=>v.delete(k),clear:()=>v.clear()}})}""")
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[],skillRows=[],reachRows=[],momentumRows=[];
+   const g=SupermagicFootball.game,rows=[],skillRows=[],reachRows=[],momentumRows=[],turnRows=[];
    for(const defendingTeam of [0,1]){
     const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
     g.init({home:0,away:1,mode:'quick',humans:0});
@@ -121,7 +121,29 @@ with sync_playwright() as pw:
      momentumRows.push({defendingTeam,name:profile.name,progress:target?(target.x-ballX)*dir:null,target});
     }
    }
-   return {rows,skillRows,reachRows,momentumRows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+   for(const defendingTeam of [0,1]){
+    const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+    for(const profile of [{name:'high-turn',agility:100},{name:'low-turn',agility:1}]){
+     g.init({home:0,away:1,mode:'quick',humans:0});
+     const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,3),support=g.player(defendingTeam,4);
+     const receiverX=attackingTeam===0?1500:1100,y=765,ballX=receiverX-dir*180;
+     Object.assign(receiver,{x:receiverX,y,z:0,stun:0,down:false,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:dir*180,moveVY:0,dx:0,dy:1,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+     receiver.src.agility=profile.agility;
+     for(const q of g.players){if(q===receiver||q===primary||q===support||q.keeper)continue;q.down=true;q.stun=1;}
+     Object.assign(primary,{x:ballX-dir*5,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:0,moveVY:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,cd:1});
+     Object.assign(support,{x:ballX+dir*126,y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:0,moveVY:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,cd:1,fatigue:0,breath:10,morale:55});
+     support.src.speedRating=100;support.src.defence=50;support.src.agility=100;
+     Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,attacker:attackingTeam,
+      lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:100,age:.15,shot:null,strike:null,ordinaryShot:false});
+     g.clock=.2;g.driveAI(support,.016);
+     const target=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
+     turnRows.push({defendingTeam,name:profile.name,dir,target,progress:target?(target.x-ballX)*dir:null});
+    }
+   }
+   return {rows,skillRows,reachRows,momentumRows,turnRows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   handoff_result=page.evaluate("""() => {
    const g=SupermagicFootball.game,rows=[],field={x:150,y:155,w:2260.8,h:1220};
@@ -242,6 +264,14 @@ with sync_playwright() as pw:
    stationary=next(row for row in rows if row['name']=='stationary')
    assert aligned['progress']<cross['progress']-5,(kind,rows)
    assert stationary['progress']<=cross['progress']+1,(kind,rows)
+  assert len(result['turnRows'])==4,(kind,result['turnRows'])
+  for team in (0,1):
+   turns=[row for row in result['turnRows'] if row['defendingTeam']==team]
+   high=next(row for row in turns if row['name']=='high-turn')
+   low=next(row for row in turns if row['name']=='low-turn')
+   assert high['target'] is not None and low['target'] is not None,(kind,turns)
+   assert high['target']['y']>low['target']['y']+5,(kind,turns)
+   assert high['progress']<low['progress']-15,(kind,turns)
   overlap_result=page.evaluate("""() => {
    const g=SupermagicFootball.game,rows=[],field={x:150,y:155,w:2260.8,h:1220};
    for(const defendingTeam of [0,1])for(const profile of [{name:'closing',move:100,covered:true},{name:'retreating',move:-220,covered:false}]){

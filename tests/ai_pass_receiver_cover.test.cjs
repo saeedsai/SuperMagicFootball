@@ -290,3 +290,28 @@ test('ground-pass support yields to a primary already covering the lane and reje
   assert.equal(game.ball.owner,null);
  }
 });
+
+
+test('ground-pass receiver cover follows live Agility-limited turn intent before screening',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team);f.ball.vz=100;
+  const makeReceiver=(agility,steering={dx:0,dy:1})=>({
+   ...f.receiver,src:{...f.receiver.src,agility},moveVX:f.dir*180,moveVY:0,...steering
+  });
+  const pointFor=receiver=>AI.defensivePassReceiverCoverTarget(team,{...f.ball},[receiver],bounds);
+  const high=pointFor(makeReceiver(100)),low=pointFor(makeReceiver(1));
+  assert.ok(high&&low,JSON.stringify({team,high,low}));
+  assert.ok(high.y>low.y+5,JSON.stringify({team,high,low}));
+  const progress=point=>(point.x-f.ball.x)*f.dir;
+  assert.ok(progress(high)<progress(low)-15,JSON.stringify({team,high,low}));
+  const neutral=makeReceiver(100,{dx:0,dy:0});
+  const noInput=makeReceiver(100);delete noInput.dx;delete noInput.dy;
+  assert.deepEqual(pointFor(neutral),pointFor(noInput),'neutral steering preserves the exact linear lead');
+  const aligned=makeReceiver(100,{dx:f.dir,dy:0});
+  assert.deepEqual(pointFor(aligned),pointFor(noInput),'aligned steering preserves the exact linear lead');
+  const incomplete=makeReceiver(100);delete incomplete.moveVY;
+  const incompleteNoInput={...incomplete};delete incompleteNoInput.dx;delete incompleteNoInput.dy;
+  assert.deepEqual(pointFor(incomplete),pointFor(incompleteNoInput),'incomplete movement preserves the linear fallback');
+ }
+});
