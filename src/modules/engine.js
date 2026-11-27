@@ -1439,12 +1439,12 @@ class GameEngine{
   p.slideTimer=0;p.slideRemaining=0;p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;
   return true;
  }
- tackle(p,slide=false,slideBall=null){
  wakeCpuAfterCleanBallTouch(p){
   if(!p||(this.inControl(p.t)&&this.controlled[p.t]===p.i))return false;
   p.aiTimer=0;p.aiTarget=null;p.aiAssistTarget=null;
   return true;
  }
+ tackle(p,slide=false,slideBall=null){
 
   if(p.cd>0||p.stun>0)return false;
   p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;
