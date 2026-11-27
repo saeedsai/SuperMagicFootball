@@ -8,7 +8,7 @@ Prioritize responsive gameplay, intelligent passing/tackling and counterable Mag
 ## Current checkpoint
 - 0.12.81.368 — AI-LOOSE-BALL-TURN-ARRIVAL-READ-01: trusted low loose-ball landing reads now project defender momentum through the existing Agility-limited turn response when finite live steering exists. Neutral/invalid steering retains the prior linear projection and cross-track cost.
 - Production: `src/modules/ai.js`. No new player state, save-schema or roster change.
-- Regressions: `tests/ai_loose_ball_second_ball_cover.test.cjs` and desktop/simulated-touch actual-GameEngine browser QA cover both teams, high/low Agility and neutral/invalid fallback.
+- Regressions: `tests/ai_loose_ball_second_ball_cover.test.cjs` and neutral/invalid fallback; desktop/simulated-touch actual-GameEngine browser QA retains the surface-drag and coordinated primary/support acceptance.
 - .367 gate repair: Census #46005191109 failed only browser shard 3 because the secondary support fixture expected frictionless .18-second travel instead of Grass .986 drag. Four Node shards and browser shards 0–2 passed; Modular QA #46005191111 passed. .368 updates that fixture to the production drag integral.
 
 - .368 first preflight #46018016059: four README title-contract failures and one overconstrained actual-engine test fixture were confirmed. The README heading now matches the tested canonical spelling; mirrored direct-helper tests replace the unstable second-player target assertion. Production AI logic is unchanged.
