@@ -1467,11 +1467,24 @@ class GameEngine{
    this.slideContact(p);return true;
   }
   p.x+=dir.x*16;p.y+=dir.y*16;
-  if(target&&distance(p,target)<62&&target.invuln<=0&&Math.random()<Math.min(.96,contest(p,target,false).knockChance*moraleFactor(p.morale)/moraleFactor(target.morale))){
-   target.stun=Math.max(target.stun,tackleStunDuration(stat(target,'strength'),false,contest(p,target,false).duration));target.action='hurt';target.actionTimer=target.stun;target.invuln=1.1;
-   target.x+=dir.x*36;target.y+=dir.y*21;this.burst(target.x,target.y,'#ffdf81',11);this.shake=.12;
-   this.emit('tackleHit',{team:p.t,victim:target.src.name,stun:target.stun,slide:false});
-   if(this.ball.owner===target){this.ball.owner=null;this.ball.x=target.x;this.ball.y=target.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}
+  // Preserve the established body tackle, but allow a precise ball-only touch
+  // when the validated exposed ball is reachable after the existing 16-unit poke.
+  const bodyContact=!!target&&distance(p,target)<62;
+  const ballOnlyContact=!slide&&!!target&&ballTarget===this.ball&&this.ball.owner===target&&
+   !bodyContact&&distance(p,ballTarget)<=34;
+  if(target&&(bodyContact||ballOnlyContact)&&target.invuln<=0&&
+   Math.random()<Math.min(.96,contest(p,target,false).knockChance*moraleFactor(p.morale)/moraleFactor(target.morale))){
+   if(ballOnlyContact){
+    // A clean poke takes the ball without body-checking or stunning the carrier.
+    this.ball.owner=null;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=0;
+    this.ball.canCollect=.15;this.ball.pass=false;this.ball.passTeam=null;this.ball.passTarget=null;
+    this.burst(this.ball.x,this.ball.y,'#ffdf81',7);this.shake=.06;
+   }else{
+    target.stun=Math.max(target.stun,tackleStunDuration(stat(target,'strength'),false,contest(p,target,false).duration));target.action='hurt';target.actionTimer=target.stun;target.invuln=1.1;
+    target.x+=dir.x*36;target.y+=dir.y*21;this.burst(target.x,target.y,'#ffdf81',11);this.shake=.12;
+    this.emit('tackleHit',{team:p.t,victim:target.src.name,stun:target.stun,slide:false});
+    if(this.ball.owner===target){this.ball.owner=null;this.ball.x=target.x;this.ball.y=target.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}
+   }
   }
   return true;
  }

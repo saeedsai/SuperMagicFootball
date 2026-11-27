@@ -284,12 +284,38 @@ with sync_playwright() as pw:
                 humanPokeBallArcRows.push(runHumanPokeBallArc(team,false,true));
                 humanPokeBallArcRows.push(runHumanPokeBallArc(team,true,false));
             }
+            const runHumanBallFirstPoke=(defendingTeam,profile)=>{
+                const dir=defendingTeam===0?1:-1,x=1000,y=700;
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                game.tackle=Object.getPrototypeOf(game).tackle;
+                const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+                for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+                const carrierY=profile==='outside'?84:82;
+                const ballY=profile==='shielded'?carrierY+36:carrierY-36;
+                Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+                Object.assign(carrier,{x:x+dir*15,y:carrierY,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+                const before={x:carrier.x,y:carrier.y};
+                Object.assign(game.ball,{owner:carrier,x:carrier.x,y:ballY,z:12,vx:0,vy:0,vz:0,pass:true,passTeam:carrier.t,passTarget:carrier.src.id,shot:null,strike:null,ordinaryShot:false});
+                const sideRead=game.defensivePokeBallSideRead(defender,carrier,game.ball);
+                const expectedX=game.ball.x-x,expectedY=game.ball.y-y,length=Math.hypot(expectedX,expectedY);
+                const expectedVx=expectedX/length*150,expectedVy=expectedY/length*150;
+                const originalRandom=Math.random;Math.random=()=>0;
+                try{game.tackle(defender,false,game.ball);}finally{Math.random=originalRandom;}
+                return {team:defendingTeam,profile,sideRead,released:game.ball.owner===null,ownerRetained:game.ball.owner===carrier,
+                    bodyAfter:Math.hypot(defender.x-carrier.x,defender.y-carrier.y),ballAfter:Math.hypot(defender.x-game.ball.x,defender.y-game.ball.y),
+                    carrierStun:carrier.stun,carrierX:carrier.x,carrierY:carrier.y,beforeCarrierX:before.x,beforeCarrierY:before.y,
+                    ballZ:game.ball.z,ballVz:game.ball.vz,canCollect:game.ball.canCollect,pass:game.ball.pass,passTeam:game.ball.passTeam,passTarget:game.ball.passTarget,
+                    vx:game.ball.vx,vy:game.ball.vy,expectedVx,expectedVy,defenderAction:defender.action};
+            };
+            const humanPokeBallFirstContactRows=[];
+            for(const team of [0,1])for(const profile of ['inside','outside','shielded'])
+                humanPokeBallFirstContactRows.push(runHumanBallFirstPoke(team,profile));
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,turnAwareRows,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
                 closeBallSideRows,ballHeightRows,closeContactEngineRows,actualPokeAimRows,closeContactSlideRows,firstTouchSlideRows,
-                airborneGroundChallengeRows,humanCommandAimRows,humanBallArcSlideRows,humanPokeBallArcRows,
+                airborneGroundChallengeRows,humanCommandAimRows,humanBallArcSlideRows,humanPokeBallArcRows,humanPokeBallFirstContactRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -352,6 +378,21 @@ with sync_playwright() as pw:
                 assert not row['released'],(kind,row)
                 assert row['sideRead']==row['exposed'],(kind,row)
                 assert abs(row['dx']-(1 if row['team']==0 else -1))<1e-6 and abs(row['dy'])<1e-6,(kind,row)
+        for row in result['humanPokeBallFirstContactRows']:
+            if row['profile']=='inside':
+                assert row['sideRead'] and row['bodyAfter']>62 and row['ballAfter']<=34,(kind,row)
+                assert row['released'] and not row['ownerRetained'],(kind,row)
+                assert row['carrierStun']==0 and row['carrierX']==row['beforeCarrierX'] and row['carrierY']==row['beforeCarrierY'],(kind,row)
+                assert row['ballZ']==12 and row['ballVz']==0 and abs(row['canCollect']-.15)<1e-9,(kind,row)
+                assert row['pass'] is False and row['passTeam'] is None and row['passTarget'] is None,(kind,row)
+                assert row['defenderAction']=='punch',(kind,row)
+                assert abs(row['vx']-row['expectedVx'])<1e-6 and abs(row['vy']-row['expectedVy'])<1e-6,(kind,row)
+            elif row['profile']=='outside':
+                assert row['sideRead'] and row['bodyAfter']>62 and row['ballAfter']>34,(kind,row)
+                assert not row['released'] and row['ownerRetained'] and row['carrierStun']==0,(kind,row)
+            else:
+                assert not row['sideRead'] and not row['released'] and row['ownerRetained'],(kind,row)
+                assert row['carrierStun']==0,(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
         print('PASS',kind,'adaptive poke, exposed-ball CPU and human Pass/Shoot slides, exposed-ball short pokes, first-touch reads, airborne ground-challenge rejection, shielded-carrier counterplay, 223 teams and four actions',flush=True)
