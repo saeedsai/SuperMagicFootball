@@ -75,6 +75,6 @@ test('keeper catch ball and gloves settle together across the existing catch tim
  assert.match(render,/if\(!grip\)this\.drawBallShadow\(ctx,b\.x,b\.y,b\.z,underground\?\.2:concealed/,'held balls do not cast a false ground shadow; underground balls dim theirs');
  const arm=characterArt.slice(characterArt.indexOf('function arm('),characterArt.indexOf('function jersey('));
  assert.match(arm,/holding=p\.keeper&&\['keeperCatch','keeperHold'\]/);
- assert.match(arm,/hand=holding\?\[elbow\[0\]-sign\*5,-59\]/);
+ assert.match(arm,/hand=holding\?\[elbow\[0\]-sign\*\(5-2\*holdPhase\),-54-5\*holdPhase\]/);
  assert.match(arm,/const catchingGlove=\['keeperDive','keeperDiveCatch','keeperCatch','keeperHold','keeperSuper'\]/);
 });

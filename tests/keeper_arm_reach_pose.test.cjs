@@ -2,8 +2,8 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync('src/modules/characterart.js','utf8').replace(/export \{CHARACTER_ART\};?\s*$/,'');
 const CHARACTER_ART=vm.runInNewContext(source+'\nCHARACTER_ART',{});
-const poseSource=fs.readFileSync('src/modules/artpose.js','utf8').replace(/export \\{ARTPOSE\\};?\\s*$/,'');
-const ARTPOSE=vm.runInNewContext(poseSource+'\\nARTPOSE',{});
+const poseSource=fs.readFileSync('src/modules/artpose.js','utf8').replace(/export \{ARTPOSE\};?\s*$/,'');
+const ARTPOSE=vm.runInNewContext(poseSource+'\nARTPOSE',{});
 
 test('keeper gloves ease from ready reach to full extension over the real dive timer',()=>{
  const reach=CHARACTER_ART.keeperArmReach;
