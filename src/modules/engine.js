@@ -477,7 +477,15 @@ function keeperOutletScore(keeper,receiver,lane){
   (facingX*incomingX+facingY*incomingY)/incomingLength:NaN;
  const receptionPenalty=Number.isFinite(facingDot)?
   Math.max(0,Math.min(43.2,(.2-facingDot)*36)):0;
- return distance(keeper,receiver)+pressure+corridorRisk+receptionPenalty;
+ // Short throws are easier to secure when an otherwise equivalent receiver has better control.
+ // Point-only rollout targets have no player source and intentionally keep a neutral contribution.
+ const hasPlayerStats=!!(receiver?.src&&typeof receiver.src==='object');
+ const dribbling=hasPlayerStats?Number(stat(receiver,'dribbling')):NaN;
+ const agility=hasPlayerStats?Number(stat(receiver,'agility')):NaN;
+ const hasControlStats=Number.isFinite(dribbling)&&Number.isFinite(agility);
+ const controlQuality=hasControlStats?clamp(dribbling*.7+agility*.3,1,100):50;
+ const controlPenalty=hasControlStats?clamp((50-controlQuality)*.16,-8,8):0;
+ return distance(keeper,receiver)+pressure+corridorRisk+receptionPenalty+controlPenalty;
 }
 function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4){
  // Keep average-player behavior identical to the existing difficulty/anticipation threshold.
