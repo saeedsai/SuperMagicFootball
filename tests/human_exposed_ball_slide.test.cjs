@@ -179,3 +179,73 @@ test('an exposed low ball can be poked cleanly when the carrier body remains out
   assert.equal(shielded.carrierStun,0,JSON.stringify({team,shielded}));
  }
 });
+
+
+function runHumanSlideBallContact(team,action,profile){
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:1});
+ game.matchState='paused';game.weather='Clear';game.events=[];
+ const dir=team===0?1:-1,x=1000,y=700;
+ const defender=game.player(team,3),carrier=game.player(1-team,3);
+ for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+ const bodyGap=profile==='body'?60:86;
+ const ballOffset=profile==='shielded'?dir*36:profile==='body'?-dir*20:-dir*36;
+ Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+  moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0});
+ Object.assign(carrier,{x:x+dir*bodyGap,y,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,
+  moveVX:0,moveVY:0});
+ const ballX=carrier.x+ballOffset;
+ Object.assign(game.ball,{owner:carrier,x:ballX,y,z:12,vx:0,vy:0,vz:0,
+  pass:true,passTeam:carrier.t,passTarget:carrier.src.id,shot:null,strike:null,ordinaryShot:false});
+ const before={x:carrier.x,y:carrier.y};
+ const originalRandom=Math.random;Math.random=()=>0;
+ let started=false,contact=false;
+ try{
+  if(profile==='missing')game.tackle(defender,true,null);
+  else game.command(defender,action);
+  started=defender.action==='slide';
+  if(profile==='inside'){defender.x+=dir*20;contact=game.slideContact(defender);}
+  else if(profile==='outside'){defender.x+=dir*15;contact=game.slideContact(defender);}
+  else if(profile==='shielded'||profile==='missing'){defender.x+=dir*20;contact=game.slideContact(defender);}
+  else if(profile==='body')contact=game.events.some(e=>e.type==='tackleHit');
+ }finally{Math.random=originalRandom;}
+ return {started,contact,ownerRetained:game.ball.owner===carrier,carrierStun:carrier.stun,
+  carrierAction:carrier.action,carrierX:carrier.x,carrierY:carrier.y,beforeX:before.x,beforeY:before.y,
+  ballOwner:game.ball.owner,ballZ:game.ball.z,ballVz:game.ball.vz,canCollect:game.ball.canCollect,
+  pass:game.ball.pass,passTeam:game.ball.passTeam,passTarget:game.ball.passTarget,
+  slideTimer:defender.slideTimer,slideRemaining:defender.slideRemaining,
+  ballTouches:game.events.filter(e=>e.type==='tackleBallTouch').length,
+  bodyHits:game.events.filter(e=>e.type==='tackleHit').length};
+}
+
+test('human Pass/Shoot slides can nick a validated exposed ball without body-checking the carrier',()=>{
+ for(const team of [0,1])for(const action of ['pass','shoot']){
+  const inside=runHumanSlideBallContact(team,action,'inside');
+  assert.ok(inside.started&&inside.contact,JSON.stringify({team,action,inside}));
+  assert.equal(inside.ownerRetained,false,JSON.stringify({team,action,inside}));
+  assert.equal(inside.carrierStun,0,JSON.stringify({team,action,inside}));
+  assert.equal(inside.carrierX,inside.beforeX,JSON.stringify({team,action,inside}));
+  assert.equal(inside.carrierY,inside.beforeY,JSON.stringify({team,action,inside}));
+  assert.equal(inside.ballZ,12,JSON.stringify({team,action,inside}));
+  assert.equal(inside.ballVz,0,JSON.stringify({team,action,inside}));
+  assert.equal(inside.canCollect,.15,JSON.stringify({team,action,inside}));
+  assert.equal(inside.pass,false,JSON.stringify({team,action,inside}));
+  assert.equal(inside.passTeam,null,JSON.stringify({team,action,inside}));
+  assert.equal(inside.passTarget,null,JSON.stringify({team,action,inside}));
+  assert.equal(inside.ballTouches,1,JSON.stringify({team,action,inside}));
+  assert.equal(inside.bodyHits,0,JSON.stringify({team,action,inside}));
+  assert.equal(inside.slideTimer,0,JSON.stringify({team,action,inside}));
+  assert.equal(inside.slideRemaining,0,JSON.stringify({team,action,inside}));
+  for(const profile of ['outside','shielded','missing']){
+   const miss=runHumanSlideBallContact(team,action,profile);
+   assert.ok(miss.started&&!miss.contact&&miss.ownerRetained,JSON.stringify({team,action,profile,miss}));
+   assert.equal(miss.carrierStun,0,JSON.stringify({team,action,profile,miss}));
+   assert.equal(miss.ballTouches,0,JSON.stringify({team,action,profile,miss}));
+   assert.ok(miss.slideTimer>0,JSON.stringify({team,action,profile,miss}));
+  }
+  const body=runHumanSlideBallContact(team,action,'body');
+  assert.ok(body.started&&body.bodyHits===1,JSON.stringify({team,action,body}));
+  assert.ok(body.carrierStun>0&&body.carrierAction==='hurt',JSON.stringify({team,action,body}));
+  assert.equal(body.ballTouches,0,JSON.stringify({team,action,body}));
+ }
+});

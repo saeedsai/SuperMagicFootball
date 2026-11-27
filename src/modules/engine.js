@@ -1402,7 +1402,30 @@ class GameEngine{
    // or waste its impact on an opponent already down on the pitch.
    (!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&slideClosingContact(p,q))
    .sort((a,b)=>(this.ball.owner===b?1:0)-(this.ball.owner===a?1:0)||distance(p,a)-distance(p,b));
-  const q=targets[0];if(!q)return false;
+  const q=targets[0];
+  const ballCarrier=p.slideBallContactTargetId!==null&&p.slideBallContactTargetId!==undefined&&
+   this.ball.owner?.t===p.slideBallContactTargetTeam&&
+   this.ball.owner?.src?.id===p.slideBallContactTargetId?this.ball.owner:null;
+  const ballRange=ballCarrier&&defensivePokeBallSideRead(p,ballCarrier,this.ball)?distance(p,this.ball):Infinity;
+  const bodyRange=ballCarrier?distance(p,ballCarrier):Infinity;
+  const slideX=Number.isFinite(p.slideDX)?p.slideDX:0,slideY=Number.isFinite(p.slideDY)?p.slideDY:0;
+  const ballForward=ballCarrier?(this.ball.x-p.x)*slideX+(this.ball.y-p.y)*slideY:0;
+  // A deliberately ball-aimed slide may win a clean touch only when the body
+  // is still outside ordinary contact and no other opponent owns the collision.
+  const ballOnlyContact=!!ballCarrier&&(!q||q===ballCarrier)&&bodyRange>=64&&
+   Number.isFinite(ballRange)&&ballRange>0&&ballRange<=34&&ballForward/ballRange>=.65;
+  if(ballOnlyContact){
+   const c=contest(p,ballCarrier,true),odds=Math.min(.96,c.knockChance*moraleFactor(p.morale)/moraleFactor(ballCarrier.morale)*(1-Math.min(.57,(ballCarrier.trickGuard||0)*(1+stat(ballCarrier,'dribbling')/200))));
+   if(Math.random()>=odds)return false;
+   const dir=norm(slideX,slideY);
+   this.ball.owner=null;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=0;
+   this.ball.canCollect=.15;this.ball.pass=false;this.ball.passTeam=null;this.ball.passTarget=null;
+   this.burst(this.ball.x,this.ball.y,'#ffdf81',7);this.shake=.06;
+   this.emit('tackleBallTouch',{team:p.t,player:p.src.name,slide:true});
+   p.slideTimer=0;p.slideRemaining=0;p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;
+   return true;
+  }
+  if(!q)return false;
   const c=contest(p,q,true),odds=Math.min(.96,c.knockChance*moraleFactor(p.morale)/moraleFactor(q.morale)*(1-Math.min(.57,(q.trickGuard||0)*(1+stat(q,'dribbling')/200))));
   if(Math.random()>=odds)return false;
   const dir=norm(q.x-p.x,q.y-p.y);
@@ -1410,10 +1433,12 @@ class GameEngine{
   q.x+=dir.x*36;q.y+=dir.y*21;this.burst(q.x,q.y,'#ffdf81',11);this.shake=.12;
   this.emit('tackleHit',{team:p.t,victim:q.src.name,stun:q.stun,slide:true});
   if(this.ball.owner===q){this.ball.owner=null;this.ball.x=q.x;this.ball.y=q.y;this.ball.z=23;this.ball.vx=dir.x*150;this.ball.vy=dir.y*150;this.ball.vz=115;this.ball.canCollect=.15;}
-  p.slideTimer=0;p.slideRemaining=0;return true;
+  p.slideTimer=0;p.slideRemaining=0;p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;
+  return true;
  }
  tackle(p,slide=false,slideBall=null){
   if(p.cd>0||p.stun>0)return false;
+  p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;
   this.spendStamina(p,slide?'slide':'tackle');p.cd=slide?.68:.57;p.action=slide?'slide':'punch';p.actionTimer=slide?.48:.4;
   const canSlideTarget=q=>q&&(!Number.isFinite(q.z)||q.z<20)&&q.action!=='shotDown'&&q.action!=='shotGetUp'&&!(q.invuln>0);
   // A short PASS poke must not lock onto a protected or fallen carrier; choose
@@ -1452,6 +1477,8 @@ class GameEngine{
   // retain the existing carrier-body aim and movement lead.
   const ballTarget=target&&slideBall&&slideBall.owner===target&&
    defensivePokeBallSideRead(p,target,slideBall)?slideBall:null;
+  p.slideBallContactTargetId=slide&&ballTarget===this.ball&&target?target.src?.id??null:null;
+  p.slideBallContactTargetTeam=slide&&ballTarget===this.ball&&target?target.t:null;
   // A nimble carrier can redirect sooner after the read, so CPU slides lead
   // less aggressively; average Agility preserves the existing 85 ms baseline.
   const rawCarrierAgility=target?.src?.agility;
@@ -3244,7 +3271,7 @@ class GameEngine{
   if((p.shotImpactKnockdownPending||0)>0&&p.z>0){p.dx=0;p.dy=0;p.moveVX=0;p.moveVY=0;continue;}
   if((p.shotImpactKnockdownTimer||0)>0){p.shotImpactKnockdownTimer=Math.max(0,p.shotImpactKnockdownTimer-dt);p.dx=0;p.dy=0;p.moveVX=0;p.moveVY=0;if(p.shotImpactKnockdownTimer>0){p.action='shotDown';p.actionTimer=p.shotImpactKnockdownTimer;continue;}p.shotImpactRiseTimer=.24;p.action='shotGetUp';p.actionTimer=.24;continue;}
   if((p.shotImpactRiseTimer||0)>0){p.shotImpactRiseTimer=Math.max(0,p.shotImpactRiseTimer-dt);p.action='shotGetUp';p.actionTimer=p.shotImpactRiseTimer;continue;}
- if(p.stun>0){p.stun=Math.max(0,p.stun-dt);p.slideTimer=0;p.slideRemaining=0;p.moveVX=0;p.moveVY=0;this.staminaTick(p,dt,0);continue}
+ if(p.stun>0){p.stun=Math.max(0,p.stun-dt);p.slideTimer=0;p.slideRemaining=0;p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;p.moveVX=0;p.moveVY=0;this.staminaTick(p,dt,0);continue}
  if(this.rideBall&&(p===this.rideBall.carrier||p===this.rideBall.passenger)){p.dx=0;p.dy=0;p.moveVX=0;p.moveVY=0;continue}
  if((p.slideTimer||0)>0){
   const step=Math.min(dt,p.slideTimer);p.slideTimer=Math.max(0,p.slideTimer-step);
@@ -3254,7 +3281,7 @@ class GameEngine{
    p.y=clamp(p.y+p.slideDY*stride,F.y+23,F.y+F.h-23);
    if(this.slideContact(p))break;
   }
-  if(p.slideRemaining<=.001)p.slideTimer=0;
+  if(p.slideRemaining<=.001||p.slideTimer<=0){p.slideTimer=0;p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;}
   p.moveVX=p.slideTimer>0?p.slideDX*p.slideSpeed:0;p.moveVY=p.slideTimer>0?p.slideDY*p.slideSpeed:0;
   p.action='slide';p.actionTimer=Math.max(p.actionTimer,p.slideTimer+.08);
   this.staminaTick(p,dt,.7);continue;

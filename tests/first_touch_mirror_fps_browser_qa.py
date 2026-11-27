@@ -27,7 +27,7 @@ JS=r"""() => {
   }
   if(pressured){
    const rival=g.players.find(q=>q.t!==team&&!q.keeper);
-   rival.x=receiver.x+19;rival.y=receiver.y;
+   rival.x=receiver.x-(team===0?19:-19);rival.y=receiver.y;
   }
   const eventsBefore=g.events.length;
   // Vary the real incoming pace and receiver skill before the authoritative take.
