@@ -1965,6 +1965,11 @@ class GameEngine{
    if(!q||!Number.isFinite(q.x)||!Number.isFinite(q.y))return false;
    let dx=Number.isFinite(q.dx)?q.dx:0,dy=Number.isFinite(q.dy)?q.dy:0;
    let length=Math.hypot(dx,dy);
+   if(length<=.1){
+    dx=Number.isFinite(q.moveVX)?q.moveVX:0;
+    dy=Number.isFinite(q.moveVY)?q.moveVY:0;
+    length=Math.hypot(dx,dy);
+   }
    if(length<=.1){dx=q.face===-1?-1:1;dy=0;length=1;}
    const towardX=carrier.x-q.x,towardY=carrier.y-q.y,range=Math.hypot(towardX,towardY);
    return range>1&&((towardX*dx+towardY*dy)/(range*length))>=(range<=30?.5:.65);

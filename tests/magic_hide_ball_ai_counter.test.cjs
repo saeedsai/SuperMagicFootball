@@ -168,3 +168,40 @@ test('AI dispatch, Studio counterplay guidance and four-action schema stay align
  const input=fs.readFileSync('src/modules/input.js','utf8');
  assert.match(input,/const REMAPPABLE_ACTIONS=\['pass','shoot','dribble','jump'\]/);
 });
+
+
+test('neutral Hide Ball marker uses live closing velocity before stale facing',()=>{
+ for(const side of [0,1]){
+  const f=fixture(side,{hold:.9,gap:56});
+  Object.assign(f.defender,{dx:0,dy:0,moveVX:side===0?-180:180,moveVY:0,face:side===0?1:-1});
+  assert.equal(react.call(f.game,f.defender,.02,0),true,'live closing momentum should enter the existing PASS-poke response on team '+side);
+  assert.equal(f.game.pokes,1);
+  assert.equal(f.defender.action,'punch');
+  f.carrier.dribbleHold=1;
+  assert.equal(resolve.call(f.game,f.carrier),true);
+  assert.equal(f.game.events.at(-1).countered,true);
+  assert.equal(f.carrier.hideBallTimer||0,0);
+ }
+});
+
+test('neutral Hide Ball marker trusts actual retreat velocity over stale facing',()=>{
+ for(const side of [0,1]){
+  const f=fixture(side,{hold:.9,gap:56});
+  Object.assign(f.defender,{dx:0,dy:0,moveVX:side===0?180:-180,moveVY:0,face:side===0?-1:1});
+  assert.equal(react.call(f.game,f.defender,.02,0),false,'retreating momentum must not be overridden by a facing-only fallback');
+  assert.equal(f.game.pokes,0);
+  f.carrier.dribbleHold=1;
+  assert.equal(resolve.call(f.game,f.carrier),true);
+  assert.equal(f.game.events.at(-1).countered,false);
+  assert.equal(f.carrier.hideBallTimer,.65);
+ }
+});
+
+test('Hide Ball retains facing fallback only when both input and live movement are neutral',()=>{
+ for(const side of [0,1]){
+  const f=fixture(side,{hold:.9,gap:56});
+  Object.assign(f.defender,{dx:0,dy:0,moveVX:0,moveVY:0});
+  assert.equal(react.call(f.game,f.defender,.02,0),true);
+  assert.equal(f.game.pokes,1);
+ }
+});

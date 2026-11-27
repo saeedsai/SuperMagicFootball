@@ -83,7 +83,31 @@ with sync_playwright() as pw:
     misaligned.push({team,cpuAction:cpu.action,humanAction:human.action,activated,
      countered:event.countered,hideBallTimer:carrier.hideBallTimer||0});
    }
-   return {backupOut,noDuplicate,misaligned,
+   const momentumRead=[],momentumAway=[];
+   for(const team of [0,1]){
+    const {carrier,human,cpu}=setup(team),dir=team===0?1:-1;
+    Object.assign(cpu,{dx:0,dy:0,moveVX:-dir*180,moveVY:0,face:dir});
+    carrier.dribbleHold=.9;g.clock=10;
+    g.reactToHideBallTrick(cpu,.02,0);
+    const poked=cpu.action==='punch';
+    carrier.dribbleHold=1;carrier.magicReadyAt=0;g.ball.owner=carrier;g.clock=10;
+    const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
+    momentumRead.push({team,cpuAction:cpu.action,poked,humanAction:human.action,
+     humanStillSelected:g.controlled[human.t]===human.i,activated,countered:event.countered,
+     ownerRetained:g.ball.owner===carrier,hideBallTimer:carrier.hideBallTimer||0});
+   }
+   for(const team of [0,1]){
+    const {carrier,human,cpu}=setup(team),dir=team===0?1:-1;
+    Object.assign(cpu,{dx:0,dy:0,moveVX:dir*180,moveVY:0,face:-dir});
+    carrier.dribbleHold=.9;g.clock=10;
+    g.reactToHideBallTrick(cpu,.02,0);
+    const poked=cpu.action==='punch';
+    carrier.dribbleHold=1;carrier.magicReadyAt=0;g.ball.owner=carrier;g.clock=10;
+    const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
+    momentumAway.push({team,cpuAction:cpu.action,poked,humanAction:human.action,activated,
+     countered:event.countered,hideBallTimer:carrier.hideBallTimer||0});
+   }
+   return {backupOut,noDuplicate,misaligned,momentumRead,momentumAway,
     actions:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert result['actions']==4,(label,'gameplay action count changed',result)
@@ -102,6 +126,13 @@ with sync_playwright() as pw:
    assert case['cpuAction']!='punch',(label,'misaligned backup countered',case)
    assert case['activated'] and case['countered'] is False,(label,'misaligned backup falsely cancelled Hide Ball',case)
    assert case['hideBallTimer']>0,(label,'uncountered Hide Ball did not conceal',case)
+  for case in result['momentumRead']:
+   assert case['poked'] and case['cpuAction']=='punch',(label,'closing momentum did not select the CPU PASS poke',case)
+   assert case['humanAction']=='idle' and case['humanStillSelected'],(label,'momentum backup stole human control',case)
+   assert case['activated'] and case['countered'] is True and case['ownerRetained'] and case['hideBallTimer']==0,(label,'momentum PASS poke was not accepted',case)
+  for case in result['momentumAway']:
+   assert not case['poked'] and case['cpuAction']!='punch',(label,'retreating velocity was overridden by stale facing',case)
+   assert case['activated'] and case['countered'] is False and case['hideBallTimer']>0,(label,'retreating marker falsely countered Hide Ball',case)
   assert not errors,(label,errors)
   print('MAGIC_HIDE_BALL_HUMAN_BACKUP_BROWSER_PASS',label,result,flush=True)
   context.close()

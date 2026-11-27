@@ -6,28 +6,29 @@ Updated: 2026-11-28
 Prioritize responsive gameplay, intelligent passing/tackling and counterable tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.387 — MACE-SWEEP-MOMENTUM-READ-01.
-- Grounded defenders use actual closing movement velocity when directional input is neutral, while preserving the existing facing and Defence-versus-Dribbling gates. CPU defenders already meeting the read no longer waste the .24-second telegraph by jumping.
-- Corrected three missing field-bounds arguments in the .386 grounded high-cross regression fixture.
-- Two existing Mace Sweep resolver harnesses now inject the shared read helper; their newline extraction delimiters were corrected after the first harness-only follow-up still used a double-escaped delimiter.
+- Candidate 0.12.81.388 — TRICK-HIDE-BALL-LIVE-MOMENTUM-READ-01.
+- Hide Ball CPU target/backup selection now checks live moveVX/moveVY when dx/dy are neutral before falling back to facing. Closing movement can use the existing timed PASS poke despite stale facing; retreating movement cannot falsely counter. Zero-motion facing fallback remains.
+- .387 Mace Sweep momentum-read feature remains in production; its two existing VM resolver fixtures now inject the shared helper correctly.
+- .386 keeper regression's three missing bounds arguments were corrected.
 
 ## Exact-head QA evidence
-- Feature commit: `7961f71b75bee13e637ee402dd33d9d5a610de45`; first harness follow-up: `9438f6da30a3bceb3ff6b58a515e33575dc8be6a`; main SHA: `ffc4ca5122abfd16849b69c705fa5f341cb52e7a`.
-- .386 Modular QA #46082148024 failed one keeper test because three calls omitted bounds; fixed in .387.
-- First .387 Modular QA #46083298080 ran 3,048 tests: 3,044 passed and four failed because two existing Mace Sweep VM harnesses lacked the shared helper. The first follow-up injected it but double-escaped the newline delimiter; this commit corrects that harness-only issue.
-- Full Regression Census #46083298087 stopped at preflight. Corrective-head Modular QA and Census pending.
+- .387 feature commit: `7961f71b75bee13e637ee402dd33d9d5a610de45`; harness corrections: `9438f6da30a3bceb3ff6b58a515e33575dc8be6a` and `67b1dc20b3e99c61afcf88cd7ef73260ef4cd60d`.
+- .387 Modular QA #46083614246 passed 3,048/3,048 Node tests on `67b1dc20b3e99c61afcf88cd7ef73260ef4cd60d`.
+- .387 Full Regression Census #46083614292 preflight and preview passed; Node shards 2 and 3 passed; Node shards 0/1 and Chromium shards 0–3 were still running when dev advanced.
+- .388 focused Node and actual-GameEngine desktop/simulated-touch browser regressions added; exact-head Modular QA and Census pending.
 
 ## Next smallest action
-- Inspect the final .387 harness-correction Modular QA and exact-head four-Node/four-Chromium Census. Repair confirmed failures without weakening assertions.
+- Inspect .388 Modular QA and exact-head four-Node/four-Chromium Census. Repair confirmed failures without weakening assertions.
 - Only a fully green exact dev head may pass the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes.
-- Continue through-ball interception, counterable Magic Tricks, goalkeeper reactions, existing-player animation/Studio QA, Player Studio usability and Career/Cup depth.
+- Continue through-ball interception, further counterable tricks, goalkeeper reactions, existing-player animation/Studio QA, Player Studio usability and Career/Cup depth.
 
 ## Ownership and exclusions
 Update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
 
-## Evidence
-- Main .382 Census #46074238725 and Pages deployment #46074231407 were successful; hosted smoke verified exact main HTML/JS/CSS bytes.
-- Current main branch remains unprotected; repository rulesets were empty.
+## Repository heads at .388 start
+- Parent dev: `67b1dc20b3e99c61afcf88cd7ef73260ef4cd60d`.
+- Main: `ffc4ca5122abfd16849b69c705fa5f341cb52e7a`.
+- Main remains unprotected; repository rulesets were empty.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent; leave other checkpoints untouched.
