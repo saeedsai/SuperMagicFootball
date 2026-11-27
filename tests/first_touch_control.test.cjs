@@ -62,7 +62,7 @@ test('friendly ground reception under defender pressure triggers timed control, 
  assert.equal(events[0].accurate,true);
 });
 test('CPU interception of a targeted low pass uses the receiver Agility for the same settle window',()=>{
- const intercept=agility=>{const {g,p,near,ball}=fixture();g.players.push(near);g.inControl=()=>false;p.src.agility=agility;ball.passTeam=1;ball.passTarget='intended';recv();return {duration:p.firstTouchControlDuration,timer:p.firstTouchControlTimer,target:p.aiFirstTouchTarget};};
+ const intercept=agility=>{const {g,p,near,ball,recv}=fixture();g.players.push(near);g.inControl=()=>false;p.src.agility=agility;ball.passTeam=1;ball.passTarget='intended';recv();return {duration:p.firstTouchControlDuration,timer:p.firstTouchControlTimer,target:p.aiFirstTouchTarget};};
  const low=intercept(1),neutral=intercept(50),high=intercept(100);assert(low.duration>neutral.duration&&neutral.duration>high.duration);
  for(const result of [low,neutral,high]){assert.equal(result.timer,result.duration);assert(result.target&&Number.isFinite(result.target.x)&&Number.isFinite(result.target.y));}
 });
