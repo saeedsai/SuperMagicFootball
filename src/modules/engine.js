@@ -82,12 +82,14 @@ function lightningDefenderCounters(defender,attacker){
 }
 
 // A receiving outfielder briefly settles a pressured low ground pass. Faster
-// incoming balls add a little settling time; Dribbling skill removes it. Only
-// movement speed is affected, so direction, kicks, tackles and ball flight stay live.
-function firstTouchControlDuration(speed,skill){
+// incoming balls add a little settling time; Dribbling and Agility improve control.
+// Only movement speed is affected, so direction, kicks, tackles and ball flight stay live.
+function firstTouchControlDuration(speed,skill,agility=50){
  const pace=clamp(Number.isFinite(speed)?speed:500,280,900);
  const control=clamp(Number.isFinite(skill)?skill:50,1,100)/100;
- return clamp(.205+((pace-280)/620)*.055+(1-control)*.06,.18,.30);
+ const agile=clamp(Number.isFinite(agility)?agility:50,1,100)/100;
+ const agilityAdjustment=(.5-agile)*.06;
+ return clamp(.205+((pace-280)/620)*.055+(1-control)*.06+agilityAdjustment,.18,.30);
 }
 function firstTouchControlScale(timer,pressure,skill,duration=.24){
  const total=clamp(Number.isFinite(duration)?duration:.24,.18,.30);
@@ -859,7 +861,7 @@ class GameEngine{
     const nearest=this.players.filter(q=>q.t!==p.t&&!q.keeper&&q.stun<=0).reduce((d,q)=>Math.min(d,distance(p,q)),Infinity);
     p.firstTouchPressure=clamp((135-nearest)/115,0,1);
     if(friendly&&incoming.from!==p.src.id&&incoming.height<=24&&p.firstTouchPressure>0){
-     p.firstTouchControlDuration=firstTouchControlDuration(incoming.speed,stat(p,'dribbling'));p.firstTouchControlTimer=p.firstTouchControlDuration;
+     p.firstTouchControlDuration=firstTouchControlDuration(incoming.speed,stat(p,'dribbling'),stat(p,'agility'));p.firstTouchControlTimer=p.firstTouchControlDuration;
      // CPU receivers use the same short settling window to step into a safer
      // forward-side pocket; human-selected receivers keep full directional control.
      if(!this.inControl(p.t)){
@@ -873,7 +875,7 @@ class GameEngine{
      // A CPU interception of a targeted low through-ball should become a clean
      // counter-control, not a dead stop into the original passer's pressure.
      // Reuse the same bounded first-touch escape; do not redirect human input.
-     p.firstTouchControlDuration=firstTouchControlDuration(incoming.speed,stat(p,'dribbling'));p.firstTouchControlTimer=p.firstTouchControlDuration;
+     p.firstTouchControlDuration=firstTouchControlDuration(incoming.speed,stat(p,'dribbling'),stat(p,'agility'));p.firstTouchControlTimer=p.firstTouchControlDuration;
      const escape=attackingFirstTouchEscape(this.players,p.t,p,
       {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24});
      if(escape){const touchExpires=(Number.isFinite(this.clock)?this.clock:0)+p.firstTouchControlTimer;p.aiFirstTouchTarget={x:escape.x,y:escape.y,expires:touchExpires};p.aiFirstTouchOutletUntil=touchExpires+.68;p.firstTouchOutletReadTimer=p.firstTouchControlTimer+.68;p.aiTimer=0;}

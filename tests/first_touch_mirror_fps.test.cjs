@@ -19,10 +19,10 @@ const move=extract(' moveAgile(p,dx,dy,maxSpeed,dt){',' staminaTick(p,dt',{Math,
 const take=extract(' take(p){',' // Goalkeepers hold a clean catch',{Math,clamp,distance:(p,q)=>Math.hypot(p.x-q.x,p.y-q.y),
  // This suite isolates the existing speed-only first-touch contract; AI lane selection has its own integration suite.
  attackingFirstTouchEscape:()=>null,stat:(p,k)=>p.src[k],firstTouchControlDuration:durationFor,keeperParryRebounds:new WeakMap(),F:{x:0,y:0,w:1000,h:600}});
-function sample({team=0,fps=60,skill=55,pressure=true,mode='ground',speed=500}={}){
+function sample({team=0,fps=60,skill=55,agility=65,pressure=true,mode='ground',speed=500}={}){
  const x=team===0?520:2200,face=team===0?1:-1;
  const player={t:team,i:3,keeper:mode==='keeper',stun:mode==='stunned'?1:0,
-  x,y:500,face,src:{id:'recipient',dribbling:skill,agility:65},
+  x,y:500,face,src:{id:'recipient',dribbling:skill,agility},
   moveVX:0,moveVY:0};
  const enemy={t:1-team,keeper:false,stun:0,x:x+19,y:500,src:{id:'def'}};
  if(!pressure){enemy.x=x+900;enemy.y=1200;}
@@ -39,7 +39,7 @@ function sample({team=0,fps=60,skill=55,pressure=true,mode='ground',speed=500}={
   player.firstTouchControlTimer=Math.max(0,(player.firstTouchControlTimer||0)-dt);
   move.call(game,player,face,0,230,dt);elapsed+=dt;
  }
- return {team,fps,skill,pressure,mode,speed,activated,duration,travel:Math.abs(player.x-x),timer:player.firstTouchControlTimer,
+ return {team,fps,skill,agility,pressure,mode,speed,activated,duration,travel:Math.abs(player.x-x),timer:player.firstTouchControlTimer,
   events,owns:ball.owner===player};
 }
 test('two teams and 30/60/120 Hz: pressured ground receiver settles, then recovers',()=>{
@@ -69,6 +69,9 @@ test('better ball control cushions pressured first touch for both sides at all F
   const low=sample({team,fps,skill:25}),high=sample({team,fps,skill:95});
   assert(high.duration<low.duration&&high.travel>low.travel,JSON.stringify({team,fps,low,high}));
  }
+});
+test('Agility shortens the same pressured first-touch window at 30/60/120 Hz for both teams',()=>{
+ for(const team of [0,1])for(const fps of [30,60,120]){const low=sample({team,fps,skill:60,agility:1}),high=sample({team,fps,skill:60,agility:100});assert(low.activated&&high.activated,JSON.stringify({low,high}));assert(low.duration>high.duration,JSON.stringify({low,high}));assert(low.travel<high.travel,JSON.stringify({low,high}));assert(low.owns&&high.owns,'settling must not change possession');}
 });
 test('faster incoming passes need more settling time than gentle passes',()=>{
  for(const team of [0,1])for(const fps of [30,60,120]){

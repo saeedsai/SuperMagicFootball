@@ -15,7 +15,7 @@ const durationStart=src.indexOf('function firstTouchControlDuration('),durationE
 assert(durationStart>=0&&durationEnd>durationStart);
 const firstTouchControlDuration=vm.runInNewContext('('+src.slice(durationStart,durationEnd+2)+')',{clamp});
 const moveAgile=get(' moveAgile(p,dx,dy,maxSpeed,dt){',' staminaTick(p,dt', {Math,stat:(p,k)=>p.src[k],firstTouchControlScale});
-const take=get(' take(p){',' // Goalkeepers hold a clean catch', {Math,clamp,stat:(p,k)=>p.src[k],distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),firstTouchControlDuration,keeperParryRebounds:new WeakMap()});
+const take=get(' take(p){',' // Goalkeepers hold a clean catch', {Math,clamp,stat:(p,k)=>p.src[k],distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),firstTouchControlDuration,attackingFirstTouchEscape:()=>({x:300,y:300}),keeperParryRebounds:new WeakMap()});
 function fixture(){
  const p={t:0,i:2,keeper:false,stun:0,x:220,y:300,face:1,src:{id:'recv',dribbling:35,agility:65},moveVX:0,moveVY:0};
  const far={t:1,keeper:false,stun:0,x:700,y:700,src:{id:'far'}};
@@ -43,16 +43,28 @@ test('faster passes lengthen the touch while better Dribbling shortens it',()=>{
  for(const value of [gentle,fast,weak,skilled])assert(value>=.18&&value<=.30,value);
  for(const bad of [NaN,Infinity,-Infinity,undefined])assert(Number.isFinite(firstTouchControlDuration(bad,bad)));
 });
+test('Agility shortens the pressured first-touch settle window with neutral fallback',()=>{
+ const low=firstTouchControlDuration(500,60,1),neutral=firstTouchControlDuration(500,60,50),high=firstTouchControlDuration(500,60,100);
+ assert(low>neutral&&neutral>high,JSON.stringify({low,neutral,high}));
+ assert(Math.abs((low-neutral)-.0294)<1e-9);assert(Math.abs((neutral-high)-.03)<1e-9);
+ for(const invalid of [NaN,Infinity,-Infinity,undefined,'elite'])assert.equal(firstTouchControlDuration(500,60,invalid),neutral);
+ for(const speed of [280,500,900])for(const skill of [1,50,100])for(const agility of [1,50,100]){const value=firstTouchControlDuration(speed,skill,agility);assert(value>=.18&&value<=.30,JSON.stringify({speed,skill,agility,value}));}
+});
 test('friendly ground reception under defender pressure triggers timed control, preserves pass event',()=>{
  const {g,p,near,events,recv}=fixture();g.players.push(near);
  recv();
  assert.equal(g.ball.owner,p);assert.equal(g.ball.pass,false);assert.equal(p.action,'receive');
- assert.equal(p.firstTouchControlDuration,firstTouchControlDuration(430,35));
+ assert.equal(p.firstTouchControlDuration,firstTouchControlDuration(430,35,65));
  assert.equal(p.firstTouchControlTimer,p.firstTouchControlDuration);
  assert(p.firstTouchPressure>.8);
  assert.equal(events.filter(e=>e.type==='passReceived').length,1);
  assert.equal(events[0].friendly,true);
  assert.equal(events[0].accurate,true);
+});
+test('CPU interception of a targeted low pass uses the receiver Agility for the same settle window',()=>{
+ const intercept=agility=>{const {g,p,near,ball}=fixture();g.players.push(near);g.inControl=()=>false;p.src.agility=agility;ball.passTeam=1;ball.passTarget='intended';g.take(p);return {duration:p.firstTouchControlDuration,timer:p.firstTouchControlTimer,target:p.aiFirstTouchTarget};};
+ const low=intercept(1),neutral=intercept(50),high=intercept(100);assert(low.duration>neutral.duration&&neutral.duration>high.duration);
+ for(const result of [low,neutral,high]){assert.equal(result.timer,result.duration);assert(result.target&&Number.isFinite(result.target.x)&&Number.isFinite(result.target.y));}
 });
 test('open pass, enemy interception, aerial pass and keeper catch never trigger settling',()=>{
  for(const state of ['open','enemy','airborne','keeper']){
