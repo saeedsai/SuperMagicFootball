@@ -2883,8 +2883,8 @@ class GameEngine{
   return true;
  }
 
- // Human Pass/Shoot defensive slides use the same bounded exposed-ball read as CPU tackles.
- // Far-side shielding and stale ownership retain the original carrier-body aim.
+ /* Human Pass/Shoot defensive slides use the same bounded exposed-ball read as CPU tackles.
+  * Far-side shielding and stale ownership retain the original carrier-body aim. */
  command(p,a){if(a==='dribble'){const holder=this.hostOfBall();if(holder?.keeper&&holder.t===p.t&&this.inControl(p.t)){this.rollKeeper(holder);return;}this.dribble(p);return}if(a==='shoot'){if(this.tryFlipKick(p,false)||this.tryHeader(p))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p){if(mate.keeper)this.distributeKeeper(mate,'long');else this.shoot(mate,false)}else if(this.ball.owner===p){if(p.keeper)this.distributeKeeper(p,'long');else this.shoot(p,false,p.z>65)}else this.tackle(p,true,this.ball)}
  if(a==='pass'){const mate=this.hostOfBall();if(mate&&mate.t===p.t){this.performTeamPass(p,false);}else {if(distance(p,this.ball)<140)this.tackle(p,true,this.ball);else{p.chase=1.8;p.action='sprint';p.actionTimer=.3}}}
  if(a==='special'){if(this.tryFlipKick(p,true))return;const mate=this.hostOfBall();if(mate&&mate.t===p.t&&mate!==p)this.shoot(mate,true);else if(this.ball.owner===p)this.shoot(p,true,p.z>60);else if(!this.requestKeeperSuper(p.t)&&!this.activateDefence(p))this.tackle(p,true)}
