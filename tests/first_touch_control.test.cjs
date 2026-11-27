@@ -35,6 +35,20 @@ test('control scale is neutral for no pressure or expired trap, bounded for weak
  assert(firstTouchControlScale(.24,1,15,.30)<firstTouchControlScale(.24,1,95,.30));
  for(const bad of [NaN,Infinity,-Infinity,undefined])assert(Number.isFinite(firstTouchControlScale(bad,bad,bad)));
 });
+test('directional first-touch cushion rewards skilled movement into space and stays bounded',()=>{
+ const highBase=firstTouchControlScale(.24,1,100,.24,0);
+ const highAway=firstTouchControlScale(.24,1,100,.24,1);
+ const lowBase=firstTouchControlScale(.24,1,1,.24,0);
+ const lowAway=firstTouchControlScale(.24,1,1,.24,1);
+ assert(Math.abs(highAway-highBase-.08)<1e-9,JSON.stringify({highBase,highAway}));
+ assert(Math.abs(lowAway-lowBase-.0008)<1e-9,JSON.stringify({lowBase,lowAway}));
+ assert.equal(firstTouchControlScale(.24,1,100,.24,-1),highBase);
+ assert.equal(firstTouchControlScale(.24,1,100,.24,2),1);
+ assert.equal(firstTouchControlScale(.24,0,100,.24,1),1);
+ assert.equal(firstTouchControlScale(0,1,100,.24,1),1);
+ assert.equal(firstTouchControlScale(.24,1,100,.24,NaN),highBase);
+});
+
 test('faster passes lengthen the touch while better Dribbling shortens it',()=>{
  const gentle=firstTouchControlDuration(300,60),fast=firstTouchControlDuration(850,60);
  const weak=firstTouchControlDuration(500,25),skilled=firstTouchControlDuration(500,95);
@@ -91,6 +105,34 @@ test('actual moveAgile preserves normal speed in open space and temporarily redu
  moveAgile.call(g,loose,1,0,210,.016);
  assert(Math.abs(loose.x-orig.x)<1e-9,'loose ball must cancel settling');
 });
+test('actual moveAgile rewards a high-control first touch away from the nearest active defender only',()=>{
+ const {g,p,near}=fixture();
+ const active={...near,x:255,y:300,z:0,down:false,stun:0,invuln:0,action:'idle'};
+ const run=(defender,dx,dy,dribbling=95)=>{
+  const receiver={...p,src:{...p.src,dribbling},x:220,y:300,moveVX:0,moveVY:0,
+   firstTouchControlTimer:.24,firstTouchControlDuration:.24,firstTouchPressure:1};
+  g.players=defender?[p,defender]:[p];
+  g.ball.owner=receiver;
+  moveAgile.call(g,receiver,dx,dy,210,.016);
+  return Math.hypot(receiver.x-220,receiver.y-300);
+ };
+ const open=run(null,-1,0);
+ const away=run(active,-1,0);
+ const toward=run(active,1,0);
+ const perpendicular=run(active,0,1);
+ assert(away>toward,JSON.stringify({open,away,toward}));
+ assert.equal(toward,open);
+ assert.equal(perpendicular,open);
+ const lowAway=run(active,-1,0,1),lowToward=run(active,1,0,1);
+ assert(away-toward>lowAway-lowToward,JSON.stringify({away,toward,lowAway,lowToward}));
+ for(const inactive of [
+  {down:true},{stun:.1},{invuln:.1},{keeper:true},{z:24},
+  {action:'shotGetUp'},{action:'hurt',actionTimer:.2},{x:NaN}
+ ]){
+  assert.equal(run({...active,...inactive},-1,0),open,JSON.stringify(inactive));
+ }
+});
+
 test('source runs timer down and resets on substitution without restricting four inputs or shot',()=>{
  assert.match(src,/p\.firstTouchControlTimer=Math\.max\(0,\(p\.firstTouchControlTimer\|\|0\)-dt\)/);
  assert.match(src,/p\.firstTouchControlTimer=0;p\.firstTouchControlDuration=0;p\.firstTouchPressure=0;/);

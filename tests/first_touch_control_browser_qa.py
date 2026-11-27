@@ -28,16 +28,21 @@ JS=r"""() => {
   if(g.ball.owner!==target||!(target.firstTouchControlTimer>0))throw Error('pressure first touch did not activate');
   const pressure=target.firstTouchPressure,timer=target.firstTouchControlTimer,duration=target.firstTouchControlDuration;
   // Compare actual movement method, with only input target state cloned.
-  const base={...target,x:target.x,y:target.y,moveVX:0,moveVY:0};
+  const base={...target,x:target.x,y:target.y,moveVX:0,moveVY:0,
+   src:{...target.src,dribbling:95}};
   const fast={...base,firstTouchControlTimer:0};
   const slow={...base,firstTouchControlTimer:timer};
-  g.ball.owner=fast;g.moveAgile(fast,1,0,210,1/60);
-  g.ball.owner=slow;g.moveAgile(slow,1,0,210,1/60);
+  const away={...base,firstTouchControlTimer:timer};
+  g.ball.owner=fast;g.moveAgile(fast,1,.25,210,1/60);
+  g.ball.owner=slow;g.moveAgile(slow,1,.25,210,1/60);
+  g.ball.owner=away;g.moveAgile(away,-1,-.25,210,1/60);
   g.ball.owner=target;
   const events=g.events.slice(liveEventCount).filter(e=>e.type==='passReceived');
   // One controlled player can shoot immediately despite first-touch pressure.
   const immediate=g.shoot(target,false);
-  return {pressure,timer,duration,slow:slow.x-base.x,fast:fast.x-base.x,immediate,
+  return {pressure,timer,duration,slow:slow.x-base.x,fast:fast.x-base.x,
+   toward:Math.hypot(slow.x-base.x,slow.y-base.y),
+   away:Math.hypot(away.x-base.x,away.y-base.y),immediate,
    passReceived:events.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
    scoreUnchanged:JSON.stringify(g.score)===original.score,
    identityUnchanged:JSON.stringify(g.teamIds)===original.teams&&JSON.stringify(g.formation)===original.formation,
@@ -132,6 +137,7 @@ with sync_playwright() as pw:
   r=page.evaluate(JS)
   assert r['pressure']>.5 and .18<=r['duration']<=.30 and abs(r['timer']-r['duration'])<1e-9,(device,r)
   assert r['fast']>r['slow']>0,(device,r)
+  assert r['away']>r['toward']>0,(device,r)
   assert r['passReceived']==1 and r['immediate'],(device,r)
   assert r['buttons']==r['originalButtons']==4 and r['scoreUnchanged'] and r['identityUnchanged'],(device,r)
   assert not errors,(device,errors)

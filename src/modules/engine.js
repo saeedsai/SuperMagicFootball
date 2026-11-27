@@ -83,7 +83,8 @@ function lightningDefenderCounters(defender,attacker){
 
 // A receiving outfielder briefly settles a pressured low ground pass. Faster
 // incoming balls add a little settling time; Dribbling and Agility improve control.
-// Only movement speed is affected, so direction, kicks, tackles and ball flight stay live.
+// Only movement speed is affected; a skilled receiver can steer that first touch
+// away from the nearest active marker without changing the ball's flight.
 function firstTouchControlDuration(speed,skill,agility=50){
  const pace=clamp(Number.isFinite(speed)?speed:500,280,900);
  const control=clamp(Number.isFinite(skill)?skill:50,1,100)/100;
@@ -91,12 +92,14 @@ function firstTouchControlDuration(speed,skill,agility=50){
  const agilityAdjustment=(.5-agile)*.06;
  return clamp(.205+((pace-280)/620)*.055+(1-control)*.06+agilityAdjustment,.18,.30);
 }
-function firstTouchControlScale(timer,pressure,skill,duration=.24){
+function firstTouchControlScale(timer,pressure,skill,duration=.24,escapeAlignment=0){
  const total=clamp(Number.isFinite(duration)?duration:.24,.18,.30);
  const remain=clamp(Number.isFinite(timer)?timer:0,0,total)/total;
  const danger=clamp(Number.isFinite(pressure)?pressure:0,0,1);
  const control=clamp(Number.isFinite(skill)?skill:50,1,100)/100;
- return 1-remain*danger*(.10+.22*(1-control));
+ const base=1-remain*danger*(.10+.22*(1-control));
+ const escape=clamp(Number.isFinite(escapeAlignment)?escapeAlignment:0,0,1);
+ return Math.min(1,base+remain*danger*control*.08*escape);
 }
 // Tackle force is measured at contact. Only victim strength changes their resilience.
 function tackleStunDuration(strength,slide=false,impact=.4){
@@ -748,8 +751,26 @@ class GameEngine{
  // Speed rating controls top speed, agility controls acceleration, stopping and turns.
  moveAgile(p,dx,dy,maxSpeed,dt){
   // Releasing/switching owners stops the trap immediately; no input lock.
-  if(this.ball.owner===p&&!p.keeper&&(p.firstTouchControlTimer||0)>0)
-   maxSpeed*=firstTouchControlScale(p.firstTouchControlTimer,p.firstTouchPressure,stat(p,'dribbling'),p.firstTouchControlDuration);
+  if(this.ball.owner===p&&!p.keeper&&(p.firstTouchControlTimer||0)>0){
+   let escapeAlignment=0;
+   const inputLength=Math.hypot(dx,dy);
+   if(Number(p.firstTouchPressure)>0&&Number.isFinite(inputLength)&&inputLength>=.15&&Array.isArray(this.players)){
+    let nearest=null,nearestGap=135;
+    for(const defender of this.players){
+     if(!defender||defender===p||defender.t===p.t||defender.keeper||defender.down||
+      Number(defender.stun||0)>0||Number(defender.invuln||0)>0||
+      defender.action==='shotDown'||defender.action==='shotGetUp'||
+      (defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)||
+      (defender.z!=null&&(!Number.isFinite(Number(defender.z))||Number(defender.z)<0||Number(defender.z)>=20))||
+      !Number.isFinite(defender.x)||!Number.isFinite(defender.y))continue;
+     const awayX=p.x-defender.x,awayY=p.y-defender.y,gap=Math.hypot(awayX,awayY);
+     if(gap>0&&gap<nearestGap){nearestGap=gap;nearest={x:awayX/gap,y:awayY/gap};}
+    }
+    if(nearest)escapeAlignment=Math.max(0,Math.min(1,(dx/inputLength)*nearest.x+(dy/inputLength)*nearest.y));
+   }
+   maxSpeed*=firstTouchControlScale(p.firstTouchControlTimer,p.firstTouchPressure,
+    stat(p,'dribbling'),p.firstTouchControlDuration,escapeAlignment);
+  }
   const mag=Math.hypot(dx,dy),n=mag>1?1/mag:1;
   const targetVX=dx*n*maxSpeed,targetVY=dy*n*maxSpeed;
   const turn=Math.max(0,Math.min(1,(3.0+stat(p,'agility')*.13)*dt));
