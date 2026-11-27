@@ -1,5 +1,5 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 Updated: 2026-11-27
 
 ## Mission
@@ -8,7 +8,7 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 ## Current checkpoint
 - 0.12.81.382 — AI-DEFENDER-TURN-AWARE-EARLY-POKE-01.
 - CPU early PASS-poke commitment now projects both defender and carrier through the existing 55 ms Agility-limited turn response when a validated exposed low ball is supplied. A high-Agility defender cutting into the carrier can open the existing short poke window despite cross-track momentum; average/low, neutral/away, slow, invalid and no-ball cases retain the conservative decision.
-- The .381 exact-head fixture repair removes an invalid low-Agility equality assumption: a low-Agility defender can still reach an earlier point than the no-defender fallback. Acceptance now checks a finite low-Agility target and the actual high-vs-low separation.
+- The .381 actual-engine fixture now leaves the high-vs-low distinction to the focused helper regression: the discrete pass-arrival sample can give both profiles the same reachable target. Actual driveAI still verifies its target wiring and high-Agility early reach.
 - Production: src/modules/engine.js; focused Node/browser coverage: ai_defensive_poke_commit and ai_pass_receiver_cover.
 
 ## Next smallest action
@@ -21,7 +21,7 @@ Update only this checkpoint. No new branches, force-push, history rewrite, secur
 
 ## Evidence
 - Parent dev SHA: e4c409f1a15f313a4ccc2cba4f946550e788976e; main SHA: f146b3c4b19795bc68f3fb57673f6b2142632d2c.
-- .381 Modular QA #46070656869 and Full Regression Census #46070656817 failed one Node fixture assertion (3,038/3,039 passed): the low-Agility actual-engine target was incorrectly required to equal the no-defender fallback. No production exception was reported; downstream Census shards were skipped.
+- .382 Modular QA #46072576575 and Census preflight #46072576553 found three Node failures: an over-strong .381 actual-engine target-difference assertion, truncated MASTER_BACKLOG caused by a contents-fetch wrapper limit, and missing literal backticks around this agent ID. The full backlog and exact identity are restored in the corrective commit.
 - Earlier .381 runs #46070141281/#46070141272 exposed the first fixture geometry/reaction setup and were also not certified.
 - .379 main Census #46063913140 and Pages deployment #46063906488 succeeded; hosted-byte smoke passed.
 
