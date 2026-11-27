@@ -68,6 +68,47 @@ test('when both diagonals are safe, carrier momentum breaks the tie without chan
   assert.ok(dir*(target.x-carrier.x)>=44,'momentum must not reverse the attack');
  }
 });
+test('live directional input and Agility guide the pressured carry escape lane on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?700:1300,y=500;
+  const make=(name,agility,input=true)=>player(name,team,x,y,{
+   moveVX:dir*60,moveVY:240,dx:input?dir:0,dy:input?-1:0,
+   src:{id:name,dribbling:50,agility}
+  });
+  const marker=player('turn-marker-'+team,1-team,x+dir*65,y);
+  const low=make('low-turn-'+team,1),high=make('high-turn-'+team,100),neutral=make('neutral-turn-'+team,50,false);
+  const lowTarget=AI.attackingCarryEscapeTarget([low,marker],team,low,bounds);
+  const highTarget=AI.attackingCarryEscapeTarget([high,marker],team,high,bounds);
+  const neutralTarget=AI.attackingCarryEscapeTarget([neutral,marker],team,neutral,bounds);
+  assert.ok(lowTarget&&highTarget&&neutralTarget,JSON.stringify({team,lowTarget,highTarget,neutralTarget}));
+  assert.ok(lowTarget.y>y,'low Agility should retain more lower-lane momentum');
+  assert.ok(highTarget.y<y,'high Agility should follow the committed upper-lane input');
+  assert.ok(neutralTarget.y>y,'neutral input should preserve the original momentum fallback');
+  for(const target of [lowTarget,highTarget,neutralTarget])assert.ok(dir*(target.x-x)>=44);
+ }
+});
+test('actual GameEngine CPU carry movement follows input-turn projection according to Agility',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=ENGINE.WORLD.field.x+ENGINE.WORLD.field.w*.5,y=ENGINE.WORLD.field.y+ENGINE.WORLD.field.h*.5;
+  for(const agility of [1,100]){
+   const {game,carrier}=prepareCarrierGame(ENGINE,team),marker=game.player(1-team,3);
+   Object.assign(carrier,{x,y,moveVX:dir*60,moveVY:240,dx:dir,dy:-1,aiTimer:0,aiTarget:null,
+    aiFirstTouchTarget:null,firstTouchControlTimer:0,cd:1,trickCd:1,action:'run'});
+   Object.assign(carrier.src,{agility,dribbling:50});
+   Object.assign(marker,{x:x+dir*65,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+   game.ball.owner=carrier;game.ball.attacker=team;game.clock=1;
+   const originalRandom=Math.random;
+   try{
+    Math.random=()=>.99;
+    for(let step=0;step<36;step++){carrier.x=x;carrier.y=y;game.clock=1+step*.016;game.driveAI(carrier,.016);}
+   }finally{Math.random=originalRandom;}
+   if(agility===1)assert.ok(carrier.dy>.1&&carrier.moveVY>0,JSON.stringify({team,agility,dx:carrier.dx,dy:carrier.dy,moveVY:carrier.moveVY}));
+   else assert.ok(carrier.dy<-.1&&carrier.moveVY<0,JSON.stringify({team,agility,dx:carrier.dx,dy:carrier.dy,moveVY:carrier.moveVY}));
+  }
+ }
+});
 test('carrier chooses the opposite diagonal when one side is occupied',async()=>{
  const {AI}=await loadModules(),carrier=player('carrier',0,700,500,{moveVY:-240}),upper=player('upper-marker',1,765,430);
  const target=AI.attackingCarryEscapeTarget([carrier,upper],0,carrier,bounds);

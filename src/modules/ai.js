@@ -2312,8 +2312,14 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    Number.isFinite(carrier.vx)?carrier.vx:0;
   const carrierVY=Number.isFinite(carrier.moveVY)?carrier.moveVY:
    Number.isFinite(carrier.vy)?carrier.vy:0;
-  const carrierSpeed=Math.hypot(carrierVX,carrierVY);
-  const momentumWeight=carrierSpeed>=85&&carrierVX*dir>=-35?
+  // Predict the carrier's existing directional input over the same short,
+  // Agility-limited turn horizon used by defensive reads. This affects only
+  // escape-lane scoring; slow/neutral/invalid input retains residual momentum.
+  const turnRead=carrierTurnAwareVelocity(carrier,carrierVX,carrierVY,horizon);
+  const escapeVX=Number.isFinite(turnRead.x)?turnRead.x:carrierVX;
+  const escapeVY=Number.isFinite(turnRead.y)?turnRead.y:carrierVY;
+  const carrierSpeed=Math.hypot(escapeVX,escapeVY);
+  const momentumWeight=carrierSpeed>=85&&escapeVX*dir>=-35?
    clampTo((carrierSpeed-85)/260,0,1)*14:0;
   const segmentGap=(point,start,end)=>{
    const dx=end.x-start.x,dy=end.y-start.y,length=dx*dx+dy*dy;
@@ -2336,8 +2342,8 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    if(slideThreats.length&&routeLength>0){
     const escapeDistance=clampTo(220*horizon,18,40);
     const projectedCarrier={
-     x:carrier.x+clampTo(carrierVX*horizon*.2,-10,10)+(target.x-carrier.x)/routeLength*escapeDistance,
-     y:carrier.y+clampTo(carrierVY*horizon*.2,-10,10)+(target.y-carrier.y)/routeLength*escapeDistance
+     x:carrier.x+clampTo(escapeVX*horizon*.2,-10,10)+(target.x-carrier.x)/routeLength*escapeDistance,
+     y:carrier.y+clampTo(escapeVY*horizon*.2,-10,10)+(target.y-carrier.y)/routeLength*escapeDistance
     };
     // Compare the projected early escape point with the slide's swept lane.
     // The carrier's shared starting point is not itself a collision prediction.
@@ -2351,7 +2357,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
     if(gap<95)teammateCrowding+=(95-gap)*.58;
    }
    const headingAlignment=momentumWeight>0&&routeLength>0?
-    (carrierVX*(target.x-carrier.x)+carrierVY*(target.y-carrier.y))/(carrierSpeed*routeLength):0;
+    (escapeVX*(target.x-carrier.x)+escapeVY*(target.y-carrier.y))/(carrierSpeed*routeLength):0;
    const momentumBonus=momentumWeight*clampTo(headingAlignment,-1,1);
    const score=nearest+corridor*.65+forward*.14-lateral*.09-pressurePenalty-teammateCrowding+momentumBonus+slideSafetyBonus;
    return {side:candidate.side,target,score,slideGap};
