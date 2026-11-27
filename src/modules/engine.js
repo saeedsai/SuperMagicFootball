@@ -2544,8 +2544,14 @@ class GameEngine{
    rival.action==='punch'&&Number.isFinite(rival.actionTimer)&&rival.actionTimer>0&&
    Number.isFinite(rival.z)&&rival.z<20&&(()=>{
     const towardX=p.x-rival.x,towardY=p.y-rival.y;
-    const vx=Number.isFinite(rival.dx)?rival.dx:0,vy=Number.isFinite(rival.dy)?rival.dy:0;
-    const facing=Math.hypot(vx,vy)>.1?norm(vx,vy):norm(rival.face||1,0);
+    let vx=Number.isFinite(rival.dx)?rival.dx:0,vy=Number.isFinite(rival.dy)?rival.dy:0;
+    let headingLength=Math.hypot(vx,vy);
+    if(headingLength<=.1){
+     vx=Number.isFinite(rival.moveVX)?rival.moveVX:0;
+     vy=Number.isFinite(rival.moveVY)?rival.moveVY:0;
+     headingLength=Math.hypot(vx,vy);
+    }
+    const facing=headingLength>.1?norm(vx,vy):norm(rival.face||1,0);
     const range=Math.hypot(towardX,towardY);
     return range>1&&((towardX*facing.x+towardY*facing.y)/range)>=(range<=30?.5:.65);
    })());
