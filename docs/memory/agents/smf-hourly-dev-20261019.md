@@ -19,7 +19,8 @@ Preserve 223 team and 2,676 player identities/order and 12-player ratios, six fo
 
 ## Evidence
 - .353 exact-head Modular QA #45939841741 and Census #45939841718 failed stale renderer assertions. Test-only fixes landed in c2fabca and 7a6f533; Modular QA #45944552262 passed on 7a6f533.
-- .354 first Modular QA #45945192572 exposed isolated VM fixtures that did not include a new shared helper. The predicate is now inline in both extracted methods; rerun exact-head QA/Census.
+- .354 first Modular QA #45945192572 exposed isolated VM fixtures that did not include a shared helper; the predicate is now inline. Modular QA #45945593775 passed 3,002/3,002 on f73281a.
+- .353 Census #45944552197 failed one browser fixture because the team-1 support-pass test placed its defender on the wrong side. The fixture now uses dir-mirrored placement; no production behavior was changed. Rerun full Census on the new exact head.
 - Main SHA f83d578e597703eee7ff2f958b0d971aa92e81a6; last recorded successful main .349 Pages #45932990259 and independent Census #45932996471. No .354 release/deployment claim.
 - #87 remains open; main/dev protection must not be claimed. #48 and #86 remain open.
 

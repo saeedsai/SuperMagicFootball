@@ -41,7 +41,7 @@ with sync_playwright() as pw:
      if(q===carrier||q===runner||q===defender)continue;
      Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
     }
-    Object.assign(defender,{x:runner.x+44,y:138,down:false,stun:0,z:0,
+    Object.assign(defender,{x:runner.x+dir*44,y:138,down:false,stun:0,z:0,
      action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
     Object.assign(g.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,
      pass:false,passTeam:null,passTarget:null,attacker:team,lastTouchTeam:team,
