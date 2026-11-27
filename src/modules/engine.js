@@ -1439,11 +1439,6 @@ class GameEngine{
   p.slideTimer=0;p.slideRemaining=0;p.slideBallContactTargetId=null;p.slideBallContactTargetTeam=null;
   return true;
  }
- wakeCpuAfterCleanBallTouch(p){
-  if(!p||(this.inControl(p.t)&&this.controlled[p.t]===p.i))return false;
-  p.aiTimer=0;p.aiTarget=null;p.aiAssistTarget=null;
-  return true;
- }
  tackle(p,slide=false,slideBall=null){
 
   if(p.cd>0||p.stun>0)return false;
@@ -4140,6 +4135,11 @@ const defensiveThirdMan=owner&&owner.t!==t&&!concealed&&pressing?.primary&&press
   return false;
  }
 }
+GameEngine.prototype.wakeCpuAfterCleanBallTouch=function(p){
+ if(!p||(this.inControl(p.t)&&this.controlled[p.t]===p.i))return false;
+ p.aiTimer=0;p.aiTarget=null;p.aiAssistTarget=null;
+ return true;
+};
 GameEngine.prototype.cpuTackleSlideChance=cpuTackleSlideChance;
 GameEngine.prototype.defensiveCarrierLeadTarget=defensiveCarrierLeadTarget;
 GameEngine.prototype.defensivePokeBallSideRead=defensivePokeBallSideRead;

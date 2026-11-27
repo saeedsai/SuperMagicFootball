@@ -1,5 +1,5 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** smf-hourly-dev-20261019
+**Agent ID:** `smf-hourly-dev-20261019`
 Updated: 2026-11-27
 
 ## Mission
@@ -13,7 +13,7 @@ Prioritize responsive gameplay, intelligent passing/tackling and counterable Mag
 - First .370 exact-head QA failed Node preflight because the helper was nested inside tackle(); the follow-up moved it to class scope. The same fixture repair had also placed turnRows.push inside a receiverTurnRows object literal; that call is now before the object. Fresh exact-head gates pending.
 
 ## Next smallest action
-Inspect .370 exact-head Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then continue the next distinct football gameplay or existing-player animation improvement.
+Complete the confirmed .370 preflight repair: keep wakeCpuAfterCleanBallTouch outside the extracted slideContact→tackle method span and restore the exact code-formatted Agent ID. Rerun Modular QA and all four Node/four Chromium Census shards at the new exact dev head. If green, allow the existing QA-gated main pipeline and independently verify main Census, Pages deployment and hosted bytes; then continue a distinct gameplay increment.
 
 ## Ownership and exclusions
 Read/update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
