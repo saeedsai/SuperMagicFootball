@@ -282,6 +282,37 @@ function drawMagicReadCue(ctx,p,reducedFlash=false,logicalScale=1,viewSide=1){
  ctx.strokeText('READ!',0,-130);ctx.fillText('READ!',0,-130);
  ctx.restore();ctx.restore();
 }
+function drawMagicTrickWindupCue(ctx,p,game,reducedFlash=false,logicalScale=1){
+ const id=p?.src?.magicTrick;
+ const allowed=['banana','ice','bat','fireball','freeze','scream','hideBall','teleport','shoulderRide','spinBump','sandTrap','lightning','wind','mud'];
+ const hold=Number(p?.dribbleHold),breath=Number(p?.breath),clock=Number(game?.clock);
+ const readyAt=Number(p?.magicReadyAt),input=game?.input?.state?.[p?.t]||{};
+ if(!allowed.includes(id)||p?.preview||p?.keeper||p?.down===true||Number(p?.stun)>0||
+  game?.ball?.owner!==p||!Number.isFinite(hold)||hold<.62||hold>=1||
+  !Number.isFinite(breath)||breath<.8||!Number.isFinite(clock)||
+  clock<(Number.isFinite(readyAt)?readyAt:0)||p?.magicHoldLatched||
+  input.dribble!==true||input.jump||input.shoot||input.pass||
+  (id==='lightning'&&p?.lightningPending))return false;
+ const tierGated=['spinBump','sandTrap','lightning','wind','mud'].includes(id);
+ if(tierGated&&(!STATS?.verifiedRatingTierForPlayer||
+  !['Gold','Star','Superstar'].includes(STATS.verifiedRatingTierForPlayer(p?.src))))return false;
+ if(id==='shoulderRide'){
+  if(game?.rideBall||!Array.isArray(game?.players)||!game.players.some(q=>q!==p&&q.t===p.t&&
+   !q.keeper&&!q.down&&(Number(q.stun)||0)<=0&&(Number(q.z)||0)<=20&&!q.rideBallState&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y)&&Math.hypot(q.x-p.x,q.y-p.y)<=84))return false;
+ }
+ const scale=Math.max(.12,Math.min(3,Number(logicalScale)||1));
+ const progress=Math.max(0,Math.min(1,(hold-.62)/.38));
+ ctx.save();ctx.globalAlpha=reducedFlash?.68:.88;
+ ctx.strokeStyle='#ffe39a';ctx.lineWidth=(reducedFlash?2.1:2.6)/scale;
+ ctx.beginPath();ctx.ellipse(0,14,30,8,0,0,Math.PI*2);ctx.stroke();
+ ctx.beginPath();ctx.arc(0,14,36,-Math.PI/2,-Math.PI/2+Math.PI*2*progress);ctx.stroke();
+ ctx.save();ctx.translate(0,-130*(1-1/scale));ctx.scale(1/scale,1/scale);
+ ctx.textAlign='center';ctx.font='900 12px Arial';ctx.lineWidth=3;
+ ctx.strokeStyle='#4b3713';ctx.fillStyle='#fff5cf';
+ ctx.strokeText('TRICK!',0,-130);ctx.fillText('TRICK!',0,-130);
+ ctx.restore();ctx.restore();return true;
+}
 function drawUndergroundShotTell(ctx,b,reducedFlash=false,time=0){
  const speed=Math.hypot(Number(b?.vx)||0,Number(b?.vy)||0)||1,ux=(Number(b?.vx)||0)/speed,uy=(Number(b?.vy)||0)/speed;
  const phase=reducedFlash?0:(Number(time)||0)*2.1;
@@ -1582,13 +1613,15 @@ class Renderer{
   if(!p.preview&&p.shotImpactConfusedTimer>0)drawShotImpactCue(ctx,p,this.time,!!game.options?.reducedFlash);
   if(!p.preview&&!(p.shotImpactConfusedTimer>0))drawShotWeaknessCue(ctx,p,!!game.options?.reducedFlash);
   ctx.restore();
-  // Keep the counter-read feedback in world space, independent of character
+  // Keep read and wind-up feedback in world space, independent of character
   // body scaling and mirrored pose transforms, so it stays legible on phones.
-  if(!p.preview&&(p.magicReadCueTimer||0)>0){
+  const showMagicRead=(p.magicReadCueTimer||0)>0,showMagicWindup=Number(p.dribbleHold)>=.62;
+  if(!p.preview&&(showMagicRead||showMagicWindup)){
    ctx.save();
    ctx.translate(p.x,p.y-(Number(p.z)||0)-(Number(p.rideVisualZ)||0));
-   drawMagicReadCue(ctx,p,!!game.options?.reducedFlash,
-    Math.max(.12,Math.min(3,(Number(this.scale)||1)/(Number(this.dpr)||1)*(Number(this.cameraZoom)||1))),1);
+   const cueScale=Math.max(.12,Math.min(3,(Number(this.scale)||1)/(Number(this.dpr)||1)*(Number(this.cameraZoom)||1)));
+   if(showMagicRead)drawMagicReadCue(ctx,p,!!game.options?.reducedFlash,cueScale,1);
+   if(showMagicWindup)drawMagicTrickWindupCue(ctx,p,game,!!game.options?.reducedFlash,cueScale);
    ctx.restore();
   }
  }
