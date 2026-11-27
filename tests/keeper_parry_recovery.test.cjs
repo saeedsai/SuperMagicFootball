@@ -63,8 +63,9 @@ test('keeper Agility changes only post-parry scramble recovery and preserves the
   const missing=parry({}),invalid=parry({agility:NaN});
   assert.ok(high.cooldown<average.cooldown&&average.cooldown<low.cooldown,
    JSON.stringify({team,low,average,high}));
-  assert.equal(missing.cooldown,average.cooldown,'missing Agility uses neutral 50');
-  assert.equal(invalid.cooldown,average.cooldown,'invalid Agility uses neutral 50');
+  assert.equal(missing.cooldown,invalid.cooldown,'missing and invalid Agility retain the same STATS-inferred fallback');
+  assert.ok(missing.cooldown>=high.cooldown&&missing.cooldown<=low.cooldown,
+   'inferred Agility remains within the low/high recovery bounds');
   for(const sample of [low,average,high,missing,invalid])
    assert.ok(sample.cooldown>=sample.actionTimer+.34+.06-1e-6,
     JSON.stringify({team,sample}));

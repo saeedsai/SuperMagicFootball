@@ -61,8 +61,8 @@ with sync_playwright() as pw:
         for row in result['rows']:
             assert all(row[k]['saved'] and row[k]['parried'] for k in ('low','average','high','missing','invalid')),(kind,row)
             assert row['high']['cooldown']<row['average']['cooldown']<row['low']['cooldown'],(kind,row)
-            assert abs(row['missing']['cooldown']-row['average']['cooldown'])<1e-9,(kind,row)
-            assert abs(row['invalid']['cooldown']-row['average']['cooldown'])<1e-9,(kind,row)
+            assert abs(row['missing']['cooldown']-row['invalid']['cooldown'])<1e-9,(kind,row)
+            assert row['high']['cooldown']<=row['missing']['cooldown']<=row['low']['cooldown'],(kind,row)
             for key in ('low','average','high','missing','invalid'):
                 sample=row[key]
                 assert sample['cooldown']>=sample['actionTimer']+.34+.06-1e-6,(kind,row,key)
