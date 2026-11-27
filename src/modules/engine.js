@@ -2136,8 +2136,9 @@ class GameEngine{
    .map(h=>{
     const radius=h.kind==='ice'?35:27,dx=h.x-p.x,dy=h.y-p.y,d=Math.hypot(dx,dy);
     const ahead=dx*heading.x+dy*heading.y;
-    const across=Math.abs(dx*heading.y-dy*heading.x);
-    return {h,radius,d,ahead,across,immediate:d<=radius+8,
+    const signedAcross=dy*heading.x-dx*heading.y;
+    const across=Math.abs(signedAcross);
+    return {h,radius,d,ahead,across,signedAcross,immediate:d<=radius+8,
      inPath:ahead>=-4&&across<=radius+8,
      pathScore:Math.max(0,ahead-radius)+across*.25};
    }).filter(candidate=>candidate.d<candidate.radius+60);
@@ -2151,13 +2152,45 @@ class GameEngine{
   const key=`${hazard.h.kind}:${hazard.h.team}:${hazard.h.x}:${hazard.h.y}`;
   if(p.aiHazardKey!==key){p.aiHazardKey=key;p.aiHazardReaction=hazard.d<=hazard.radius+20?0:Math.max(0,Number(reactionSeconds)||0);p.aiHazardEvading=false;}
   if(p.action==='slide'&&(p.actionTimer||0)>0)return false;
+  // When the selected trap blocks the current run lane, preserve forward intent
+  // while stepping around it. Score both flanks against live opponents and pitch
+  // margins; off-lane/behind traps keep the established direct-away response.
+  const escapeDirection=()=>{
+   const away=norm(p.x-hazard.h.x||(p.t===0?-1:1),p.y-hazard.h.y);
+   if(!(hazard.ahead>0&&hazard.across<=hazard.radius+8))return away;
+   const lateralX=-heading.y,lateralY=heading.x,step=48;
+   const opponents=(this.players||[]).filter(q=>q&&q!==p&&q.t!==p.t&&!q.keeper&&!q.down&&
+    Number(q.stun||0)<=0&&Number(q.invuln||0)<=0&&
+    !['shotDown','shotGetUp'].includes(q.action)&&
+    !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+    !(Number.isFinite(q.z)&&q.z>=20)&&Number.isFinite(q.x)&&Number.isFinite(q.y));
+   const options=[-1,1].map(side=>{
+    const direction=norm(heading.x*.28+lateralX*side*.96,heading.y*.28+lateralY*side*.96);
+    const targetX=p.x+direction.x*step,targetY=p.y+direction.y*step;
+    const fieldMargin=Math.min(targetX-(F.x+22),F.x+F.w-22-targetX,
+     targetY-(F.y+23),F.y+F.h-23-targetY);
+    const opponentGap=opponents.reduce((best,q)=>Math.min(best,Math.hypot(q.x-targetX,q.y-targetY)),150);
+    const trapGap=Math.hypot(targetX-hazard.h.x,targetY-hazard.h.y)-hazard.radius;
+    const oppositeTrapSide=hazard.signedAcross!==0&&Math.sign(hazard.signedAcross)===-side?8:0;
+    const score=fieldMargin<0?-Infinity:
+     Math.min(opponentGap,150)*.7+Math.min(Math.max(0,fieldMargin),90)*.45+
+     Math.min(Math.max(0,trapGap),90)*.35+oppositeTrapSide;
+    return {side,direction,score};
+   });
+   const valid=options.filter(option=>Number.isFinite(option.score));
+   if(!valid.length)return away;
+   const preferred=((Number(p.t)||0)+(Number(p.i)||0))%2===0?-1:1;
+   valid.sort((a,b)=>Math.abs(a.score-b.score)<1e-6?
+    (a.side===preferred?-1:1):b.score-a.score);
+   return valid[0].direction;
+  };
   const activeJump=(p.action==='jump'||p.action==='doubleJump')&&
    Number.isFinite(p.actionTimer)&&p.actionTimer>0&&Number.isFinite(p.jumpCount)&&p.jumpCount>0;
   if(p.z>=20||activeJump){
    if(!p.aiHazardEvading)return false;
-   const away=norm(p.x-hazard.h.x||(p.t===0?-1:1),p.y-hazard.h.y);
+   const escape=escapeDirection();
    const speed=this.playerSpeed(p)*aiTuning(this.cpuLevel(p)).speed*(p.jumpHold>.12?1.37:1);
-   this.moveAgile(p,away.x,away.y,speed,Math.max(0,dt||0));
+   this.moveAgile(p,escape.x,escape.y,speed,Math.max(0,dt||0));
    this.staminaTick(p,Math.max(0,dt||0),p.jumpHold>.12?.7:.46);
    return true;
   }
@@ -2199,9 +2232,9 @@ class GameEngine{
   if(immediateJump&&Number(p.stun||0)<=0&&!['hurt','shotDown','shotGetUp'].includes(p.action)&&this.jump(p)){
    p.aiHazardEvading=true;p.aiHazardReaction=0;return true;
   }
-  const away=norm(p.x-hazard.h.x||(p.t===0?-1:1),p.y-hazard.h.y);
+  const escape=escapeDirection();
   const speed=this.playerSpeed(p)*aiTuning(this.cpuLevel(p)).speed*(p.jumpHold>.12?1.37:1);
-  this.moveAgile(p,away.x,away.y,speed,Math.max(0,dt||0));
+  this.moveAgile(p,escape.x,escape.y,speed,Math.max(0,dt||0));
   this.staminaTick(p,Math.max(0,dt||0),p.jumpHold>.12?.7:.46);
   return true;
  }

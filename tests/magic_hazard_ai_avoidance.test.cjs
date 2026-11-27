@@ -13,7 +13,8 @@ function method(name,next,globals={}){
 }
 const norm=(x,y)=>{const d=Math.hypot(x,y)||1;return{x:x/d,y:y/d};};
 const aiTuning=value=>mechanics.aiLevels[Math.max(0,Math.min(4,Math.trunc(value)))];
-const react=method('reactToMagicHazard','tryBicycleShot',{norm,aiTuning});
+const F={x:-500,y:-500,w:1000,h:1000};
+const react=method('reactToMagicHazard','tryBicycleShot',{norm,aiTuning,F});
 function setup(side=0,kind='ice'){
  const radius=kind==='ice'?35:27;
  const cpu={t:side,x:radius+5,y:0,keeper:false,z:0,stun:0,action:'run',actionTimer:0,jumpHold:0,jumpCount:0,
@@ -141,6 +142,40 @@ test('an active first-frame JUMP counters Banana and Ice before vertical lift re
  }
 });
 
+
+test('CPU sidesteps a directly-ahead Banana/Ice trap while retaining forward progress when carrying',()=>{
+ for(const kind of ['banana','ice'])for(const side of [0,1]){
+  const {game,cpu}=setup(side,kind),dir=side===0?1:-1;
+  Object.assign(cpu,{x:0,y:0,dx:dir,dy:0,face:dir,moveVX:dir*220,moveVY:0,cd:0,fatigue:.1,action:'run'});
+  Object.assign(game.magicHazards[0],{x:dir*80,y:0});
+  game.ball.owner=cpu;
+  const startX=cpu.x,startY=cpu.y;
+  assert.equal(react.call(game,cpu,.016,0),true,kind+' team '+side);
+  assert.ok(dir*(cpu.x-startX)>0,'sidestep must retain some forward progress');
+  assert.ok(Math.abs(cpu.y-startY)>1,'sidestep must leave the blocked lane laterally');
+  assert.equal(cpu.action,'run','the bounded sidestep is movement-only');
+ }
+});
+
+test('CPU selects the safer sidestep flank and keeps the projected exit inside pitch bounds',()=>{
+ for(const side of [0,1]){
+  const {game,cpu}=setup(side,'ice'),dir=side===0?1:-1;
+  Object.assign(cpu,{x:0,y:0,dx:dir,dy:0,face:dir,moveVX:dir*220,moveVY:0,cd:0,fatigue:.1,action:'run'});
+  Object.assign(game.magicHazards[0],{x:dir*80,y:0});
+  const rival={t:1-side,x:dir*13.44,y:side===0?46.08:-46.08,keeper:false,down:false,
+   stun:0,invuln:0,z:0,action:'run',actionTimer:0};
+  game.players.push(rival);game.ball.owner=cpu;
+  assert.equal(react.call(game,cpu,.016,0),true);
+  assert.equal(Math.sign(cpu.y),side===0?-1:1,'CPU must choose the flank opposite the active rival');
+ }
+ const {game,cpu}=setup(0,'ice');
+ Object.assign(cpu,{x:0,y:F.y+30,dx:1,dy:0,face:1,moveVX:220,moveVY:0,cd:0,fatigue:.1,action:'run'});
+ Object.assign(game.magicHazards[0],{x:80,y:F.y+30});game.ball.owner=cpu;
+ const startY=cpu.y;
+ assert.equal(react.call(game,cpu,.016,0),true);
+ assert.ok(cpu.y>startY,'sidestep must prefer the open infield flank near the top boundary');
+ assert.ok(cpu.y>=F.y+23,'sidestep must not project outside the pitch');
+});
 
 test('CPU prioritizes an in-lane trap over a nearer off-lane trap for both teams',()=>{
  for(const side of [0,1]){

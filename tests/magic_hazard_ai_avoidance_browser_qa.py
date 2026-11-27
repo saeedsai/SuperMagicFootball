@@ -80,7 +80,27 @@ with sync_playwright() as pw:
     multiHazardCases.push({side,action:cpu.action,key:cpu.aiHazardKey,
      expectedKey:'ice:'+(1-side)+':'+(500+dir*60)+':500'});
    }
-   return {cases,jumpCases,multiHazardCases,actionButtons:document.querySelectorAll('#touchButtons button[data-act]').length};
+   const sidestepCases=[];
+   for(const kind of ['banana','ice'])for(const side of [0,1]){
+    g.init({home:0,away:9,humans:1,mode:'quick'});g.matchState='paused';
+    const players=g.players.slice(),cpu=players.find(p=>p.t===side&&!p.keeper),
+     rival=players.find(p=>p.t!==side&&!p.keeper),dir=side===0?1:-1;
+    for(const player of players)if(player!==cpu&&player!==rival)Object.assign(player,{
+     x:1300,y:950,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,slideTimer:0
+    });
+    const startX=500-dir*80,startY=500;
+    Object.assign(cpu,{x:startX,y:startY,z:0,stun:0,down:false,face:dir,cd:0,fatigue:0,invuln:0,
+     moveVX:dir*220,moveVY:0,dx:dir,dy:0,action:'run',actionTimer:0,jumpHold:0,slideTimer:0,
+     aiHazardKey:null,aiHazardReaction:0,aiHazardEvading:false});
+    Object.assign(rival,{x:startX+dir*13.44,y:startY+(side===0?46.08:-46.08),z:0,stun:0,
+     down:false,invuln:0,action:'run',actionTimer:0,slideTimer:0});
+    const hazard={kind,team:1-side,x:500,y:500,life:2.5,arm:0};
+    g.magicHazards=[hazard];g.ball.owner=cpu;
+    const committed=g.reactToMagicHazard(cpu,.016,0);
+    sidestepCases.push({kind,side,committed,forward:dir*(cpu.x-startX),lateral:cpu.y-startY,
+     expectedSide:side===0?-1:1,action:cpu.action});
+   }
+   return {cases,jumpCases,multiHazardCases,sidestepCases,actionButtons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert len(result['cases'])==12,(label,result)
   for case in result['cases']:
@@ -95,6 +115,11 @@ with sync_playwright() as pw:
   assert len(result['multiHazardCases'])==2,(label,'both teams must exercise competing traps',result)
   for case in result['multiHazardCases']:
    assert case['action']=='jump' and case['key']==case['expectedKey'],(label,'in-lane trap must outrank nearer off-lane trap',case)
+  assert len(result['sidestepCases'])==4,(label,'both trap types and teams must exercise forward sidesteps',result)
+  for case in result['sidestepCases']:
+   assert case['committed'] and case['forward']>0 and abs(case['lateral'])>1,(label,'sidestep must preserve forward progress and leave the trap lane',case)
+   assert (1 if case['lateral']>0 else -1)==case['expectedSide'],(label,'CPU must choose the safer flank away from the rival',case)
+   assert case['action']!='jump',(label,'this fixture must exercise the movement-only sidestep',case)
   assert result['actionButtons']==4,(label,'four-button grammar changed',result)
   assert not errors,(label,errors)
   print('MAGIC_HAZARD_AI_AVOIDANCE_BROWSER_PASS',label,result,flush=True)
