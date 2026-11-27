@@ -160,10 +160,10 @@ test('CPU sidesteps a directly-ahead Banana/Ice trap while retaining forward pro
 test('CPU retains its original run-lane heading through a multi-frame carrying sidestep',()=>{
  for(const kind of ['banana','ice'])for(const side of [0,1]){
   const {game,cpu}=setup(side,kind),dir=side===0?1:-1,startDistance=kind==='ice'?92:84;
-  const startX=500-dir*startDistance,startY=500,expectedSide=side===0?-1:1;
+  const startX=-dir*startDistance,startY=0,expectedSide=side===0?-1:1;
   Object.assign(cpu,{x:startX,y:startY,dx:dir,dy:0,face:dir,moveVX:dir*220,moveVY:0,
    cd:0,fatigue:.1,action:'run',i:3});
-  Object.assign(game.magicHazards[0],{x:500,y:500});
+  Object.assign(game.magicHazards[0],{x:0,y:0});
   game.players.push({t:1-side,x:startX+dir*13.44,y:startY+(side===0?46.08:-46.08),
    keeper:false,down:false,z:0,stun:0,invuln:0,action:'run',actionTimer:0});
   game.ball.owner=cpu;
