@@ -140,7 +140,7 @@ test('Nutmeg and Rainbow counters use live 2D heading and residual movement fall
  const facingToward={...marker,dx:1,dy:1};
  const nutmegAway=api.dribbleOdds(carrier,facingAway,nutmeg);
  const nutmegToward=api.dribbleOdds(carrier,facingToward,nutmeg);
- assert.ok(nutmegToward<nutmegAway,'the defender's 2D heading must reach the carrier to reduce the Nutmeg bonus');
+ assert.ok(nutmegToward<nutmegAway,'the defender 2D heading must reach the carrier to reduce the Nutmeg bonus');
  const rainbowAway=api.dribbleOdds(carrier,facingAway,rainbow);
  const rainbowToward=api.dribbleOdds(carrier,facingToward,rainbow);
  assert.ok(rainbowToward<rainbowAway,'the Rainbow counter must reduce success relative to the same style facing away');
