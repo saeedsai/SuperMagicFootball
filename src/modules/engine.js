@@ -2753,7 +2753,7 @@ class GameEngine{
    const direction=axis==='x'?rival.dx:rival.dy;
    return (Number.isFinite(direction)?direction:0)*this.playerSpeed(rival);
   };
-  const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression'),fatigue:rival.fatigue,x:rival.x,y:rival.y,vx:threatVelocity('x'),vy:threatVelocity('y')}:null;
+  const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression'),fatigue:rival.fatigue,x:rival.x,y:rival.y,dx:rival.dx,dy:rival.dy,vx:threatVelocity('x'),vy:threatVelocity('y')}:null;
   // Forward live facing direction to the Rainbow Flick aerial counter.
   if(threat)threat.face=rival.face;
   const baseSuccessChance=!threat?1:Math.max(.08,dribbleOdds(skill,threat,style));

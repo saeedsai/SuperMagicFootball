@@ -12,6 +12,21 @@ function assignedDribbleType(player){
  // Names, not roster indices: a famous player's trick identity is stable.
  return DRIBBLE_STYLES[stableHash(player?.name||player?.id||'rookie')%DRIBBLE_STYLES.length].id;
 }
+function facesCarrier2D(defender,towardX,towardY){
+ const targetLength=Math.hypot(towardX,towardY);
+ if(!Number.isFinite(targetLength)||targetLength<=1)return false;
+ let headingX=Number.isFinite(defender?.dx)?defender.dx:0;
+ let headingY=Number.isFinite(defender?.dy)?defender.dy:0;
+ let headingLength=Math.hypot(headingX,headingY);
+ if(headingLength<=.1){
+  headingX=Number.isFinite(defender?.vx)?defender.vx:0;
+  headingY=Number.isFinite(defender?.vy)?defender.vy:0;
+  headingLength=Math.hypot(headingX,headingY);
+ }
+ if(headingLength>.1)return headingX*towardX+headingY*towardY>0;
+ const face=Number(defender?.face);
+ return !Number.isFinite(face)||face===0||face*towardX>0;
+}
 function dribbleOdds(p,defender,style){
  // Clamp fatigue before applying the attacker's stamina penalty, matching defender bounds.
  const attackerFatigue=Math.max(0,Math.min(1,Number(p.fatigue)||0));
@@ -49,7 +64,7 @@ function dribbleOdds(p,defender,style){
  // exhausted defenders lose that counter. Stat-only callers keep prior odds.
  // A defender must face the ball carrier to read a spatial nutmeg. Missing
  // facing in legacy/stat-only calls preserves established counter behavior.
- const facingNutmeg=!Number.isFinite(Number(defender.face))||Number(defender.face)===0||Number(defender.face)*dx>0;
+ const facingNutmeg=facesCarrier2D(defender,dx,dy);
  const nutmegCounter=nutmegWindow&&spatial&&facingNutmeg?Math.min(2,Math.max(0,((Number(defender.agility)||0)-70)/15))*proximity*(1-defenderFatigue):0;
  const nutmegBonus=nutmegWindow?Math.max(0,nutmegSkill*Math.max(0,nutmegTiming)*(1-attackerFatigue)-nutmegCounter):0;
  // Rainbow Flick lifts the ball: a fresh, close, actively closing defender with
@@ -57,7 +72,7 @@ function dribbleOdds(p,defender,style){
  // distant opponents and other dribble styles get no aerial counter bonus.
  // Rainbow aerial reads require a closing defender facing the carrier.
  // Unknown/legacy facing retains the historical stat-only behavior.
- const facingRainbow=!Number.isFinite(Number(defender.face))||Number(defender.face)===0||Number(defender.face)*dx>0;
+ const facingRainbow=facesCarrier2D(defender,dx,dy);
  const rainbowCounter=style?.id==='rainbow'&&closing&&distance<100&&facingRainbow
   ?Math.min(8,Math.max(0,((Number(defender.defence)||0)-55)/6))*proximity*(1-defenderFatigue)
     *Math.min(1,Math.hypot(vx,vy)/4):0;

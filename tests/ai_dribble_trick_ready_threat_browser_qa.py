@@ -63,6 +63,12 @@ with sync_playwright() as pw:
                 rows.push({team,kind:'human-multi-defender',...run(team,{moveVY:-dir*220},{moveVY:-dir*300},false,true)});
                 rows.push({team,kind:'residual-stationary-read',...run(team,{}, {},true,true,.632,'rainbow',{dribbling:95,agility:90},{defence:80,aggression:80})});
                 rows.push({team,kind:'residual-closing-read',...run(team,{moveVX:-dir*220,moveVY:dir*220},{},true,true,.632,'rainbow',{dribbling:95,agility:90},{defence:80,aggression:80})});
+                rows.push({team,kind:'rainbow-2d-facing-away',...run(team,
+                    {moveVX:-dir*220,moveVY:220,dx:0,dy:-1},{stun:1},true,false,.623,'rainbow',
+                    {dribbling:95,agility:90},{defence:80,aggression:80})});
+                rows.push({team,kind:'rainbow-2d-facing-toward',...run(team,
+                    {moveVX:-dir*220,moveVY:220,dx:-dir,dy:1},{stun:1},true,false,.623,'rainbow',
+                    {dribbling:95,agility:90},{defence:80,aggression:80})});
             }
             return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 canonicalTeams:SupermagicFootball.teams.filter(team=>
@@ -70,7 +76,7 @@ with sync_playwright() as pw:
         }""")
         assert result['buttons']==4,(kind,result)
         assert result['canonicalTeams']==223,(kind,result)
-        assert len(result['rows'])==20,(kind,result)
+        assert len(result['rows'])==24,(kind,result)
         for row in result['rows']:
             assert row['attempted'],(kind,row)
             if row['kind'] in ('downed','invulnerable','shot-down'):
@@ -90,6 +96,10 @@ with sync_playwright() as pw:
             elif row['kind']=='residual-stationary-read':
                 assert row['ai'] is True and row['success'] is True and row['owner'],(kind,row)
             elif row['kind']=='residual-closing-read':
+                assert row['ai'] is True and row['success'] is False and row['owner'],(kind,row)
+            elif row['kind']=='rainbow-2d-facing-away':
+                assert row['ai'] is True and row['success'] is True and row['owner'],(kind,row)
+            elif row['kind']=='rainbow-2d-facing-toward':
                 assert row['ai'] is True and row['success'] is False and row['owner'],(kind,row)
         assert not errors,(kind,errors)
         print('PASS',kind,'CPU active-threat duel, escape-side selection, human compatibility, 223 teams and four actions',flush=True)

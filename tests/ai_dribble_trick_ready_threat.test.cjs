@@ -107,6 +107,28 @@ test('dribble duel reads residual world velocity after directional input is rele
  }
 });
 
+test('DRIBBLE-COUNTER-2D-FACING-READ-01: Rainbow counter follows live two-dimensional facing for both teams',()=>{
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,field=ENGINE.WORLD.field,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  const carrier={dribbling:95,agility:90,fatigue:0,x,y};
+  const marker={defence:80,aggression:80,fatigue:0,x:x+dir*40,y:y-50,face:-dir,
+   vx:-dir*220,vy:220};
+  const style=DRIBBLES.dribbleStyle('rainbow');
+  const awayOdds=DRIBBLES.dribbleOdds(carrier,{...marker,dx:0,dy:-1},style);
+  const towardOdds=DRIBBLES.dribbleOdds(carrier,{...marker,dx:-dir,dy:1},style);
+  assert.ok(awayOdds>towardOdds,JSON.stringify({team,awayOdds,towardOdds}));
+  const random=(awayOdds+towardOdds)/2;
+  const away=attempt(team,{style:'rainbow',carrierSrcPatch:{dribbling:95,agility:90},
+   nearestSrcPatch:{defence:80,aggression:80},nearestPatch:{moveVX:-dir*220,moveVY:220,dx:0,dy:-1},
+   farPatch:{stun:1},random});
+  const toward=attempt(team,{style:'rainbow',carrierSrcPatch:{dribbling:95,agility:90},
+   nearestSrcPatch:{defence:80,aggression:80},nearestPatch:{moveVX:-dir*220,moveVY:220,dx:-dir,dy:1},
+   farPatch:{stun:1},random});
+  assert.equal(away.event.success,true,JSON.stringify({team,away,awayOdds,towardOdds}));
+  assert.equal(toward.event.success,false,JSON.stringify({team,toward,awayOdds,towardOdds}));
+  assert.equal(away.owner,true);assert.equal(toward.owner,true);
+ }
+});
 test('CPU trick treats a live second-defender slide as an arriving exit-lane threat',()=>{
  for(const team of [0,1]){
   const dir=team===0?1:-1;

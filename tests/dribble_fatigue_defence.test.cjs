@@ -105,6 +105,7 @@ test('live trick engine supplies spatial motion and fatigue to dribble duel',()=
  assert.match(engine,/if\(Number\.isFinite\(movement\)\)return movement;/);
  assert.match(engine,/return \(Number\.isFinite\(direction\)\?direction:0\)\*this\.playerSpeed\(rival\)/);
  assert.ok(engine.includes("vx:threatVelocity('x'),vy:threatVelocity('y')"));
+ assert.ok(engine.includes('dx:rival.dx,dy:rival.dy'));
 });
 
 test('agile fresh defenders counter spatial Nutmeg, but fatigue weakens the counter',()=>{
@@ -129,4 +130,19 @@ test('Rainbow Flick aerial counter requires nearby closing fresh defender',()=>{
  for(const options of [{vx:2},{x:120},{fatigue:1}])
   assert.ok(Math.abs(delta(options,rainbow)-delta(options,other))<1e-10,
    'retreating, distant or exhausted defender receives no aerial counter');
+});
+
+test('Nutmeg and Rainbow counters require a supplied two-dimensional heading to face the carrier',()=>{
+ const carrier={dribbling:95,agility:90,fatigue:0,x:100,y:100};
+ const marker={defence:95,aggression:65,fatigue:0,x:50,y:50,vx:100,vy:100,face:1};
+ const plain={id:'plain',evade:0},nutmeg={...plain,nutmeg:true},rainbow={id:'rainbow',evade:.35};
+ const facingAway={...marker,dx:0,dy:-1};
+ const facingToward={...marker,dx:1,dy:1};
+ assert.equal(api.dribbleOdds(carrier,facingAway,nutmeg),api.dribbleOdds(carrier,facingAway,plain));
+ assert.equal(api.dribbleOdds(carrier,facingAway,rainbow),api.dribbleOdds(carrier,facingAway,plain));
+ assert.ok(api.dribbleOdds(carrier,facingToward,nutmeg)<api.dribbleOdds(carrier,facingToward,plain));
+ assert.ok(api.dribbleOdds(carrier,facingToward,rainbow)<api.dribbleOdds(carrier,facingToward,plain));
+ const legacy={...marker,dx:undefined,dy:undefined,vx:undefined,vy:undefined};
+ assert.ok(api.dribbleOdds(carrier,legacy,nutmeg)<api.dribbleOdds(carrier,legacy,plain),
+  'legacy stat-only horizontal facing remains supported');
 });
