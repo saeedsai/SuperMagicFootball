@@ -302,8 +302,12 @@ test('rolling spill interception follows live Grass, Wet and Sand drag while air
  const sand=projected.find(x=>x.surface==='Sand'&&x.team===0).primary;
  assert.ok(grass.x>wet.x&&wet.x>sand.x,'more drag must shorten the roll projection');
  const airborne={...rolling,z:23,vx:150,vy:50,vz:115,canCollect:.15,age:0};
+ const flight=(115+Math.sqrt(115*115+1000*23))/500;
+ const airborneX=420+Math.max(-150,Math.min(150,150*flight));
+ const airborneY=300+Math.max(-150,Math.min(150,50*flight));
  for(const friction of [.986,.96,.94]){
   const target=AI.defensiveGroundSpillPrimaryTarget(0,airborne,bounds,friction);
-  assert.ok(Math.abs(target.x-(420+150))<1e-9,'airborne spill keeps its existing landing estimate');
+  assert.ok(Math.abs(target.x-airborneX)<1e-9,'airborne spill keeps its existing X landing estimate');
+  assert.ok(Math.abs(target.y-airborneY)<1e-9,'airborne spill keeps its existing Y landing estimate');
  }
 });
