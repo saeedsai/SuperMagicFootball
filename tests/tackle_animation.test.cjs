@@ -61,14 +61,16 @@ test('shot and aerial action poses freeze locomotion gait while regular running 
  assert.equal(gait({action:'run',stun:0,cryTimer:0},false,0),false,'standing players do not run');
 });
 
-test('keeper catch and hold keep the ball at padded chest-level gloves',()=>{
+test('keeper catch ball and gloves settle together across the existing catch timer',()=>{
  const source=fs.readFileSync(require('node:path').join(__dirname,'../src/modules/artpose.js'),'utf8').replace(/^export \{[^\n]+\};?\s*$/m,'');
  const context=vm.createContext({});vm.runInContext(source+'\nthis.grip=ARTPOSE.keeperGrip;',context);
- const grip=(action,face)=>context.grip(action,face);
- assert.deepEqual(JSON.parse(JSON.stringify(grip('keeperCatch',1))),{x:5,y:-59});
- assert.deepEqual(JSON.parse(JSON.stringify(grip('keeperHold',-1))),{x:-5,y:-59});
- assert.equal(grip('keeperThrow',1),null,'released keeper balls return to physical coordinates');
- assert.match(render,/ARTPOSE\.keeperGrip\(b\.owner\.action,b\.owner\.face\)/);
+ const grip=(action,face,timer)=>context.grip(action,face,timer);
+ assert.deepEqual(JSON.parse(JSON.stringify(grip('keeperCatch',1,.46))),{x:5,y:-54},'catch starts with open receiving gloves');
+ assert.deepEqual(JSON.parse(JSON.stringify(grip('keeperCatch',1,.23))),{x:5,y:-56.5},'catch settles smoothly through its midpoint');
+ assert.deepEqual(JSON.parse(JSON.stringify(grip('keeperCatch',1,0))),{x:5,y:-59},'catch finishes at the chest-level hold anchor');
+ assert.deepEqual(JSON.parse(JSON.stringify(grip('keeperHold',-1,0))),{x:-5,y:-59});
+ assert.equal(grip('keeperThrow',1,0),null,'released keeper balls return to physical coordinates');
+ assert.match(render,/ARTPOSE\.keeperGrip\(b\.owner\.action,b\.owner\.face,b\.owner\.actionTimer\)/);
  assert.match(render,/ctx\.translate\(ballX,ballY\)/);
  assert.match(render,/if\(!grip\)this\.drawBallShadow\(ctx,b\.x,b\.y,b\.z,underground\?\.2:concealed/,'held balls do not cast a false ground shadow; underground balls dim theirs');
  const arm=characterArt.slice(characterArt.indexOf('function arm('),characterArt.indexOf('function jersey('));
