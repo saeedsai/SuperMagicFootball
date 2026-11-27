@@ -1620,7 +1620,8 @@ class Renderer{
    ctx.save();
    ctx.translate(p.x,p.y-(Number(p.z)||0)-(Number(p.rideVisualZ)||0));
    const cueScale=Math.max(.12,Math.min(3,(Number(this.scale)||1)/(Number(this.dpr)||1)*(Number(this.cameraZoom)||1)));
-   if(showMagicRead)drawMagicReadCue(ctx,p,!!game.options?.reducedFlash,cueScale,1);
+   if(showMagicRead)drawMagicReadCue(ctx,p,!!game.options?.reducedFlash,
+    Math.max(.12,Math.min(3,(Number(this.scale)||1)/(Number(this.dpr)||1)*(Number(this.cameraZoom)||1))),1);
    if(showMagicWindup)drawMagicTrickWindupCue(ctx,p,game,!!game.options?.reducedFlash,cueScale);
    ctx.restore();
   }
