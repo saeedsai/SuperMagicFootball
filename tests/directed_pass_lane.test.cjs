@@ -338,9 +338,9 @@ test('PASS-LANE-AGILITY-STEERING-READ-01: a moving defender is projected through
  assert.equal(choose(neutral),near,'neutral Agility preserves the established selection in this balanced case');
  const noSteering={...high,dx:0,dy:0};
  const invalidSteering={...high,dx:NaN,dy:Infinity};
- const slow={...high,moveVY:50};
+ const slow={...high,moveVY:50},slowWithoutSteering={...slow,dx:0,dy:0};
  const fallbackRisk=feel.passingLanePressure(from,near,[noSteering]);
  assert.equal(feel.passingLanePressure(from,near,[invalidSteering]),fallbackRisk,'invalid steering uses the linear fallback');
- assert.equal(feel.passingLanePressure(from,near,[slow]),fallbackRisk,'slow defenders keep the linear fallback');
+ assert.equal(feel.passingLanePressure(from,near,[slow]),feel.passingLanePressure(from,near,[slowWithoutSteering]),'slow defenders keep the linear fallback at the same speed');
  assert.equal(choose(noSteering),near,'unsteered defenders retain the previous pass choice');
 });
