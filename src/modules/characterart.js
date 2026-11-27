@@ -532,6 +532,9 @@ const CHARACTER_ART=(()=>{
   const bumperImpactPhase=Number.isFinite(opt.spinBumperImpactPhase)?clamp(opt.spinBumperImpactPhase,0,1):null;
   const bumperImpact=bumperImpactPhase===null?0:1-bumperImpactPhase*bumperImpactPhase*(3-2*bumperImpactPhase);
   const cheering=!!opt.celebrate&&!p.keeper,crying=!!opt.cry&&!p.keeper,style=norm(opt.celebrationStyle,25);
+  const shieldStrength=clamp(Number(opt.carryShieldStrength)||0,0,1);
+  const shieldArm=!p.keeper&&!cheering&&!crying&&!dive&&!holding&&airWeight<=0&&launch<=0&&
+   ['idle','run','dribble'].includes(p.action)&&Math.sign(Number(opt.carryShieldSide)||0)===sign?shieldStrength:0;
   let cheerPose=null;
   if(cheering){
    // Gesture shapes echo the ten goal-call styles; root bounce,
@@ -620,6 +623,7 @@ const CHARACTER_ART=(()=>{
    :gettingUp?[elbow[0]+sign*5,-24+sw+(near?5:13)*recoveryBrace]
    :launch>0?(launchGuard?[sh-sign*(6+launch*10),-24-launch*28+sw]:[elbow[0]+sign*(5+launch*15),-24-launch*17+sw]):airWeight>0
     ?[elbow[0]+sign*(5+airPose.armOpen*.55*(1-landingBrace*.45)),-24-airPose.armLift*(1-landingBrace*.6)-airPose.armDrop*(near?.35:.65)+landingBrace*3.5]:[elbow[0]+sign*5,-24+sw]));
+  if(shieldArm>0){elbow[0]+=sign*4.5*shieldArm;elbow[1]+=1.5*shieldArm;hand[0]+=sign*10*shieldArm;hand[1]+=3*shieldArm;}
   const kit=near?grad(c,sh-20,-57,sh+18,-38,[[0,blend(col.main,.34)],[.44,col.main],[1,blend(col.main,-.32)]]):blend(col.main,-.33);
   stroke(c,[[sh,-51],[elbow[0],elbow[1]]],kit,15,dark);
   stroke(c,[[elbow[0]-sign*5,elbow[1]],[elbow[0]+sign*5,elbow[1]+.5]],col.gold,2.5);
@@ -741,11 +745,13 @@ const CHARACTER_ART=(()=>{
    ?{x:clamp(opt.receiveGaze.x,-2.1,2.1),y:clamp(opt.receiveGaze.y,-1.35,1.35)}:null;
   const gaze=receiveGaze||idleGazePose;
   const turnLean=turnCounterLean(opt.turnLag,view?.side);
+  const shieldLean=clamp(Number(opt.carryShieldLean)||0,-.095,.095);
   const headLean=headTurnCounterLean(opt.turnLag,view?.side);
   c.save();
   // Counter-rotate the connected upper-body group around the waist pivot.
   // Legs/shorts stay planted and the existing root-facing transition is untouched.
   if(turnLean){c.translate(0,-24);c.rotate(turnLean);c.translate(0,24)}
+  if(shieldLean){c.translate(0,-24);c.rotate(shieldLean);c.translate(0,24)}
   // Compress the upper body slightly around the waist as the feet prepare to land.
   if(airPose?.landingBrace>0){c.translate(0,-24);c.scale(1,1-airPose.landingBrace*.035);c.translate(0,24)}
   if(breathPhase>0){c.translate(0,-breathPhase*2.2);c.translate(0,-22);c.scale(1,1+breathPhase*.022);c.translate(0,22)}

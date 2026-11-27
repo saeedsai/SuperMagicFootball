@@ -75,6 +75,33 @@ const ARTPOSE=(()=>{
   const target=moving?clamp(Number(oscillator)||0,-1,1):0;
   return prev+(target-prev)*(1-Math.exp(-(moving?24:15)*delta));
  }
+ function carryShieldPose(player,ball,players){
+  const neutral=()=>({lean:0,side:0,strength:0});
+  const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  if(!player||player.preview||player.keeper||player.down||!clear(player.stun)||
+   (player.z!=null&&(!Number.isFinite(Number(player.z))||Number(player.z)>18))||
+   !['idle','run','dribble'].includes(player.action)||!Array.isArray(players)||
+   !ball||ball.owner!==player||![player.x,player.y,ball.x,ball.y].every(Number.isFinite))return neutral();
+  const hold=Number(player.dribbleHold);
+  if(!Number.isFinite(hold)||hold<.12||Math.hypot(ball.x-player.x,ball.y-player.y)>38)return neutral();
+  const active=q=>q&&q!==player&&q.t!==player.t&&!q.keeper&&!q.down&&clear(q.stun)&&clear(q.invuln)&&
+   clear(q.slideTimer)&&clear(q.shotImpactKnockdownPending)&&clear(q.shotImpactKnockdownTimer)&&
+   clear(q.shotImpactRiseTimer)&&(q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)<=18))&&
+   !['shotDown','shotGetUp'].includes(q.action)&&
+   !((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0)&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y);
+  let nearest=null,nearestGap=118;
+  for(const defender of players){
+   if(!active(defender))continue;
+   const gap=Math.hypot(defender.x-player.x,defender.y-player.y);
+   if(gap>1&&gap<nearestGap){nearest=defender;nearestGap=gap;}
+  }
+  if(!nearest)return neutral();
+  const strength=clamp((118-nearestGap)/68,0,1);
+  if(strength<.06)return neutral();
+  const side=Math.sign(nearest.x-player.x)||(Number(player.face)<0?-1:1);
+  return {lean:clamp(side*strength*.095,-.095,.095),side,strength};
+ }
  function receiveGaze(player,ball,view){
   if(!player||player.preview||player.action!=='receive'||!ball||ball.owner||
    ![player.x,player.y,ball.x,ball.y].every(Number.isFinite))return null;
@@ -173,7 +200,7 @@ const ARTPOSE=(()=>{
   if(cooldown>.08&&cooldown<=.420001)return {action:'keeperRecover',diveElapsed:.6,actionTimer:Math.min(.34,cooldown-.08),diveDy};
   return {action:'idle',diveElapsed:0,actionTimer:0,diveDy:0};
  }
-  return Object.freeze({easeHeading,gait,runPhase,runFootPose,keeperPose,settleStride,receivePose,receiveGaze,confusionPose,shotImpactLaunchPose,shotImpactDownPose,shotImpactRecoveryPose,passFollowThrough,keeperRelease,keeperGrip,penaltyKeeperVisual});
+  return Object.freeze({easeHeading,gait,runPhase,runFootPose,keeperPose,settleStride,carryShieldPose,receivePose,receiveGaze,confusionPose,shotImpactLaunchPose,shotImpactDownPose,shotImpactRecoveryPose,passFollowThrough,keeperRelease,keeperGrip,penaltyKeeperVisual});
 })();
 
 export {ARTPOSE};
