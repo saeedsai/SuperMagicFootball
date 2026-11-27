@@ -1675,7 +1675,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   // landing window above. Primary and support share one bounded bounce/roll
   // projection; support stays 26 units goal-side while the primary meets the ball.
   // Age and last-touch guards keep this out of stale loose balls and restarts.
-  function defensiveGroundSpillLandingTarget(team,ball,bounds,goalSideOffset=26){
+  function defensiveGroundSpillLandingTarget(team,ball,bounds,goalSideOffset=26,rollingFriction=.986){
    if((team!==0&&team!==1)||!ball||ball.owner||ball.pass||ball.shot||ball.strike||
     ball.ordinaryShot||![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz,ball.age].every(Number.isFinite)||
     ![0,1].includes(ball.lastTouchTeam)||ball.z<0||ball.z>32||
@@ -1688,14 +1688,20 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
    const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
    const rolling=ball.z<=2&&Math.abs(ball.vz)<1;
-   const flightSeconds=rolling ? .18 :
+   const rollingSeconds=.18;
+   const flightSeconds=rolling ? rollingSeconds :
     (ball.vz+Math.sqrt(ball.vz*ball.vz+1000*ball.z))/500;
    if(!Number.isFinite(flightSeconds)||flightSeconds<.08||flightSeconds>.68)return null;
    if(Number.isFinite(ball.canCollect)&&ball.canCollect>flightSeconds+.12)return null;
    const dir=team===0?1:-1;
    const offset=clampTo(Number.isFinite(goalSideOffset)?goalSideOffset:26,0,26);
-   const landingX=ball.x+clampTo(ball.vx*flightSeconds,-150,150);
-   const landingY=ball.y+clampTo(ball.vy*flightSeconds,-150,150);
+   const friction=clampTo(Number.isFinite(rollingFriction)?rollingFriction:.986,.90,.999);
+   // updateBall advances position before applying per-frame drag. Integrate the
+   // same exponential decay over the existing short roll-read horizon.
+   const travelSeconds=rolling?
+    (1-Math.pow(friction,rollingSeconds*60))/(60*(1-friction)):flightSeconds;
+   const landingX=ball.x+clampTo(ball.vx*travelSeconds,-150,150);
+   const landingY=ball.y+clampTo(ball.vy*travelSeconds,-150,150);
    const target={
     x:clampTo(landingX-dir*offset,xMin+22,xMax-22),
     y:clampTo(landingY,yMin+23,yMax-23)
@@ -1704,12 +1710,12 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    return target;
   }
 
-  function defensiveGroundSpillPrimaryTarget(team,ball,bounds){
-   return defensiveGroundSpillLandingTarget(team,ball,bounds,0);
+  function defensiveGroundSpillPrimaryTarget(team,ball,bounds,rollingFriction=.986){
+   return defensiveGroundSpillLandingTarget(team,ball,bounds,0,rollingFriction);
   }
 
-  function defensiveGroundSpillCoverTarget(team,ball,bounds){
-   return defensiveGroundSpillLandingTarget(team,ball,bounds,26);
+  function defensiveGroundSpillCoverTarget(team,ball,bounds,rollingFriction=.986){
+   return defensiveGroundSpillLandingTarget(team,ball,bounds,26,rollingFriction);
   }
 
  // During a pressured receiver's short first-touch window, the second CPU

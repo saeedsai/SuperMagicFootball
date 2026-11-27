@@ -135,8 +135,9 @@ test('primary and support split fresh low tackle spills and short rolling reboun
   const ball={...rolling,vx:team===0?180:-180};
   const primary=AI.defensiveGroundSpillPrimaryTarget(team,ball,bounds);
   const support=AI.defensiveGroundSpillCoverTarget(team,ball,bounds);
-  const dir=team===0?1:-1,landingX=420+Math.max(-150,Math.min(150,ball.vx*.18)),
-   landingY=300+Math.max(-150,Math.min(150,-60*.18));
+  const dir=team===0?1:-1,rollSeconds=(1-Math.pow(.986,.18*60))/(60*(1-.986)),
+   landingX=420+Math.max(-150,Math.min(150,ball.vx*rollSeconds)),
+   landingY=300+Math.max(-150,Math.min(150,-60*rollSeconds));
   assert.ok(primary&&support);
   assert.ok(Math.abs(primary.x-landingX)<1e-9);
   assert.ok(Math.abs(primary.y-landingY)<1e-9);
@@ -242,4 +243,66 @@ test('driveAI assigns primary and support to coordinated fresh ground-spill land
  assert.equal(AI.defensivePressers([nearBall,farther],0,staleBall,null).primary,nearBall,
   'without a trusted landing estimate the existing live-ball nearest-defender fallback remains');
 
+});
+
+test('rolling spill interception follows live Grass, Wet and Sand drag while airborne spill landing stays unchanged',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const rolling={owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
+  x:420,y:300,z:0,vx:360,vy:-120,vz:0,canCollect:0,age:.35,lastTouchTeam:1};
+ const surfaces=[
+  {name:'Grass',terrain:'Grass',condition:'Clear',friction:.986},
+  {name:'Wet',terrain:'Grass',condition:'Wet',friction:.96},
+  {name:'Sand',terrain:'Sand',condition:'Clear',friction:.94}
+ ];
+ const projected=[];
+ for(const surface of surfaces){
+  const seconds=(1-Math.pow(surface.friction,.18*60))/(60*(1-surface.friction));
+  for(const team of [0,1]){
+   const ball={...rolling,lastTouchTeam:1-team,vx:team===0?360:-360};
+   const primary=AI.defensiveGroundSpillPrimaryTarget(team,ball,bounds,surface.friction);
+   const support=AI.defensiveGroundSpillCoverTarget(team,ball,bounds,surface.friction);
+   const dir=team===0?1:-1;
+   const expectedX=ball.x+Math.max(-150,Math.min(150,ball.vx*seconds));
+   const expectedY=ball.y+Math.max(-150,Math.min(150,ball.vy*seconds));
+   assert.ok(primary&&support,surface.name);
+   assert.ok(Math.abs(primary.x-expectedX)<1e-9,surface.name+' primary X');
+   assert.ok(Math.abs(primary.y-expectedY)<1e-9,surface.name+' primary Y');
+   assert.ok(Math.abs(support.x-(expectedX-dir*26))<1e-9,surface.name+' support margin');
+   assert.ok(Math.abs(support.y-expectedY)<1e-9,surface.name+' support Y');
+   projected.push({surface:surface.name,team,primary});
+   const game=new ENGINE.GameEngine({halfSeconds:120});
+   game.init({home:0,away:1,mode:'quick',humans:0});
+   game.terrain=surface.terrain;game.condition=surface.condition;game.weather='Clear';
+   const field=ENGINE.WORLD.field,defender=game.player(team,3),cover=game.player(team,4);
+   for(const p of game.players){
+    p.aiTarget=null;p.aiTimer=0;p.aiAssistTarget=null;p.aiGiveAndGoRun=null;
+    p.action='idle';p.actionTimer=0;p.z=0;p.down=true;p.stun=1;
+   }
+   for(const p of [defender,cover]){
+    p.down=false;p.stun=0;p.invuln=0;p.action='idle';p.actionTimer=0;p.z=0;
+    p.slideTimer=0;p.shotImpactKnockdownPending=0;p.shotImpactKnockdownTimer=0;
+    p.shotImpactRiseTimer=0;p.aiTimer=1;
+   }
+   Object.assign(game.ball,{...ball});
+   game.clock=5;
+   const liveBounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+   const primaryExpected=AI.defensiveGroundSpillPrimaryTarget(team,game.ball,liveBounds,surface.friction);
+   const supportExpected=AI.defensiveGroundSpillCoverTarget(team,game.ball,liveBounds,surface.friction);
+   Object.assign(defender,{x:primaryExpected.x,y:primaryExpected.y,aiTarget:null,aiTimer:1});
+   Object.assign(cover,{x:field.x+field.w*.5,y:primaryExpected.y,aiTarget:null,aiTimer:1});
+   game.moveAgile=()=>{};
+   game.driveAI(defender,.016);game.driveAI(cover,.016);
+   assert.deepEqual(defender.aiTarget,primaryExpected,surface.name+' actual primary dispatch');
+   assert.deepEqual(cover.aiTarget,supportExpected,surface.name+' actual support dispatch');
+  }
+ }
+ const grass=projected.find(x=>x.surface==='Grass'&&x.team===0).primary;
+ const wet=projected.find(x=>x.surface==='Wet'&&x.team===0).primary;
+ const sand=projected.find(x=>x.surface==='Sand'&&x.team===0).primary;
+ assert.ok(grass.x>wet.x&&wet.x>sand.x,'more drag must shorten the roll projection');
+ const airborne={...rolling,z:23,vx:150,vy:50,vz:115,canCollect:.15,age:0};
+ for(const friction of [.986,.96,.94]){
+  const target=AI.defensiveGroundSpillPrimaryTarget(0,airborne,bounds,friction);
+  assert.ok(Math.abs(target.x-(420+150))<1e-9,'airborne spill keeps its existing landing estimate');
+ }
 });

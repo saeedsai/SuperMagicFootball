@@ -41,8 +41,10 @@ with sync_playwright() as pw:
                 const scenarios=[
                     {name:'moving',z:54,vx:dir*260,vy:-80,vz:-40,canCollect:0,age:0,lastTouchTeam:1-team,cap:260},
                     {name:'vertical',z:54,vx:0,vy:0,vz:0,canCollect:0,age:0,lastTouchTeam:1-team,cap:260},
-                    {name:'tackle-spill',z:23,vx:dir*150,vy:50,vz:115,canCollect:.15,age:0,lastTouchTeam:1-team,cap:150},
-                    {name:'rolling-spill',z:0,vx:dir*180,vy:-60,vz:0,canCollect:0,age:.35,lastTouchTeam:1-team,cap:150,rolling:true}
+                    {name:'tackle-spill',z:23,vx:dir*150,vy:50,vz:115,canCollect:.15,age:0,lastTouchTeam:1-team,cap:150,friction:.986,terrain:'Grass'},
+                    {name:'rolling-grass',z:0,vx:dir*180,vy:-60,vz:0,canCollect:0,age:.35,lastTouchTeam:1-team,cap:150,rolling:true,friction:.986,terrain:'Grass'},
+                    {name:'rolling-wet',z:0,vx:dir*180,vy:-60,vz:0,canCollect:0,age:.35,lastTouchTeam:1-team,cap:150,rolling:true,friction:.96,terrain:'Grass',condition:'Wet'},
+                    {name:'rolling-sand',z:0,vx:dir*180,vy:-60,vz:0,canCollect:0,age:.35,lastTouchTeam:1-team,cap:150,rolling:true,friction:.94,terrain:'Sand'}
                 ];
                 for(const scenario of scenarios){
                     Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
@@ -50,7 +52,9 @@ with sync_playwright() as pw:
                         canCollect:scenario.canCollect,age:scenario.age,lastTouchTeam:scenario.lastTouchTeam,
                         attacker:1-team});
                     game.clock=5;
-                    const horizon=scenario.rolling ? .18 :
+                    game.terrain=scenario.terrain||'Grass';game.condition=scenario.condition||'Clear';
+                    const horizon=scenario.rolling ?
+                        (1-Math.pow(scenario.friction,.18*60))/(60*(1-scenario.friction)) :
                         (scenario.vz+Math.sqrt(scenario.vz*scenario.vz+1000*scenario.z))/500;
                     const clamp=value=>Math.max(-scenario.cap,Math.min(scenario.cap,value));
                     const landing={x:x+clamp(scenario.vx*horizon),y:y+clamp(scenario.vy*horizon)};

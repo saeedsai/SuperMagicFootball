@@ -3512,16 +3512,17 @@ class GameEngine{
     p.aiTarget={x:keeperClaimTarget.x,y:keeperClaimTarget.y};
    }
   const looseBallBounds={xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24};
+  const groundSpillFriction=this.terrain==='Sand'?.94:this.condition==='Wet'?.96:.986;
   const looseBallLandingTarget=!owner&&!concealed?
    (defensiveLooseBallPrimaryTarget(t,liveBall,looseBallBounds)||
-    defensiveGroundSpillPrimaryTarget(t,liveBall,looseBallBounds)):null;
+    defensiveGroundSpillPrimaryTarget(t,liveBall,looseBallBounds,groundSpillFriction)):null;
   // Select press roles against a trusted landing point so the best-positioned
   // defender contests the arrival; fall back to the live/known ball position
   // when no validated landing estimate exists.
   const pressTarget=owner||(looseBallLandingTarget?{...looseBallLandingTarget,landingRead:true}:b);
   const looseBallSupportTarget=looseBallLandingTarget?
    (defensiveLooseBallCoverTarget(t,liveBall,looseBallBounds)||
-    defensiveGroundSpillCoverTarget(t,liveBall,looseBallBounds)):null;
+    defensiveGroundSpillCoverTarget(t,liveBall,looseBallBounds,groundSpillFriction)):null;
   // On a targeted low ground pass, select the second defender against the
   // receiver-side interception lane while the primary continues to press the ball.
   const defensivePassCoverHint=!owner&&!concealed&&liveBall.pass===true?
