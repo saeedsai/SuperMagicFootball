@@ -21,7 +21,7 @@ Read and update only this checkpoint. No new branches, force-push, history rewri
 ## Evidence
 - .357 Modular QA #45957012780 and first Census #45957012809 stopped at Node preflight on a keeper-roll source-extraction comment boundary; repaired on .357 follow-up.
 - .357 exact-head Census #45957438349 failed browser shard 1 (`ai_defensive_poke_commit_browser_qa.py`) and shard 2 (`player_carry_shield_pose_browser_qa.py`). The latter reported missing optional file:// Home resources. .358 fixture repairs and exact-head reruns required.
-- No .358 tests are claimed passed until observed GitHub Actions results.
+- .358 first Modular QA and Census preflight both found one new test expectation error: CPU vertical movement was incorrectly asserted as world-up rather than defender-away relative to its diagonal forward axis. Human up/down/neutral assertions passed; the CPU regression now checks the lateral projection. No production code defect was established. Exact-head reruns required.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent's handover; leave other checkpoints untouched.

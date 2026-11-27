@@ -44,7 +44,9 @@ with sync_playwright() as pw:
    assert row['down']['ok'] and row['down']['dy']>0,(name,row)
    assert row['up']['ok'] and row['up']['dy']<0,(name,row)
    assert row['neutral']['ok'] and row['neutral']['dy']<0,(name,row)
-   assert row['cpu']['ok'] and row['cpu']['dy']<0,(name,row)
+   face=1 if row['team']==0 else -1
+   cpu_lateral=row['cpu']['dx']*(-2**-.5)+row['cpu']['dy']*(face*2**-.5)
+   assert row['cpu']['ok'] and cpu_lateral*( -1 if row['team']==0 else 1)>0,(name,row,cpu_lateral)
   assert not errors,(name,errors)
   print('DIRECTIONAL_DRIBBLE_FEINT_PASS',name,flush=True)
   context.close()

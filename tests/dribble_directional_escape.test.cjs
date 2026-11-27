@@ -40,8 +40,9 @@ test('human vertical stick direction chooses the Dribble feint exit for both tea
 
 test('CPU Dribble feints retain the defender-aware automatic exit despite vertical input',()=>{
  for(const team of [0,1]){
-  const cpu=runFeint(team,1,true);
+  const cpu=runFeint(team,1,true),face=team===0?1:-1;
+  const lateralProjection=cpu.dx*(-Math.SQRT1_2)+cpu.dy*(face*Math.SQRT1_2);
   assert.equal(cpu.performed,true);
-  assert.ok(cpu.dy<0,JSON.stringify({team,cpu}));
+  assert.ok(lateralProjection*(team===0?-1:1)>0,JSON.stringify({team,cpu,lateralProjection}));
  }
 });

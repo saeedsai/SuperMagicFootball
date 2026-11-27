@@ -87,7 +87,7 @@ with sync_playwright() as pw:
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
                 const calls=[];game.tackle=(who,slide,slideBall)=>{calls.push({same:who?.t===defender.t&&who?.i===defender.i&&who?.src?.id===defender.src?.id,slide,
-                     liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.src?.id===carrier.src?.id,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
+                     liveBall:!!slideBall&&slideBall.owner?.t===carrier.t&&slideBall.owner?.i===carrier.i&&slideBall.owner?.src?.id===carrier.src?.id,ballX:slideBall?.x,ballY:slideBall?.y});who.cd=.5;return true;};
                 const originalRandom=Math.random;Math.random=()=>0;
                 try{game.driveAI(defender,.016);}finally{Math.random=originalRandom;}
                 return calls;
