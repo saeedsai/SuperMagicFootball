@@ -196,6 +196,51 @@ test('driveAI assigns the support defender with the best momentum-aware arrival 
   assert.notDeepEqual(atPocket.aiTarget,supportTarget,'retreating pocket defender is not assigned the cover target');
  }
 });
+test('loose-ball press selection uses live steering and Agility for turn-aware arrival',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ const target={x:500,y:500,landingRead:true};
+ const make=(x,agility,moveVX,moveVY,dx,dy)=>({
+  t:0,x,y:500,moveVX,moveVY,dx,dy,src:{agility},stun:0,down:false,z:0,action:'idle'
+ });
+ const low=make(455,1,0,150,1,0),high=make(450,100,0,150,1,0);
+ assert.equal(AI.defensivePressers([low,high],0,target).primary,high,
+  'a slightly farther high-Agility defender already turning into the landing wins the arrival');
+ const lowNeutral=make(455,1,150,0,0,0),highNeutral=make(450,100,150,0,0,0);
+ assert.equal(AI.defensivePressers([lowNeutral,highNeutral],0,target).primary,lowNeutral,
+  'without live steering, the existing linear arrival keeps the closer defender');
+ const lowInvalid=make(455,1,150,0,0,0),highInvalid=make(450,100,0,150,NaN,NaN);
+ assert.equal(AI.defensivePressers([lowInvalid,highInvalid],0,target).primary,lowInvalid,
+  'invalid steering uses the same legacy fallback as neutral input');
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  game.weather='Clear';game.terrain='Grass';game.condition='Clear';
+  const dir=team===0?1:-1,highPlayer=game.player(team,3),lowPlayer=game.player(team,4);
+  const field=ENGINE.WORLD.field,x=field.x+field.w*.5,y=field.y+field.h*.5;
+  for(const p of game.players){
+   p.aiTarget=null;p.aiTimer=1;p.aiAssistTarget=null;p.aiGiveAndGoRun=null;
+   p.action='idle';p.actionTimer=0;p.z=0;p.down=true;p.stun=1;
+  }
+  for(const p of [highPlayer,lowPlayer])Object.assign(p,{
+   down:false,stun:0,invuln:0,action:'idle',actionTimer:0,z:0,slideTimer:0,
+   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0
+  });
+  Object.assign(game.ball,{owner:null,pass:false,shot:null,strike:null,ordinaryShot:false,
+   x,y,z:0,vx:dir*180,vy:0,vz:0,canCollect:0,age:.35,lastTouchTeam:1-team,attacker:1-team});
+  game.clock=5;
+  const bounds={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+  const landing=AI.defensiveGroundSpillPrimaryTarget(team,game.ball,bounds,.986);
+  assert.ok(landing);
+  highPlayer.src={...highPlayer.src,agility:100};
+  lowPlayer.src={...lowPlayer.src,agility:1};
+  Object.assign(highPlayer,{x:landing.x-dir*50,y:landing.y,moveVX:0,moveVY:150,dx:dir,dy:0});
+  Object.assign(lowPlayer,{x:landing.x-dir*45,y:landing.y,moveVX:0,moveVY:150,dx:dir,dy:0});
+  game.moveAgile=()=>{};
+  game.driveAI(highPlayer,.016);game.driveAI(lowPlayer,.016);
+  assert.deepEqual(highPlayer.aiTarget,landing,'actual engine assigns the turn-capable defender to the spill');
+  assert.notDeepEqual(lowPlayer.aiTarget,landing,'actual engine does not send the cross-lane defender to the spill');
+ }
+});
 test('driveAI assigns primary and support to coordinated fresh ground-spill landing targets',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){

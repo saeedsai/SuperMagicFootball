@@ -128,15 +128,28 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
  const carrierSpeed=Math.hypot(velocity(target,'x'),velocity(target,'y'));
  const movingCarrier=Number.isInteger(target.t)&&target.t!==team&&!target.keeper&&
   Number.isFinite(carrierSpeed)&&carrierSpeed>=75;
+ const landingRead=target.landingRead===true;
+ const hasSteeringIntent=p=>{
+  const inputX=Number.isFinite(p?.dx)?p.dx:0;
+  const inputY=Number.isFinite(p?.dy)?p.dy:0;
+  return Math.hypot(inputX,inputY)>=.15;
+ };
  const project=p=>{
   const vx=velocity(p,'x'),vy=velocity(p,'y'),speed=Math.hypot(vx,vy);
   if(!Number.isFinite(speed))return {x:p.x,y:p.y};
   const scale=speed>220?220/speed:1;
-  return {x:p.x+vx*scale*.12,y:p.y+vy*scale*.12};
+  const boundedX=vx*scale,boundedY=vy*scale;
+  // A landing-read defender's live steering is the direction moveAgile is
+  // already turning toward. Project that bounded turn instead of stale heading.
+  const motion=landingRead&&hasSteeringIntent(p)?
+   carrierTurnAwareVelocity(p,boundedX,boundedY,.12):
+   {x:boundedX,y:boundedY};
+  return {x:p.x+motion.x*.12,y:p.y+motion.y*.12};
  };
- // Cross-track momentum needs a short reorientation allowance before a defender
- // can win a projected arrival tie. This mirrors moveAgile's Agility turn rate.
+ // Neutral steering keeps the previous cross-track reorientation allowance;
+ // a live turn is already represented by the projected velocity above.
  const crossTrackTurnCost=(p,point)=>{
+  if(landingRead&&hasSteeringIntent(p))return 0;
   const dx=point.x-p.x,dy=point.y-p.y,range=Math.hypot(dx,dy);
   if(range<1)return 0;
   const vx=velocity(p,'x'),vy=velocity(p,'y');
@@ -150,7 +163,6 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
   const turnWindow=(1-Math.exp(-turnRate*.12))/turnRate;
   return Math.max(0,Math.min(12,crossTrackSpeed*turnWindow*.45));
  };
- const landingRead=target.landingRead===true;
  const opponentCarrier=Number.isInteger(target.t)&&target.t!==team&&!target.keeper;
  const carrierMotion=carrierTurnAwareVelocity(target,velocity(target,'x'),velocity(target,'y'),.12);
  const carrierScale=carrierSpeed>220?220/carrierSpeed:1;

@@ -3,24 +3,24 @@
 Updated: 2026-11-27
 
 ## Mission
-Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players, exact ordering/ratios, six formations, four actions, saves and offline play.
+Prioritize responsive gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- 0.12.81.367 — GROUND-SPILL-SURFACE-DRAG-READ-01: CPU primary and goal-side support now project fresh low rolling tackle spills using live Grass/Wet/Sand ball drag (.986/.96/.94), rather than a single linear roll estimate.
-- Production: src/modules/ai.js and src/modules/engine.js; no new state, save-schema or roster change.
-- Regressions: tests/ai_loose_ball_second_ball_cover.test.cjs and desktop/simulated-touch browser QA cover both teams, all three surfaces, airborne parity, 26-unit support split and four-action/data contracts.
-- .367 first Modular QA #46004667398 exposed two fixture-only mistakes: the actual-driveAI case initially placed its ball away from field center, and the airborne parity assertion incorrectly expected the 150-unit cap rather than the existing capped flight projection. The fixture now centers the live ball and computes the original airborne flight estimate explicitly. Production source, rolling projections and assertions remain unchanged. Exact-head reruns required.
+- 0.12.81.368 — AI-LOOSE-BALL-TURN-ARRIVAL-READ-01: trusted low loose-ball landing reads now project defender momentum through the existing Agility-limited turn response when finite live steering exists. Neutral/invalid steering retains the prior linear projection and cross-track cost.
+- Production: `src/modules/ai.js`. No new player state, save-schema or roster change.
+- Regressions: `tests/ai_loose_ball_second_ball_cover.test.cjs` and desktop/simulated-touch actual-GameEngine browser QA cover both teams, high/low Agility and neutral/invalid fallback.
+- .367 gate repair: Census #46005191109 failed only browser shard 3 because the secondary support fixture expected frictionless .18-second travel instead of Grass .986 drag. Four Node shards and browser shards 0–2 passed; Modular QA #46005191111 passed. .368 updates that fixture to the production drag integral.
 
 ## Next smallest action
-Inspect .367 exact-head Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then advance the next distinct gameplay or existing-player animation improvement.
+Inspect .368 exact-head Modular QA and all four Node/four Chromium Census shards. Fix confirmed failures without weakening assertions. If green, allow the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then continue the next distinct gameplay or existing-player animation improvement.
 
 ## Ownership and exclusions
-Read and update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
+Read/update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Evidence
-- Base dev: 87e914539b2cf3e47dc1fb8e4c813decc13ae860; main: 9fa60ffcbf285df8b8c5145074c02c23a89d17b8.
-- .366 Modular QA #46002294829 succeeded. Census #46002294636: preflight/preview and all four Node shards passed; three Chromium shards passed and one was still running.
-- Main .364 Census #45996166446 and Pages deployment #45996157210 succeeded; .366 was not certified, promoted or deployed.
+- Base dev: 1c3538f63d4884b6a09a5de3de85338f6f9223e0; main: 87e914539b2cf3e47dc1fb8e4c813decc13ae860.
+- Main Census #46003959995 and Pages deployment #46003949070 passed on main .366, including hosted Pages smoke.
+- GitHub REST reports main.protected=false and dev.protected=false; rulesets endpoint returned [].
 
 ## Cleanup
-Keep this checkpoint below 4 KiB. Update only this file for this agent's handover; leave other checkpoints untouched.
+Keep this checkpoint below 4 KiB. Update only this file for this agent; leave other checkpoints untouched.
