@@ -212,7 +212,7 @@ test('loose-ball press selection uses live steering and Agility for turn-aware a
   const highNeutral=make(team,500-dir*50,100,dir*150,0,0,0);
   assert.equal(AI.defensivePressers([lowNeutral,highNeutral],team,target).primary,lowNeutral,
    'without live steering, the existing linear arrival keeps the closer defender');
-  const lowBoundary=make(team,500-dir*45,1,dir*150,0,0,0);
+  const lowBoundary=make(team,500-dir*45,1,0,150,0,0);
   const highBelow=make(team,500-dir*50,100,0,150,dir*.149,0);
   assert.equal(AI.defensivePressers([lowBoundary,highBelow],team,target).primary,lowBoundary,
    'steering below the 0.15 intent threshold retains linear arrival');
