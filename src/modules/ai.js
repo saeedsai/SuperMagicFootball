@@ -2224,7 +2224,14 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    if(!blocked&&slideThreats.some(slide=>slideThreatensPass(slide,target,arrival)))blocked=true;
    if(blocked)continue;
    const forwardRun=clampTo(dir*vx,-100,160);
-   const score=forward*.32+Math.min(nearest,300)*.50+forwardRun*.08-range*.24;
+   // Receiver control is a small tie-breaker only; spatial safety and forward value stay dominant.
+   const rating=value=>{
+    const parsed=typeof value==='number'?value:typeof value==='string'&&value.trim()!==''?Number(value):NaN;
+    return clampTo(Number.isFinite(parsed)?parsed:50,1,100);
+   };
+   const controlQuality=rating(runner.src?.dribbling)*.70+rating(runner.src?.agility)*.30;
+   const controlBonus=clampTo((controlQuality-50)*.20,-10,10);
+   const score=forward*.32+Math.min(nearest,300)*.50+forwardRun*.08-range*.24+controlBonus;
    if(!best||score>best.score+1e-9)best={runner,target,score};
   }
   return best?{runner:best.runner,target:best.target}:null;

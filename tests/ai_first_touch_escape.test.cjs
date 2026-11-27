@@ -237,6 +237,53 @@ test('CPU first-touch outlet prefers an open forward teammate over a blocked lan
  }
 });
 
+
+test('CPU first-touch outlet uses receiver control quality only as a bounded tie-breaker on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?500:1500,y=300;
+  const carrier=player('control-carrier-'+team,team,x,y,{firstTouchControlTimer:0,firstTouchPressure:.8});
+  const marker=player('control-marker-'+team,1-team,x+dir*55,y-150,{moveVX:0,moveVY:0});
+  const receiver=(name,dribbling,agility,forward=280)=>player(name,team,x+dir*forward,y+160,{
+   moveVX:dir*20,moveVY:0,firstTouchControlTimer:0,src:{id:name,dribbling,agility}
+  });
+  const low=receiver('low-control-'+team,1,1),high=receiver('high-control-'+team,100,100);
+  const preferred=AI.attackingFirstTouchOutlet([carrier,marker,low,high],team,carrier,bounds);
+  assert.equal(preferred?.runner,high,JSON.stringify({team,selected:preferred?.runner?.name}));
+  const malformed=receiver('malformed-control-'+team,'elite',NaN),neutral=receiver('neutral-control-'+team,50,50);
+  const fallback=AI.attackingFirstTouchOutlet([carrier,marker,malformed,neutral],team,carrier,bounds);
+  assert.equal(fallback?.runner,malformed,'missing/invalid ratings use neutral control and preserve stable ordering');
+  const highNear=receiver('high-control-near-'+team,100,100,200),lowFar=receiver('low-control-far-'+team,1,1,500);
+  const safer=AI.attackingFirstTouchOutlet([carrier,marker,highNear,lowFar],team,carrier,bounds);
+  assert.equal(safer?.runner,lowFar,'a materially safer forward outlet outweighs the bounded control bonus');
+ }
+});
+
+test('actual CPU pressured first-touch release selects the better controller on both attacking sides',async()=>{
+ const {ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const s=prepareInterceptGame(ENGINE,{team}),{game,interceptor,dir,x,y}=s;
+  const high=game.player(team,4),low=game.player(team,5);
+  Object.assign(high,{x:x+dir*280,y:y+160,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:dir*20,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:0});
+  Object.assign(low,{x:x+dir*280,y:y+160,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   moveVX:dir*20,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,aiGiveAndGoRun:null,firstTouchControlTimer:0});
+  Object.assign(high.src,{dribbling:100,agility:100});Object.assign(low.src,{dribbling:1,agility:1});
+  Object.assign(s.marker,{x:x+dir*55,y:y-150,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+  Object.assign(interceptor,{firstTouchControlTimer:0,firstTouchPressure:.8,firstTouchOutletReadTimer:.68,
+   aiFirstTouchOutletUntil:game.clock+1,aiFirstTouchTarget:null,aiAssistTarget:null,aiGiveAndGoRun:null,
+   aiTimer:0,aiTarget:null,cd:0,trickCd:1,action:'idle',actionTimer:0});
+  const originalRandom=Math.random;
+  try{
+   Math.random=()=>0;const start=game.events.length;game.driveAI(interceptor,.016);
+   const intent=game.events.slice(start).find(event=>event.type==='passIntent');
+   assert.equal(intent?.target,high.src.id,JSON.stringify({team,intent,expected:high.src.id}));
+   assert.equal(game.ball.owner,null,'the selected receiver gets the real pass');
+  }finally{Math.random=originalRandom;}
+ }
+});
+
+
 test('CPU interception uses the safe post-touch outlet after its skill-and-pace-scaled control touch',async()=>{
  const {ENGINE}=await loadModules();
  for(const team of [0,1]){
