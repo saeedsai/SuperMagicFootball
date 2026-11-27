@@ -1119,11 +1119,16 @@ function attackingGoalmouthPass(players,team,carrier,bounds){
  for(const runner of players){
   if(!runner||runner===carrier||runner.t!==team||runner.keeper||runner.aiAssistTarget||
    !Number.isFinite(runner.x)||!Number.isFinite(runner.y)||!ready(runner))continue;
-  // Lead only a short step toward the receiver's actual movement, never an
-  // unbounded prediction that could turn a square pass into a blind through ball.
+  // Keep the square-pass lead short, but bend it toward the receiver's live
+  // turn when both movement axes are available. Incomplete legacy motion keeps
+  // the exact previous linear projection, and each axis remains capped at 24.
+  const receiverLead=Number.isFinite(runner.moveVX)&&Number.isFinite(runner.moveVY)?
+   supportRunReceiverLead(runner,.12,24):
+   {x:clampTo(movementVelocity(runner,'x')*.12,-24,24),
+    y:clampTo(movementVelocity(runner,'y')*.12,-24,24)};
   const target={
-   x:clampTo(runner.x+clampTo(movementVelocity(runner,'x')*.12,-24,24),xMin+22,xMax-22),
-   y:clampTo(runner.y+clampTo(movementVelocity(runner,'y')*.12,-24,24),yMin+23,yMax-23)
+   x:clampTo(runner.x+receiverLead.x,xMin+22,xMax-22),
+   y:clampTo(runner.y+receiverLead.y,yMin+23,yMax-23)
   };
   const forward=(target.x-carrier.x)*dir,goalGap=(goalX-target.x)*dir;
   const centerOffset=Math.abs(target.y-goalY),range=Math.hypot(target.x-carrier.x,target.y-carrier.y);

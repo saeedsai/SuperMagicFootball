@@ -106,6 +106,51 @@ test('engine sends the selected goalmouth outlet as an ordinary low pass intent'
  assert.equal(game.events.at(-1)?.loft,'goalmouth');
 });
 
+test('goal-mouth square pass leads a receiver through live Agility-limited turns in both directions',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const carrier=player('carrier',team,team===0?620:380,300);
+  const high=player('high-agility',team,carrier.x+dir*160,300,{
+   moveVX:0,moveVY:340,dx:dir,dy:0,src:{agility:100}
+  });
+  const low=player('low-agility',team,carrier.x+dir*160,300,{
+   moveVX:0,moveVY:340,dx:dir,dy:0,src:{agility:1}
+  });
+  const highResult=AI.attackingGoalmouthPass([carrier,high],team,carrier,bounds);
+  const lowResult=AI.attackingGoalmouthPass([carrier,low],team,carrier,bounds);
+  assert.equal(highResult?.runner,high,'high-Agility receiver remains eligible on team '+team);
+  assert.equal(lowResult?.runner,low,'low-Agility receiver remains eligible on team '+team);
+  const highForward=(highResult.target.x-high.x)*dir;
+  const lowForward=(lowResult.target.x-low.x)*dir;
+  assert.ok(highForward>lowForward+8,
+   'high Agility bends the square-pass lead farther toward goal on team '+team);
+  assert.ok(highForward<=24&&lowForward<=24,'the short per-axis lead cap remains on team '+team);
+  assert.ok(highResult.target.y-high.y<lowResult.target.y-low.y,
+   'lower Agility retains more cross-lane momentum on team '+team);
+ }
+});
+
+test('neutral and incomplete goalmouth receiver movement retain the exact bounded linear lead',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1;
+  const carrier=player('carrier',team,team===0?620:380,300);
+  const neutral=player('neutral',team,carrier.x+dir*160,300,{
+   moveVX:0,moveVY:340,dx:0,dy:0
+  });
+  const neutralResult=AI.attackingGoalmouthPass([carrier,neutral],team,carrier,bounds);
+  assert.deepEqual(neutralResult?.target,{x:neutral.x,y:neutral.y+24},
+   'neutral steering preserves the previous linear lead on team '+team);
+  const incomplete=player('incomplete',team,carrier.x+dir*160,300,{
+   moveVX:NaN,moveVY:340,vx:dir*100,vy:0,dx:dir,dy:0
+  });
+  const incompleteResult=AI.attackingGoalmouthPass([carrier,incomplete],team,carrier,bounds);
+  assert.deepEqual(incompleteResult?.target,{x:incomplete.x+dir*12,y:incomplete.y+24},
+   'an incomplete movement vector retains the legacy velocity fallback on team '+team);
+ }
+});
+
 test('goal-mouth passing prefers the receiver already facing goal in both directions',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){
