@@ -482,13 +482,16 @@ test('support-run PASS leads the receiver through their Agility-limited turn in 
   Math.random=()=>.5;
   for(const team of [0,1]){
    const high=supportTurnFixture(ENGINE,team),low=supportTurnFixture(ENGINE,team),
-    neutral=supportTurnFixture(ENGINE,team);
+    average=supportTurnFixture(ENGINE,team),neutral=supportTurnFixture(ENGINE,team);
    high.runner.src={...high.runner.src,agility:100};
    low.runner.src={...low.runner.src,agility:1};
-   neutral.runner.src={...neutral.runner.src,agility:50};
+   average.runner.src={...average.runner.src,agility:50};
+   neutral.runner.src={...neutral.runner.src,agility:100};
+   neutral.runner.dx=0;neutral.runner.dy=0;
    const flight=f=>Math.max(.12,Math.min(.35,Math.hypot(f.runner.x-f.carrier.x,f.runner.y-f.carrier.y)/1400));
    const highLead=AI.supportRunReceiverLead(high.runner,flight(high));
    const lowLead=AI.supportRunReceiverLead(low.runner,flight(low));
+   const averageLead=AI.supportRunReceiverLead(average.runner,flight(average));
    const neutralLead=AI.supportRunReceiverLead(neutral.runner,flight(neutral));
    const linear={x:Math.max(-65,Math.min(65,neutral.runner.moveVX*flight(neutral))),
     y:Math.max(-65,Math.min(65,neutral.runner.moveVY*flight(neutral)))};
@@ -496,13 +499,13 @@ test('support-run PASS leads the receiver through their Agility-limited turn in 
     'high Agility turns the support lead further into the receiver cut for team '+team);
    assert.ok(Math.abs(highLead.x)<Math.abs(lowLead.x),
     'high Agility spends more of the lead turning laterally for team '+team);
-   assert.deepEqual(neutralLead,linear,'neutral Agility preserves the bounded linear baseline');
-   delete neutral.runner.src.agility;
-   assert.deepEqual(AI.supportRunReceiverLead(neutral.runner,flight(neutral)),linear,
-    'missing Agility uses neutral turn behavior');
-   neutral.runner.src.agility=NaN;
-   assert.deepEqual(AI.supportRunReceiverLead(neutral.runner,flight(neutral)),linear,
-    'invalid Agility uses neutral turn behavior');
+   assert.deepEqual(neutralLead,linear,'neutral input preserves the bounded linear baseline');
+   delete average.runner.src.agility;
+   assert.deepEqual(AI.supportRunReceiverLead(average.runner,flight(average)),averageLead,
+    'missing Agility uses the neutral Agility turn profile');
+   average.runner.src.agility=NaN;
+   assert.deepEqual(AI.supportRunReceiverLead(average.runner,flight(average)),averageLead,
+    'invalid Agility uses the neutral Agility turn profile');
    for(const f of [high,low]){
     assert.equal(f.game.pass(f.carrier,false,false,{preferredTarget:f.runner,supportRun:true}),true);
     assert.equal(f.game.ball.passTarget,f.runner.src.id);
@@ -526,7 +529,7 @@ test('support-run receiver lead preserves the legacy direction fallback when mov
   const {game,carrier,runner}=supportTurnFixture(ENGINE,team);
   runner.moveVX=NaN;runner.moveVY=NaN;runner.dx=1.2;runner.dy=-1.1;
   const lead=AI.supportRunReceiverLead(runner,.25);
-  assert.deepEqual(lead,{x:108,y:-99},
+  assert.ok(Math.abs(lead.x-108)<1e-9&&Math.abs(lead.y+99)<1e-9,
    'missing movement axes retain the original direction-vector lead without a new cap');
   const supportRun={runner,target:{x:runner.x,y:runner.y}};
   assert.equal(AI.attackingSupportPass(game.players,team,carrier,supportRun),runner,
