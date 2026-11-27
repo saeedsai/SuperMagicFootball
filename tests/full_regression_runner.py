@@ -27,6 +27,8 @@ EXTRA_BROWSER = {
     "v060_qa.py",
 }
 NODE_TIMEOUT_OVERRIDES = {
+    # The 30-match keeper cohort can exceed the generic 35 s shard bound on a busy runner.
+    "gk_seeded_match_trials.test.cjs": 55,
     # These engine-only 60 Hz match matrices intentionally simulate hundreds
     # of regulation games. They need a longer per-script bound than small unit
     # contracts, but remain bounded within the enclosing CI job timeout.
