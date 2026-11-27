@@ -229,11 +229,11 @@ def cpu_shot_read_script():
         for(const team of [0,1]){
           const cpuUp=aim(team,220,false),cpuDown=aim(team,-220,false);
           const humanUp=aim(team,220,true),humanDown=aim(team,-220,true);
-          const cpuStraight=aim(team,400,false,{dx:0,dy:0});
-          const cpuTurning=aim(team,400,false,{dx:1,dy:-1});
-          const cpuAligned=aim(team,400,false,{dx:0,dy:1});
-          const humanStraight=aim(team,400,true,{dx:0,dy:0});
-          const humanTurning=aim(team,400,true,{dx:1,dy:-1});
+          const cpuStraight=aim(team,800,false,{dx:0,dy:0});
+          const cpuTurning=aim(team,800,false,{dx:1,dy:-1});
+          const cpuAligned=aim(team,800,false,{dx:0,dy:1});
+          const humanStraight=aim(team,800,true,{dx:0,dy:0});
+          const humanTurning=aim(team,800,true,{dx:1,dy:-1});
           rows.push({team,cpuUp,cpuDown,humanUp,humanDown,cpuStraight,cpuTurning,
             cpuAligned,humanStraight,humanTurning,
             buttons:document.querySelectorAll('#touchButtons button[data-act]').length});

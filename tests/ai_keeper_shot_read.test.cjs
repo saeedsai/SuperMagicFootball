@@ -35,13 +35,13 @@ test('CPU shot lane leads an active moving keeper in both attack directions whil
  for(const team of [0,1]){
   const up=cpuShotAim(ENGINE,world,team,220,false),down=cpuShotAim(ENGINE,world,team,-220,false);
   assert.ok(up<down,'CPU should aim opposite the keeper lateral movement');
-  const straight=cpuShotAim(ENGINE,world,team,400,false,{dx:0,dy:0});
-  const turning=cpuShotAim(ENGINE,world,team,400,false,{dx:1,dy:-1});
-  const aligned=cpuShotAim(ENGINE,world,team,400,false,{dx:0,dy:1});
+  const straight=cpuShotAim(ENGINE,world,team,800,false,{dx:0,dy:0});
+  const turning=cpuShotAim(ENGINE,world,team,800,false,{dx:1,dy:-1});
+  const aligned=cpuShotAim(ENGINE,world,team,800,false,{dx:0,dy:1});
   assert.notEqual(turning,straight,'CPU shot lane must account for the keeper turning against lateral momentum');
   assert.equal(aligned,straight,'aligned keeper steering preserves the previous linear read');
-  assert.equal(cpuShotAim(ENGINE,world,team,400,true,{dx:1,dy:-1}),
-   cpuShotAim(ENGINE,world,team,400,true,{dx:0,dy:0}),
+  assert.equal(cpuShotAim(ENGINE,world,team,800,true,{dx:1,dy:-1}),
+   cpuShotAim(ENGINE,world,team,800,true,{dx:0,dy:0}),
    'human shot aiming must not read/project keeper steering or movement');
  }
 });
