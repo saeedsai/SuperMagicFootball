@@ -76,7 +76,7 @@ with sync_playwright() as pw:
             }
             const runCloseContactPoke=(defendingTeam,exposed,ballZ=12)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
+                game.init({home:0,away:1,mode:'quick',humans:0});game.matchState='paused';game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
@@ -97,7 +97,7 @@ with sync_playwright() as pw:
                 exposed:runCloseContactPoke(defendingTeam,true),shielded:runCloseContactPoke(defendingTeam,false)});
             const runActualPokeAim=(defendingTeam,exposed)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
+                game.init({home:0,away:1,mode:'quick',humans:0});game.matchState='paused';game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
                 game.tackle=Object.getPrototypeOf(game).tackle;
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
@@ -121,7 +121,7 @@ with sync_playwright() as pw:
                 exposed:runActualPokeAim(team,true),shielded:runActualPokeAim(team,false)});
             const runCpuSlide=(defendingTeam,exposed,range=55,firstTouch=false,ballZ=12)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
+                game.init({home:0,away:1,mode:'quick',humans:0});game.matchState='paused';game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700,carrierX=x+dir*range;
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
@@ -152,7 +152,7 @@ with sync_playwright() as pw:
                 firstTouchSlide20:runCpuSlide(team,true,85,true,20)});
             const runApproachCommit=(defendingTeam,defenderSpeed,carrierSpeed=0,range=88)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];game.magicHazards=[];game.tornado=null;
+                game.init({home:0,away:1,mode:'quick',humans:0});game.matchState='paused';game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];game.magicHazards=[];game.tornado=null;
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
@@ -182,7 +182,7 @@ with sync_playwright() as pw:
             const runTurnAwareCommit=(defendingTeam,agility,options={})=>{
                 const dir=defendingTeam===0?1:-1;
                 const input=options.input||'cut';
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
+                game.init({home:0,away:1,mode:'quick',humans:0});game.matchState='paused';game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,
@@ -209,7 +209,7 @@ with sync_playwright() as pw:
             }));
             const runHumanCommandAim=(defendingTeam,action,exposed)=>{
                 const dir=defendingTeam===0?1:-1,x=1000,y=700;
-                game.init({home:0,away:1,mode:'quick',humans:1});game.weather='Clear';
+                game.init({home:0,away:1,mode:'quick',humans:1});game.matchState='paused';game.weather='Clear';
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
@@ -232,7 +232,7 @@ with sync_playwright() as pw:
                 humanCommandAimRows.push(runHumanCommandAim(team,action,exposed));
             const runHumanBallArcSlide=(defendingTeam,action,exposed)=>{
                 const dir=defendingTeam===0?1:-1,x=1000,y=700;
-                game.init({home:0,away:1,mode:'quick',humans:1});game.weather='Clear';
+                game.init({home:0,away:1,mode:'quick',humans:1});game.matchState='paused';game.weather='Clear';
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
@@ -256,7 +256,7 @@ with sync_playwright() as pw:
                 humanBallArcSlideRows.push(runHumanBallArcSlide(team,action,exposed));
             const runHumanPokeBallArc=(defendingTeam,exposed,passLiveBall=true)=>{
                 const dir=defendingTeam===0?1:-1,x=1000,y=700;
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                game.init({home:0,away:1,mode:'quick',humans:0});game.matchState='paused';game.weather='Clear';
                 game.tackle=Object.getPrototypeOf(game).tackle;
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
@@ -286,7 +286,7 @@ with sync_playwright() as pw:
             }
             const runHumanBallFirstPoke=(defendingTeam,profile)=>{
                 const dir=defendingTeam===0?1:-1,x=1000,y=700;
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                game.init({home:0,away:1,mode:'quick',humans:0});game.matchState='paused';game.weather='Clear';
                 game.tackle=Object.getPrototypeOf(game).tackle;
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
