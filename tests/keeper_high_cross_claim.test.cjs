@@ -255,8 +255,6 @@ test('keeper yields a high-cross claim to a grounded runner who can arrive durin
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){
   const f=fixture(ENGINE,team);
-  const ownGoalX=f.keeper.x-f.dir*40;
-  f.ball.x=ownGoalX+f.dir*308;
   const flight=(f.ball.vz+Math.sqrt(f.ball.vz*f.ball.vz+1000*f.ball.z))/500;
   const target={x:f.ball.x+f.ball.vx*flight,y:f.ball.y+f.ball.vy*flight};
   const keeperGap=Math.hypot(target.x-f.keeper.x,target.y-f.keeper.y);
@@ -329,7 +327,7 @@ test('grounded high-cross claim follows Agility-limited receiver turns in both d
   f.receiver.x=target.x+f.dir*180;f.receiver.y=target.y+10;
   f.receiver.moveVY=0;f.receiver.moveVX=-f.dir*300;
   f.receiver.dx=f.dir;f.receiver.dy=0;f.receiver.src.agility=100;
-  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),
+  assert.ok(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),
    'a high-Agility runner turning away must not falsely block a safe keeper claim');
   f.receiver.src.agility=1;
   assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players),null,
