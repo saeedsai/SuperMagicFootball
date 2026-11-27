@@ -25,9 +25,14 @@ const activate=vm.runInNewContext('({'+engine.slice(methodStart,methodEnd)+'})',
  stat:(p,key)=>p.src?.[key]??55,
  impactStun:()=>.8
 }).activateDefence;
-const resolveMaceSweep=vm.runInNewContext('({'+engine.slice(engine.indexOf('\n resolveMaceSweep(p){'),engine.indexOf('\n updateMaceSweep(',engine.indexOf('\n resolveMaceSweep(p){')))+'})',{
+const stat=(p,key)=>p.src?.[key]??55;
+const helperStart=engine.indexOf('function maceSweepDefensiveRead(');
+const helperEnd=engine.indexOf('\\n}',helperStart)+2;
+assert.ok(helperStart>=0&&helperEnd>helperStart,'extract Mace Sweep read helper');
+const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\\nmaceSweepDefensiveRead',{stat});
+const resolveMaceSweep=vm.runInNewContext('({'+engine.slice(engine.indexOf('\\n resolveMaceSweep(p){'),engine.indexOf('\\n updateMaceSweep(',engine.indexOf('\\n resolveMaceSweep(p){')))+'})',{
  fieldAbility:ABILITIES.fieldAbility,abilityLevel:()=>2,levelModifiers:()=>({stun:1}),distance,norm,clamp,
- F:mechanics.world.field,stat:(p,key)=>p.src?.[key]??55,impactStun:()=>.8
+ F:mechanics.world.field,stat,maceSweepDefensiveRead,impactStun:()=>.8
 }).resolveMaceSweep;
 
 function setup(side=0,overrides={}){

@@ -7,17 +7,18 @@ Prioritize responsive gameplay, intelligent passing/tackling and counterable tri
 
 ## Current checkpoint
 - Candidate 0.12.81.387 — MACE-SWEEP-MOMENTUM-READ-01.
-- Mace Sweep's existing defensive read now accepts actual closing movement velocity when directional input is neutral, while retaining the existing facing and Defence-versus-Dribbling gates.
-- CPU defenders that already qualify for that read no longer waste the .24-second telegraph by jumping; retreating, facing-away and low-Defence cases still use the existing JUMP response.
-- Corrected three missing field-bounds arguments in the .386 grounded high-cross regression fixture; no .386 production code changed.
+- Grounded defenders use actual closing movement velocity when directional input is neutral, while preserving the existing facing and Defence-versus-Dribbling gates. CPU defenders already meeting the read no longer waste the .24-second telegraph by jumping.
+- Corrected the .386 grounded high-cross test's three missing bounds arguments.
+- Corrected two existing Mace Sweep Node harnesses to inject the new shared read helper; production gameplay is unchanged by this follow-up.
 
 ## Exact-head QA evidence
-- Parent dev SHA: `44cf92b97a6bc3a589d3dbb79d773a1d408c1983`; main SHA: `ffc4ca5122abfd16849b69c705fa5f341cb52e7a`.
-- .386 Modular QA #46082148024 failed one Node assertion because three grounded high-cross calls omitted the required bounds. Full Regression Census #46082148073 failed preflight for the same test failure; later shards did not run.
-- .387 focused Node and actual-engine desktop/simulated-touch browser regressions added; exact-head Modular QA and Full Regression Census pending.
+- Feature commit: `7961f71b75bee13e637ee402dd33d9d5a610de45`; parent dev SHA: `44cf92b97a6bc3a589d3dbb79d773a1d408c1983`; main SHA: `ffc4ca5122abfd16849b69c705fa5f341cb52e7a`.
+- .386 Modular QA #46082148024 failed one keeper test because three calls omitted bounds; fixed in .387.
+- First .387 Modular QA #46083298080 ran 3,048 tests: 3,044 passed, four failed because two existing Mace Sweep test harnesses omitted the new shared helper when extracting the resolver. The new focused .387 tests and .386 keeper test passed. Census #46083298087 failed preflight for the same harness dependency.
+- Follow-up injects the actual helper into both harnesses; exact-head Modular QA and Census pending.
 
 ## Next smallest action
-- Inspect .387 Modular QA and exact-head four-Node/four-Chromium Census. Repair confirmed failures without weakening assertions.
+- Inspect the .387 corrective-head Modular QA and exact-head four-Node/four-Chromium Census. Repair confirmed failures without weakening assertions.
 - Only a fully green exact dev head may pass the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes.
 - Continue through-ball interception, counterable Magic Tricks, goalkeeper reactions, existing-player animation/Studio QA, Player Studio usability and Career/Cup depth.
 
