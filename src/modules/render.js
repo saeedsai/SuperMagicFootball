@@ -1628,7 +1628,7 @@ class Renderer{
   ctx.save();ctx.globalAlpha=clamp(Number(opacity)||0,0,1)*(1-height*.42);
   ellipse(ctx,x,y+4,Math.max(5.5,15-height*9.5),Math.max(2.4,7-height*4.6),'#14301e66');ctx.restore();
  }
- drawBall(ctx,game){let b=game.ball;if(!b)return;const shot=b.shot,underground=!!(shot?.underground&&['silverCarp','dolphin','wave'].includes(shot.id));const grip=b.owner?.keeper?ARTPOSE.keeperGrip(b.owner.action,b.owner.face):null,ballX=grip?b.owner.x+grip.x:b.x,ballY=grip?b.owner.y+grip.y-b.z:b.y-b.z;const concealed=!!(b.owner&&!b.shot&&(b.owner.hideBallTimer||0)>0),reducedFlash=!!game.options?.reducedFlash;ctx.save();if(!grip)this.drawBallShadow(ctx,b.x,b.y,b.z,underground?.2:concealed?(reducedFlash?.13:.09):1);ctx.globalAlpha=concealed?(reducedFlash?.17:.10):1;
+ drawBall(ctx,game){let b=game.ball;if(!b)return;const shot=b.shot,underground=!!(shot?.underground&&['silverCarp','dolphin','wave'].includes(shot.id));const grip=b.owner?.keeper?ARTPOSE.keeperGrip(b.owner.action,b.owner.face,b.owner.actionTimer):null,ballX=grip?b.owner.x+grip.x:b.x,ballY=grip?b.owner.y+grip.y-b.z:b.y-b.z;const concealed=!!(b.owner&&!b.shot&&(b.owner.hideBallTimer||0)>0),reducedFlash=!!game.options?.reducedFlash;ctx.save();if(!grip)this.drawBallShadow(ctx,b.x,b.y,b.z,underground?.2:concealed?(reducedFlash?.13:.09):1);ctx.globalAlpha=concealed?(reducedFlash?.17:.10):1;
  // Ordinary high-speed strikes use a compact, tapered path wake. This is a
  // renderer-only cue and never feeds back into ball motion or collisions.
  if(!shot&&!b.owner)drawOrdinaryBallWake(ctx,b,reducedFlash);

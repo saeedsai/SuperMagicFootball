@@ -156,9 +156,12 @@ const ARTPOSE=(()=>{
  }
  // A held keeper ball is painted at the gloves/chest; the simulation ball
  // remains at its ordinary physics coordinates. This is presentation only.
- function keeperGrip(action,face=1){
+ function keeperGrip(action,face=1,actionTimer=0){
   if(action!=='keeperCatch'&&action!=='keeperHold')return null;
-  return {x:Number(face)<0?-5:5,y:-59};
+  const remaining=Number(actionTimer);
+  const raw=action==='keeperCatch'?1-clamp(Number.isFinite(remaining)?remaining:0,0,.46)/.46:1;
+  const phase=raw*raw*(3-2*raw);
+  return {x:Number(face)<0?-5:5,y:-54-5*phase};
  }
  // Visual-only penalty JUMP animation; no game-state or save mutations.
  function penaltyKeeperVisual(pk,cy){

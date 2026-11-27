@@ -35,9 +35,32 @@ script=r"""() => {
  const ctx=c.getContext('2d');Object.assign(k,{x:150,y:170,action:'keeperHold',face:1,hideBallTimer:0});
  Object.assign(b,{owner:k,x:420,y:330,z:0,shot:null,trail:[],vx:0,vy:0,rollAngle:0});
  const ink=(x,y,r=19)=>{const pixels=ctx.getImageData(Math.max(0,x-r),Math.max(0,y-r),r*2,r*2).data;let count=0;for(let i=3;i<pixels.length;i+=4)if(pixels[i]>24)count++;return count};
- SupermagicFootball.renderer.drawBall(ctx,g);const held={gloves:ink(155,111),physics:ink(420,330)};
+ const centroidY=()=>{const pixels=ctx.getImageData(0,0,c.width,c.height).data;let total=0,weighted=0;for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){const alpha=pixels[(y*c.width+x)*4+3];if(alpha>24){total+=alpha;weighted+=y*alpha;}}return total?weighted/total:NaN};
+ SupermagicFootball.renderer.drawBall(ctx,g);const held={gloves:ink(155,111),physics:ink(420,330)},heldBallY=centroidY();
  k.action='keeperThrow';ctx.clearRect(0,0,c.width,c.height);SupermagicFootball.renderer.drawBall(ctx,g);
  const released={gloves:ink(155,111),physics:ink(420,330)};
+ const catchBallYs=[];
+ for(const remaining of [.46,.23,0]){
+  k.action='keeperCatch';k.actionTimer=remaining;ctx.clearRect(0,0,c.width,c.height);
+  SupermagicFootball.renderer.drawBall(ctx,g);catchBallYs.push(centroidY());
+ }
+ k.action='keeperHold';k.actionTimer=0;ctx.clearRect(0,0,c.width,c.height);
+ SupermagicFootball.renderer.drawBall(ctx,g);const settledHoldY=centroidY();
+ const poseCanvas=document.createElement('canvas');poseCanvas.width=720;poseCanvas.height=300;
+ poseCanvas.id='keeper-catch-settle-gallery';
+ poseCanvas.style.cssText='position:fixed;left:10px;top:10px;z-index:999999;background:#e8eef3';
+ const poseCtx=poseCanvas.getContext('2d',{willReadFrequently:true}),catchPoseHashes=[];
+ for(const [index,remaining] of [.46,.23,0].entries()){
+  const sample={...k,x:120+index*240,y:220,z:0,face:1,dx:0,dy:0,keeper:true,
+   action:'keeperCatch',actionTimer:remaining,preview:true,controlled:false,
+   visualFacing:{kind:'front',side:1},stun:0,cryTimer:0};
+  SupermagicFootball.renderer.drawPlayer(poseCtx,sample,{getTeam:()=>g.getTeam(k.t),
+   options:{showNames:false,reducedFlash:false}});
+  const pixels=poseCtx.getImageData(index*240,0,240,300).data;let hash=2166136261;
+  for(let q=0;q<pixels.length;q+=4)hash=Math.imul(hash^pixels[q]^pixels[q+1]<<8^pixels[q+2]<<16^pixels[q+3],16777619)>>>0;
+  catchPoseHashes.push(hash);
+ }
+ document.body.append(poseCanvas);
  const fatigueTrials=[];
  for(const side of [0,1])for(const [fatigueLevel,speed] of [[0,1900],[.5,1900],[1,1900],[0,1950],[.5,1950]]){
   g.init({home:0,away:1,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
@@ -56,7 +79,7 @@ script=r"""() => {
   fatigueTrials.push({side,fatigueLevel,speed,committed,ownerIsKeeper:b.owner===k,
    deflected:save?.deflected===true,catchEvents:g.events.filter(e=>e.type==='keeperCatch').length});
  }
- return {out,held,released,fatigueTrials};
+ return {out,held,released,heldBallY,catchBallYs,settledHoldY,catchPoseHashes,fatigueTrials};
 }"""
 with sync_playwright() as pw:
  browser=pw.chromium.launch(executable_path='/usr/bin/chromium',headless=True,
@@ -73,6 +96,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate(script)
+  page.locator('#keeper-catch-settle-gallery').screenshot(path=str(root/'tests/.generated'/f'keeper_catch_settle_{device}.png'))
   rows=result['out']
   assert not errors,(device,errors)
   assert len(rows)==18,(device,len(rows))
@@ -84,6 +108,9 @@ with sync_playwright() as pw:
    assert r['totalSaves']==1 if r['kind']!='opponentLoose' else r['totalSaves']==0,(device,r)
   assert result['held']['gloves']>35 and result['held']['physics']==0,(device,'held ball must render at gloves without false ground shadow',result['held'])
   assert result['released']['gloves']==0 and result['released']['physics']>35,(device,'released ball must return to its physics point',result['released'])
+  assert len(result['catchBallYs'])==3 and result['catchBallYs'][0]>result['catchBallYs'][1]>result['catchBallYs'][2],(device,'ball must settle smoothly into the gloves',result['catchBallYs'])
+  assert abs(result['catchBallYs'][2]-result['heldBallY'])<.5 and abs(result['settledHoldY']-result['heldBallY'])<.5,(device,'catch and hold ball anchors must match',result)
+  assert len(set(result['catchPoseHashes']))==3,(device,'early, middle and held keeper poses must be visually distinct',result['catchPoseHashes'])
   trials=result['fatigueTrials']
   assert len(trials)==10,(device,len(trials))
   for r in trials:

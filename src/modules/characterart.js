@@ -17,6 +17,12 @@ const CHARACTER_ART=(()=>{
   const elapsed=Number(diveElapsed),phase=clamp(Number.isFinite(elapsed)?elapsed:0,0,.60)/.60;
   return phase*phase*(3-2*phase);
  }
+ function keeperCatchSettle(action,actionTimer=0){
+  if(action==='keeperHold')return 1;
+  if(action!=='keeperCatch')return 0;
+  const remaining=Number(actionTimer),raw=1-clamp(Number.isFinite(remaining)?remaining:0,0,.46)/.46;
+  return raw*raw*(3-2*raw);
+ }
  function keeperDiveLegPose(action,diveElapsed=0,near=true,actionTimer=0){
   let phase=0;
   if(action==='keeperDive'||action==='keeperDiveCatch'||action==='keeperSuper'){
@@ -516,6 +522,7 @@ const CHARACTER_ART=(()=>{
   const airWeight=airPose?.weight||0,landingBrace=airPose?.landingBrace||0;
   const run=(Number(opt.run)||0)*(1-airWeight),sw=(runArmSwing(run,sign)+(opt.signatureMotion?.armSwing||0)*sign*.40)*(1-airWeight);
   const dive=p.keeper&&['keeperDive','keeperDiveCatch','keeperSuper'].includes(p.action),holding=p.keeper&&['keeperCatch','keeperHold'].includes(p.action);
+  const holdPhase=holding?keeperCatchSettle(p.action,p.actionTimer):0;
   const diveReach=dive?keeperArmReach(p.action,p.diveElapsed):0;
   const launch=clamp(Number(opt.shotLaunchPose?.armSpread)||0,0,1);
   const recoveryBrace=!p.keeper?shotRecoveryBrace(p.action,p.actionTimer):0;
@@ -597,7 +604,7 @@ const CHARACTER_ART=(()=>{
    else cheerPose={elbow:[sh+sign*13,-60],hand:[sh+sign*7,-75]}; // temple press
   }
   const launchGuard=launch>0&&sign===(Number(p.face)<0?-1:1);
-  const elbow=holding?[sh-sign*9,-55]:(cheerPose?.elbow||(dive?[sh+sign*(12+9*diveReach),-49-11*diveReach]:bumperImpactPhase!==null
+  const elbow=holding?[sh-sign*(9-2*holdPhase),-52-3*holdPhase]:(cheerPose?.elbow||(dive?[sh+sign*(12+9*diveReach),-49-11*diveReach]:bumperImpactPhase!==null
    ?sign>0?[sh+sign*(16+12*bumperImpact),-40-5*bumperImpact]:[sh+sign*(7+4*bumperImpact),-44+4*bumperImpact]:bumperPhase!==null
    ?[sh+sign*(11+bumperPhase*8),-39-Math.sin(bumperPhase*Math.PI)*5]
    :macePhase!==null
@@ -605,7 +612,7 @@ const CHARACTER_ART=(()=>{
    :gettingUp?[sh+sign*((near?13:10)-5*recoveryBrace),-41+sw*.40+(near?10:6)*recoveryBrace]
    :launch>0?(launchGuard?[sh-sign*launch*5,-43-launch*8]:[sh+sign*(12+launch*15),-43-launch*7]):airWeight>0
     ?[sh+sign*((near?13:10)+airPose.armOpen*(1-landingBrace*.45)),-41-airPose.armLift*(near?1:.75)+landingBrace*4.5]:[sh+sign*(near?13:10),-41+sw*.40]));
-  const hand=holding?[elbow[0]-sign*5,-59]:(cheerPose?.hand||(dive?[elbow[0]+sign*(5+13*diveReach),-58-16*diveReach]:bumperImpactPhase!==null
+  const hand=holding?[elbow[0]-sign*(5-2*holdPhase),-54-5*holdPhase]:(cheerPose?.hand||(dive?[elbow[0]+sign*(5+13*diveReach),-58-16*diveReach]:bumperImpactPhase!==null
    ?sign>0?[elbow[0]+sign*(10+12*bumperImpact),-37-7*bumperImpact]:[elbow[0]+sign*(5+4*bumperImpact),-50+4*bumperImpact]:bumperPhase!==null
    ?[elbow[0]+sign*(8+bumperPhase*7),-30-bumperPhase*18]
    :macePhase!==null
@@ -765,6 +772,6 @@ const CHARACTER_ART=(()=>{
   const mirror=Number(side)<0?-1:1;
   return clamp(turn*.14*mirror,-.095,.095);
  }
- return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,keeperDiveLegPose,idleBlink,idleGaze,runToePitch,runArmSwing,jumpAirPose,turnCounterLean,headTurnCounterLean,version:3};
+ return {draw,headSpecs:av=>faces[norm(av.face,5)],geometry:views,shotRecoveryBrace,keeperArmReach,keeperCatchSettle,keeperDiveLegPose,idleBlink,idleGaze,runToePitch,runArmSwing,jumpAirPose,turnCounterLean,headTurnCounterLean,version:3};
 })();
 export {CHARACTER_ART};
