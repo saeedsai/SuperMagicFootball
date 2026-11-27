@@ -139,7 +139,7 @@ function runHumanBallFirstPoke(team,profile){
  const defender=game.player(team,3),carrier=game.player(1-team,3);
  for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
  const carrierY=profile==='outside'?84:82;
- const ballY=profile==='shielded'?carrierY+36:carrierY-36;
+ const ballY=y+carrierY+(profile==='shielded'?36:-36);
  Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
  Object.assign(carrier,{x:x+dir*15,y:carrierY,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
  const before={x:carrier.x,y:carrier.y};
