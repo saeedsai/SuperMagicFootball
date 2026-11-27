@@ -132,17 +132,21 @@ test('Rainbow Flick aerial counter requires nearby closing fresh defender',()=>{
    'retreating, distant or exhausted defender receives no aerial counter');
 });
 
-test('Nutmeg and Rainbow counters require a supplied two-dimensional heading to face the carrier',()=>{
+test('Nutmeg and Rainbow counters use live 2D heading and residual movement fallback',()=>{
  const carrier={dribbling:95,agility:90,fatigue:0,x:100,y:100};
- const marker={defence:95,aggression:65,fatigue:0,x:50,y:50,vx:100,vy:100,face:1};
+ const marker={defence:95,aggression:65,agility:100,fatigue:0,x:50,y:50,vx:100,vy:100,face:1};
  const plain={id:'plain',evade:0},nutmeg={...plain,nutmeg:true},rainbow={id:'rainbow',evade:.35};
  const facingAway={...marker,dx:0,dy:-1};
  const facingToward={...marker,dx:1,dy:1};
- assert.equal(api.dribbleOdds(carrier,facingAway,nutmeg),api.dribbleOdds(carrier,facingAway,plain));
+ const nutmegAway=api.dribbleOdds(carrier,facingAway,nutmeg);
+ const nutmegToward=api.dribbleOdds(carrier,facingToward,nutmeg);
+ assert.ok(nutmegToward<nutmegAway,'the defender's 2D heading must reach the carrier to reduce the Nutmeg bonus');
  assert.equal(api.dribbleOdds(carrier,facingAway,rainbow),api.dribbleOdds(carrier,facingAway,plain));
- assert.ok(api.dribbleOdds(carrier,facingToward,nutmeg)<api.dribbleOdds(carrier,facingToward,plain));
  assert.ok(api.dribbleOdds(carrier,facingToward,rainbow)<api.dribbleOdds(carrier,facingToward,plain));
- const legacy={...marker,dx:undefined,dy:undefined,vx:undefined,vy:undefined};
- assert.ok(api.dribbleOdds(carrier,legacy,nutmeg)<api.dribbleOdds(carrier,legacy,plain),
-  'legacy stat-only horizontal facing remains supported');
+ const neutralInput={...marker,dx:0,dy:0};
+ assert.equal(api.dribbleOdds(carrier,neutralInput,rainbow),api.dribbleOdds(carrier,facingToward,rainbow),
+  'neutral input falls back to residual movement');
+ const legacy={defence:95,aggression:65,agility:100,fatigue:0,face:1};
+ assert.ok(api.dribbleOdds(carrier,legacy,nutmeg)>api.dribbleOdds(carrier,legacy,plain),
+  'legacy stat-only Nutmeg retains its existing attacker bonus');
 });

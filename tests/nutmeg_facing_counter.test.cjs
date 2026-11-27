@@ -8,22 +8,23 @@ const source=fs.readFileSync('src/modules/dribbles.js','utf8')
  .replace(/^import .*;\s*$/gm,'').replace(/export \{DRIBBLES\};?/,'');
 const DRIBBLES=vm.runInNewContext(source+'\nDRIBBLES;',{GAME_ASSETS:{mechanics}});
 const attacker={x:100,y:0,dribbling:90,agility:80,fatigue:0};
-const defender={x:40,y:0,vx:5,vy:0,face:1,defence:70,aggression:70,agility:98,fatigue:0};
+const defender={x:40,y:0,vx:5,vy:0,dx:1,dy:0,face:1,defence:70,aggression:70,agility:98,fatigue:0};
 const nutmeg=DRIBBLES.dribbleStyle('nutmeg');
 test('facing the ball carrier increases active nutmeg anticipation',()=>{
  const toward=DRIBBLES.dribbleOdds(attacker,defender,nutmeg);
- const away=DRIBBLES.dribbleOdds(attacker,{...defender,face:-1},nutmeg);
+ const away=DRIBBLES.dribbleOdds(attacker,{...defender,dx:-1,dy:0,face:-1},nutmeg);
  assert.ok(toward<away,'facing defender should counter better');
  assert.ok(away>0&&away<1);
 });
 test('missing or neutral facing preserves legacy spatial nutmeg counter',()=>{
  const toward=DRIBBLES.dribbleOdds(attacker,defender,nutmeg);
- for(const face of [undefined,0])assert.equal(DRIBBLES.dribbleOdds(attacker,{...defender,face},nutmeg),toward);
+ for(const patch of [{face:undefined},{face:0},{dx:0,dy:0,face:undefined},{dx:0,dy:0,face:0}])
+  assert.equal(DRIBBLES.dribbleOdds(attacker,{...defender,...patch},nutmeg),toward);
 });
 test('stationary, retreating and exhausted defenders gain no facing-specific counter',()=>{
  for(const patch of [{vx:0},{vx:-5},{fatigue:1}]){
-  const facing=DRIBBLES.dribbleOdds(attacker,{...defender,...patch,face:1},nutmeg);
-  const turned=DRIBBLES.dribbleOdds(attacker,{...defender,...patch,face:-1},nutmeg);
+  const facing=DRIBBLES.dribbleOdds(attacker,{...defender,...patch,dx:0,dy:0,face:1},nutmeg);
+  const turned=DRIBBLES.dribbleOdds(attacker,{...defender,...patch,dx:0,dy:0,face:-1},nutmeg);
   assert.equal(facing,turned,JSON.stringify(patch));
  }
 });
