@@ -12,16 +12,17 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 - Release metadata, About-only version, README, policy, service-worker cache, master backlog and this checkpoint updated. No new player state, save field, action, roster, formation or art asset.
 
 ## Next smallest action
-- Run Modular QA and exact-head four-Node/four-Chromium Full Regression Census at the final dev SHA; fix confirmed failures without weakening assertions.
-- Previous .374 Census #46040879890 had browser shard 3 fail only `online_account_ui_browser_qa.py` because the online service timed out. Other three browser shards and Node shards 0, 2 and 3 passed; Node shard 1 was still running at last inspection. Retry the failed browser job after the workflow finishes; no gameplay failure was established by that timeout.
+- The first .375 exact-head Census preflight found a literal backslash-n before the new `release.js` note, causing JavaScript parse failures across imported modules. This was a release-metadata syntax error, not a gameplay assertion; the metadata line break is corrected in the next repair commit.
+- Rerun Modular QA and exact-head four-Node/four-Chromium Full Regression Census at the repaired dev SHA. Fix confirmed failures without weakening assertions.
+- Previous .374 Census #46040879890 failed browser shard 3 only because `online_account_ui_browser_qa.py` timed out waiting for the online service. Its failed-job-only retry is running; other three browser shards and all four Node shards passed. No gameplay failure was established by that timeout.
 
 ## Ownership and exclusions
 Read/update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Evidence
 - Feature commit: 7e5829b91b546a8608295706a5772f10b16b2fd1.
-- .375 exact-head QA/Census: pending after checkpoint integration.
-- .374 Modular QA #46040879853 passed; Full Regression Census #46040879890 remained in progress at last inspection.
+- .375 first Modular QA/Census: #46042892127 / #46042892209; Census preflight failed on the release.js parse error described above.
+- .374 Modular QA #46040879853 passed; Census #46040879890 failed only the external online-service timeout; failed-job retry in progress.
 - Main: 87e914539b2cf3e47dc1fb8e4c813decc13ae860; branch API reports main.protected=false and dev.protected=false.
 
 ## Cleanup
