@@ -16,6 +16,42 @@ const SHOTFEEL=(()=>{
   const legacy=axis==='x'?player?.vx:player?.vy;
   return Number.isFinite(legacy)?legacy:0;
  };
+ // Predict a defender's pass-lane arrival using their current steering intent.
+ // Slow or unsteered players retain the original capped linear projection.
+ const turnAwarePassProjection=(player,seconds)=>{
+  let vx=movementVelocity(player,'x'),vy=movementVelocity(player,'y');
+  const speed=Math.hypot(vx,vy);
+  const inputX=finiteNumber(player?.dx),inputY=finiteNumber(player?.dy);
+  const inputLength=Math.hypot(inputX,inputY);
+  if(!Number.isFinite(speed)||speed<75||!Number.isFinite(inputLength)||inputLength<.15){
+   return {x:player.x+clamp(vx*seconds,-65,65),y:player.y+clamp(vy*seconds,-65,65)};
+  }
+  const rawAgility=finiteNumber(player?.src?.agility);
+  const agility=clamp(Number.isFinite(rawAgility)?rawAgility:50,1,100);
+  const desiredX=inputX/inputLength,desiredY=inputY/inputLength;
+  let remaining=clamp(seconds,0,.35),travelX=0,travelY=0;
+  while(remaining>1e-6){
+   const step=Math.min(.18,remaining),currentSpeed=Math.hypot(vx,vy);
+   if(currentSpeed<75)break;
+   const currentX=vx/currentSpeed,currentY=vy/currentSpeed;
+   const dot=clamp(currentX*desiredX+currentY*desiredY,-1,1);
+   if(dot>.995){
+    travelX+=vx*step;travelY+=vy*step;remaining-=step;continue;
+   }
+   const cross=currentX*desiredY-currentY*desiredX;
+   const angle=Math.atan2(cross,dot);
+   const maxTurn=(3+agility*.13)*step;
+   const turn=Math.abs(angle)<=maxTurn?angle:
+    (Math.sign(cross)||(player?.t===0?1:-1))*maxTurn;
+   const cosine=Math.cos(turn),sine=Math.sin(turn);
+   const nextVX=(currentX*cosine-currentY*sine)*currentSpeed;
+   const nextVY=(currentX*sine+currentY*cosine)*currentSpeed;
+   travelX+=(vx+nextVX)*.5*step;
+   travelY+=(vy+nextVY)*.5*step;
+   vx=nextVX;vy=nextVY;remaining-=step;
+  }
+  return {x:player.x+clamp(travelX,-65,65),y:player.y+clamp(travelY,-65,65)};
+ };
  // Contact and shot-impact recovery temporarily remove a player from ground-pass
  // interception and receiver-crowding reads. Timers clearing restores the defender.
  const inUnavailableRecovery=player=>
@@ -115,8 +151,8 @@ const SHOTFEEL=(()=>{
    const vy=movementVelocity(rival,'y');
    // Longer passes give moving defenders more time to close the lane; short
    // passes retain the snappy near-instant read. Bound prediction for fairness.
-   const futureX=rival.x+Math.max(-65,Math.min(65,vx*lookahead));
-   const futureY=rival.y+Math.max(-65,Math.min(65,vy*lookahead));
+   const future=turnAwarePassProjection(rival,lookahead);
+   const futureX=future.x,futureY=future.y;
    const marker=Math.max(0,1-Math.hypot(futureX-receiver.x,futureY-receiver.y)/90)*.12;
    const t=((futureX-from.x)*dx+(futureY-from.y)*dy)/segment;
    let blocker=0;

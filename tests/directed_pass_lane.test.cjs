@@ -323,3 +323,24 @@ test('HURT-RECEIVER-READY-01: active contact recoil favors settled receiver with
  assert.equal(choose([hurt]),hurt,'lone hurt receiver remains available');
  assert.equal(choose([{...hurt,actionTimer:0},ready]).x,310,'expired recoil no longer penalized');
 });
+
+
+test('PASS-LANE-AGILITY-STEERING-READ-01: a moving defender is projected through its Agility-limited steering turn',()=>{
+ const from={x:0,y:0},near={x:398,y:19},open={x:422,y:77};
+ const defender=agility=>({x:170,y:20,moveVX:0,moveVY:110,dx:-.1,dy:-1,t:1,src:{agility}});
+ const choose=opponent=>feel.teammateInDirection(from,[near,open],{x:1,y:0},1150,[opponent]);
+ const high=defender(100),low=defender(1),neutral=defender(50);
+ const highRisk=feel.passingLanePressure(from,near,[high]);
+ const lowRisk=feel.passingLanePressure(from,near,[low]);
+ assert.ok(highRisk>lowRisk+.07,JSON.stringify({highRisk,lowRisk}));
+ assert.equal(choose(high),open,'elite defender bends into the direct lane, so the safer angled outlet wins');
+ assert.equal(choose(low),near,'low-Agility defender retains cross-lane momentum, so the direct outlet stays available');
+ assert.equal(choose(neutral),near,'neutral Agility preserves the established selection in this balanced case');
+ const noSteering={...high,dx:0,dy:0};
+ const invalidSteering={...high,dx:NaN,dy:Infinity};
+ const slow={...high,moveVY:50};
+ const fallbackRisk=feel.passingLanePressure(from,near,[noSteering]);
+ assert.equal(feel.passingLanePressure(from,near,[invalidSteering]),fallbackRisk,'invalid steering uses the linear fallback');
+ assert.equal(feel.passingLanePressure(from,near,[slow]),fallbackRisk,'slow defenders keep the linear fallback');
+ assert.equal(choose(noSteering),near,'unsteered defenders retain the previous pass choice');
+});

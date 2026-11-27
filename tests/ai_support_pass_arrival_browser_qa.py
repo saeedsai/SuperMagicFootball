@@ -62,7 +62,42 @@ with sync_playwright() as pw:
     assert row['mode']=='supportRun' and row['target']==row['expected'],(kind,row)
    else:
     assert row['mode'] is None and row['target'] is None,(kind,row)
+  lane_result=page.evaluate("""() => {
+   const g=SupermagicFootball.game,rows=[],field={x:0,y:0,w:2260.8,h:1530};
+   for(const team of [0,1])for(const agility of [1,100]){
+    g.init({home:0,away:1,mode:'quick',humans:1});
+    const dir=team===0?1:-1,carrier=g.player(team,3),near=g.player(team,4),
+     open=g.player(team,5),defender=g.player(1-team,3),
+     x=field.x+field.w*.5,y=field.y+field.h*.5,keep=new Set([carrier,near,open,defender]);
+    for(const q of g.players)if(!keep.has(q))Object.assign(q,{down:true,stun:1,z:0,action:'idle',
+     actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+    Object.assign(carrier,{x,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,
+     dx:dir,dy:0,cd:0,firstTouchControlTimer:0});
+    Object.assign(near,{x:x+dir*398,y:y+19,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     moveVX:0,moveVY:0,dx:0,dy:0});
+    Object.assign(open,{x:x+dir*422,y:y+77,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     moveVX:0,moveVY:0,dx:0,dy:0});
+    Object.assign(defender,{x:x+dir*170,y:y+20,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     moveVX:0,moveVY:110,dx:-.1*dir,dy:-1});
+    Object.assign(defender.src,{agility});
+    Object.assign(g.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTeam:null,
+     passTarget:null,attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false,age:0,canCollect:0});
+    const originalRandom=Math.random;Math.random=()=>.5;
+    let kicked=false;try{kicked=g.pass(carrier,false,false,{direction:{x:dir,y:0},human:true});}
+    finally{Math.random=originalRandom;}
+    rows.push({team,agility,kicked,target:g.ball.passTarget,near:near.src.id,open:open.src.id});
+   }
+   return {rows,teams:SupermagicFootball.teams.length,
+    buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }""")
+  assert lane_result['teams']>=223,(kind,lane_result)
+  assert lane_result['buttons']==4,(kind,lane_result)
+  for row in lane_result['rows']:
+   assert row['kicked'],(kind,row)
+   expected=row['open'] if row['agility']==100 else row['near']
+   assert row['target']==expected,(kind,row,expected)
   assert not errors,(kind,errors)
+  print('PASS',kind,'real directed PASS follows high/low Agility defender turn reads on both teams; four actions and no JavaScript errors',flush=True)
   print('PASS',kind,'mirrored projected support-pass arrival safety and fallback exclusion; four actions and no JavaScript errors',flush=True)
   ctx.close()
  browser.close()
