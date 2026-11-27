@@ -24,7 +24,7 @@ with sync_playwright() as pw:
   page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
    const g=SupermagicFootball.game,field={x:150,y:155,w:2260.8,h:1220},rows=[];
-   for(const team of [0,1])for(const kind of ['weak','elite']){
+   for(const team of [0,1])for(const kind of ['weak','elite','settling']){
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
     const dir=team===0?1:-1;
     const carrier=g.players.find(p=>p.t===team&&p.i===3);
@@ -37,7 +37,7 @@ with sync_playwright() as pw:
      moveVX:0,moveVY:0,face:dir,dx:dir,dy:0,breath:1});
     Object.assign(runner,{x:carrierX+dir*120,y:600,homeX:carrierX+dir*160,homeY:488,
      down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:dir*200,moveVY:-200,
-     aiAssistTarget:null,aiGiveAndGoRun:null,face:dir,dx:dir,dy:-1});
+     firstTouchControlTimer:kind==='settling'?.16:0,aiAssistTarget:null,aiGiveAndGoRun:null,face:dir,dx:dir,dy:-1});
     for(const q of g.players){
      if(q===carrier||q===runner||q===keeper)continue;
      Object.assign(q,{x:team===0?field.x+field.w-35:field.x+35,y:field.y+40,down:true,
@@ -129,9 +129,13 @@ with sync_playwright() as pw:
   assert result['teams']>=223,(kind,result)
   assert result['buttons']==4,(kind,result)
   for row in result['rows']:
-   expected='throughBall' if row['kind']=='weak' else 'supportRun'
-   assert row['mode']==expected,(kind,row,expected)
-   assert row['target']==row['expected'],(kind,row)
+   if row['kind']=='settling':
+    assert row['target']!=row['expected'],(kind,row)
+    assert row['mode'] not in ('throughBall','supportRun'),(kind,row)
+   else:
+    expected='throughBall' if row['kind']=='weak' else 'supportRun'
+    assert row['mode']==expected,(kind,row,expected)
+    assert row['target']==row['expected'],(kind,row)
   for team in [0,1]:
    profiles={row['agility']:row for row in result['turnRows'] if row['team']==team}
    for agility in [100,50,1]:

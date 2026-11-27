@@ -544,3 +544,27 @@ test('support-run receiver lead preserves the legacy direction fallback when mov
    'actual support PASS preserves the same legacy fallback for team '+team);
  }
 });
+
+test('CPU support and through-ball selection wait for a receiver first-touch settle window on both sides',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=throughBallKeeperFixture(team),players=[f.carrier,f.runner];
+  const assertEligible=()=>{
+   assert.equal(AI.attackingSupportPass(players,team,f.carrier,f.supportRun),f.runner,
+    'a receiver with no active settling timer remains eligible for support PASS on team '+team);
+   assert.equal(AI.attackingThroughBall(players,team,f.carrier,f.supportRun)?.runner,f.runner,
+    'a receiver with no active settling timer remains eligible for through-ball on team '+team);
+  };
+  for(const timer of [undefined,null,0,-.01]){
+   if(timer===undefined)delete f.runner.firstTouchControlTimer;else f.runner.firstTouchControlTimer=timer;
+   assertEligible();
+  }
+  for(const timer of [.001,.16,.30,NaN,Infinity,'invalid']){
+   f.runner.firstTouchControlTimer=timer;
+   assert.equal(AI.attackingSupportPass(players,team,f.carrier,f.supportRun),null,
+    'support PASS must not target an unsettled receiver on team '+team);
+   assert.equal(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),null,
+    'through-ball must not lead an unsettled receiver on team '+team);
+  }
+ }
+});

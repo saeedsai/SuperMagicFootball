@@ -52,7 +52,12 @@ test('production renderer forwards receive gaze and preserves the idle fallback'
  const fs=require('node:fs'),render=fs.readFileSync(path.resolve(__dirname,'../src/modules/render.js'),'utf8');
  const character=fs.readFileSync(path.resolve(__dirname,'../src/modules/characterart.js'),'utf8');
  assert.match(render,/const receiveGaze=ARTPOSE\.receiveGaze\(p,game\.ball,view\)/);
- assert.match(render,/receiveGaze,reducedFlash/);
+ const drawArgs=render.match(/CHARACTER_ART\.draw\(ctx,p,av,team,view,\{([\s\S]*?)\}\);/);
+ assert.ok(drawArgs,'the production Character Art draw call must remain present');
+ assert.match(drawArgs[1],/receiveGaze,carryShieldLean:/);
+ assert.match(drawArgs[1],/carryShieldSide:/);
+ assert.match(drawArgs[1],/carryShieldStrength:/);
+ assert.match(drawArgs[1],/reducedFlash:/);
  assert.match(character,/const gaze=receiveGaze\|\|idleGazePose/);
  assert.match(character,/clamp\(Number\(gazeX\)\|\|0,-2\.1,2\.1\)/);
 });

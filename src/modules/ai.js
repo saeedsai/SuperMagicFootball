@@ -812,7 +812,8 @@ function attackingSupportPass(players,team,carrier,supportRun){
   !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
   !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
   p.action!=='shotDown'&&p.action!=='shotGetUp';
- if(!ready(carrier)||!ready(runner)||runner.aiAssistTarget)return null;
+ if(!ready(carrier)||!ready(runner)||runner.aiAssistTarget||
+  !timerClear(runner.firstTouchControlTimer))return null;
  const dir=team===0?1:-1,dx=runner.x-carrier.x,dy=runner.y-carrier.y;
  const forward=dx*dir,range=Math.hypot(dx,dy);
  if(forward<80||forward>760||range<120||range>900||
@@ -874,7 +875,8 @@ function attackingSupportPass(players,team,carrier,supportRun){
    !(p.action==='slide'&&(Number(p.actionTimer)||0)>0)&&
    !(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)&&
    p.action!=='shotDown'&&p.action!=='shotGetUp';
-  if(!ready(carrier)||!ready(runner)||runner.aiAssistTarget)return null;
+  if(!ready(carrier)||!ready(runner)||runner.aiAssistTarget||
+  !timerClear(runner.firstTouchControlTimer))return null;
   const dir=team===0?1:-1;
   const forward=(runner.x-carrier.x)*dir;
   const range=Math.hypot(runner.x-carrier.x,runner.y-carrier.y);
