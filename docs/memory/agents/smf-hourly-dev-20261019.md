@@ -6,7 +6,7 @@
 Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper animation, Player Studio and Career/Cup. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.353 — KEEPER-CONTROL-AWARE-OUTLET-01:** CPU goalkeeper short throws now use existing Dribbling (70%) and Agility (30%) as a bounded control-quality tie-breaker among similarly safe, similarly facing receivers. The penalty/bonus is capped at ±8 score units; materially safer lanes still win. Point-only roll targets remain neutral.
+- **0.12.81.353 — KEEPER-CONTROL-AWARE-OUTLET-01:** CPU goalkeeper short throws now use existing Dribbling (70%) and Agility (30%) as a bounded control-quality tie-breaker among similarly safe, similarly facing receivers. The penalty/bonus is capped at ±8 score units; materially safer lanes still win. Point-only roll targets remain neutral; legacy roster records use the existing STATS-derived Dribbling/Agility values.
 - **Feature files:** `src/modules/engine.js`, `tests/keeper_outlet_pressure.test.cjs`, `tests/keeper_outlet_lane_browser_qa.py`; release metadata, backlog and this checkpoint updated.
 - **Pre-change exact heads:** dev `81db378a5fb3a48630a0e9d0175ffa9f85c0503d` (.352); main `f83d578e597703eee7ff2f958b0d971aa92e81a6` (.349).
 - **.352 CI visibility:** combined commit status returned no status entries and the connected workflow-runs helper returned no results because it only exposes PR-triggered runs. The unfiltered Actions REST `actions/runs` listing is not exposed by the available connector; .352 is not claimed green or certified.
