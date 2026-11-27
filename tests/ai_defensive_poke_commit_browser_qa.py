@@ -290,8 +290,8 @@ with sync_playwright() as pw:
                 game.tackle=Object.getPrototypeOf(game).tackle;
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
-                const carrierY=profile==='outside'?84:82;
-                const ballY=y+carrierY+(profile==='shielded'?36:-36);
+                const carrierY=y+(profile==='outside'?84:82);
+                const ballY=carrierY+(profile==='shielded'?36:-36);
                 Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
                 Object.assign(carrier,{x:x+dir*15,y:carrierY,z:0,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0});
                 const before={x:carrier.x,y:carrier.y};
