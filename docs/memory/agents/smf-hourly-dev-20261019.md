@@ -6,20 +6,20 @@
 Prioritize responsive football gameplay, intelligent passing/tackling and counterable Magic Tricks, then existing-player graphics, goalkeeper animation, Player Studio and Career/Cup. Preserve canonical data, four actions, compatible saves and offline play.
 
 ## Current checkpoint
-- **0.12.81.350 — SUPPORT-RUN-AGILITY-TURN-LEAD-01:** CPU support-run PASS uses the same bounded Agility-limited receiver turn projection for safety selection and actual pass aim. High-Agility cutters receive a more lateral lead; low-Agility runners retain more residual momentum. Existing ±65-unit cap applies to live movement projection; missing movement axes retain the legacy dx/dy ×90 fallback. The 0.12–0.35-second flight estimate remains.
-- **Feature files:** src/modules/ai.js, src/modules/engine.js, tests/ai_support_run_pass.test.cjs, tests/ai_support_pass_arrival_browser_qa.py; release metadata and backlog updated. Candidate commit is the current .350 dev head; exact-head CI pending. A follow-up preserves the uncapped legacy dx/dy ×90 fallback when movement axes are absent and adds both-team actual-pass coverage.
-- **Prior .349 gate:** Modular QA #45930460009 passed 2,988/2,988. Census #45930460018 failed only browser shard 1 on magic_scream_ai_counter_browser_qa.py; failed-job-only retry was requested and was still running at last inspection. This is separate from the .350 support-pass change and must be checked before promotion.
-- **Main:** .348 SHA 632c8e10c0b3f6f7acac3a1d226dd3abdfdf6642; Pages #45929850343 succeeded; main Census #45929857232 passed all shards and hosted smoke.
+- **0.12.81.351 — KEEPER-RECEIVING-FACING-OUTLET-01:** CPU goalkeeper short throws prefer a similarly safe teammate facing the incoming ball. Live dx/dy input overrides stale face; neutral input falls back to face. The maximum 43.2-point penalty only breaks close outlet ties; interception safety and pressure remain stronger. Long clearance and point-only keeper roll ranking are unchanged.
+- **.350 exact-head finding and correction:** Modular QA #45933958505 passed 2,990/2,990 Node tests. Full Regression Census #45933958527 confirmed browser shard 3 failed in ai_support_pass_arrival_browser_qa.py: team-1 fixture moved right and moving-away/moving-into shared the same steering. The fixture now mirrors velocity by team and matches dy to the movement case; original assertions remain intact. Other Census shards were still running at last inspection.
+- **Feature files:** src/modules/engine.js, tests/keeper_outlet_pressure.test.cjs, tests/keeper_outlet_lane_browser_qa.py. Same commit repairs tests/ai_support_pass_arrival_browser_qa.py and updates release metadata/backlog.
+- **Pre-change exact heads:** dev 44fbad2a8038d8bedd8433dcbf54bfecda304b60; main f83d578e597703eee7ff2f958b0d971aa92e81a6. Main .349 Pages #45932990259 and Census #45932996471 succeeded; hosted smoke passed.
 
 ## Next smallest action
-Inspect .349 failed-job retry and .350 exact-head Modular QA/Census. Fix any confirmed failure without weakening assertions; allow only a fully green exact head through the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes. Continue with the next gameplay increment.
+Inspect exact .351 Modular QA and Full Regression Census. Fix confirmed failures without weakening assertions. Only allow a fully green exact head through the existing QA-gated main pipeline; independently verify main Census, Pages deployment and hosted bytes. Then move to the next independent player-facing feature.
 
 ## Ownership and exclusions
 Preserve 223 team and 2,676 player identities/order and 12-player ratios, six formations, exactly four actions, compatible saves/offline/PWA, ten Career/Cup slots and SD09. No concept-hero creation or copied art. Keep #48 physical acceptance, #86 Render drift and #87 main protection unresolved until independently verified. Do not claim physical-device certification or authenticated online hosting.
 
 ## Evidence
-- Base dev SHA f83d578e597703eee7ff2f958b0d971aa92e81a6; .349 Modular QA #45930460009 passed 2,988/2,988; .349 Census #45930460018 had one browser failure, with failed-job-only retry pending.
-- Main SHA 632c8e10c0b3f6f7acac3a1d226dd3abdfdf6642; Pages #45929850343 successful; main Census #45929857232 successful.
+- Pre-change dev SHA 44fbad2a8038d8bedd8433dcbf54bfecda304b60; .350 Modular QA #45933958505 passed 2,990/2,990; .350 Census #45933958527 had a confirmed browser-shard-3 fixture failure.
+- Main SHA f83d578e597703eee7ff2f958b0d971aa92e81a6; Pages #45932990259 and main Census #45932996471 succeeded.
 - GitHub branch metadata reports main.protected=false and dev.protected=false; #87 remains open. #48 and #86 remain open.
 
 ## Cleanup

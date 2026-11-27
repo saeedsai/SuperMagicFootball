@@ -35,8 +35,8 @@ with sync_playwright() as pw:
      moveVX:0,moveVY:0,face:dir,dx:dir,dy:0});
     Object.assign(runner,{x:carrierX+dir*170,y:188,homeX:carrierX+dir*160,homeY:188,
      down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
-     moveVX:300,moveVY:kind==='moving-away'?300:-300,
-     aiAssistTarget:null,aiGiveAndGoRun:null,face:dir,dx:dir,dy:0});
+     moveVX:dir*300,moveVY:kind==='moving-away'?300:-300,
+     aiAssistTarget:null,aiGiveAndGoRun:null,face:dir,dx:dir,dy:kind==='moving-away'?1:-1});
     for(const q of g.players){
      if(q===carrier||q===runner||q===defender)continue;
      Object.assign(q,{down:true,stun:1,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});

@@ -23,7 +23,7 @@ with sync_playwright() as pw:
   page.add_script_tag(content=js,type='module')
   page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[],marginRows=[],turnRows=[];
+   const g=SupermagicFootball.game,rows=[],marginRows=[],orientationRows=[],turnRows=[];
    for(const side of [0,1]){
     g.init({home:0,away:9,humans:2,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='play';
@@ -89,6 +89,28 @@ with sync_playwright() as pw:
       mode:marginEvent?.mode,pressured:marginEvent?.pressured});
    }
 
+   // Equal-distance/equal-safety short outlets should prefer the receiver facing the throw.
+   for(const side of [0,1]){
+    g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+    g.matchState='play';
+    const dir=side===0?1:-1,keeper=g.player(side,0),toward=g.player(side,1),away=g.player(side,2),
+     keeperX=side===0?100:2300;
+    for(const p of g.players){
+     Object.assign(p,{stun:0,down:false,z:0,action:'idle',actionTimer:0,moveVX:0,moveVY:0,vx:0,vy:0,
+      shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+     if(p.t===side&&!p.keeper&&p!==toward&&p!==away)Object.assign(p,{x:keeperX+dir*1100,y:600});
+     if(p.t!==side&&!p.keeper)Object.assign(p,{x:side===0?1800:400,y:1200});
+    }
+    Object.assign(keeper,{x:keeperX,y:600,face:dir,keeper:true,stun:0,down:false,z:0,cd:0});
+    Object.assign(toward,{x:keeperX+dir*500,y:520,face:-dir,dx:0,dy:0});
+    Object.assign(away,{x:keeperX+dir*500,y:680,face:dir,dx:0,dy:0});
+    const towardLane=g.keeperPassingLane(keeper,toward,480),awayLane=g.keeperPassingLane(keeper,away,480);
+    const events=[];g.onEvent=event=>events.push(event);
+    Object.assign(g.ball,{owner:keeper,x:keeper.x,y:keeper.y,z:0,vx:0,vy:0,vz:0});
+    const distributed=g.distributeKeeper(keeper,'short'),event=events.find(item=>item.type==='keeperDistribution');
+    orientationRows.push({side,towardClear:towardLane.clear,awayClear:awayLane.clear,
+     distributed,selected:event?.target,expected:toward.src.name,mode:event?.mode});
+   }
    function turnLane(side,agility,activeInput=true){
     g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
     g.matchState='play';
@@ -102,7 +124,7 @@ with sync_playwright() as pw:
     return {clear:lane.clear,interception:lane.interception,endpoint:lane.endpoint};
    }
    for(const side of [0,1])turnRows.push({side,low:turnLane(side,1),high:turnLane(side,100),neutral:turnLane(side,100,false)});
-   return {rows,marginRows,turnRows,teamCount:SupermagicFootball.teams.length,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
+   return {rows,marginRows,orientationRows,turnRows,teamCount:SupermagicFootball.teams.length,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   assert not errors,(kind,errors)
   assert result['teamCount']>=223,(kind,result)
@@ -120,6 +142,11 @@ with sync_playwright() as pw:
    assert row['tightClear'] is True and row['openClear'] is True,(kind,row)
    assert row['marginDistributed'] is True and row['mode']=='short',(kind,row)
    assert row['pressured'] is False and row['selected']==row['expected'],(kind,row)
+  assert len(result['orientationRows'])==2,(kind,result['orientationRows'])
+  for row in result['orientationRows']:
+   assert row['towardClear'] is True and row['awayClear'] is True,(kind,row)
+   assert row['distributed'] is True and row['mode']=='short',(kind,row)
+   assert row['selected']==row['expected'],(kind,row)
   assert len(result['turnRows'])==2,(kind,result['turnRows'])
   for row in result['turnRows']:
    assert row['low']['clear'] is True and row['low']['interception']>95,(kind,row)

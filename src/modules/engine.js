@@ -461,7 +461,23 @@ function keeperOutletScore(keeper,receiver,lane){
  // Both routes may be technically clear; prefer a healthier margin above the
  // 95-unit interception threshold instead of treating every clear lane equally.
  const corridorRisk=Number.isFinite(interception)?Math.max(0,170-interception)*.65:0;
- return distance(keeper,receiver)+pressure+corridorRisk;
+ // When two short outlets are similarly safe, prefer a receiver who can see
+ // the incoming throw. Live directional intent outranks stale last-facing;
+ // neutral input falls back to the existing horizontal facing value.
+ const inputX=Number.isFinite(receiver?.dx)?receiver.dx:0;
+ const inputY=Number.isFinite(receiver?.dy)?receiver.dy:0;
+ const inputLength=Math.hypot(inputX,inputY);
+ let facingX=0,facingY=0,facingLength=0;
+ if(inputLength>.15){facingX=inputX/inputLength;facingY=inputY/inputLength;facingLength=1;}
+ else if(receiver?.face===1||receiver?.face===-1){facingX=receiver.face;facingLength=1;}
+ const incomingX=Number(keeper?.x)-Number(receiver?.x);
+ const incomingY=Number(keeper?.y)-Number(receiver?.y);
+ const incomingLength=Math.hypot(incomingX,incomingY);
+ const facingDot=facingLength>0&&Number.isFinite(incomingLength)&&incomingLength>1?
+  (facingX*incomingX+facingY*incomingY)/incomingLength:NaN;
+ const receptionPenalty=Number.isFinite(facingDot)?
+  Math.max(0,Math.min(43.2,(.2-facingDot)*36)):0;
+ return distance(keeper,receiver)+pressure+corridorRisk+receptionPenalty;
 }
 function cpuTackleSlideChance(p,anticipation,baseChance=.24,anticipationSpan=.4){
  // Keep average-player behavior identical to the existing difficulty/anticipation threshold.

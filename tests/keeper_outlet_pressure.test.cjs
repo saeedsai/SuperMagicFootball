@@ -25,6 +25,23 @@ test('keeper favors a clear farther outlet over a shorter outlet under endpoint 
 test('without pressure keeper prefers nearest clear outlet',()=>{
  assert.ok(score(keeper,near,lane(near,[]))<score(keeper,far,lane(far,[])));
 });
+test('keeper short outlet prefers live receiver input facing the incoming throw over stale facing',()=>{
+ const safe={pressure:0,interception:Infinity};
+ const toward={x:280,y:0,dx:-1,dy:0,face:1},away={x:280,y:0,dx:1,dy:0,face:-1};
+ assert.ok(score(keeper,toward,safe)<score(keeper,away,safe));
+});
+test('neutral receiver input falls back to last facing while untracked targets stay neutral',()=>{
+ const safe={pressure:0,interception:Infinity};
+ const toward={x:280,y:0,dx:0,dy:0,face:-1},away={x:280,y:0,dx:0,dy:0,face:1};
+ const noHeading={x:280,y:0},neutral={x:280,y:0,dx:0,dy:0};
+ assert.ok(score(keeper,toward,safe)<score(keeper,away,safe));
+ assert.equal(score(keeper,noHeading,safe),score(keeper,neutral,safe));
+});
+test('receiver facing preference cannot outweigh materially greater outlet pressure',()=>{
+ const safe={pressure:0,interception:Infinity},pressured={pressure:60,interception:Infinity};
+ const away={x:280,y:0,dx:1,dy:0,face:1},toward={x:280,y:0,dx:-1,dy:0,face:-1};
+ assert.ok(score(keeper,away,safe)<score(keeper,toward,pressured));
+});
 test('downed, stunned and high-airborne opponents do not pressure reception',()=>{
  for(const q of [{x:205,y:5,stun:1},{x:205,y:5,down:true},{x:205,y:5,z:40}]){
   const safe=lane(near,[q]);
