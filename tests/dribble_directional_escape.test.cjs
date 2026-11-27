@@ -46,3 +46,47 @@ test('CPU Dribble feints retain the defender-aware automatic exit despite vertic
   assert.ok(lateralProjection*(team===0?-1:1)>0,JSON.stringify({team,cpu,lateralProjection}));
  }
 });
+
+
+function runSecondMarkerFeint(team,mode){
+ const game=new ENGINE.GameEngine({halfSeconds:120});
+ game.init({home:0,away:1,mode:'quick',humans:1});
+ const player=game.player(team,3),rival=game.player(1-team,3),second=game.player(1-team,4);
+ for(const q of game.players)if(q!==player&&q!==rival&&q!==second){q.down=true;q.stun=1;}
+ const face=team===0?1:-1;
+ player.src={...player.src,dribbleType:'rainbow',dribbling:96,agility:96};
+ Object.assign(player,{x:1000,y:700,z:0,face,dx:0,dy:1,down:false,stun:0,cd:0,
+  trickCd:0,dribbleCooldown:0,fatigue:0,breath:100});
+ rival.src={...rival.src,defence:50,aggression:50};
+ Object.assign(rival,{x:1000,y:735,z:0,down:false,stun:0,invuln:0,cd:0,
+  action:'idle',actionTimer:0,moveVX:0,moveVY:0,vx:0,vy:0});
+ Object.assign(second,{x:1000+face*40,y:700,z:0,down:mode==='downed',stun:0,invuln:0,cd:0,
+  action:mode==='recovering'?'hurt':'idle',actionTimer:mode==='recovering'?.2:0,
+  moveVX:0,moveVY:mode==='closing'||mode==='downed'?240:mode==='retreating'?-240:0,vx:0,vy:0});
+ game.ball.owner=player;game.ball.x=player.x;game.ball.y=player.y;game.ball.z=0;
+ const originalRandom=Math.random;Math.random=()=>.84;
+ let performed=false;
+ try{performed=game.tryDribbleTrick(player,false);}finally{Math.random=originalRandom;}
+ return {performed,dy:player.y-700,guard:player.trickGuard,owner:game.ball.owner===player,
+  event:game.events.filter(e=>e.type==='dribbleTrick').at(-1)?.success};
+}
+
+test('HUMAN-DRIBBLE-SECOND-MARKER-READ-01: a closing second defender can counter the requested feint lane',()=>{
+ for(const team of [0,1]){
+  const closing=runSecondMarkerFeint(team,'closing');
+  const retreating=runSecondMarkerFeint(team,'retreating');
+  const stationary=runSecondMarkerFeint(team,'stationary');
+  const downed=runSecondMarkerFeint(team,'downed');
+  const recovering=runSecondMarkerFeint(team,'recovering');
+  assert.equal(closing.performed,true);
+  assert.equal(closing.event,false,JSON.stringify({team,closing}));
+  assert.equal(closing.guard,0);
+  assert.equal(retreating.event,true,JSON.stringify({team,retreating}));
+  assert.ok(retreating.guard>0);
+  assert.ok(closing.dy>0&&closing.dy<retreating.dy*.3,JSON.stringify({team,closing,retreating}));
+  for(const [mode,result] of [['stationary',stationary],['downed',downed],['recovering',recovering]]){
+   assert.equal(result.event,true,JSON.stringify({team,mode,result}));
+   assert.ok(result.guard>0,JSON.stringify({team,mode,result}));
+  }
+ }
+});

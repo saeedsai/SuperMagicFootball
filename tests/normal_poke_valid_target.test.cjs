@@ -9,13 +9,13 @@ const selectStart=source.indexOf('  const canSlideTarget=',methodStart);
 const selectEnd=source.indexOf('  // Lead a moving ball carrier',selectStart);
 assert.ok(methodStart>=0&&selectStart>methodStart&&selectEnd>selectStart,'locate production tackle target selection');
 const selection=source.slice(selectStart,selectEnd);
-const choose=vm.runInNewContext('(function(p,slide){'+selection+'return {near,owner,target};})',{
+const choose=vm.runInNewContext('(function(p,slide,slideBall=null){'+selection+'return {near,owner,target};})',{
  distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y)
 });
 const player=(overrides={})=>({t:1,x:150,y:100,stun:0,invuln:0,down:false,action:'idle',...overrides});
 const defender={t:0,x:100,y:100,dx:1,dy:0,face:1};
 function select(players,owner,slide=false){
- return choose.call({players:[defender,...players],ball:{owner}},defender,slide);
+ return choose.call({players:[defender,...players],ball:{owner}},defender,slide,null);
 }
 test('PASS poke skips an invulnerable carrier and chooses the next reachable active defender',()=>{
  const protectedCarrier=player({x:175,invuln:1});

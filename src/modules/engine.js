@@ -2688,8 +2688,8 @@ class GameEngine{
   const threat=close?{defence:stat(rival,'defence'),aggression:stat(rival,'aggression'),fatigue:rival.fatigue,x:rival.x,y:rival.y,vx:threatVelocity('x'),vy:threatVelocity('y')}:null;
   // Forward live facing direction to the Rainbow Flick aerial counter.
   if(threat)threat.face=rival.face;
-  const success=!threat||Math.random()<Math.max(.08,dribbleOdds(skill,threat,style));
-  // Face/movement determines forward axis. Escape toward the side *away* from
+  const baseSuccessChance=!threat?1:Math.max(.08,dribbleOdds(skill,threat,style));
+  // Face/movement determines forward axis. Escape toward the side *away from
   // the closest defender, so style-specific movement is purposeful, not random.
   // A clear up/down stick input is a deliberate lateral feint for human players.
   // It reuses DRIBBLE and does not add an action button; CPU escape selection stays unchanged.
@@ -2702,54 +2702,66 @@ class GameEngine{
   const requestedSide=verticalFeint?Math.sign(inputY*face)*Math.sign(style.lateral):0;
   let side=requestedSide||automaticSide;
   const quality=(.69+stat(p,'dribbling')*.006)*endurance(p);
-  // The nearest ready rival still owns the duel odds and baseline escape side.
-  // A second defender may redirect a CPU trick only when their live movement
-  // is actively closing that exit; stationary markers do not rewrite old choices.
-  if(byAI&&close&&opponents.length>1&&Math.abs(style.lateral)>1){
-   const horizon=.12;
-   const escapeRisk=candidateSide=>{
-    const endX=clamp(p.x+(forward.x*style.forward+lateral.x*style.lateral*candidateSide)*quality,F.x+23,F.x+F.w-23);
-    const endY=clamp(p.y+(forward.y*style.forward+lateral.y*style.lateral*candidateSide)*quality,F.y+24,F.y+F.h-24);
-    const dx=endX-p.x,dy=endY-p.y,segmentSquared=dx*dx+dy*dy;
-    let risk=0;
-    for(const opponent of opponents.slice(1)){
-     if(!Number.isFinite(opponent.x)||!Number.isFinite(opponent.y))continue;
-     let futureX=opponent.x,futureY=opponent.y;
-     const slideLength=Math.hypot(Number(opponent.slideDX),Number(opponent.slideDY));
-     if(opponent.action==='slide'&&Number.isFinite(opponent.slideSpeed)&&opponent.slideSpeed>=200&&
+  // Project a second marker for 120 ms along the selected escape lane. The same
+  // bounded read helps CPU lane choice; for human feints it becomes a counter
+  // only when a ready second defender is actively closing the requested exit.
+  const escapeHorizon=.12;
+  const escapeRisk=candidateSide=>{
+   const endX=clamp(p.x+(forward.x*style.forward+lateral.x*style.lateral*candidateSide)*quality,F.x+23,F.x+F.w-23);
+   const endY=clamp(p.y+(forward.y*style.forward+lateral.y*style.lateral*candidateSide)*quality,F.y+24,F.y+F.h-24);
+   const dx=endX-p.x,dy=endY-p.y,segmentSquared=dx*dx+dy*dy;
+   let risk=0;
+   for(const opponent of opponents.slice(1)){
+    if(!Number.isFinite(opponent.x)||!Number.isFinite(opponent.y))continue;
+    if(!byAI&&(opponent.down||!timerClear(opponent.invuln)||
+      !timerClear(opponent.shotImpactKnockdownPending)||!timerClear(opponent.shotImpactKnockdownTimer)||
+      !timerClear(opponent.shotImpactRiseTimer)||Number(opponent.z)>=20||
+      opponent.action==='shotDown'||opponent.action==='shotGetUp'||
+      (opponent.action==='hurt'&&(Number(opponent.actionTimer)||0)>0)))continue;
+    let futureX=opponent.x,futureY=opponent.y;
+    const slideLength=Math.hypot(Number(opponent.slideDX),Number(opponent.slideDY));
+    if(opponent.action==='slide'&&Number.isFinite(opponent.slideSpeed)&&opponent.slideSpeed>=200&&
       Number.isFinite(opponent.slideRemaining)&&opponent.slideRemaining>0&&
       Number.isFinite(opponent.slideTimer)&&opponent.slideTimer>0&&
       Number.isFinite(opponent.actionTimer)&&opponent.actionTimer>0&&
       Number.isFinite(slideLength)&&slideLength>=.5){
-      const speed=clamp(opponent.slideSpeed,200,720);
-      const seconds=Math.min(horizon,opponent.actionTimer,opponent.slideTimer,opponent.slideRemaining/speed);
-      futureX+=opponent.slideDX/slideLength*speed*seconds;
-      futureY+=opponent.slideDY/slideLength*speed*seconds;
-     }else{
-      const vx=Number.isFinite(opponent.moveVX)?opponent.moveVX:Number.isFinite(opponent.vx)?opponent.vx:0;
-      const vy=Number.isFinite(opponent.moveVY)?opponent.moveVY:Number.isFinite(opponent.vy)?opponent.vy:0;
-      futureX+=clamp(vx*horizon,-32,32);
-      futureY+=clamp(vy*horizon,-32,32);
-     }
-     const laneGap=(x,y)=>{
-      const along=segmentSquared>1e-9?clamp(((x-p.x)*dx+(y-p.y)*dy)/segmentSquared,0,1):0;
-      return Math.hypot(x-(p.x+dx*along),y-(p.y+dy*along));
-     };
-     const currentGap=laneGap(opponent.x,opponent.y),futureGap=laneGap(futureX,futureY);
-     const currentEndGap=Math.hypot(opponent.x-endX,opponent.y-endY);
-     const futureEndGap=Math.hypot(futureX-endX,futureY-endY);
-     const closing=Math.max(currentGap-futureGap,currentEndGap-futureEndGap);
-     if(closing<6)continue;
-     const weight=Math.min(1,closing/24);
-     risk+=Math.max(0,78-futureGap)*weight+
-      Math.max(0,100-futureEndGap)*.45*weight;
+     const speed=clamp(opponent.slideSpeed,200,720);
+     const seconds=Math.min(escapeHorizon,opponent.actionTimer,opponent.slideTimer,opponent.slideRemaining/speed);
+     futureX+=opponent.slideDX/slideLength*speed*seconds;
+     futureY+=opponent.slideDY/slideLength*speed*seconds;
+    }else{
+     const vx=Number.isFinite(opponent.moveVX)?opponent.moveVX:Number.isFinite(opponent.vx)?opponent.vx:0;
+     const vy=Number.isFinite(opponent.moveVY)?opponent.moveVY:Number.isFinite(opponent.vy)?opponent.vy:0;
+     futureX+=clamp(vx*escapeHorizon,-32,32);
+     futureY+=clamp(vy*escapeHorizon,-32,32);
     }
-    return risk;
-   };
+    const laneGap=(x,y)=>{
+     const along=segmentSquared>1e-9?clamp(((x-p.x)*dx+(y-p.y)*dy)/segmentSquared,0,1):0;
+     return Math.hypot(x-(p.x+dx*along),y-(p.y+dy*along));
+    };
+    const currentGap=laneGap(opponent.x,opponent.y),futureGap=laneGap(futureX,futureY);
+    const currentEndGap=Math.hypot(opponent.x-endX,opponent.y-endY);
+    const futureEndGap=Math.hypot(futureX-endX,futureY-endY);
+    const closing=Math.max(currentGap-futureGap,currentEndGap-futureEndGap);
+    if(closing<6)continue;
+    const weight=Math.min(1,closing/24);
+    risk+=Math.max(0,78-futureGap)*weight+
+     Math.max(0,100-futureEndGap)*.45*weight;
+   }
+   return risk;
+  };
+  // CPU tricks retain their existing defender-aware safer-side selection.
+  if(byAI&&close&&opponents.length>1&&Math.abs(style.lateral)>1){
    const negativeRisk=escapeRisk(-1),positiveRisk=escapeRisk(1);
    if(positiveRisk+2<negativeRisk)side=1;
    else if(negativeRisk+2<positiveRisk)side=-1;
   }
+  // A second human-side marker can shave at most 16 percentage points from
+  // success, and only after closing at least 20 risk units into the chosen lane.
+  // Stationary, retreating, airborne, downed and recovering markers add no penalty.
+  const secondMarkerPenalty=!byAI&&close&&opponents.length>1&&Math.abs(style.lateral)>1
+   ?Math.min(.16,Math.max(0,escapeRisk(side)-20)*.002):0;
+  const success=Math.random()<Math.max(.08,baseSuccessChance-secondMarkerPenalty);
   const factor=success?1:.22;
   p.x=clamp(p.x+(forward.x*style.forward+lateral.x*style.lateral*side)*quality*factor,F.x+23,F.x+F.w-23);
   p.y=clamp(p.y+(forward.y*style.forward+lateral.y*style.lateral*side)*quality*factor,F.y+24,F.y+F.h-24);
