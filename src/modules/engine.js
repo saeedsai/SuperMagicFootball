@@ -1405,7 +1405,20 @@ class GameEngine{
   // Avoid locking a poke onto a far carrier while an opponent is right in front.
   // Slides can chase farther than short pokes, but both retain their physical travel budget.
   const carrierReach=slide?220:130;
-  const target=inArc(owner)&&distance(p,owner)<=carrierReach?owner:near.filter(inArc).sort((a,b)=>distance(p,a)-distance(p,b))[0];
+  // A live exposed ball can enter the forward slide arc just before the
+  // carrier's body centre does. Let that ball-side read select its owner,
+  // but keep the existing reach envelope and never follow a shielded/off-arc ball.
+  const ownerDistance=owner?distance(p,owner):Infinity;
+  const exposedBallVector=slide&&slideBall&&owner&&slideBall.owner===owner&&
+   defensivePokeBallSideRead(p,owner,slideBall)?{x:slideBall.x-p.x,y:slideBall.y-p.y}:null;
+  const exposedBallRange=exposedBallVector?Math.hypot(exposedBallVector.x,exposedBallVector.y):NaN;
+  const exposedBallInArc=!!exposedBallVector&&Number.isFinite(exposedBallRange)&&
+   exposedBallRange>0&&exposedBallRange<280&&
+   (exposedBallVector.x*headingX+exposedBallVector.y*headingY)/exposedBallRange>=.25;
+  const ownerWithinSlideReach=ownerDistance<=carrierReach||
+   (exposedBallInArc&&exposedBallRange<=carrierReach);
+  const target=ownerWithinSlideReach&&(inArc(owner)||exposedBallInArc)?owner:
+   near.filter(inArc).sort((a,b)=>distance(p,a)-distance(p,b))[0];
   // Lead a moving ball carrier without changing the physical poke/slide travel budget.
   // Ordinary PASS pokes use a shorter, tighter prediction; SHOOT slides retain
   // their existing longer run-up lead. Missing/invalid motion stays neutral.

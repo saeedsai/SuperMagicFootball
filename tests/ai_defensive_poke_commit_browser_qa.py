@@ -152,7 +152,7 @@ with sync_playwright() as pw:
                 firstTouchSlide20:runCpuSlide(team,true,85,true,20)});
             const runApproachCommit=(defendingTeam,defenderSpeed,carrierSpeed=0,range=88)=>{
                 const dir=defendingTeam===0?1:-1;
-                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];game.weather='Clear';
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';game.supernova=null;game.magicWall=null;game.spinBumper=null;game.maceSweep=null;game.lightning=null;game.hazards=[];game.magicHazards=[];game.tornado=null;
                 const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
                 const x=1000,y=700;
                 for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
@@ -160,7 +160,7 @@ with sync_playwright() as pw:
                     aiTarget:null,aiDetour:null,action:'idle',actionTimer:0,moveVX:dir*defenderSpeed,
                     moveVY:0,dx:0,dy:0,face:-dir,sprintCharge:0,dashTimer:0,magicReadCounterpressTimer:0});
                 carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;Object.assign(carrier,{x:x+dir*range,y,z:0,down:false,stun:0,invuln:0,
-                    action:'idle',actionTimer:0,moveVX:dir*carrierSpeed,moveVY:0});
+                    action:'idle',actionTimer:0,moveVX:dir*carrierSpeed,moveVY:0,firstTouchControlTimer:0,firstTouchPressure:0});
                 Object.assign(game.ball,{owner:carrier,x:carrier.x-dir*17,y:y+12,z:12,
                     vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
                 game.clock=.5;game.activateDefence=()=>false;
@@ -230,12 +230,36 @@ with sync_playwright() as pw:
             const humanCommandAimRows=[];
             for(const team of [0,1])for(const action of ['pass','shoot'])for(const exposed of [true,false])
                 humanCommandAimRows.push(runHumanCommandAim(team,action,exposed));
+            const runHumanBallArcSlide=(defendingTeam,action,exposed)=>{
+                const dir=defendingTeam===0?1:-1,x=1000,y=700;
+                game.init({home:0,away:1,mode:'quick',humans:1});game.weather='Clear';
+                const defender=game.player(defendingTeam,3),carrier=game.player(1-defendingTeam,3);
+                for(const q of game.players)if(q!==defender&&q!==carrier){q.down=true;q.stun=1;}
+                Object.assign(defender,{x,y,z:0,down:false,stun:0,invuln:0,cd:0,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0,dx:dir,dy:0,face:dir,sprintCharge:0,dashTimer:0});
+                carrier.src={...carrier.src,magicTrick:null};carrier.dribbleHold=0;carrier.hideBallTimer=0;
+                Object.assign(carrier,{x:x+dir*30,y:y+120,z:0,down:false,stun:0,invuln:0,
+                    action:'idle',actionTimer:0,moveVX:0,moveVY:0});
+                const ballX=carrier.x,ballY=carrier.y+(exposed?-10:10);
+                Object.assign(game.ball,{owner:carrier,x:ballX,y:ballY,z:12,vx:0,vy:0,vz:0,
+                    pass:false,shot:null,strike:null,ordinaryShot:false});
+                game.slideContact=()=>{};
+                game.command(defender,action);
+                const expectedX=exposed?ballX-x:dir,expectedY=exposed?ballY-y:0,length=Math.hypot(expectedX,expectedY);
+                return {team:defendingTeam,action,exposed,actionState:defender.action,dx:defender.slideDX,dy:defender.slideDY,
+                    expectedX:expectedX/length,expectedY:expectedY/length,
+                    bodyDot:dir*(carrier.x-x)/Math.hypot(carrier.x-x,carrier.y-y),
+                    ballDot:dir*(ballX-x)/Math.hypot(ballX-x,ballY-y)};
+            };
+            const humanBallArcSlideRows=[];
+            for(const team of [0,1])for(const action of ['pass','shoot'])for(const exposed of [true,false])
+                humanBallArcSlideRows.push(runHumanBallArcSlide(team,action,exposed));
             const canonicalTeams=SupermagicFootball.teams.filter(team=>
                 !['concept_demo','crown_royals_reference'].includes(team.group)).length;
             return {right,left,retreat,lateral,staleVelocity,low,high,sideOn,elite,weak,average,mirroredElite,relativeApproachRows,turnAwareRows,
                 exposedBallRead,shieldedBallRead,leftExposedBallRead,leftShieldedBallRead,
                 closeBallSideRows,ballHeightRows,closeContactEngineRows,actualPokeAimRows,closeContactSlideRows,firstTouchSlideRows,
-                airborneGroundChallengeRows,humanCommandAimRows,
+                airborneGroundChallengeRows,humanCommandAimRows,humanBallArcSlideRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:canonicalTeams};
         }""")
@@ -281,6 +305,14 @@ with sync_playwright() as pw:
             assert row['actionState']=='slide',(kind,row)
             assert abs(row['dx']-row['expectedX'])<1e-6,(kind,row)
             assert abs(row['dy']-row['expectedY'])<1e-6,(kind,row)
+        for row in result['humanBallArcSlideRows']:
+            assert row['actionState']=='slide',(kind,row)
+            if row['exposed']:
+                assert row['bodyDot']<.25 and row['ballDot']>=.25,(kind,row)
+                assert abs(row['dx']-row['expectedX'])<1e-6 and abs(row['dy']-row['expectedY'])<1e-6,(kind,row)
+            else:
+                assert row['bodyDot']<.25 and row['ballDot']<.25,(kind,row)
+                assert abs(row['dx']-(1 if row['team']==0 else -1))<1e-6 and abs(row['dy'])<1e-6,(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
         print('PASS',kind,'adaptive poke, exposed-ball CPU and human Pass/Shoot slides, and first-touch reads, airborne ground-challenge rejection, shielded-carrier counterplay, 223 teams and four actions',flush=True)
