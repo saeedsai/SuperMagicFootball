@@ -88,7 +88,7 @@ with sync_playwright() as pw:
     for(const player of players)if(player!==cpu&&player!==rival)Object.assign(player,{
      x:1300,y:950,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,slideTimer:0
     });
-    const startX=500-dir*80,startY=500;
+    const startDistance=kind==='ice'?92:84,startX=500-dir*startDistance,startY=500;
     Object.assign(cpu,{x:startX,y:startY,z:0,stun:0,down:false,face:dir,cd:0,fatigue:0,invuln:0,
      moveVX:dir*220,moveVY:0,dx:dir,dy:0,action:'run',actionTimer:0,jumpHold:0,slideTimer:0,
      aiHazardKey:null,aiHazardReaction:0,aiHazardEvading:false});
@@ -96,9 +96,11 @@ with sync_playwright() as pw:
      down:false,invuln:0,action:'run',actionTimer:0,slideTimer:0});
     const hazard={kind,team:1-side,x:500,y:500,life:2.5,arm:0};
     g.magicHazards=[hazard];g.ball.owner=cpu;
-    const committed=g.reactToMagicHazard(cpu,.016,0);
-    sidestepCases.push({kind,side,committed,forward:dir*(cpu.x-startX),lateral:cpu.y-startY,
-     expectedSide:side===0?-1:1,action:cpu.action});
+    const commits=[];
+    for(let frame=0;frame<5;frame++)commits.push(g.reactToMagicHazard(cpu,1/60,0));
+    sidestepCases.push({kind,side,committed:commits.every(Boolean),frames:commits.length,
+     forward:dir*(cpu.x-startX),lateral:cpu.y-startY,headingX:cpu.aiHazardHeadingX,
+     headingY:cpu.aiHazardHeadingY,actualDx:cpu.dx,expectedSide:side===0?-1:1,action:cpu.action});
    }
    return {cases,jumpCases,multiHazardCases,sidestepCases,actionButtons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
@@ -117,8 +119,10 @@ with sync_playwright() as pw:
    assert case['action']=='jump' and case['key']==case['expectedKey'],(label,'in-lane trap must outrank nearer off-lane trap',case)
   assert len(result['sidestepCases'])==4,(label,'both trap types and teams must exercise forward sidesteps',result)
   for case in result['sidestepCases']:
-   assert case['committed'] and case['forward']>0 and abs(case['lateral'])>1,(label,'sidestep must preserve forward progress and leave the trap lane',case)
-   assert (1 if case['lateral']>0 else -1)==case['expectedSide'],(label,'CPU must choose the safer flank away from the rival',case)
+   assert case['committed'] and case['frames']==5 and case['forward']>5 and abs(case['lateral'])>5,(label,'multi-frame sidestep must preserve forward progress and clear the blocked lane',case)
+   assert abs(case['headingX'])>.99 and abs(case['headingY'])<.01,(label,'sidestep must retain its initial run-lane basis',case)
+   assert (1 if case['lateral']>0 else -1)==case['expectedSide'] and case['expectedSide']*case['lateral']>5,(label,'CPU must keep the safer flank away from the rival',case)
+   assert (1 if case['actualDx']>0 else -1)==(1 if case['headingX']>0 else -1),(label,'smoothed movement must continue along the original forward direction',case)
    assert case['action']!='jump',(label,'this fixture must exercise the movement-only sidestep',case)
   assert result['actionButtons']==4,(label,'four-button grammar changed',result)
   assert not errors,(label,errors)

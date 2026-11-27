@@ -2123,22 +2123,27 @@ class GameEngine{
   return true;
  }
  reactToMagicHazard(p,dt,reactionSeconds){
-  if(p.keeper){p.aiHazardKey=null;p.aiHazardReaction=0;p.aiHazardEvading=false;return false;}
+  if(p.keeper){p.aiHazardKey=null;p.aiHazardHeadingX=null;p.aiHazardHeadingY=null;p.aiHazardReaction=0;p.aiHazardEvading=false;return false;}
   const moveX=Number.isFinite(p.dx)?p.dx:0,moveY=Number.isFinite(p.dy)?p.dy:0;
   const moveLength=Math.hypot(moveX,moveY);
-  const heading=moveLength>.15?{x:moveX/moveLength,y:moveY/moveLength}:
+  const liveHeading=moveLength>.15?{x:moveX/moveLength,y:moveY/moveLength}:
    {x:p.face===-1?-1:1,y:0};
+  const keyFor=h=>String(h.kind)+':'+String(h.team)+':'+String(h.x)+':'+String(h.y);
   // Prefer a trap that intersects the run lane over a nearer off-lane distraction.
   // An already-overlapping trap stays first; no lane threat keeps nearest fallback.
   const candidates=(this.magicHazards||[]).filter(h=>h&&h.team!==p.t&&
    (h.kind==='banana'||h.kind==='ice')&&h.life>0&&(h.arm||0)<=.15&&
    Number.isFinite(h.x)&&Number.isFinite(h.y))
    .map(h=>{
+    const key=keyFor(h),storedLength=Math.hypot(Number(p.aiHazardHeadingX),Number(p.aiHazardHeadingY));
+    const heading=p.aiHazardKey===key&&Number.isFinite(p.aiHazardHeadingX)&&
+     Number.isFinite(p.aiHazardHeadingY)&&storedLength>.15
+     ?norm(p.aiHazardHeadingX,p.aiHazardHeadingY):liveHeading;
     const radius=h.kind==='ice'?35:27,dx=h.x-p.x,dy=h.y-p.y,d=Math.hypot(dx,dy);
     const ahead=dx*heading.x+dy*heading.y;
     const signedAcross=dy*heading.x-dx*heading.y;
     const across=Math.abs(signedAcross);
-    return {h,radius,d,ahead,across,signedAcross,immediate:d<=radius+8,
+    return {h,key,heading,radius,d,ahead,across,signedAcross,immediate:d<=radius+8,
      inPath:ahead>=-4&&across<=radius+8,
      pathScore:Math.max(0,ahead-radius)+across*.25};
    }).filter(candidate=>candidate.d<candidate.radius+60);
@@ -2147,10 +2152,19 @@ class GameEngine{
   const inPath=candidates.filter(candidate=>candidate.inPath)
    .sort((a,b)=>a.pathScore-b.pathScore||a.d-b.d)[0];
   const nearest=candidates.reduce((best,candidate)=>!best||candidate.d<best.d?candidate:best,null);
-  const hazard=immediate||inPath||nearest;
-  if(!hazard){p.aiHazardKey=null;p.aiHazardReaction=0;p.aiHazardEvading=false;return false;}
-  const key=`${hazard.h.kind}:${hazard.h.team}:${hazard.h.x}:${hazard.h.y}`;
-  if(p.aiHazardKey!==key){p.aiHazardKey=key;p.aiHazardReaction=hazard.d<=hazard.radius+20?0:Math.max(0,Number(reactionSeconds)||0);p.aiHazardEvading=false;}
+  const retained=candidates.find(candidate=>candidate.key===p.aiHazardKey);
+  const hazard=immediate||(retained&&(retained.immediate||retained.inPath)?retained:null)||inPath||nearest;
+  if(!hazard){p.aiHazardKey=null;p.aiHazardHeadingX=null;p.aiHazardHeadingY=null;p.aiHazardReaction=0;p.aiHazardEvading=false;return false;}
+  const key=hazard.key,headingReady=Number.isFinite(p.aiHazardHeadingX)&&
+   Number.isFinite(p.aiHazardHeadingY)&&Math.hypot(p.aiHazardHeadingX,p.aiHazardHeadingY)>.15;
+  if(p.aiHazardKey!==key||!headingReady){
+   p.aiHazardKey=key;p.aiHazardHeadingX=hazard.heading.x;p.aiHazardHeadingY=hazard.heading.y;
+   p.aiHazardReaction=hazard.d<=hazard.radius+20?0:Math.max(0,Number(reactionSeconds)||0);p.aiHazardEvading=false;
+  }
+  // Keep the original run-lane basis while this trap remains the active threat.
+  // moveAgile gradually turns actual velocity; feeding that changing velocity
+  // back into the escape basis would curl a sustained sidestep toward retreat.
+  const heading=norm(p.aiHazardHeadingX,p.aiHazardHeadingY);
   if(p.action==='slide'&&(p.actionTimer||0)>0)return false;
   // When the selected trap blocks the current run lane, preserve forward intent
   // while stepping around it. Score both flanks against live opponents and pitch

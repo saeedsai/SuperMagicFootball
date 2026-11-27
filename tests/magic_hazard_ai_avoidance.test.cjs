@@ -157,6 +157,35 @@ test('CPU sidesteps a directly-ahead Banana/Ice trap while retaining forward pro
  }
 });
 
+test('CPU retains its original run-lane heading through a multi-frame carrying sidestep',()=>{
+ for(const kind of ['banana','ice'])for(const side of [0,1]){
+  const {game,cpu}=setup(side,kind),dir=side===0?1:-1,startDistance=kind==='ice'?92:84;
+  const startX=500-dir*startDistance,startY=500,expectedSide=side===0?-1:1;
+  Object.assign(cpu,{x:startX,y:startY,dx:dir,dy:0,face:dir,moveVX:dir*220,moveVY:0,
+   cd:0,fatigue:.1,action:'run',i:3});
+  Object.assign(game.magicHazards[0],{x:500,y:500});
+  game.players.push({t:1-side,x:startX+dir*13.44,y:startY+(side===0?46.08:-46.08),
+   keeper:false,down:false,z:0,stun:0,invuln:0,action:'run',actionTimer:0});
+  game.ball.owner=cpu;
+  game.moveAgile=(p,x,y,speed,dt)=>{
+   const turn=Math.max(0,Math.min(1,(3+50*.13)*dt));
+   p.moveVX=(p.moveVX||0)+(x*speed-(p.moveVX||0))*turn;
+   p.moveVY=(p.moveVY||0)+(y*speed-(p.moveVY||0))*turn;
+   const magnitude=Math.hypot(p.moveVX,p.moveVY);
+   if(magnitude>speed&&magnitude>0){p.moveVX=p.moveVX/magnitude*speed;p.moveVY=p.moveVY/magnitude*speed;}
+   p.x+=p.moveVX*dt;p.y+=p.moveVY*dt;
+   p.dx=speed?p.moveVX/speed:0;p.dy=speed?p.moveVY/speed:0;
+  };
+  for(let frame=0;frame<5;frame++)assert.equal(react.call(game,cpu,1/60,0),true,kind+' team '+side+' frame '+frame);
+  assert.equal(cpu.aiHazardHeadingX,dir,'the initial forward axis remains the escape basis');
+  assert.equal(cpu.aiHazardHeadingY,0,'the initial lateral axis remains stable');
+  assert.ok(dir*(cpu.x-startX)>5,'multi-frame evasion keeps advancing along the original run lane');
+  assert.ok(expectedSide*(cpu.y-startY)>5,'multi-frame evasion keeps using the safer flank');
+  assert.ok(dir*cpu.dx>.15,'the actual smoothed velocity must not curl into backward travel');
+  assert.equal(cpu.action,'run','the carrying sidestep remains movement-only');
+ }
+});
+
 test('CPU selects the safer sidestep flank and keeps the projected exit inside pitch bounds',()=>{
  for(const side of [0,1]){
   const {game,cpu}=setup(side,'ice'),dir=side===0?1:-1;
