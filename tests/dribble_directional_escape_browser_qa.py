@@ -69,7 +69,12 @@ with sync_playwright() as pw:
    face=1 if row['team']==0 else -1
    cpu_lateral=row['cpu']['dx']*(-2**-.5)+row['cpu']['dy']*(face*2**-.5)
    assert row['cpu']['ok'] and cpu_lateral*( -1 if row['team']==0 else 1)>0,(name,row,cpu_lateral)
-  for row in result['secondRows']:\n   assert not row['closing']['success'] and row['closing']['guard']==0,(name,row)\n   assert row['retreating']['success'] and row['retreating']['guard']>0,(name,row)\n   assert row['closing']['dy']>0 and row['closing']['dy']<row['retreating']['dy']*.3,(name,row)\n   assert row['stationary']['success'] and row['downed']['success'] and row['recovering']['success'],(name,row)\n  assert not errors,(name,errors)
+  for row in result['secondRows']:
+   assert not row['closing']['success'] and row['closing']['guard']==0,(name,row)
+   assert row['retreating']['success'] and row['retreating']['guard']>0,(name,row)
+   assert row['closing']['dy']>0 and row['closing']['dy']<row['retreating']['dy']*.3,(name,row)
+   assert row['stationary']['success'] and row['downed']['success'] and row['recovering']['success'],(name,row)
+  assert not errors,(name,errors)
   print('DIRECTIONAL_DRIBBLE_FEINT_PASS',name,flush=True)
   context.close()
  browser.close()
