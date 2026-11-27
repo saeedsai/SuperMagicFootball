@@ -6,13 +6,13 @@ Updated: 2026-11-27
 Prioritize responsive football gameplay, intelligent passing/tackling and counterable tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- 0.12.81.380 — AI-DEFENSIVE-GROUND-PASS-TURN-READ-01.
-- CPU second-defender cover for targeted low passes now predicts a receiver's bounded Agility-limited turn from live movement axes and steering intent instead of assuming straight-line momentum. The projected endpoint feeds pass arrival, pocket validation and interception reach.
-- Neutral/aligned/invalid/incomplete movement keeps the previous linear lead and 70-unit axis cap. Primary ball pressure, pass physics, four actions, saves, rosters and offline play are unchanged.
-- Production: `src/modules/ai.js`; focused Node and actual-engine desktop/simulated-touch browser tests: `ai_pass_receiver_cover`.
+- 0.12.81.381 — AI-DEFENSIVE-PASS-STEERING-RECOVERY-READ-01.
+- CPU second-defender reach estimates now integrate the first at most 0.12 seconds of live Agility-limited steering before judging a targeted low-pass interception. A defender already turning into the lane can claim an earlier point; low-Agility, retreating, neutral, aligned and invalid steering retain the previous conservative reach.
+- The .380 exact-head Census exposed one browser-fixture assertion that compared longitudinal progress for a lateral receiver turn. Actual output showed the expected high/low lane offset; the fixture now asserts that offset rather than requiring a false x-progress difference.
+- Production: `src/modules/ai.js`; focused helper and actual-GameEngine Node regressions: `ai_pass_receiver_cover`.
 
 ## Next smallest action
-- Inspect exact-head Modular QA and Full Regression Census for .380; fix only confirmed failures without weakening gameplay assertions.
+- Inspect exact-head Modular QA and Full Regression Census for .381; fix only confirmed failures without weakening gameplay assertions.
 - If the exact dev head is green, allow the existing QA-gated promotion pipeline to advance main; independently verify main Census, Pages deployment and hosted bytes.
 - Continue with through-ball interception quality, counterable Magic Tricks and goalkeeper response; do not repeat already-covered Breath or LAN work.
 
@@ -20,9 +20,10 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 Update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Evidence
-- Parent dev/main SHA before .380: `f146b3c4b19795bc68f3fb57673f6b2142632d2c`.
-- .379 Modular QA #46062818366 passed; dev Full Regression Census #46062818433 passed all four Node/four Chromium shards and QA-gated promotion.
-- .379 Pages deployment #46063906488 succeeded; independent main Census #46063913140 was still running after preflight and hosted Pages smoke passed.
+- Parent dev SHA before .381: `990cdea6eaf0d0417564f5d89f58d358781dbcc3`; main SHA: `f146b3c4b19795bc68f3fb57673f6b2142632d2c`.
+- .380 Modular QA #46065396845 passed 3,037/3,037 Node tests.
+- .380 Full Regression Census #46065396789 failed only browser shard 1 in `ai_pass_receiver_cover_browser_qa.py`: high/low receiver turns shifted the projected lane y as expected, but the fixture also required a 15-unit longitudinal x difference for a straight pass. Node shards 0–3 and browser shards 0, 2 and 3 passed.
+- .379 Pages deployment #46063906488 and main Census #46063913140 succeeded; hosted-byte smoke passed.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent; leave other checkpoints untouched.

@@ -1474,13 +1474,32 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    if(fromBall<38||toReceiver<34||toReceiver>220)continue;
    const dx=point.x-defender.x,dy=point.y-defender.y;
    const travel=Math.hypot(dx,dy),moveTime=Math.max(0,time-responseDelay);
-   const towardSpeed=travel>1e-6?clampTo((currentVX*dx+currentVY*dy)/travel,-speed,speed):0;
-   const rampArea=(1-Math.exp(-turnRate*moveTime))/turnRate;
-   const reachableDistance=speed*moveTime+(towardSpeed-speed)*rampArea;
+   // A support already steering into the lane should not be charged for stale
+   // cross-track momentum. Integrate only the first short turn, using the same
+   // Agility-limited angular response as live movement; neutral/aligned input
+   // leaves the legacy acceleration estimate mathematically unchanged.
+   let approachVX=currentVX,approachVY=currentVY,approachProgress=0,turnSeconds=0;
+   const steeringX=Number.isFinite(defender.dx)?defender.dx:0;
+   const steeringY=Number.isFinite(defender.dy)?defender.dy:0;
+   const steeringLength=Math.hypot(steeringX,steeringY);
+   const currentSpeed=Math.hypot(currentVX,currentVY);
+   if(travel>1e-6&&currentSpeed>=75&&steeringLength>=.15&&moveTime>=.05){
+    const turnWindow=Math.min(moveTime,.12);
+    const turned=carrierTurnAwareVelocity(defender,currentVX,currentVY,turnWindow);
+    if(Math.hypot(turned.x-currentVX,turned.y-currentVY)>.5){
+     turnSeconds=turnWindow;
+     approachProgress=((currentVX+turned.x)*.5*dx+(currentVY+turned.y)*.5*dy)/travel*turnSeconds;
+     approachVX=turned.x;approachVY=turned.y;
+    }
+   }
+   const remainingTime=Math.max(0,moveTime-turnSeconds);
+   const towardSpeed=travel>1e-6?clampTo((approachVX*dx+approachVY*dy)/travel,-speed,speed):0;
+   const rampArea=(1-Math.exp(-turnRate*remainingTime))/turnRate;
+   const reachableDistance=approachProgress+speed*remainingTime+(towardSpeed-speed)*rampArea;
    // Cross-track momentum still has to be turned into the pass lane. Reserve a
-   // small, bounded part of the arrival budget for that lateral drift instead
-   // of treating all non-forward velocity as free acceleration.
-   const crossTrackSpeed=travel>1e-6?Math.abs(currentVX*dy-currentVY*dx)/travel:0;
+   // small, bounded part of the arrival budget for lateral drift that remains
+   // after the defender's current steering turn has been projected.
+   const crossTrackSpeed=travel>1e-6?Math.abs(approachVX*dy-approachVY*dx)/travel:0;
    const turnReserve=clampTo(crossTrackSpeed*rampArea*.45,0,16);
    const reachable=Math.max(0,reachableDistance-turnReserve)*.82+12;
    if(travel<=reachable)return point;

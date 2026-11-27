@@ -315,3 +315,61 @@ test('ground-pass receiver cover follows live Agility-limited turn intent before
   assert.deepEqual(pointFor(incomplete),pointFor(incompleteNoInput),'incomplete movement preserves the linear fallback');
  }
 });
+
+test('ground-pass cover credits a support defender already turning into the lane',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team);f.receiver.moveVX=f.dir*180;f.receiver.moveVY=120;
+  const support=player('steering-support-'+team,team,f.ball.x+f.dir*86,f.ball.y+12.6);
+  const fallback=AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds);
+  const read=(agility,dx,dy)=>{
+   support.src.agility=agility;support.moveVX=0;support.moveVY=200;support.dx=dx;support.dy=dy;
+   return AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds,support,320,.2);
+  };
+  const neutral=read(100,0,0),aligned=read(100,0,1),away=read(100,-f.dir,0);
+  const low=read(1,f.dir,0),high=read(100,f.dir,0);
+  assert.ok(fallback&&high,JSON.stringify({team,fallback,high}));
+  assert.deepEqual(neutral,fallback,'neutral steering retains the previous conservative reach');
+  assert.deepEqual(aligned,fallback,'steering aligned with current momentum retains the previous reach');
+  assert.deepEqual(away,fallback,'steering away from the interception lane cannot claim an early point');
+  assert.deepEqual(low,fallback,'low Agility cannot turn cross-track momentum into an early interception');
+  const progress=point=>(point.x-f.ball.x)*f.dir;
+  assert.ok(progress(high)<progress(fallback)-50,JSON.stringify({team,high,fallback}));
+ }
+});
+
+test('driveAI assigns an early pass interception to a second defender already turning into the lane',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const defendingTeam of [0,1]){
+  const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const receiver=game.player(attackingTeam,3),primary=game.player(defendingTeam,3),support=game.player(defendingTeam,4);
+  const field=ENGINE.WORLD.field,y=field.y+field.h/2,receiverX=field.x+field.w*.55+(attackingTeam===0?110:-110);
+  const ballX=receiverX-dir*180,boundsNow={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+  Object.assign(receiver,{x:receiverX,y,z:0,stun:0,down:false,action:'idle',actionTimer:0,slideTimer:0,
+   moveVX:dir*180,moveVY:120,dx:0,dy:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0});
+  for(const q of game.players)if(q!==receiver&&q!==primary&&q!==support&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
+  Object.assign(primary,{x:ballX-dir*5,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+   moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+  Object.assign(support,{x:ballX+dir*86,y:y+12.6,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+   moveVX:0,moveVY:200,dx:dir,dy:0,src:{...support.src,agility:100},
+   aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1,fatigue:0,breath:10,morale:55});
+  Object.assign(game.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,attacker:attackingTeam,
+   lastTouchTeam:attackingTeam,x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,shot:null,strike:null,ordinaryShot:false});
+  game.clock=.2;
+  const ai=AI.aiTuning(game.cpuLevel(support)),style=game.options.aiStyle||'Balanced';
+  const styleSpeed=defendingTeam===1?(style==='Aggressive'?1.09:style==='Defensive'?.96:1):1;
+  const speed=game.playerSpeed(support)*ai.speed*styleSpeed*(game.terrain==='Sand'?.75:1);
+  const expected=AI.defensivePassReceiverCoverTarget(defendingTeam,game.ball,game.players,boundsNow,support,speed,ai.reaction);
+  const fallback=AI.defensivePassReceiverCoverTarget(defendingTeam,game.ball,game.players,boundsNow);
+  assert.ok(expected&&fallback,JSON.stringify({defendingTeam,expected,fallback}));
+  assert.ok((expected.x-ballX)*dir<(fallback.x-ballX)*dir-50,JSON.stringify({defendingTeam,expected,fallback}));
+  game.driveAI(support,.016);
+  assert.ok(support.aiTarget&&Math.hypot(support.aiTarget.x-expected.x,support.aiTarget.y-expected.y)<1,
+   JSON.stringify({defendingTeam,expected,actual:support.aiTarget}));
+  game.driveAI(primary,.016);
+  assert.ok(primary.aiTarget&&Math.hypot(primary.aiTarget.x-ballX,primary.aiTarget.y-y)<80,
+   JSON.stringify({defendingTeam,primaryTarget:primary.aiTarget}));
+ }
+});
