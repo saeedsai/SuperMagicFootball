@@ -6,33 +6,28 @@ Updated: 2026-11-28
 Prioritize responsive gameplay, intelligent passing/tackling and counterable tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.388 — TRICK-HIDE-BALL-LIVE-MOMENTUM-READ-01.
-- Hide Ball CPU target/backup selection and the live resolver now use dx/dy, then actual moveVX/moveVY, then legacy facing. Closing momentum can execute the existing timed PASS poke despite stale facing; retreating momentum cannot falsely counter.
-- Selected-human authority, CPU backup, reaction delay, 70-unit cone, hold window, costs/cooldown and four actions remain unchanged.
-- .387 Mace Sweep momentum-read feature remains in production; both VM resolver fixtures inject the shared helper correctly.
-
-## Exact-head QA evidence
-- .387 Modular QA #46083614246 passed 3,048/3,048 Node tests on `67b1dc20b3e99c61afcf88cd7ef73260ef4cd60d`.
-- .387 Full Regression Census #46083614292 preflight and preview passed; Node shards 2 and 3 passed; Node shards 0/1 and Chromium shards 0–3 were still running when dev advanced.
-- Initial .388 Modular QA #46083931055 ran 3,051 tests: 3,049 passed, two failed. The Hide Ball resolver mismatch was fixed in `ea467aa7496ba6bc27e4c3f136a21ba8ac372fc0`; the other failure was this missing Evidence heading.
-- Initial .388 Full Regression Census #46083931007 stopped at preflight. Final .388 Modular QA and four-Node/four-Chromium Census pending.
+- Candidate 0.12.81.389 combines a confirmed .388 Hide Ball PASS-poke integration repair with an independent goalkeeper improvement.
+- `GameEngine.tackle` now uses dx/dy, then normalized moveVX/moveVY, then legacy facing to select the forward arc and fallback punch direction. This aligns the actual poke with the movement-aware Hide Ball reaction and resolver.
+- `keeperParryReboundTarget` now projects Agility-limited steering only when real movement (>=75 units/s) and meaningful dx/dy are present; high-Agility keepers can turn into a rebound from cross-track momentum. Neutral/invalid input retains the exact old estimate.
+- Release surfaces and .389 cache identity updated; no save/schema, roster, formation or action changes.
 
 ## Next smallest action
-- Inspect final .388 Modular QA and exact-head Census, especially live Hide Ball PASS-poke resolution on both teams in desktop and simulated-touch Chromium. Repair confirmed failures without weakening assertions.
-- Only a fully green exact dev head may pass the existing QA-gated main pipeline. Independently verify main Census, Pages deployment and hosted bytes.
-- Continue through-ball interception, further counterable tricks, goalkeeper reactions, existing-player animation/Studio QA, Player Studio usability and Career/Cup depth.
+- Inspect .389 Modular QA and exact-head Full Regression Census; especially Hide Ball actual-engine poke/resolver on both teams and keeper turn-intent desktop/simulated-touch scenarios.
+- Repair confirmed failures without weakening assertions. Only a green exact dev head may enter the existing QA-gated main pipeline.
+- Continue intelligent passing/tackling and trick counterplay, then keeper behavior, existing-player eight-view animation/Studio QA, Player Studio usability and Career/Cup depth.
 
 ## Ownership and exclusions
 Update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
 
-## Repository heads at .388 start
-- Parent dev: `ea467aa7496ba6bc27e4c3f136a21ba8ac372fc0`.
+## Repository heads at .389 start
+- Parent dev: `fa09037880285a480f33ea787a83a6d02878b272`.
 - Main: `ffc4ca5122abfd16849b69c705fa5f341cb52e7a`.
-- Main remains unprotected; repository rulesets were empty.
+- Main and dev were both unprotected; repository rulesets were empty.
 
 ## Evidence
-- The .387 main predecessor .382 had successful main Census #46074238725 and Pages deployment #46074231407; hosted smoke verified exact main HTML/JS/CSS bytes.
-- The .387 modular gate passed 3,048/3,048; .387 full Census was still running when the new .388 feature was introduced.
+- .388 Modular QA #46084117071 passed 3,051/3,051 Node tests on the parent dev head.
+- .388 Full Regression Census #46084117033: preflight, preview, all four Node shards and browser shards 0, 1 and 3 passed; browser shard 2 failed the actual-engine Hide Ball neutral-input PASS-poke scenario. Job log confirmed 73 browser tests passed and one failed; this exposed the tackle-heading integration bug repaired in .389.
+- Main .382 Census #46074238725 and Pages deployment #46074231407 were previously successful with hosted-byte smoke.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent; leave other checkpoints untouched.
