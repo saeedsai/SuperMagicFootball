@@ -152,30 +152,29 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
   const inputY=Number.isFinite(p?.dy)?p.dy:0;
   return Math.hypot(inputX,inputY)>=.15;
  };
- const hasLiveTurnRead=p=>{
+ const hasLiveTurnRead=(p,includeCarrierTurn=true)=>{
   if(!hasSteeringIntent(p))return false;
   // Keep the landing-read behavior, and extend the same bounded turn estimate
-  // to a defender pressing a genuinely moving carrier. Slow pressers retain
+  // only to primary pressing of a genuinely moving carrier. Slow pressers retain
   // their previous cross-track reserve instead of receiving a free turn.
-  return landingRead||(movingCarrier&&Math.hypot(velocity(p,'x'),velocity(p,'y'))>=75);
+  return landingRead||(includeCarrierTurn&&movingCarrier&&Math.hypot(velocity(p,'x'),velocity(p,'y'))>=75);
  };
- const project=p=>{
+ const project=(p,includeCarrierTurn=true)=>{
   const vx=velocity(p,'x'),vy=velocity(p,'y'),speed=Math.hypot(vx,vy);
   if(!Number.isFinite(speed))return {x:p.x,y:p.y};
   const scale=speed>220?220/speed:1;
   const boundedX=vx*scale,boundedY=vy*scale;
-  // A live carrier or landing read gives the presser a bounded 120 ms
-  // Agility-limited turn projection instead of treating cross-track momentum
-  // as immutable straight-line travel.
-  const motion=hasLiveTurnRead(p)?
+  // Primary pressing of a moving carrier, or an existing landing read, uses
+  // a bounded 120 ms Agility-limited turn instead of stale straight-line travel.
+  const motion=hasLiveTurnRead(p,includeCarrierTurn)?
    carrierTurnAwareVelocity(p,boundedX,boundedY,.12):
    {x:boundedX,y:boundedY};
   return {x:p.x+motion.x*.12,y:p.y+motion.y*.12};
  };
  // Neutral/slow steering keeps the previous cross-track reorientation allowance;
  // a live turn is already represented by the projected velocity above.
- const crossTrackTurnCost=(p,point)=>{
-  if(hasLiveTurnRead(p))return 0;
+ const crossTrackTurnCost=(p,point,includeCarrierTurn=true)=>{
+  if(hasLiveTurnRead(p,includeCarrierTurn))return 0;
   const dx=point.x-p.x,dy=point.y-p.y,range=Math.hypot(dx,dy);
   if(range<1)return 0;
   const vx=velocity(p,'x'),vy=velocity(p,'y');
@@ -215,20 +214,23 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
    Number.isFinite(p.x)&&Number.isFinite(p.y))
   .map((p,index)=>{
    const d=Math.hypot(p.x-target.x,p.y-target.y);
-   const future=(projectedTarget||supportPoint)?project(p):{x:p.x,y:p.y};
+   const future=projectedTarget?project(p,true):{x:p.x,y:p.y};
    let pressScore=d;
    if(projectedTarget){
     const arrival=Math.hypot(future.x-projectedTarget.x,future.y-projectedTarget.y);
     const delta=Math.max(-24,Math.min(24,arrival-d));
-    pressScore=d+delta*.55+crossTrackTurnCost(p,projectedTarget);
+    pressScore=d+delta*.55+crossTrackTurnCost(p,projectedTarget,true);
    }
    const supportDistance=supportPoint?
     Math.hypot(p.x-supportPoint.x,p.y-supportPoint.y):d;
    let supportScore=d;
    if(supportPoint){
-    const supportArrival=Math.hypot(future.x-supportPoint.x,future.y-supportPoint.y);
+    // Preserve the established support-target score; only primary press
+    // arrival gains the moving-carrier turn projection.
+    const supportFuture=project(p,false);
+    const supportArrival=Math.hypot(supportFuture.x-supportPoint.x,supportFuture.y-supportPoint.y);
     const delta=Math.max(-24,Math.min(24,supportArrival-supportDistance));
-    supportScore=supportDistance+delta*.55+crossTrackTurnCost(p,supportPoint);
+    supportScore=supportDistance+delta*.55+crossTrackTurnCost(p,supportPoint,false);
    }
    return {p,index,d,pressScore,supportDistance,supportScore};
   })

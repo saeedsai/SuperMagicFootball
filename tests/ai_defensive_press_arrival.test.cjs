@@ -182,6 +182,27 @@ test('real driveAI uses the Agility-aware cross-track press read without changin
 });
 
 
+test('moving-carrier turn projection does not alter explicit support-target scoring',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const attackTeam=1-team,dir=attackTeam===0?1:-1;
+  const carrier={t:attackTeam,keeper:false,x:1000,y:600,moveVX:dir*120,moveVY:0,
+   dx:dir,dy:0,src:{agility:50}};
+  const primary=player('primary-'+team,team,1000-dir*25,600);
+  const first=player('support-first-'+team,team,1000-dir*150,600,{
+   moveVX:0,moveVY:120,dx:dir,dy:0,src:{agility:100}
+  });
+  const second=player('support-second-'+team,team,1000-dir*150,600,{
+   moveVX:0,moveVY:120,dx:-dir,dy:0,src:{agility:100}
+  });
+  const supportTarget={x:1000-dir*170,y:700};
+  const result=AI.defensivePressers([primary,first,second],team,carrier,null,supportTarget);
+  assert.equal(result.primary,primary,'the close defender remains the primary presser');
+  assert.equal(result.support,first,
+   'equal linear support arrivals retain stable input order even when their live press steering differs');
+ }
+});
+
 test('moving-carrier press arrival projects each defender through its live Agility-limited steering',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){

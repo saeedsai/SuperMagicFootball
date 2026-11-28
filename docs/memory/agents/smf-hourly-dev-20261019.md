@@ -6,7 +6,7 @@ Updated: 2026-11-28
 Deliver player-facing football AI, counterable Magic Tricks, existing-player graphics, goalkeeper, Player Studio and Career/Cup improvements. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.404 adds AI-DEFENDER-LIVE-TURN-ARRIVAL-PRESS-01 in `src/modules/ai.js`: for a moving opponent carrier, CPU primary-presser arrival now includes each defender's live 120 ms Agility-limited steering turn. A defender turning toward the carrier can beat an equally close defender whose momentum turns away; slow/neutral/malformed fallback and stationary/loose-ball ordering remain unchanged.
+- Candidate 0.12.81.404 adds AI-DEFENDER-LIVE-TURN-ARRIVAL-PRESS-01 in `src/modules/ai.js`: for a moving opponent carrier, CPU primary-presser arrival now includes each defender's live 120 ms Agility-limited steering turn. A defender turning toward the carrier can beat an equally close defender whose momentum turns away; slow/neutral/malformed fallback and stationary/loose-ball ordering remain unchanged. Explicit support-target scoring remains unchanged.
 - Focused coverage: `tests/ai_defensive_press_arrival.test.cjs` and actual-GameEngine desktop/simulated-touch `tests/ai_defensive_press_arrival_browser_qa.py`, mirrored for both defending teams.
 - .403 exact-head Modular QA #46134759990 passed. Census #46134759956 preflight/preview and Node shards 0, 2, 3 passed; Node shard 1 and all four Chromium shards were running at last inspection.
 - .404 commit and exact-head CI results are recorded in the current GitHub run/report.
