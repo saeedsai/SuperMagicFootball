@@ -398,7 +398,8 @@ test('untargeted low ground passes give the second defender a bounded forward la
   game.init({home:0,away:1,mode:'quick',humans:0});
   game.cpuLevel=()=>2;
   const primary=game.player(team,3),nearBall=game.player(team,4),support=game.player(team,5);
-  const field=ENGINE.WORLD.field,y=field.y+field.h/2,ballX=field.x+field.w/2;
+  const field=ENGINE.WORLD.field,boundsNow={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24},
+   y=field.y+field.h/2,ballX=field.x+field.w/2;
   for(const q of game.players)if(q!==primary&&q!==nearBall&&q!==support&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
   Object.assign(primary,{x:ballX-f.dir*18,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
    slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
@@ -412,15 +413,40 @@ test('untargeted low ground passes give the second defender a bounded forward la
    lastTouchTeam:f.attacking,x:ballX,y,z:8,vx:f.dir*600,vy:0,vz:40,age:.15,
    shot:null,strike:null,ordinaryShot:false});
   game.clock=.2;
-  const expected=AI.defensiveUntargetedPassCoverTarget(team,game.ball,
-   {xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24});
+  const ai=AI.aiTuning(game.cpuLevel(support)),style=game.options.aiStyle||'Balanced';
+  const styleSpeed=team===1?(style==='Aggressive'?1.09:style==='Defensive'?.96:1):1;
+  const speed=game.playerSpeed(support)*ai.speed*styleSpeed*(game.terrain==='Sand'?.75:1);
+  const expected=AI.defensiveUntargetedPassCoverTarget(team,game.ball,boundsNow,support,speed,ai.reaction)||
+   AI.defensiveUntargetedPassCoverTarget(team,game.ball,boundsNow);
   assert.ok(expected,JSON.stringify({team,expected,ball:game.ball}));
   game.driveAI(support,.016);
   assert.ok(support.aiTarget&&Math.hypot(support.aiTarget.x-expected.x,support.aiTarget.y-expected.y)<1,
    JSON.stringify({team,expected,actual:support.aiTarget}));
   game.driveAI(primary,.016);
   assert.ok(primary.aiTarget&&Math.hypot(primary.aiTarget.x-ballX,primary.aiTarget.y-y)<80,
-   JSON.stringify({team,primaryTarget:primary.aiTarget,ballX,y}));
+   JSON.stringify({team,primaryTarget:primary.aiTarget,balltest('untargeted pass cover selects the earliest corridor point the second defender can reach',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team),ball={...f.ball,passTarget:null};
+  const base=AI.defensiveUntargetedPassCoverTarget(team,ball,bounds);
+  const baseProgress=(base.x-ball.x)*f.dir;
+  const earlySeconds=Math.max(.10,Math.min(.22,112/Math.hypot(ball.vx,ball.vy))-.04);
+  const attackDir=team===0?-1:1;
+  const earlyX=ball.x+ball.vx*earlySeconds+attackDir*12;
+  const support=player('reachable-untargeted-'+team,team,earlyX,ball.y,
+   {moveVX:0,moveVY:0,dx:0,dy:0,src:{id:'reachable-untargeted-'+team,agility:100,defence:50}});
+  const reachable=AI.defensiveUntargetedPassCoverTarget(team,ball,bounds,support,320,.2);
+  assert.ok(base&&reachable,JSON.stringify({team,base,reachable,earlySeconds}));
+  const progress=(reachable.x-ball.x)*f.dir;
+  assert.ok(progress<baseProgress-15,JSON.stringify({team,baseProgress,progress,reachable}));
+  assert.ok(Math.hypot(reachable.x-support.x,reachable.y-support.y)<1,
+   'the support must be able to reach the selected early point');
+  const distant=player('distant-untargeted-'+team,team,ball.x-f.dir*260,ball.y+210);
+  assert.equal(AI.defensiveUntargetedPassCoverTarget(team,ball,bounds,distant,320,.2),null,
+   'an unreachable support must retain the caller fallback');
+ }
+});
+X,y}));
   assert.equal(game.ball.owner,null,'pass coverage must not change possession');
  }
 });

@@ -1601,7 +1601,7 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
 
 
 
-function defensiveUntargetedPassCoverTarget(team,ball,bounds){
+function defensiveUntargetedPassCoverTarget(team,ball,bounds,defender=null,defenderSpeed=0,reactionSeconds=.2){
  if((team!==0&&team!==1)||!ball||ball.owner||ball.pass!==true||
   ball.attacker!==1-team||ball.passTeam!==1-team||
   (typeof ball.passTarget==='string'&&ball.passTarget.trim())||
@@ -1611,21 +1611,74 @@ function defensiveUntargetedPassCoverTarget(team,ball,bounds){
  const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),
   yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
  if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+ // A pass already outside the playable margin must not be pulled back into
+ // the field and treated as a fresh defensive interception opportunity.
+ if(ball.x<xMin+24||ball.x>xMax-24||ball.y<yMin+24||ball.y>yMax-24)return null;
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
  const speed=Math.hypot(ball.vx,ball.vy),attackDir=(1-team)===0?1:-1;
  if(!Number.isFinite(speed)||speed<260||speed>1450||ball.vx*attackDir<160)return null;
- // Targetless directional passes still expose a real flight corridor. Shade a
- // bounded point ahead of the live ball rather than leaving the second marker
- // in ordinary support shape; the primary defender continues to press the ball.
- const seconds=Math.max(.10,Math.min(.22,112/speed));
- const height=ball.z+ball.vz*seconds-250*seconds*seconds;
- if(!Number.isFinite(height)||height< -4||height>24)return null;
- const projectedX=ball.x+ball.vx*seconds,projectedY=ball.y+ball.vy*seconds;
- if(projectedX<xMin+24||projectedX>xMax-24||projectedY<yMin+24||projectedY>yMax-24)return null;
- const target={x:Math.max(xMin+22,Math.min(xMax-22,projectedX+attackDir*12)),
-  y:Math.max(yMin+23,Math.min(yMax-23,projectedY))};
- const forward=(target.x-ball.x)*attackDir,travel=Math.hypot(target.x-ball.x,target.y-ball.y);
- if(!Number.isFinite(forward)||!Number.isFinite(travel)||forward<48||forward>190||travel<48||travel>220)return null;
- return target;
+ const baseSeconds=clampTo(112/speed,.10,.22);
+ const times=defender?[...new Set([baseSeconds-.08,baseSeconds-.04,baseSeconds,baseSeconds+.04,baseSeconds+.08]
+  .map(value=>clampTo(value,.10,.22)))].sort((a,b)=>a-b):[baseSeconds];
+ if(defender){
+  if(defender.t!==team||defender.keeper||defender.down||
+   !Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
+   !Number.isFinite(defenderSpeed)||defenderSpeed<120||!Number.isFinite(reactionSeconds))return null;
+  const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  if(!clear(defender.stun)||!clear(defender.slideTimer)||
+   !clear(defender.shotImpactKnockdownPending)||!clear(defender.shotImpactKnockdownTimer)||
+   !clear(defender.shotImpactRiseTimer)||
+   (defender.z!=null&&(!Number.isFinite(Number(defender.z))||Number(defender.z)>18))||
+   defender.action==='shotDown'||defender.action==='shotGetUp'||
+   ((defender.action==='slide'||defender.action==='hurt')&&(Number(defender.actionTimer)||0)>0))return null;
+ }
+ const responseDelay=defender?clampTo(reactionSeconds*.4,.04,.12):0;
+ const defenceRaw=Number(defender?.src?.defence);
+ const defence=clampTo(Number.isFinite(defenceRaw)?defenceRaw:50,1,100);
+ const response=defender?clampTo(responseDelay+(50-defence)/49*.024,.035,.145):0;
+ const maxSpeed=defender?Math.min(440,defenderSpeed):0;
+ const agilityRaw=defender?.src?.agility;
+ const parsedAgility=typeof agilityRaw==='number'?agilityRaw:
+  typeof agilityRaw==='string'&&agilityRaw.trim()!==''?Number(agilityRaw):NaN;
+ const agility=clampTo(Number.isFinite(parsedAgility)?parsedAgility:50,1,100);
+ const turnRate=3+agility*.13;
+ const currentVX=Number.isFinite(defender?.moveVX)?defender.moveVX:
+  Number.isFinite(defender?.vx)?defender.vx:0;
+ const currentVY=Number.isFinite(defender?.moveVY)?defender.moveVY:
+  Number.isFinite(defender?.vy)?defender.vy:0;
+ for(const seconds of times){
+  const height=ball.z+ball.vz*seconds-250*seconds*seconds;
+  if(!Number.isFinite(height)||height< -4||height>24)continue;
+  const projectedX=ball.x+ball.vx*seconds,projectedY=ball.y+ball.vy*seconds;
+  if(projectedX<xMin+24||projectedX>xMax-24||projectedY<yMin+24||projectedY>yMax-24)continue;
+  const target={x:clampTo(projectedX+attackDir*12,xMin+22,xMax-22),
+   y:clampTo(projectedY,yMin+23,yMax-23)};
+  const forward=(target.x-ball.x)*attackDir,travel=Math.hypot(target.x-ball.x,target.y-ball.y);
+  if(!Number.isFinite(forward)||!Number.isFinite(travel)||forward<48||forward>190||travel<48||travel>220)continue;
+  if(!defender)return target;
+  const dx=target.x-defender.x,dy=target.y-defender.y,moveTime=Math.max(0,seconds-response);
+  let approachVX=currentVX,approachVY=currentVY,approachProgress=0,turnSeconds=0;
+  const steeringX=Number.isFinite(defender.dx)?defender.dx:0;
+  const steeringY=Number.isFinite(defender.dy)?defender.dy:0;
+  const steeringLength=Math.hypot(steeringX,steeringY),currentSpeed=Math.hypot(currentVX,currentVY);
+  if(travel>1e-6&&currentSpeed>=75&&steeringLength>=.15&&moveTime>=.05){
+   turnSeconds=Math.min(moveTime,.12);
+   const turned=carrierTurnAwareVelocity(defender,currentVX,currentVY,turnSeconds);
+   if(Math.hypot(turned.x-currentVX,turned.y-currentVY)>.5){
+    approachProgress=((currentVX+turned.x)*.5*dx+(currentVY+turned.y)*.5*dy)/travel*turnSeconds;
+    approachVX=turned.x;approachVY=turned.y;
+   }else turnSeconds=0;
+  }
+  const remainingTime=Math.max(0,moveTime-turnSeconds);
+  const towardSpeed=travel>1e-6?clampTo((approachVX*dx+approachVY*dy)/travel,-maxSpeed,maxSpeed):0;
+  const rampArea=(1-Math.exp(-turnRate*remainingTime))/turnRate;
+  const reachableDistance=approachProgress+maxSpeed*remainingTime+(towardSpeed-maxSpeed)*rampArea;
+  const crossTrackSpeed=travel>1e-6?Math.abs(approachVX*dy-approachVY*dx)/travel:0;
+  const turnReserve=clampTo(crossTrackSpeed*rampArea*.45,0,16);
+  const reachable=Math.max(0,reachableDistance-turnReserve)*.82+12;
+  if(travel<=reachable)return target;
+ }
+ return null;
 }
 
 
