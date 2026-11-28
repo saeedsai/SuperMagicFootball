@@ -117,6 +117,40 @@ test('second defender jumps only when a targeted lofted pass crosses a reachable
   assert.equal(AI.defensiveLoftedPassJumpWindow(team,low,defender,f.players,bounds,.32),false);
  }
 });
+test('engine executes untargeted low-pass corridor cover with the second defender while the primary presses the live ball',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const defendingTeam of [0,1]){
+  const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+  const field=ENGINE.WORLD.field,x=field.x+field.w*.52,y=field.y+field.h*.5;
+  const primary=game.player(defendingTeam,3),support=game.player(defendingTeam,4);
+  for(const q of game.players)if(q!==primary&&q!==support&&!q.keeper){q.down=true;q.stun=1;}
+  Object.assign(primary,{x:x-dir*12,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+  Object.assign(game.ball,{owner:null,x,y,z:2,vx:dir*620,vy:0,vz:0,pass:true,
+   passTeam:attackingTeam,passTarget:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,
+   age:.18,canCollect:0,shot:null,strike:null,ordinaryShot:false});
+  const area={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
+  const expected=AI.defensiveUntargetedPassCoverTarget(defendingTeam,game.ball,area);
+  assert.ok(expected,JSON.stringify({defendingTeam,ball:game.ball,area}));
+  Object.assign(support,{x:expected.x,y:expected.y+40,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+   slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+  game.clock=.18;
+  game.driveAI(support,.016);
+  assert.ok(support.aiTarget,JSON.stringify({defendingTeam,support}));
+  assert.ok(Math.hypot(support.aiTarget.x-expected.x,support.aiTarget.y-expected.y)<1,
+   JSON.stringify({defendingTeam,expected,actual:support.aiTarget}));
+  assert.ok((support.aiTarget.x-x)*dir>=48&&(support.aiTarget.x-x)*dir<=190,
+   'the second defender must move ahead in the live pass direction');
+  assert.ok(Math.abs(support.aiTarget.y-y)<1,'the cover must remain in the low-pass corridor');
+  game.driveAI(primary,.016);
+  assert.ok(primary.aiTarget);
+  assert.ok(Math.hypot(primary.aiTarget.x-x,primary.aiTarget.y-y)<180,
+   'the primary defender must continue pressing the live ball');
+ }
+});
+
 test('engine assigns lofted-pass cover to the second defender while the primary keeps pressing',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const defendingTeam of [0,1]){
