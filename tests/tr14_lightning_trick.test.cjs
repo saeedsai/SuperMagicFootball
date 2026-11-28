@@ -9,7 +9,8 @@ const F=mechanics.world.field,clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const norm=(x,y)=>{const d=Math.hypot(x,y)||1;return{x:x/d,y:y/d};};
 function method(name,next,globals={}){const a=engine.indexOf(`\n ${name}(`),b=engine.indexOf(`\n ${next}(`,a);assert.ok(a>=0&&b>a,`extract ${name}`);return vm.runInNewContext('({'+engine.slice(a,b)+'})',globals)[name];}
 const globals={F,clamp,norm,STATS:{verifiedRatingTierForPlayer:p=>p?.statsVerified===true?p.verifiedTier:null},distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??0,placeBananaPeel:()=>[],placeIcePatch:()=>[]};
-const faceStart=engine.indexOf('function defenderFacesCarrier2D('),faceEnd=engine.indexOf('\nfunction lightningDefenderCounters(',faceStart);
+const faceStart=engine.indexOf('function defenderFacesCarrier2D('),faceEnd=engine.indexOf('\n}',faceStart)+2;
+assert.ok(faceStart>=0&&faceEnd>faceStart,'extract only the shared 2D facing helper');
 const defenderFacesCarrier2D=vm.runInNewContext('('+engine.slice(faceStart,faceEnd)+')');
 const readyStart=engine.indexOf('function lightningTargetReady('),readyEnd=engine.indexOf('\n}',readyStart)+2;
 assert.ok(readyStart>=0&&readyEnd>readyStart,'Lightning shared target-readiness helper exists');
