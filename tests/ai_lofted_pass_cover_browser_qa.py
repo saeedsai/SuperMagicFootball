@@ -44,7 +44,7 @@ with sync_playwright() as pw:
     const x=150+2260.8*.52,y=765;
     Object.assign(primary,{x:x-dir*12,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
      slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
-    Object.assign(g.ball,{owner:null,x,y,z:2,vx:dir*620,vy:0,vz:0,pass:true,
+    Object.assign(g.ball,{owner:null,x,y,z:9,vx:dir*620,vy:0,vz:0,pass:true,
      passTeam:attackingTeam,passTarget:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,
      age:.18,canCollect:0,shot:null,strike:null,ordinaryShot:false});
     const seconds=Math.max(.10,Math.min(.22,112/620));
