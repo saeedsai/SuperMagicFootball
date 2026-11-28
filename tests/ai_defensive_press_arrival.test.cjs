@@ -182,6 +182,75 @@ test('real driveAI uses the Agility-aware cross-track press read without changin
 });
 
 
+test('moving-carrier press arrival projects each defender through its live Agility-limited steering',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const attackTeam=1-team,dir=attackTeam===0?1:-1;
+  const carrier={t:attackTeam,keeper:false,x:1000,y:600,moveVX:dir*120,moveVY:0,
+   dx:dir,dy:0,src:{agility:50}};
+  const make=(name,agility,heading)=>player(name,team,1000-dir*100,600,{
+   moveVX:0,moveVY:120,dx:heading*dir,dy:0,src:{agility}
+  });
+  const away=make('turned-away-'+team,100,-1);
+  const turning=make('turning-in-'+team,100,1);
+  const result=AI.defensivePressers([away,turning],team,carrier);
+  assert.equal(result.primary,turning,'live steering toward a moving carrier must beat identical momentum turning away');
+  assert.equal(result.support,away,'the remaining defender stays the cover player');
+
+  const low=make('low-agility-in-'+team,1,1);
+  const high=make('high-agility-in-'+team,100,1);
+  assert.equal(AI.defensivePressers([low,high],team,carrier).primary,high,
+   'higher Agility earns only its bounded earlier turn arrival');
+
+  const slowAway=player('slow-away-'+team,team,1000-dir*100,600,{
+   moveVX:0,moveVY:60,dx:-dir,dy:0,src:{agility:100}
+  });
+  const slowTurning=player('slow-turning-'+team,team,1000-dir*100,600,{
+   moveVX:0,moveVY:60,dx:dir,dy:0,src:{agility:100}
+  });
+  assert.equal(AI.defensivePressers([slowAway,slowTurning],team,carrier).primary,slowAway,
+   'sub-75-unit/s defenders retain the previous cross-track reserve');
+
+  const neutralAway=make('neutral-away-'+team,100,-1);
+  const neutralTurning=make('neutral-turning-'+team,100,1);
+  delete neutralAway.dx;delete neutralAway.dy;delete neutralTurning.dx;delete neutralTurning.dy;
+  assert.equal(AI.defensivePressers([neutralAway,neutralTurning],team,carrier).primary,neutralAway,
+   'neutral steering preserves distance-first tie order and the existing cross-track penalty');
+  const malformedAway=make('malformed-away-'+team,100,-1);
+  const malformedTurning=make('malformed-turning-'+team,100,1);
+  malformedAway.dx=NaN;malformedAway.dy=Infinity;
+  malformedTurning.dx=NaN;malformedTurning.dy=Infinity;
+  assert.equal(AI.defensivePressers([malformedAway,malformedTurning],team,carrier).primary,malformedAway,
+   'malformed steering falls back without inventing a turn');
+
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  const field=ENGINE.WORLD.field,x=field.x+field.w*.55,y=field.y+field.h*.5;
+  const liveCarrier=game.player(attackTeam,3),liveAway=game.player(team,3),liveTurning=game.player(team,4);
+  for(const q of game.players){
+   if(q===liveCarrier||q===liveAway||q===liveTurning||q.keeper)continue;
+   q.down=true;q.stun=1;
+  }
+  Object.assign(liveCarrier,{x,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
+   moveVX:dir*120,moveVY:0,vx:dir*120,vy:0,dx:dir,dy:0,
+   firstTouchControlTimer:0,firstTouchPressure:0,dribbleHold:0});
+  liveCarrier.src.agility=50;
+  for(const [q,heading] of [[liveAway,-1],[liveTurning,1]]){
+   Object.assign(q,{x:x-dir*100,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
+    moveVX:0,moveVY:120,vx:0,vy:120,dx:heading*dir,dy:0,slideTimer:0,
+    shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+    aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,aiFirstTouchTarget:null,aiDetour:null});
+   q.src.agility=100;
+  }
+  Object.assign(game.ball,{owner:liveCarrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
+   attacker:attackTeam,lastTouchTeam:attackTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+  game.clock=2;game.moveAgile=()=>{};game.driveAI(liveTurning,.016);
+  assert.ok(liveTurning.aiTarget&&Math.hypot(liveTurning.aiTarget.x-x,liveTurning.aiTarget.y-y)<=34.1,
+   JSON.stringify({team,liveTarget:liveTurning.aiTarget,carrier:{x,y}}));
+  assert.equal(game.ball.owner,liveCarrier,'turn-aware press selection must not change possession');
+ }
+});
+
 test('moving-carrier press and lead projection anticipate current turn input at the carrier Agility limit',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){

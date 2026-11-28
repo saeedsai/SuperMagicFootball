@@ -152,22 +152,30 @@ function defensivePressers(players,team,target,humanControlled=null,supportTarge
   const inputY=Number.isFinite(p?.dy)?p.dy:0;
   return Math.hypot(inputX,inputY)>=.15;
  };
+ const hasLiveTurnRead=p=>{
+  if(!hasSteeringIntent(p))return false;
+  // Keep the landing-read behavior, and extend the same bounded turn estimate
+  // to a defender pressing a genuinely moving carrier. Slow pressers retain
+  // their previous cross-track reserve instead of receiving a free turn.
+  return landingRead||(movingCarrier&&Math.hypot(velocity(p,'x'),velocity(p,'y'))>=75);
+ };
  const project=p=>{
   const vx=velocity(p,'x'),vy=velocity(p,'y'),speed=Math.hypot(vx,vy);
   if(!Number.isFinite(speed))return {x:p.x,y:p.y};
   const scale=speed>220?220/speed:1;
   const boundedX=vx*scale,boundedY=vy*scale;
-  // A landing-read defender's live steering is the direction moveAgile is
-  // already turning toward. Project that bounded turn instead of stale heading.
-  const motion=landingRead&&hasSteeringIntent(p)?
+  // A live carrier or landing read gives the presser a bounded 120 ms
+  // Agility-limited turn projection instead of treating cross-track momentum
+  // as immutable straight-line travel.
+  const motion=hasLiveTurnRead(p)?
    carrierTurnAwareVelocity(p,boundedX,boundedY,.12):
    {x:boundedX,y:boundedY};
   return {x:p.x+motion.x*.12,y:p.y+motion.y*.12};
  };
- // Neutral steering keeps the previous cross-track reorientation allowance;
+ // Neutral/slow steering keeps the previous cross-track reorientation allowance;
  // a live turn is already represented by the projected velocity above.
  const crossTrackTurnCost=(p,point)=>{
-  if(landingRead&&hasSteeringIntent(p))return 0;
+  if(hasLiveTurnRead(p))return 0;
   const dx=point.x-p.x,dy=point.y-p.y,range=Math.hypot(dx,dy);
   if(range<1)return 0;
   const vx=velocity(p,'x'),vy=velocity(p,'y');

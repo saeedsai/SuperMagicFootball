@@ -28,7 +28,7 @@ with sync_playwright() as pw:
         page.add_script_tag(content=js,type='module')
         page.wait_for_function('!!window.SupermagicFootball?.game')
         result=page.evaluate("""() => {
-            const game=SupermagicFootball.game,rows=[],stationaryRows=[],turnRows=[],inputRows=[];
+            const game=SupermagicFootball.game,rows=[],steeringRows=[],stationaryRows=[],turnRows=[],inputRows=[];
             const field={x:150,y:155,w:2260.8,h:1220};
             for(const defendingTeam of [0,1]){
                 game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
@@ -141,6 +141,38 @@ with sync_playwright() as pw:
                     if(game.ball.owner!==carrier)throw new Error('turn-aware press assignment changed possession');
                     inputRows.push({defendingTeam,agility,laneShift});
                 }
+            }
+            for(const defendingTeam of [0,1]){
+                game.init({home:0,away:1,mode:'quick',humans:0});game.weather='Clear';
+                const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+                const x=field.x+field.w*.55,y=field.y+field.h*.5;
+                const carrier=game.player(attackingTeam,3),away=game.player(defendingTeam,3),
+                    turning=game.player(defendingTeam,4);
+                for(const q of game.players){
+                    if(q===carrier||q===away||q===turning||q.keeper)continue;
+                    q.down=true;q.stun=1;
+                }
+                Object.assign(carrier,{x,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
+                    moveVX:dir*120,moveVY:0,vx:dir*120,vy:0,dx:dir,dy:0,
+                    firstTouchControlTimer:0,firstTouchPressure:0,dribbleHold:0});
+                carrier.src.agility=50;
+                for(const [q,heading] of [[away,-1],[turning,1]]){
+                    Object.assign(q,{x:x-dir*100,y,z:0,down:false,stun:0,action:'run',actionTimer:0,
+                        moveVX:0,moveVY:120,vx:0,vy:120,dx:heading*dir,dy:0,slideTimer:0,
+                        shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+                        aiTarget:null,aiTimer:0,aiAssistTarget:null,aiGiveAndGoRun:null,
+                        aiFirstTouchTarget:null,aiDetour:null});
+                    q.src.agility=100;
+                }
+                Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,passTarget:null,
+                    attacker:attackingTeam,lastTouchTeam:attackingTeam,age:0,shot:null,strike:null,ordinaryShot:false});
+                game.clock=2;game.moveAgile=()=>{};game.driveAI(turning,.016);
+                const target=turning.aiTarget,gap=target?Math.hypot(target.x-x,target.y-y):Infinity;
+                if(!(target&&gap<=34.1&&gap>0))
+                    throw new Error('live-turn arrival did not assign the turning-in presser: '+
+                        JSON.stringify({defendingTeam,target,carrier:{x,y}}));
+                if(game.ball.owner!==carrier)throw new Error('live-turn press selection changed possession');
+                steeringRows.push({defendingTeam,gap,target});
             }
             const cutbackRows=[];
             for(const defendingTeam of [0,1]){
@@ -309,12 +341,13 @@ with sync_playwright() as pw:
                     cutbackDefenderTurnRows.push({attackingTeam,agility,cutback,passTarget:game.ball.passTarget});
                 }
             }
-            return {rows,stationaryRows,turnRows,inputRows,cutbackRows,cutbackTurnRows,cutbackPassTurnRows,cutbackDefenderTurnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+            return {rows,steeringRows,stationaryRows,turnRows,inputRows,cutbackRows,cutbackTurnRows,cutbackPassTurnRows,cutbackDefenderTurnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.length};
         }""")
         assert result['buttons']==4,(kind,result)
         assert result['teams']>=223,(kind,result)
         assert len(result['rows'])==2,(kind,result)
+        assert len(result['steeringRows'])==2,(kind,result)
         assert len(result['stationaryRows'])==2,(kind,result)
         assert len(result['turnRows'])==2,(kind,result)
         assert len(result['inputRows'])==4,(kind,result)
@@ -323,6 +356,6 @@ with sync_playwright() as pw:
         assert len(result['cutbackPassTurnRows'])==4,(kind,result)
         assert len(result['cutbackDefenderTurnRows'])==4,(kind,result)
         assert not errors,(kind,errors)
-        print('PASS',kind,'arrival press, Agility-aware defensive cover and receiver/defender cutback pass reads; possession, four actions and no JS errors',flush=True)
+        print('PASS',kind,'arrival press, live-turn defender arrival, Agility-aware defensive cover and receiver/defender cutback pass reads; possession, four actions and no JS errors',flush=True)
         ctx.close()
     browser.close()

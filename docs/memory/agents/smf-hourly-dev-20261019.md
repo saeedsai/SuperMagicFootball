@@ -6,25 +6,26 @@ Updated: 2026-11-28
 Deliver player-facing football AI, counterable Magic Tricks, existing-player graphics, goalkeeper, Player Studio and Career/Cup improvements. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.403 adds WIND-MUD-READABLE-DEFENDER-SELECTION-01: CPU Wind/Mud counters now choose the nearest two ready defenders who can read the live 2D wind-up lane. Downed, hurt-recovering and turned-away teammates no longer consume both reaction slots; an in-range third defender may start the existing JUMP counter. An active SLIDE/JUMP retains its slot, and the two-defender budget is unchanged.
-- Production: src/modules/engine.js; focused Node coverage in tests/magic_wind_mud_ai_counter.test.cjs; actual-GameEngine desktop/simulated-touch Chromium coverage in tests/magic_wind_mud_ai_counter_browser_qa.py.
-- .402 browser Census fixture row-count correction committed as d607bb8747f593b04801b79314388218d6ff0375. The failed script expected eight rows per viewport although it creates four (two teams × two wings); all gameplay assertions remain unchanged.
+- Candidate 0.12.81.404 adds AI-DEFENDER-LIVE-TURN-ARRIVAL-PRESS-01 in `src/modules/ai.js`: for a moving opponent carrier, CPU primary-presser arrival now includes each defender's live 120 ms Agility-limited steering turn. A defender turning toward the carrier can beat an equally close defender whose momentum turns away; slow/neutral/malformed fallback and stationary/loose-ball ordering remain unchanged.
+- Focused coverage: `tests/ai_defensive_press_arrival.test.cjs` and actual-GameEngine desktop/simulated-touch `tests/ai_defensive_press_arrival_browser_qa.py`, mirrored for both defending teams.
+- .403 exact-head Modular QA #46134759990 passed. Census #46134759956 preflight/preview and Node shards 0, 2, 3 passed; Node shard 1 and all four Chromium shards were running at last inspection.
+- .404 commit and exact-head CI results are recorded in the current GitHub run/report.
 
 ## Next smallest action
-- Run Modular QA and exact-head Full Regression Census on .403; inspect all four Node and four Chromium shards, repair only confirmed failures, then allow only a green exact head through the existing QA-gated main pipeline.
+Inspect .404 Modular QA and exact-head Full Regression Census. Fix only confirmed failures without weakening turn, possession or four-action assertions. Continue with the next unblocked player-facing backlog item even if an external release gate remains pending.
 
 ## Ownership and exclusions
 Update only this checkpoint. No new branch, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. Keep #87 main protection, #86 Render drift and #48 physical two-phone acceptance open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Repository heads
-- Run start dev/main: 5ab22f2bcc078d72bd1066d7690c1289bbda6faa.
-- .402 test-fixture correction: d607bb8747f593b04801b79314388218d6ff0375.
-- .403 feature commit: pending.
+- Run start dev: 543f86b02d8d79f74e5f230968c918730a85d3e9.
+- Run start main: d607bb8747f593b04801b79314388218d6ff0375.
+- Candidate .404: exact current dev HEAD; immutable SHA and test evidence are in Git history and Actions.
 
 ## Evidence
-- .402 Modular QA #46133382745 passed; Census #46133382761 was in progress at feature start.
-- .401 main Census #46120402664 and Pages deployment #46120396983 passed; hosted-byte smoke passed exact HTML/JS/CSS bytes.
-- Local tests not run in connected-source runtime; current exact-head GitHub Actions runs are the validation evidence.
+- Main .402 Full Regression Census #46134410631 and Pages deployment #46134404813 passed; hosted-byte smoke not yet independently rechecked in this run.
+- GitHub reports dev.protected=false and main.protected=false; #87 remains open.
+- Local tests not run in the connected-source runtime. No .404 result is claimed until exact-head Actions complete.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent; leave all other agent checkpoints untouched.
