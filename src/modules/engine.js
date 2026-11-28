@@ -18,7 +18,7 @@ import {PHYSICSBALANCE} from "./physicsbalance.js";
 import {GAME_ASSETS} from "../assets.js";
 import {placeBananaPeel,advanceBananaPeels,placeIcePatch,advanceIcePatches,disarmMagicHazards} from "./magic-hazards.js";
 const keeperParryRebounds=new WeakMap();
-const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,keeperOutletLane,defensiveCarrierTurnVelocity,supportRunReceiverLead,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveUntargetedPassCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget,defensiveThirdManRunnerTarget,defensiveCounterpressTrapTarget,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
+const ENGINE=(()=>{const {TEAMS,JAPAN_ROSTER,rosterFor,FORMATIONS,DEFAULT_LINEUP,SHOTS}=DATA;const {dribbleStyle,dribbleOdds}=DRIBBLES;const {aiTuning,keeperShotReadY,keeperParryReboundTarget,keeperOutletLane,defensiveCarrierTurnVelocity,supportRunReceiverLead,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,defensiveGiveAndGoCoverTarget,defensivePassReceiverCoverTarget,defensiveUntargetedPassCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,keeperHighCrossClaimTarget,keeperLowCrossClaimTarget,keeperHighCrossPunchDecision,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget,defensiveThirdManRunnerTarget,defensiveCounterpressTrapTarget,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget}=AI;const {withStats,stat:baseStat,endurance,contest,shotError}=STATS;const {jumpMetrics}=JUMPMETRICS;const {abilityLevel,levelModifiers,shotVelocityModifier}=SPECIALS;const {clampMorale,moraleFactor,reactToTalk,goalMorale,personalityOf,TEAM_TALKS,moodLabel}=MORALE;const {kitFor}=KITS;const {fieldAbility,keeperAbility,abilityReady,keeperInReach}=ABILITIES;const {safePlan,validatePlan,tacticModifiers}=TACTICS;const {impactStun,rollDelta}=VISUALFEEL;const {MAX_SUBSTITUTIONS,initialFatigue,fatigueTick,actionFatigue,substitutionChanges,recommendSubstitute,matchCondition,breathCapacity,breathPenalty,spendBreath,breathTick,breathMovementIntensity,dribbleHoldBreathRate}=FITNESS;
 // Shot impacts briefly weaken strength-based contests without ever rewriting source stats.
 const stat=(p,key)=>{const value=baseStat(p,key);return key==='strength'&&p?.src&&(p.shotImpactWeaknessTimer||0)>0?value*(1-clamp(p.shotImpactWeakness||0,0,.4)*.45):value;};
 
@@ -3638,14 +3638,16 @@ class GameEngine{
    }else if(p.keeper&&p.aiParryReboundTarget){
     p.aiParryReboundTarget=false;p.aiTarget=null;p.aiTimer=0;
    }
-   // A high-cross claim is a temporary keeper excursion. Re-check it while
-   // active so a catch, punch, expired cross or safer arriving outfielder
-   // immediately releases the old landing point instead of waiting for the
-   // next AI reaction tick. A valid claim tracks the live projected landing.
+   // High and low targeted crosses use a temporary keeper excursion. Ground
+   // crosses are re-evaluated on every live pass frame so a short arrival
+   // window is not lost behind the ordinary AI reaction timer.
    const keeperClaimTarget=p.keeper&&!parryTarget&&!concealed&&
-    (p.aiKeeperClaimTargetActive||(Number(p.aiTimer)||0)<=dt||!p.aiTarget)?
-    keeperHighCrossClaimTarget(p,liveBall,this.players,
-     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
+    (p.aiKeeperClaimTargetActive||(Number(p.aiTimer)||0)<=dt||!p.aiTarget||
+     (liveBall.pass===true&&Number(liveBall.z)<28))?
+    (keeperHighCrossClaimTarget(p,liveBall,this.players,
+     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24})||
+     keeperLowCrossClaimTarget(p,liveBall,this.players,
+      {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24})):null;
    if(p.keeper&&p.aiKeeperClaimTargetActive&&!keeperClaimTarget){
     p.aiKeeperClaimTargetActive=false;
     if(!parryTarget){p.aiTarget=null;p.aiTimer=0;}

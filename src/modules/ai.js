@@ -3108,6 +3108,81 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensiveCarrierTurnVelocity:carrierTurnAwareVelocity,supportRunReceiverLead,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveUntargetedPassCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
+ 
+// A CPU goalkeeper may step off its line to claim a reachable, targeted low
+// ground cross. This is only a bounded positioning read; normal keeper contact
+// owns the actual collection and any earlier outfielder keeps the ball.
+function keeperLowCrossClaimTarget(keeper,ball,players,bounds){
+ const clampTo=(value,min,max)=>Math.max(min,Math.min(max,value));
+ if(!keeper?.keeper||keeper.down||Number(keeper.stun)>0||Number(keeper.z)>18||
+  Number(keeper.diveCooldown)>0||
+  ['keeperDive','keeperDiveCatch','keeperRecover','keeperHold','shotDown','shotGetUp','hurt'].includes(keeper.action)||
+  !ball||ball.owner||ball.pass!==true||ball.passTeam!==1-keeper.t||
+  ball.attacker!==1-keeper.t||ball.lastTouchTeam!==1-keeper.t||
+  ball.shot||ball.strike||ball.ordinaryShot||!Array.isArray(players)||!players.includes(keeper)||
+  ![ball.x,ball.y,ball.z,ball.vx,ball.vy,ball.vz,ball.age].every(Number.isFinite)||
+  ball.age<0||ball.age>1.8||ball.z<0||ball.z>=28||
+  ball.vz< -90||ball.vz>90||ball.passTarget==null)return null;
+ const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax);
+ const yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+ const world=GAME_ASSETS.mechanics.world;
+ const goalTop=Number(world?.goalTop),goalBottom=Number(world?.goalBottom);
+ if(!Number.isFinite(goalTop)||!Number.isFinite(goalBottom)||goalTop>=goalBottom)return null;
+ const receiver=players.find(q=>q?.t===1-keeper.t&&q.src?.id===ball.passTarget);
+ const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ const activeOutfielder=q=>q&&!q.keeper&&!q.down&&timerClear(q.stun)&&
+  timerClear(q.slideTimer)&&timerClear(q.shotImpactKnockdownPending)&&
+  timerClear(q.shotImpactKnockdownTimer)&&timerClear(q.shotImpactRiseTimer)&&
+  (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)<=18))&&
+  !['shotDown','shotGetUp'].includes(q.action)&&
+  !((q.action==='slide'||q.action==='hurt')&&(Number(q.actionTimer)||0)>0)&&
+  Number.isFinite(q.x)&&Number.isFinite(q.y);
+ if(!activeOutfielder(receiver))return null;
+ const dir=keeper.t===0?1:-1,ownGoalX=dir===1?xMin:xMax;
+ const depth=(ball.x-ownGoalX)*dir,towardSpeed=-(ball.vx*dir);
+ if(depth<72||depth>300||towardSpeed<130||towardSpeed>900)return null;
+ const interceptDepth=56,interceptSeconds=(depth-interceptDepth)/towardSpeed;
+ if(!Number.isFinite(interceptSeconds)||interceptSeconds<0||interceptSeconds>.52)return null;
+ const targetY=ball.y+ball.vy*interceptSeconds;
+ const projectedZ=Math.max(0,ball.z+ball.vz*interceptSeconds-250*interceptSeconds*interceptSeconds);
+ if(projectedZ>26||targetY<yMin+23||targetY>yMax-23||
+  targetY<goalTop-130||targetY>goalBottom+130)return null;
+ const target={x:ownGoalX+dir*interceptDepth,y:targetY};
+ const keeperGap=Math.hypot(target.x-keeper.x,target.y-keeper.y);
+ const rating=value=>{
+  const parsed=typeof value==='number'?value:
+   typeof value==='string'&&value.trim()!==''?Number(value):NaN;
+  return clampTo(Number.isFinite(parsed)?parsed:50,0,100);
+ };
+ const skill=rating(keeper.src?.gkSkill),diving=rating(keeper.src?.gkDiving);
+ const agility=rating(keeper.src?.agility);
+ const fatigue=Number.isFinite(keeper.fatigue)?clampTo(keeper.fatigue,0,1):0;
+ const keeperVX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
+ const keeperVY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
+ const targetDx=target.x-keeper.x,targetDy=target.y-keeper.y;
+ const momentumToward=(keeperVX*targetDx+keeperVY*targetDy)/Math.max(1,keeperGap);
+ const momentumBonus=clampTo(momentumToward*.035*(1-fatigue*.5),-8,8);
+ const turnRate=clampTo(3+agility*.13+(skill-50)*.025-fatigue*1.1,4.5,16.5);
+ const lateralSpeed=Math.abs((keeperVX*targetDy-keeperVY*targetDx)/Math.max(1,keeperGap));
+ const lateralTurnCost=Math.min(14,lateralSpeed/turnRate*.32);
+ const claimReach=clampTo(112+(skill-50)*.30+(diving-50)*.20+
+  (agility-50)*.12-fatigue*24+momentumBonus-lateralTurnCost,82,150);
+ const timeReach=220*interceptSeconds+18;
+ if(keeperGap>Math.min(claimReach,timeReach))return null;
+ const receiverGap=Math.hypot(receiver.x-target.x,receiver.y-target.y);
+ if(receiverGap>280)return null;
+ const contestHorizon=Math.min(.42,interceptSeconds);
+ for(const q of players){
+  if(q===keeper||!activeOutfielder(q))continue;
+  const lead=keeperOutfielderTurnLead(q,contestHorizon,110);
+  const gap=Math.hypot(q.x+lead.x-target.x,q.y+lead.y-target.y);
+  if(q.t!==keeper.t&&gap+24<keeperGap)return null;
+  if(q.t===keeper.t&&gap+40<keeperGap)return null;
+ }
+ return target;
+}
+
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperLowCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensiveCarrierTurnVelocity:carrierTurnAwareVelocity,supportRunReceiverLead,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveUntargetedPassCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
 
 export {AI};

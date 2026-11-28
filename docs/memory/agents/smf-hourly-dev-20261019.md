@@ -6,22 +6,21 @@ Updated: 2026-11-28
 Deliver player-facing football AI, counterable Magic Tricks, existing-player graphics, goalkeeper, Player Studio and Career/Cup improvements. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.410: MACE-SWEEP-RECOVERY-TARGET-ELIGIBILITY-01. Mace Sweep skips downed/shot-recovering targets at selection and revalidates them at impact; a ready opponent can inherit selection and a target becoming unavailable during the .24-second tell is protected.
-- The .409.1 preflight failures were test-contract issues: an outdated negative fixture expected JUMP despite live residual movement toward the caster, and this checkpoint lacked its required Evidence heading. The fixture now preserves true retreat/low-Defence negatives; the dedicated live-approach read remains covered. No gameplay assertion was weakened.
-- Added mirrored Node activation/resolver regressions and actual-GameEngine desktop/simulated-touch Chromium coverage for both teams and unavailable-state handoff.
-- First .410 Full Regression Census #46156398332 stopped in preflight: 3,072/3,080 Node tests passed; failures were one stale Mace negative fixture, four telegraph harness helper injections and two service-worker release-header contracts. The new production target-readiness tests passed; the follow-up fixes only the fixture/harness/header.
+- Candidate 0.12.81.411: KEEPER-LOW-GROUND-CROSS-CLAIM-01. CPU keepers claim a reachable targeted low ground pass at a bounded goal-side intercept plane only when their skill/Agility/fatigue envelope allows and no active outfielder arrives first. Live passes are rechecked and the keeper returns to its line after collection or loss of a safe claim.
+- .410's first Census failed in browser shard 3 only: the existing Lightning CPU-response fixture placed its synthetic target outside the real 95-unit range. The fixture now positions both players 80 units apart; Node coverage adds a 96-unit out-of-range negative. No production Lightning behavior changed.
+- Added mirrored Node and actual-GameEngine desktop/simulated-touch Chromium coverage for low-cross eligibility, arrival winners, both goals, movement, four actions and post-catch return.
+- Local clone/test was blocked by unresolved github.com DNS; exact-head GitHub Actions validation is required.
 
 ## Next smallest action
-Verify exact-head .410 Modular QA and all four Node/four Chromium Full Regression Census shards. Fix only confirmed failures without weakening readiness, valid-hit, read/slide counter, possession or four-action assertions; then continue the next unblocked product backlog item.
+Inspect .411 Modular QA and all four Node/four Chromium Full Regression Census shards at the exact dev head. Repair only confirmed failures without weakening gameplay assertions; promote only through the existing QA-gated main pipeline, then independently verify main Census, Pages deployment and hosted bytes.
 
 ## Ownership and exclusions
 Update only this checkpoint. No new branch, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. Keep #87 main protection, #86 Render drift and #48 physical two-phone acceptance open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Evidence
-- Run-start dev: 429351b182f537fbb4870267ce79baed5cbd189c; main: 6b3879a0c951da6ae86c711b323973f1e8a4c6ec.
-- .409.1 Modular QA #46154860318: failed 2 of 3,078 Node tests; stale Mace negative expectation and missing checkpoint Evidence heading. Census #46154860322 stopped in preflight for the same two failures; downstream shards skipped.
-- .410 first Full Regression Census #46156398332: preflight failed 8/3,080 Node tests (3,072 passed); all eight are diagnosed test fixture/release-header failures, not yet certified as repaired.
-- Main .406 SHA 6b3879a0c951da6ae86c711b323973f1e8a4c6ec: Census #46145612859 and Pages deployment #46145607413 succeeded. GitHub reports main.protected=false; #87 remains open.
+- Run-start dev: d6692c6a3ff00b00d699b5e3468c77c61acbc0e2; main: 6b3879a0c951da6ae86c711b323973f1e8a4c6ec.
+- .410 Modular QA #46156605146 passed. Census #46156605105 passed preflight/preview, all four Node shards and browser shards 0–2; browser shard 3 had one Lightning fixture range failure (73 pass, 1 fail). The .411 fixture correction is pending fresh exact-head runs.
+- Main .406 Census #46145612859 and Pages deployment #46145607413 succeeded. GitHub reports main.protected=false; #87 remains open.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Leave all other agent checkpoints untouched.

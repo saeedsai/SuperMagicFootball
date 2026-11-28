@@ -24,9 +24,10 @@ with sync_playwright() as pw:
    const cases=[];
    for(const side of [0,1])for(const hz of [30,60,120]){
     const caster=roster.find(p=>p.t===1-side&&!p.keeper),cpu=roster.find(p=>p.t===side&&!p.keeper&&p!==caster);
-    Object.assign(cpu,{t:side,keeper:false,z:0,stun:0,action:'run',actionTimer:0,
+    Object.assign(cpu,{t:side,keeper:false,x:640+(side===0?40:-40),y:360,z:0,stun:0,action:'run',actionTimer:0,
      aiLightningThreat:null,aiLightningReaction:0});
-    caster.t=1-side;caster.lightningPending={remaining:.32,target:cpu};
+    Object.assign(caster,{t:1-side,x:640+(side===0?-40:40),y:360,
+     lightningPending:{remaining:.32,target:cpu}});
     g.players=[caster,cpu];let warning=.32,frames=0;
     while(warning>1e-9&&frames<hz&&cpu.action!=='jump'){
      warning=Math.max(0,warning-1/hz);caster.lightningPending.remaining=warning;
@@ -35,7 +36,8 @@ with sync_playwright() as pw:
     }
     let z=cpu.z,vz=cpu.vz,left=warning;
     while(left>1e-9){const dt=Math.min(1/hz,left);z+=vz*dt;vz-=1080*dt;left-=dt;}
-    cases.push({side,hz,frames,z:cpu.z,zAtResolve:z,action:cpu.action,warning});
+    cases.push({side,hz,frames,z:cpu.z,zAtResolve:z,action:cpu.action,warning,
+     distance:Math.hypot(caster.x-cpu.x,caster.y-cpu.y)});
    }
    const backupCases=[];
    for(const side of [0,1])for(const fps of [30,60,120]){
@@ -75,6 +77,7 @@ with sync_playwright() as pw:
   }''')
   assert len(result['cases'])==6 and len(result['backupCases'])==6,(label,result)
   for case in result['cases']:
+   assert case['distance']<95,(label,'Lightning warning fixture must stay inside the real cast radius',case)
    assert case['action']=='jump' and case['warning']>0,(label,'CPU failed to start its timely Lightning evasion',case)
    assert case['zAtResolve']>=20,(label,'CPU jump did not reach Lightning airborne-counter height before impact',case)
   assert result['actionButtons']==4,(label,'four-button grammar changed',result)

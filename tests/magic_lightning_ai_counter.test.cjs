@@ -28,7 +28,7 @@ assert.ok(helperStart>=0&&helperEnd>helperStart,'Lightning shared counter helper
 const lightningDefenderCounters=vm.runInNewContext('('+engine.slice(helperStart,helperEnd)+')',{defenderFacesCarrier2D:face2d,stat});
 const react=method('reactToLightningTrick',{distance,lightningDefenderCounters,lightningTargetReady});
 function setup(side=0,patch={}){
- const caster={t:1-side,keeper:false,lightningPending:null};
+ const caster={t:1-side,keeper:false,x:1080,y:620,lightningPending:null};
  const cpu={t:side,x:1120,y:620,z:0,stun:0,action:'run',actionTimer:0,
   aiLightningThreat:null,aiLightningReaction:0,src:{id:'cpu',jumping:70},...patch};
  caster.lightningPending={remaining:.32,target:cpu};
@@ -48,6 +48,12 @@ test('CPU reacts to the named Lightning warning at its existing difficulty timin
   assert.equal(jumps()>0,expected,`${level.name}, team ${side}, ${hz}Hz`);
   assert.equal(cpu.z>20,expected,`${level.name} uses the existing Jump counter`);
  }
+});
+
+test('Lightning CPU response ignores a synthetic target outside the existing 95-unit cast radius',()=>{
+ const state=setup();state.cpu.x=1176;
+ assert.equal(react.call(state.game,state.cpu,.02,.09),false);
+ assert.equal(state.jumps(),0);
 });
 
 test('Lightning reaction ignores other targets and avoids interrupting existing jump, slide, stun, or keeper states',()=>{
