@@ -1816,18 +1816,43 @@ function defensiveUntargetedPassCoverTarget(team,ball,bounds,defender=null,defen
     return Number.isFinite(legacy)?legacy:0;
    };
    const vx=velocity(defender,'x'),vy=velocity(defender,'y');
+   const movementSpeed=Math.hypot(vx,vy);
+   const steeringX=Number.isFinite(defender.dx)?defender.dx:0;
+   const steeringY=Number.isFinite(defender.dy)?defender.dy:0;
+   const steeringLength=Math.hypot(steeringX,steeringY);
+   const useTurnProjection=Number.isFinite(defender.moveVX)&&Number.isFinite(defender.moveVY)&&
+    Number.isFinite(movementSpeed)&&movementSpeed>=75&&steeringLength>=.15;
+   const projectedOffset=seconds=>{
+    if(!Number.isFinite(seconds))return {x:0,y:0};
+    const linear={x:Math.max(-70,Math.min(70,vx*seconds)),
+     y:Math.max(-70,Math.min(70,vy*seconds))};
+    if(!useTurnProjection||seconds<=0||seconds>.85)return linear;
+    let remaining=seconds,turnVX=vx,turnVY=vy,offsetX=0,offsetY=0;
+    while(remaining>1e-6){
+     const step=Math.min(.18,remaining);
+     const turned=step>=.05?carrierTurnAwareVelocity(defender,turnVX,turnVY,step):
+      {x:turnVX,y:turnVY};
+     offsetX+=(turnVX+turned.x)*.5*step;
+     offsetY+=(turnVY+turned.y)*.5*step;
+     turnVX=turned.x;turnVY=turned.y;remaining-=step;
+    }
+    return {x:Math.max(-70,Math.min(70,offsetX)),
+     y:Math.max(-70,Math.min(70,offsetY))};
+   };
    let time=((defender.x-ball.x)*ball.vx+(defender.y-ball.y)*ball.vy)/speedSquared;
    if(!Number.isFinite(time))return false;
    for(let step=0;step<2;step++){
-    const futureX=defender.x+Math.max(-70,Math.min(70,vx*time));
-    const futureY=defender.y+Math.max(-70,Math.min(70,vy*time));
+    const offset=projectedOffset(time);
+    const futureX=defender.x+offset.x;
+    const futureY=defender.y+offset.y;
     time=((futureX-ball.x)*ball.vx+(futureY-ball.y)*ball.vy)/speedSquared;
     if(!Number.isFinite(time))return false;
    }
    const reaction=Math.max(0,Math.min(.85,Number.isFinite(reactionSeconds)?reactionSeconds:.32));
    if(time<reaction+.06||time>.56)return false;
-   const futureX=defender.x+Math.max(-70,Math.min(70,vx*time));
-   const futureY=defender.y+Math.max(-70,Math.min(70,vy*time));
+   const offset=projectedOffset(time);
+   const futureX=defender.x+offset.x;
+   const futureY=defender.y+offset.y;
    const ballX=ball.x+ball.vx*time,ballY=ball.y+ball.vy*time;
    const height=ball.z+ball.vz*time-250*time*time;
    const verticalVelocity=ball.vz-500*time;

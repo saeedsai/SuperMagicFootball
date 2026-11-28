@@ -117,6 +117,30 @@ test('second defender jumps only when a targeted lofted pass crosses a reachable
   assert.equal(AI.defensiveLoftedPassJumpWindow(team,low,defender,f.players,bounds,.32),false);
  }
 });
+test('second-defender JUMP prediction follows its live Agility turn into the lofted flight lane',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team),dir=f.dir;
+  const defender=player('turning-jump-cover-'+team,team,f.ball.x+dir*240,340);
+  Object.assign(defender,{moveVX:0,moveVY:150,dx:dir,dy:0});
+  f.players.push(defender);
+  defender.src.agility=100;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),true,
+   'a high-Agility defender can turn back into the ball lane before the crossing');
+  defender.src.agility=1;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),false,
+   'a low-Agility defender carrying across the lane must not be sent into an unreachable JUMP');
+  defender.src.agility=100;defender.dx=0;defender.dy=0;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),false,
+   'neutral steering preserves the exact linear projection');
+  defender.dx=NaN;defender.dy=Infinity;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),false,
+   'invalid steering preserves the exact linear projection');
+  defender.dx=dir;defender.dy=0;defender.moveVY=60;
+  assert.equal(AI.defensiveLoftedPassJumpWindow(team,f.ball,defender,f.players,bounds,.32),false,
+   'sub-threshold movement preserves the exact linear projection');
+ }
+});
 test('engine executes untargeted low-pass corridor cover with the second defender while the primary presses the live ball',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const defendingTeam of [0,1]){

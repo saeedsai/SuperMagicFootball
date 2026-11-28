@@ -15,7 +15,7 @@ with sync_playwright() as pw:
   page.evaluate("""() => {const v=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>v.get(k)||null,setItem:(k,x)=>v.set(k,String(x)),removeItem:k=>v.delete(k),clear:()=>v.clear()}})}""")
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[],untargetedRows=[],turnRows=[],collectionRows=[];
+   const g=SupermagicFootball.game,rows=[],untargetedRows=[],turnRows=[],turnJumpRows=[],collectionRows=[];
    for(const defendingTeam of [0,1]){
     const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
@@ -83,6 +83,31 @@ with sync_playwright() as pw:
      primaryTarget:primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null});
    }
    for(const defendingTeam of [0,1]){
+    for(const agility of [100,1]){
+     const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+     const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,3),support=g.player(defendingTeam,4);
+     const field=2260.8,x=150+field*.55+(attackingTeam===0?120:-120),y=765,ballX=x-dir*360;
+     for(const q of g.players){if(q===receiver||q===primary||q===support||q.keeper)continue;q.down=true;q.stun=1;}
+     Object.assign(receiver,{x,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,slideTimer:0,
+      shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,moveVX:0,moveVY:0,aiAssistTarget:null});
+     Object.assign(primary,{x:ballX-dir*5,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+      slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0});
+     Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,
+      attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:35,vx:dir*600,vy:0,vz:245,
+      age:.15,canCollect:.17,shot:null,strike:null,ordinaryShot:false});
+     Object.assign(support,{x:ballX+dir*240,y:y+40,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+      slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,moveVX:0,moveVY:150,dx:dir,dy:0});
+     support.src={...support.src,agility};
+     g.clock=.2;g.driveAI(support,.016);
+     const supportTarget=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
+     const supportAction=support.action,jumpCount=support.jumpCount;
+     g.driveAI(primary,.016);
+     const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
+     turnJumpRows.push({defendingTeam,agility,dir,supportTarget,supportAction,jumpCount,primaryTarget});
+    }
+   }
+   for(const defendingTeam of [0,1]){
     g.init({home:0,away:1,mode:'quick',humans:0});
     const jumper=g.player(defendingTeam,3);
     for(const q of g.players)if(q!==jumper){q.down=true;q.stun=1;}
@@ -97,7 +122,7 @@ with sync_playwright() as pw:
     setBall();g.updateBall(.001);const groundedCollected=g.ball.owner===jumper;
     collectionRows.push({defendingTeam,airborneCollected,groundedCollected});
    }
-   return {rows,untargetedRows,turnRows,collectionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
+   return {rows,untargetedRows,turnRows,turnJumpRows,collectionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
   assert result['teams']>=223,(kind,result)
@@ -111,6 +136,13 @@ with sync_playwright() as pw:
    elite,low=profiles[100],profiles[1]
    assert (low['supportTarget']['x']-elite['supportTarget']['x'])*elite['dir']>15,(kind,profiles)
    assert elite['supportTarget']['y']>low['supportTarget']['y']+4,(kind,profiles)
+  for team in [0,1]:
+   high=next((row for row in result['turnJumpRows'] if row['defendingTeam']==team and row['agility']==100),None)
+   low=next((row for row in result['turnJumpRows'] if row['defendingTeam']==team and row['agility']==1),None)
+   assert high and low,(kind,team,result['turnJumpRows'])
+   assert high['supportAction']=='jump' and high['jumpCount']==1,(kind,high)
+   assert low['supportAction']!='jump' and low['jumpCount']!=1,(kind,low)
+   assert high['supportTarget'] and low['supportTarget'] and high['primaryTarget'] and low['primaryTarget'],(kind,high,low)
   for row in result['rows']:
    cover=row['supportTarget'];primary=row['primaryTarget'];ball=row['ball']
    assert cover is not None and primary is not None,(kind,row)
