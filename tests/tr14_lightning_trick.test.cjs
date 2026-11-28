@@ -135,7 +135,8 @@ test('Lightning grounded reads show READ feedback on the marked target or CPU ba
   }
  }
 });
-\ntest('Lightning selected-human marker receives a CPU backup whose existing JUMP counters the single-target strike',()=>{
+
+test('Lightning selected-human marker receives a CPU backup whose existing JUMP counters the single-target strike',()=>{
  for(const side of [0,1]){
   const {g,p,q,events}=setup(side),sign=side===0?1:-1;
   q.i=3;const backup={t:1-side,x:p.x+sign*70,y:p.y,z:0,stun:0,down:false,invuln:0,
