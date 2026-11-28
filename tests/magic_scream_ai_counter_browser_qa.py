@@ -26,6 +26,27 @@ with sync_playwright() as pw:
     while(!cpu.jumpCount&&elapsed<1){carrier.dribbleHold=elapsed;g.driveAI(cpu,dt);elapsed+=dt;steps++;}
     out.push({team,fps,jumpCount:cpu.jumpCount,action:cpu.action,z:cpu.z,holdAtJump:elapsed,lead:1-elapsed,steps});
    }
+   const closeSlideOut=[];
+   for(const team of [0,1])for(const fps of [30,60,120]){
+    g.init({home:0,away:9,humans:1,mode:'quick',difficulty:3});
+    const carrier=g.player(team,4),cpu=g.player(1-team,3),dir=team===0?1:-1;
+    carrier.src={...carrier.src,magicTrick:'scream'};
+    Object.assign(carrier,{dribbleHold:.35,magicReadyAt:0,magicHoldLatched:false,down:false,stun:0,z:0,fatigue:0,breath:1,keeper:false});
+    g.ball.owner=carrier;g.options.difficulty=3;g.matchState='play';g.clock=10;
+    Object.assign(cpu,{x:carrier.x+dir*55,y:carrier.y,z:0,down:false,stun:0,invuln:0,cd:0,slideTimer:0,
+     action:'idle',actionTimer:0,dx:0,dy:0,moveVX:0,moveVY:0,aiScreamThreat:null,aiScreamReaction:0});
+    for(const q of g.players)if(q.t===1-team&&q!==cpu&&!q.keeper)q.stun=1;
+    g.controlled[1-team]=(cpu.i+1)%12;
+    let steps=0,elapsed=.35;const dt=1/fps;
+    while(cpu.action!=='slide'&&cpu.z<20&&elapsed<1&&steps<100){
+     carrier.dribbleHold=elapsed;g.driveAI(cpu,dt);elapsed=Math.min(1,elapsed+dt);steps++;
+    }
+    const holdAtSlide=elapsed,action=cpu.action,slideTimer=cpu.actionTimer;
+    Object.assign(carrier,{dribbleHold:1,magicReadyAt:0,magicHoldLatched:false,fatigue:0,breath:1,down:false,stun:0,z:0});
+    g.ball.owner=carrier;g.clock=10;
+    const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
+    closeSlideOut.push({team,fps,action,slideTimer,holdAtSlide,activated,countered:event.countered,steps});
+   }
    const handoffOut=[];
    for(const team of [0,1]){
     g.init({home:0,away:9,humans:1,mode:'quick',difficulty:3});
@@ -105,11 +126,14 @@ with sync_playwright() as pw:
     humanNoDuplicateOut.push({team,state,cpuJumpCount:cpu.jumpCount,humanSelected:g.controlled[human.t]===human.i,
      humanAction:human.action,humanZ:human.z,activated,countered:event.countered});
    }
-   return {out,handoffOut,humanBackupOut,humanNoDuplicateOut,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
+   return {out,closeSlideOut,handoffOut,humanBackupOut,humanNoDuplicateOut,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert result['actions']==4,(label,'action count changed',result)
   for case in result['out']:
    assert case['jumpCount']==1 and case['action']=='jump' and case['lead']>=.25,(label,'CPU did not start the existing JUMP counter with time to rise before Scream',case)
+  for case in result['closeSlideOut']:
+   assert case['action']=='slide' and case['slideTimer']>0 and .84<=case['holdAtSlide']<1,(label,'close CPU did not time the existing Scream SHOOT-slide during the final wind-up',case)
+   assert case['activated'] and case['countered'] is True,(label,'actual Scream resolver did not recognize the close CPU slide counter',case)
   for case in result['handoffOut']:
    assert case['jumpCount']==1 and case['action']=='jump' and case['z']>=20 and case['holdAtCounter']<1,(label,'next ready defender did not rise into Scream counter before the cast',case)
    assert case['activated'] and case['countered'] is True,(label,'actual Scream resolver did not recognize the handed-off JUMP',case)

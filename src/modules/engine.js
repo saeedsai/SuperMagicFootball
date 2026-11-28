@@ -2008,7 +2008,19 @@ class GameEngine{
   if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0)||(p.action==='slide'&&(p.actionTimer||0)>0))return false;
   if(p.aiScreamThreat!==threat){p.aiScreamThreat=threat;p.aiScreamReaction=Number.isFinite(reactionSeconds)&&reactionSeconds>=0?reactionSeconds:.78;}
   p.aiScreamReaction=Math.max(0,(p.aiScreamReaction===Infinity?p.aiScreamReaction:Number.isFinite(p.aiScreamReaction)&&p.aiScreamReaction>=0?p.aiScreamReaction:.78)-(Number.isFinite(dt)?Math.max(0,dt):0));
-  if(p.aiScreamReaction<=1e-9){p.aiScreamReaction=Infinity;return this.jump(p);}
+  if(p.aiScreamReaction<=1e-9){
+   // At close range, wait for Scream's final wind-up and slip under it with
+   // the existing grounded SHOOT-slide; a spent cooldown keeps the JUMP path.
+   if(distance(carrier,p)<=64&&Number.isFinite(Number(p.cd))&&Number(p.cd)<=0){
+    if(Number(carrier.dribbleHold)<.84)return false;
+    if(typeof this.tackle==='function'&&this.tackle(p,true)){
+     p.aiScreamReaction=Infinity;
+     return true;
+    }
+   }
+   p.aiScreamReaction=Infinity;
+   return this.jump(p);
+  }
   return false;
  }
  reactToHideBallTrick(p,dt,reactionSeconds){

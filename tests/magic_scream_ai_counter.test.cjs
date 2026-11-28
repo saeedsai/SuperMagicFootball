@@ -15,9 +15,12 @@ function method(name,globals={}){return vm.runInNewContext('({'+methodSource(nam
 const react=method('reactToScreamTrick',{distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??p[k]??0});
 function fixture(side,hold=.35,nearest=true){
  const carrier={t:1-side,keeper:false,src:{magicTrick:'scream'},x:300,y:240,dribbleHold:hold};
- const target={t:side,keeper:false,src:{},x:nearest?350:550,y:240,z:0,stun:0,action:'idle',actionTimer:0};
+ const target={t:side,keeper:false,src:{},x:nearest?390:550,y:240,z:0,stun:0,cd:0,dx:0,dy:0,moveVX:0,moveVY:0,action:'idle',actionTimer:0};
  const other={t:side,keeper:false,src:{},x:nearest?560:330,y:240,z:0,stun:0,action:'idle',actionTimer:0};
- const g={ball:{owner:carrier},players:[carrier,target,other],jumps:0,jump(p){this.jumps++;p.z=22;p.action='jump';return true}};
+ const g={ball:{owner:carrier},players:[carrier,target,other],jumps:0,slides:0,
+  jump(p){this.jumps++;p.z=22;p.action='jump';p.actionTimer=.5;return true;},
+  tackle(p,slide=false){if(!slide||p.cd>0)return false;this.slides++;p.action='slide';p.actionTimer=.48;p.slideTimer=.48;p.cd=.68;return true;}
+ };
  return {g,carrier,target,other};
 }
 
@@ -29,6 +32,40 @@ test('CPU reacts to the exact nearby Scream carrier using difficulty timing befo
    react.call(g,target,dt,reaction);if(g.jumps){jumpedAt=elapsed;break;}}
   assert.ok(jumpedAt!==null&&jumpedAt<1,`team ${side}, ${fps}Hz, ${aiData[level].name} should jump before the 1s cast`);
   assert.equal(target.z,22);assert.equal(target.action,'jump');
+ }
+});
+
+test('Scream CPU times a close grounded SHOOT-slide in the final wind-up at 30/60/120Hz from both teams',()=>{
+ for(const side of [0,1])for(const fps of [30,60,120])for(const level of [1,2,3,4]){
+  const {g,carrier,target}=fixture(side),dt=1/fps;
+  target.x=carrier.x+55;
+  let elapsed=.35,holdAtSlide=null;
+  while(elapsed<1&&!g.slides&&!g.jumps){
+   carrier.dribbleHold=elapsed;
+   react.call(g,target,dt,aiData[level].reaction);
+   if(g.slides)holdAtSlide=elapsed;
+   elapsed=Math.min(1,elapsed+dt);
+  }
+  assert.equal(g.slides,1,aiData[level].name+' side '+side+' '+fps+'Hz must use the close Scream slide');
+  assert.equal(g.jumps,0,'close slide should remain the selected counter');
+  assert.ok(holdAtSlide>=.84&&holdAtSlide<1,'slide must overlap the final Scream wind-up');
+  assert.equal(target.action,'slide');assert.ok(target.actionTimer>0);
+ }
+});
+
+test('Scream close slide falls back to JUMP when cooldown, range or slide dispatch prevents it',()=>{
+ for(const side of [0,1]){
+  const cooling=fixture(side,.7);cooling.target.x=cooling.carrier.x+55;cooling.target.cd=.2;
+  assert.equal(react.call(cooling.g,cooling.target,.1,.02),true);
+  assert.equal(cooling.g.slides,0);assert.equal(cooling.g.jumps,1,'cooldown preserves the existing JUMP counter');
+
+  const outside=fixture(side,.7);outside.target.x=outside.carrier.x+65;
+  assert.equal(react.call(outside.g,outside.target,.1,.02),true);
+  assert.equal(outside.g.slides,0);assert.equal(outside.g.jumps,1,'outside the short slide lane keeps JUMP');
+
+  const failed=fixture(side,.9);failed.target.x=failed.carrier.x+55;failed.g.tackle=()=>false;
+  assert.equal(react.call(failed.g,failed.target,.1,.02),true);
+  assert.equal(failed.g.slides,0);assert.equal(failed.g.jumps,1,'failed slide dispatch falls back safely');
  }
 });
 
