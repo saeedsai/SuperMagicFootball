@@ -9,7 +9,7 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 - Candidate **0.12.81.397** adds `MAGIC-TRICK-SECOND-SCREEN-RESIDUAL-CARRY-READ-01`: a second-defender first-touch Magic Trick screen now follows the carrier's residual 2D movement after directional input releases, instead of falling back to stale facing. Live non-neutral input remains authoritative; only fully stationary carriers use the existing face fallback. Retreating momentum cannot falsely qualify for a forward screen.
 - Feature scope: `src/modules/ai.js`, with mirrored helper, real-GameEngine Node and desktop/simulated-touch Chromium regressions. No new action, automatic tackle, save field, roster or physics change.
 - Feature commit: `be5a16bc838d5c6f1156739366b064df6af82a80`.
-- Feature commit parent: `91d5b516c47cd93307f2b18c2c1a26b75fbd591d`; main head at start: `e233a6edcd3b0fcfd4bf6d6b588024287248617c`.
+- Feature commit parent: `91d5b516c47cd93307f2b18c2c1a26b75fbd591d`; main at repair: `91d5b516c47cd93307f2b18c2c1a26b75fbd591d`.
 
 ## Next smallest action
 - Inspect exact-head .397 Modular QA and Full Regression Census. Fix confirmed source or test failures without weakening gameplay assertions.
@@ -21,11 +21,12 @@ Update only this checkpoint. No new branch, force-push, history rewrite, securit
 ## Repository heads
 - Main at start: `e233a6edcd3b0fcfd4bf6d6b588024287248617c`.
 - Dev parent at start: `91d5b516c47cd93307f2b18c2c1a26b75fbd591d`.
-- Final dev head: this checkpoint-only commit follows the feature commit; verify the exact branch SHA after update.
+- Pre-repair dev head: `900400468e294ce4a13da2817c118106895db11a`; metadata repair commit follows this checkpoint.
 
 ## Evidence
 - .396 Modular QA #46107783779: passed on parent head.
-- .396 Full Regression Census #46107783663: preflight/preview and Node shards 2/3 passed; remaining Node and Chromium shards were still running at the last observation.
+- .396 Full Regression Census #46107783663: all eight shards passed; .396 was promoted to main as `91d5b516c47cd93307f2b18c2c1a26b75fbd591d`. Pages deployment #46108533164 succeeded; main Census #46108538549 had hosted smoke/preflight/preview and Node shards 2/3 passed, with remaining shards still running.
+- .397 first exact-head Modular QA #46108696420 and Census #46108696431 failed preflight on four README-heading/version contract assertions (3,058/3,062 Node pass); both new gameplay Node regressions passed. Browser shards skipped. This correction updates the README project heading to .397 without weakening tests.
 - Local git clone was unavailable because this runtime could not resolve github.com; use connected GitHub source and exact-head Actions diagnostics, and report local tests as not run.
 
 ## Cleanup
