@@ -136,6 +136,27 @@ with sync_playwright() as pw:
     return {team,mode,countered:g.events.at(-1)?.countered,hidden:carrier.hideBallTimer>.4,
      cue:defender.magicReadCueTimer||0,owner:g.ball.owner===carrier};
    }
+   function attemptProjectedScreen(team,mode){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
+    const dir=team===0?1:-1,carrier=g.player(team,3),screen=g.player(1-team,3);
+    for(const q of g.players)if(q!==carrier&&q!==screen&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(carrier,{x:1200,y:765,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+     face:dir,dx:dir,dy:0,moveVX:dir*180,moveVY:0,firstTouchOutletReadTimer:.8,
+     firstTouchControlTimer:0,firstTouchPressure:.6,hideBallTimer:0,magicReadyAt:0,fatigue:0});
+    Object.assign(carrier.src,{dribbling:50,magicTrick:'hideBall'});
+    const motion=mode==='high-turn'||mode==='low-turn'?
+     {dx:-dir,dy:-1,moveVX:dir*220,moveVY:0}:
+     mode==='retreating'?{dx:0,dy:0,moveVX:0,moveVY:180}:{dx:-dir,dy:-1,moveVX:0,moveVY:0};
+    Object.assign(screen,{x:1200+dir*68,y:840,z:0,down:false,stun:0,invuln:0,action:'idle',
+     actionTimer:0,slideTimer:0,face:-dir,magicReadCueTimer:0,magicReadCounterpressTimer:0,...motion});
+    Object.assign(screen.src,{defence:92,agility:mode==='low-turn'?1:100});
+    Object.assign(g.ball,{owner:carrier,x:1200+dir*17,y:777,z:0,pass:false,passTarget:null,
+     attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+    const original=Math.random;Math.random=()=>.1;
+    try{g.tryMagicTrick(carrier);}finally{Math.random=original;}
+    return {team,mode,countered:g.events.at(-1)?.countered,hidden:carrier.hideBallTimer>.4,
+     cue:screen.magicReadCueTimer||0,counterpress:screen.magicReadCounterpressTimer||0,owner:g.ball.owner===carrier};
+   }
    function attemptCoverPriority(team){
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';g.clock=2;
     const dir=team===0?1:-1,carrier=g.player(team,3),primary=g.player(1-team,3),
@@ -168,13 +189,16 @@ with sync_playwright() as pw:
    for(const team of [0,1])for(const mode of ['down','invulnerable','airborne','slideTimer','slideRecovery','hurtRecovery',
     'impactPending','impactDown','impactRise','shotDown','shotGetUp','glancing'])
     directEligibility.push(attemptDirectReadEligibility(team,mode));
+   const projectedScreens=[];
+   for(const team of [0,1])for(const mode of ['high-turn','low-turn','stationary','retreating'])
+    projectedScreens.push(attemptProjectedScreen(team,mode));
    return {baseline:attempt(false),screened:attempt(true),shielded:attempt(true,'shielded'),
     lowSkill:attempt(true,'exposed',1,.22),neutralSkill:attempt(true,'exposed',50,.22),eliteSkill:attempt(true,'exposed',100,.22),
     perpendicular:attempt(true,'exposed',95,.1,'perpendicular',0),
     perpendicularMirrored:attempt(true,'exposed',95,.1,'perpendicular',1),
     movementPerpendicular:attempt(true,'exposed',95,.1,'movement-perpendicular',0),
     diagonalCounterpress:[attempt(true,'exposed',95,.1,'face',0,true),attempt(true,'exposed',95,.1,'face',1,true)],
-    momentum,directCounters,directEligibility,lightningMomentum,coverPriority:[attemptCoverPriority(0),attemptCoverPriority(1)],
+    momentum,directCounters,directEligibility,projectedScreens,lightningMomentum,coverPriority:[attemptCoverPriority(0),attemptCoverPriority(1)],
     buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -219,6 +243,15 @@ with sync_playwright() as pw:
   for row in result['directEligibility']:
    assert row['countered'] is False and row['hidden'] is True,(kind,'only active, meaningfully closing defenders may read a named Trick',row)
    assert row['cue']==0 and row['owner'] is True,(kind,row)
+  assert len(result['projectedScreens'])==8,(kind,result)
+  for row in result['projectedScreens']:
+   assert row['owner'] is True,(kind,row)
+   if row['mode']=='high-turn':
+    assert row['countered'] is True and row['hidden'] is False,(kind,'high-Agility second marker should reach the visible screen lane',row)
+    assert row['cue']>0 and row['counterpress']>0,(kind,row)
+   else:
+    assert row['countered'] is False and row['hidden'] is True,(kind,'low-Agility, stationary and retreating markers must not gain the screen read',row)
+    assert row['cue']==0 and row['counterpress']==0,(kind,row)
   assert len(result['lightningMomentum'])==6,(kind,result)
   for row in result['lightningMomentum']:
    expected=row['mode']=='approach'

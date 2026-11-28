@@ -396,7 +396,7 @@ with sync_playwright() as pw:
      const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
      return {supportTarget,primaryTarget,ownerRetained:g.ball.owner===null};
     };
-    rows.push({defendingTeam,ballX,pass:run(true),baseline:run(false)});
+    rows.push({defendingTeam,ballX,y,pass:run(true),baseline:run(false)});
    }
    return {rows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
@@ -404,11 +404,14 @@ with sync_playwright() as pw:
   assert out_of_bounds_result['buttons']==4,(kind,out_of_bounds_result)
   for row in out_of_bounds_result['rows']:
    assert row['pass']['supportTarget'] is not None and row['baseline']['supportTarget'] is not None,(kind,row)
-   assert math.hypot(row['pass']['supportTarget']['x']-row['baseline']['supportTarget']['x'],
-    row['pass']['supportTarget']['y']-row['baseline']['supportTarget']['y'])<1,(kind,row)
+   expected_support_x=max(field['x']+22,min(field['x']+field['w']-22,
+    row['ballX']-(1 if row['defendingTeam']==0 else -1)*110))
+   expected_support_y=max(field['y']+23,min(field['y']+field['h']-23,row['y']+95))
+   assert math.hypot(row['pass']['supportTarget']['x']-expected_support_x,
+    row['pass']['supportTarget']['y']-expected_support_y)<1,(kind,'out-of-play pass must retain ordinary support shape',row)
    assert row['pass']['primaryTarget'] is not None and row['baseline']['primaryTarget'] is not None,(kind,row)
-   assert math.hypot(row['pass']['primaryTarget']['x']-row['baseline']['primaryTarget']['x'],
-    row['pass']['primaryTarget']['y']-row['baseline']['primaryTarget']['y'])<1,(kind,row)
+   assert math.hypot(row['pass']['primaryTarget']['x']-row['ballX'],
+    row['pass']['primaryTarget']['y']-row['y'])<80,(kind,'primary defender must continue contesting the live ball',row)
    assert row['pass']['ownerRetained'] and row['baseline']['ownerRetained'],(kind,row)
   assert not errors,(kind,errors)
   print('PASS',kind,'targeted out-of-play pass fallback, untargeted lane cover, primary ball pressure, four actions and no JavaScript errors',flush=True)

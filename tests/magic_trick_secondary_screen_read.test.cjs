@@ -70,6 +70,30 @@ test('second-defender screen reads require a two-dimensional heading toward the 
  }
 });
 
+
+test('second-defender Magic Trick screen reads project an Agility-limited turn into the lane',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,p=carrier({t:team,x:700,y:400,dx:dir,dy:0,moveVX:dir*180,moveVY:0});
+  const exposed={owner:p,x:p.x+dir*17,y:p.y+12};
+  const make=(agility)=>defender({t:1-team,x:p.x+dir*68,y:p.y+75,face:-dir,dx:-dir,dy:-1,
+   moveVX:dir*220,moveVY:0,src:{id:'screen-'+agility,agility}});
+  const high=make(100),low=make(1);
+  const highRead=AI.defensiveMagicTrickReadTarget(p,[high],true,exposed);
+  const lowRead=AI.defensiveMagicTrickReadTarget(p,[low],true,exposed);
+  assert.equal(highRead?.defender,high,JSON.stringify({team,highRead}));
+  assert.equal(highRead?.screened,true,'high-Agility turn reaches the visible screen lane');
+  assert.equal(lowRead?.screened,false,'low-Agility turn remains outside the lateral screen window');
+  const stationary={...high,moveVX:0,moveVY:0};
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[stationary],true,exposed)?.screened,false,
+   'a stationary marker cannot borrow projected arrival');
+  const retreating=defender({t:1-team,x:p.x+dir*68,y:p.y+75,face:-dir,dx:0,dy:0,
+   moveVX:0,moveVY:180,src:{id:'retreating',agility:100}});
+  assert.equal(AI.defensiveMagicTrickReadTarget(p,[retreating],true,exposed),null,
+   'retreating momentum cannot create a forward-lane screen');
+ }
+});
+
 test('a successful screen reader narrows the visible forward lane on both attack directions',async()=>{
  const AI=await loadAI(),bounds={xMin:0,xMax:2000,yMin:0,yMax:1000};
  for(const team of [0,1]){

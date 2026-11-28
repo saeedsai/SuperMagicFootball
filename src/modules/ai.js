@@ -2126,14 +2126,38 @@ function defensiveUntargetedPassCoverTarget(team,ball,bounds,defender=null,defen
    if(!facing)continue;
    const qdx=Number.isFinite(q.dx)?q.dx:0,qdy=Number.isFinite(q.dy)?q.dy:0;
    const closing=qdx*dx+qdy*dy>.22*gap,relX=q.x-carrier.x,relY=q.y-carrier.y;
-   const ahead=relX*ux+relY*uy,lateral=Math.abs(relX*uy-relY*ux);
-   const ballOffsetX=ball!==null&&Number.isFinite(ball?.x)?ball.x-carrier.x:NaN;
-   const ballOffsetY=ball!==null&&Number.isFinite(ball?.y)?ball.y-carrier.y:NaN;
-   const ballOffsetLength=Math.hypot(ballOffsetX,ballOffsetY);
-   const ballExposure=ballOffsetX*(-dx/gap)+ballOffsetY*(-dy/gap);
-   const ballOnDefenderSide=ball===null||(ball.owner===carrier&&Number.isFinite(ball.x)&&Number.isFinite(ball.y)&&
-    Number.isFinite(ballOffsetLength)&&ballOffsetLength<=36&&Number.isFinite(ballExposure)&&ballExposure>=-2);
-   const screened=firstTouchRead&&carryForward&&gap<=132&&ahead>=18&&ahead<=150&&lateral<=64&&ballOnDefenderSide;
+   const screenGeometry=(screenX,screenY)=>{
+    const screenDX=carrier.x-screenX,screenDY=carrier.y-screenY,screenGap=Math.hypot(screenDX,screenDY);
+    if(!Number.isFinite(screenGap)||screenGap<1||screenGap>132)return false;
+    const ahead=(screenX-carrier.x)*ux+(screenY-carrier.y)*uy;
+    const lateral=Math.abs((screenX-carrier.x)*uy-(screenY-carrier.y)*ux);
+    const ballOffsetX=ball!==null&&Number.isFinite(ball?.x)?ball.x-carrier.x:NaN;
+    const ballOffsetY=ball!==null&&Number.isFinite(ball?.y)?ball.y-carrier.y:NaN;
+    const ballOffsetLength=Math.hypot(ballOffsetX,ballOffsetY);
+    const ballExposure=ballOffsetX*(-screenDX/screenGap)+ballOffsetY*(-screenDY/screenGap);
+    const ballOnDefenderSide=ball===null||(ball.owner===carrier&&Number.isFinite(ball.x)&&Number.isFinite(ball.y)&&
+     Number.isFinite(ballOffsetLength)&&ballOffsetLength<=36&&Number.isFinite(ballExposure)&&ballExposure>=-2);
+    return ahead>=18&&ahead<=150&&lateral<=64&&ballOnDefenderSide;
+   };
+   // A second marker already moving into the lane can complete the visible
+   // screen within the same bounded 120 ms window used by other AI arrival reads.
+   let projectedScreenX=q.x,projectedScreenY=q.y;
+   const screenVX=Number.isFinite(q.moveVX)?q.moveVX:Number.isFinite(q.vx)?q.vx:0;
+   const screenVY=Number.isFinite(q.moveVY)?q.moveVY:Number.isFinite(q.vy)?q.vy:0;
+   if(Math.hypot(screenVX,screenVY)>=75){
+    let vx=screenVX,vy=screenVY,travelX=0,travelY=0;
+    const step=.06;
+    for(let index=0;index<2;index++){
+     const turned=carrierTurnAwareVelocity(q,vx,vy,step);
+     travelX+=(vx+turned.x)*.5*step;
+     travelY+=(vy+turned.y)*.5*step;
+     vx=turned.x;vy=turned.y;
+    }
+    projectedScreenX+=Math.max(-24,Math.min(24,travelX));
+    projectedScreenY+=Math.max(-24,Math.min(24,travelY));
+   }
+   const screened=firstTouchRead&&carryForward&&
+    (screenGeometry(q.x,q.y)||screenGeometry(projectedScreenX,projectedScreenY));
    if(!closing&&!screened)continue;
    const candidate={defender:q,screened,gap,priority:(screened?1000:0)-gap};
    if(!best||candidate.priority>best.priority)best=candidate;
