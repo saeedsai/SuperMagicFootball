@@ -64,6 +64,33 @@ test('low-cross claim yields to an earlier active outfielder but ignores unavail
  assert.equal(AI.keeperLowCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
   'an unavailable named receiver cannot be treated as an active cross runner');
 });
+test('low-cross claim follows a live Agility turn into the goal-side arrival lane',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team);
+  f.ball.x=f.ownGoalX+f.dir*220;
+  f.ball.y=f.target.y-45*.5125;
+  f.keeper.x=f.target.x;
+  f.keeper.y=f.target.y-118;
+  Object.assign(f.keeper,{moveVX:f.dir*180,moveVY:0,dx:0,dy:1,
+   src:{...f.keeper.src,agility:100,gkSkill:50,gkDiving:50}});
+  const highAgility=AI.keeperLowCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds);
+  assert.ok(highAgility,'an agile keeper turning into the cross lane should arrive in time');
+  f.keeper.src.agility=1;
+  assert.equal(AI.keeperLowCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'a low-Agility keeper still carrying across the lane must not be sent on the same claim');
+  f.keeper.src.agility=100;f.keeper.dx=0;f.keeper.dy=0;
+  assert.equal(AI.keeperLowCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'neutral steering preserves the previous cross-track reach');
+  f.keeper.dx=NaN;f.keeper.dy=Infinity;
+  assert.equal(AI.keeperLowCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'invalid steering preserves the previous cross-track reach');
+  f.keeper.dx=0;f.keeper.dy=-1;
+  assert.equal(AI.keeperLowCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'a keeper turning away from the claim lane must not inherit the forward-turn bonus');
+ }
+});
+
 test('driveAI sends the keeper to a safe low cross and returns to its line after collection',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){

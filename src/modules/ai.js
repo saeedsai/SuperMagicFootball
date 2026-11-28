@@ -3208,10 +3208,28 @@ function keeperLowCrossClaimTarget(keeper,ball,players,bounds){
  const keeperVX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
  const keeperVY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
  const targetDx=target.x-keeper.x,targetDy=target.y-keeper.y;
- const momentumToward=(keeperVX*targetDx+keeperVY*targetDy)/Math.max(1,keeperGap);
- const momentumBonus=clampTo(momentumToward*.035*(1-fatigue*.5),-8,8);
+ let momentumToward=(keeperVX*targetDx+keeperVY*targetDy)/Math.max(1,keeperGap);
+ let lateralSpeed=Math.abs((keeperVX*targetDy-keeperVY*targetDx)/Math.max(1,keeperGap));
  const turnRate=clampTo(3+agility*.13+(skill-50)*.025-fatigue*1.1,4.5,16.5);
- const lateralSpeed=Math.abs((keeperVX*targetDy-keeperVY*targetDx)/Math.max(1,keeperGap));
+ // A keeper actively turning into the low-cross lane should be judged by the
+ // movement it can carry toward the claim plane, not by stale cross-track
+ // momentum. Neutral/invalid steering and legacy velocity retain the exact
+ // previous momentum calculation.
+ const steeringX=Number.isFinite(keeper.dx)?keeper.dx:0;
+ const steeringY=Number.isFinite(keeper.dy)?keeper.dy:0;
+ const steeringLength=Math.hypot(steeringX,steeringY);
+ const movementSpeed=Math.hypot(keeperVX,keeperVY);
+ const turnHorizon=Math.min(.42,interceptSeconds);
+ if(Number.isFinite(keeper.moveVX)&&Number.isFinite(keeper.moveVY)&&
+  Number.isFinite(movementSpeed)&&movementSpeed>=75&&steeringLength>=.15&&turnHorizon>=.05){
+  const turnLead=keeperOutfielderTurnLead(keeper,turnHorizon,220*turnHorizon);
+  const projectedVX=turnLead.x/turnHorizon,projectedVY=turnLead.y/turnHorizon;
+  if(Number.isFinite(projectedVX)&&Number.isFinite(projectedVY)){
+   momentumToward=(projectedVX*targetDx+projectedVY*targetDy)/Math.max(1,keeperGap);
+   lateralSpeed=Math.abs((projectedVX*targetDy-projectedVY*targetDx)/Math.max(1,keeperGap));
+  }
+ }
+ const momentumBonus=clampTo(momentumToward*.035*(1-fatigue*.5),-8,8);
  const lateralTurnCost=Math.min(14,lateralSpeed/turnRate*.32);
  const claimReach=clampTo(112+(skill-50)*.30+(diving-50)*.20+
   (agility-50)*.12-fatigue*24+momentumBonus-lateralTurnCost,82,150);
