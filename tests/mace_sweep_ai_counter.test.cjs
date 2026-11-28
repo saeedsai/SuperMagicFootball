@@ -102,6 +102,7 @@ test('neutral input can still make a grounded Mace Sweep read from live closing 
   const state=setup(side,{face:-face,dx:0,dy:0,moveVX:-face*180,moveVY:0,
    src:{id:'cpu',jumping:70,defence:80}});
   assert.equal(react.call(state.game,state.cpu,.016,.09),false);
+  assert.ok(state.cpu.magicReadCueTimer>=.48,'CPU read shows the existing READ cue during the tell');
   assert.equal(state.jumps(),0,'a defender already making the read must not waste its JUMP counter');
   assert.equal(state.cpu.action,'run');
   assert.equal(resolve.call(state.game,state.defender),false);
@@ -153,6 +154,19 @@ test('vertical retreat cannot earn a Mace Sweep read from stale horizontal facin
   assert.equal(react.call(state.game,state.cpu,0,0),true,'CPU uses the existing JUMP counter when retreating');
   assert.equal(state.jumps(),1);
   assert.equal(state.cpu.action,'jump');
+ }
+});
+
+test('a human Mace Sweep read receives the existing READ cue at resolution',()=>{
+ for(const side of [0,1]){
+  const face=side===0?1:-1;
+  const state=setup(side,{face:-face,dx:0,dy:0,moveVX:-face*180,moveVY:0,
+   src:{id:'cpu',jumping:70,defence:80}});
+  assert.equal(state.cpu.magicReadCueTimer||0,0);
+  assert.equal(resolve.call(state.game,state.defender),false);
+  assert.ok(state.cpu.magicReadCueTimer>=.48,'resolver exposes a successful read to the player');
+  assert.equal(state.events.at(-1)?.counter,'read');
+  assert.equal(state.game.ball.owner,state.cpu,'read cue does not change possession');
  }
 });
 
