@@ -81,7 +81,7 @@ with sync_playwright() as pw:
     Object.assign(human,{x:carrier.x-forward*160,y:carrier.y+150,z:0,down:false,stun:0,invuln:0,
      action:'idle',actionTimer:0,face:forward,dx:0,dy:0,moveVX:0,moveVY:0});
     for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==human&&!q.keeper)q.stun=1;
-    g.matchState='play';g.clock=10;g.controlled[carrier.t]=carrier.i;g.controlled[human.t]=human.i;
+    g.matchState='play';g.clock=10;g.cooldown=0;g.controlled[carrier.t]=carrier.i;g.controlled[human.t]=human.i;
     g.manualSwitchGrace[carrier.t]=10;g.manualSwitchGrace[human.t]=10;
     g.input.state[carrier.t]={dribble:true,x:0,y:0};g.input.state[human.t]={};
     let steps=0;const dt=1/fps;
@@ -101,7 +101,7 @@ with sync_playwright() as pw:
     Object.assign(cpu,{x:carrier.x+forward*90,y:carrier.y+10,z:0,vz:0,down:false,stun:0,invuln:0,cd:0,
      action:'idle',actionTimer:0,moveVX:0,moveVY:0,jumpCount:0,aiTeleportThreat:null,aiTeleportReaction:0,aiTeleportReady:false});
     for(const q of g.players)if(q.t===1-team&&q!==cpu&&q!==human&&!q.keeper)q.stun=1;
-    g.matchState='play';g.clock=10;g.controlled[carrier.t]=carrier.i;g.controlled[human.t]=human.i;
+    g.matchState='play';g.clock=10;g.cooldown=0;g.controlled[carrier.t]=carrier.i;g.controlled[human.t]=human.i;
     g.manualSwitchGrace[carrier.t]=10;g.manualSwitchGrace[human.t]=10;
     g.input.state[carrier.t]={dribble:true,x:0,y:0};g.input.state[human.t]={};
     let steps=0;const dt=1/60;
