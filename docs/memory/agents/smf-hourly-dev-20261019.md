@@ -6,26 +6,27 @@ Updated: 2026-11-28
 Deliver player-facing football AI, counterable Magic Tricks, existing-player graphics, goalkeeper, Player Studio and Career/Cup improvements. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.405 adds AI-SUPPORT-COVER-LIVE-TURN-READ-01 in `src/modules/ai.js`: the second CPU defender's carrier-cover shade projects a moving carrier through the existing bounded Agility-limited 120 ms turn using trapezoidal displacement. Higher Agility follows more of a live cut; neutral/aligned/slow/invalid input retains linear projection and the existing per-axis 36-unit cap.
-- Focused Node and actual-GameEngine desktop/simulated-touch Chromium coverage extends `ai_support_carrier_lateral_cover` for both defending directions, Agility ordering, fallbacks and bounds.
-- First exact-head Modular QA #46138500183: 3,068/3,073 passed. One new mirrored-cap fixture expected the wrong x-coordinate for team 1; four release contracts found the README project heading still at .404. Both are corrected in the follow-up commit; no production gameplay assertion failed.
+- Candidate 0.12.81.407: MAGIC-SPIN-SAND-RESOLVER-READY-TARGET-01. The live Spin Bump/Sand Trap resolver now shares the same ready-defender eligibility pool as its CPU wind-up reaction, so an unavailable nearest opponent cannot absorb the single-target pulse while a ready teammate is available.
+- Added mirrored Node resolver regressions for both tricks, both teams and ten unavailable states. Extended actual-GameEngine desktop/simulated-touch browser QA for down/invulnerable target handoff.
+- No new buttons, save fields, roster/stat changes, or physics changes.
 
 ## Next smallest action
-Inspect the corrected exact-head Modular QA and Full Regression Census. Fix only confirmed failures without weakening turn, flank, possession or four-action assertions. Continue with the next unblocked player-facing backlog item.
+Inspect exact-head Modular QA and Full Regression Census. Fix only confirmed failures without weakening resolver target, counter, possession or four-action assertions; continue with the next unblocked player-facing backlog item.
 
 ## Ownership and exclusions
 Update only this checkpoint. No new branch, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. Keep #87 main protection, #86 Render drift and #48 physical two-phone acceptance open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Repository heads
-- Run start dev/main: `a23b5c1825b9d02b8ce0e529f70c9bde98652250`.
-- Feature commit: `d7855c507e57337a580d0186fcf9cf3211633195`.
-- Corrected .405 head: pending exact-head CI and release promotion.
+- Run start dev: 6b3879a0c951da6ae86c711b323973f1e8a4c6ec.
+- Run start main: 6b3879a0c951da6ae86c711b323973f1e8a4c6ec.
+- Candidate feature and release metadata are committed together; exact final SHA is recorded in GitHub history and exact-head Actions.
 
 ## Evidence
-- .404 Modular QA #46136408291 passed 3,072/3,072 Node tests.
-- .404 dev Census #46136408289 passed all four Node and four Chromium shards and QA-gated promotion.
-- Main .404 Census #46137386899 and Pages #46137380849 completed successfully; hosted smoke passed.
-- GitHub reports dev.protected=false and main.protected=false; #87 remains open. Local tests not run in connected-source runtime.
+- .406 Modular QA #46144555615 source/data job passed.
+- .406 Full Regression Census #46144555679 passed preflight, preview, all four Node shards and all four Chromium shards; QA-gated promotion to main succeeded.
+- .406 Pages deployment #46145607413 succeeded; main Census #46145612859 preflight, preview, hosted-byte smoke and Node shards 0/2/3 passed; Node shard 1 and browser shards 0/2/3 were running at checkpoint time.
+- .407 focused Node/Chromium results: pending exact-head GitHub Actions; local execution unavailable in connected-source runtime.
+- GitHub reports dev.protected=false and main.protected=false; #87 remains open.
 
 ## Cleanup
-Keep this checkpoint below 4 KiB. Update only this file for this agent; leave all other agent checkpoints untouched.
+Keep this checkpoint below 4 KiB. Leave all other agent checkpoints untouched.

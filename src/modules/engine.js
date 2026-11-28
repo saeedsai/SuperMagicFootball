@@ -2452,10 +2452,11 @@ class GameEngine{
     !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
     (defender.z==null||(Number.isFinite(Number(defender.z))&&Number(defender.z)>=0));
   }):rivals;
-  // Fireball, Freeze, Bat and Scream must resolve against the same ready
-  // defenders that can receive a CPU wind-up reaction. An unavailable nearest
-  // opponent must not soak the target while a ready teammate can still be countered.
-  const readyCounterTargets=['fireball','freeze','bat','scream','hideBall'].includes(id)
+  // Fireball, Freeze, Bat, Scream, Hide Ball, Spin Bump and Sand Trap resolve
+  // against the same ready defenders that can receive a CPU wind-up reaction.
+  // An unavailable nearest opponent must not soak a single-target trick while
+  // a ready teammate can still be countered.
+  const readyCounterTargets=['fireball','freeze','bat','scream','hideBall','spinBump','sandTrap'].includes(id)
    ?rivals.filter(defender=>{
     const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
     const z=defender.z;

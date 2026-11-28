@@ -158,3 +158,35 @@ test('the live AI dispatch preserves its four-button action schema',()=>{
  const input=fs.readFileSync('src/modules/input.js','utf8');
  assert.match(input,/const REMAPPABLE_ACTIONS=\['pass','shoot','dribble','jump'\]/);
 });
+
+test('Spin Bump/Sand Trap resolver skips unavailable nearest defenders and targets the nearest ready opponent',()=>{
+ const unavailable=[
+  ['downed',p=>{p.down=true;}],['invulnerable',p=>{p.invuln=.3;}],
+  ['shot-impact pending',p=>{p.shotImpactKnockdownPending=.3;}],
+  ['shot-impact knockdown',p=>{p.shotImpactKnockdownTimer=.3;}],
+  ['shot-impact rise',p=>{p.shotImpactRiseTimer=.3;}],
+  ['shot down',p=>{p.action='shotDown';p.actionTimer=.3;}],
+  ['getting up',p=>{p.action='shotGetUp';p.actionTimer=.3;}],
+  ['hurt recovery',p=>{p.action='hurt';p.actionTimer=.3;}],
+  ['incomplete low jump',p=>{p.action='jump';p.actionTimer=.3;p.z=8;}],
+  ['invalid height',p=>{p.z=NaN;}]
+ ];
+ for(const id of ['spinBump','sandTrap'])for(const side of [0,1])for(const [label,mark] of unavailable){
+  const {game,carrier,target}=fixture(side,id,45),other=game.players[2],dir=side?-1:1;
+  Object.assign(other,{x:carrier.x+dir*70,y:carrier.y,stun:0,down:false,invuln:0,z:0,
+   action:'idle',actionTimer:0,dx:0,dy:0,moveVX:0,moveVY:0,src:{id:'ready-backup',defence:40}});
+  mark(target);
+  const before={down:target.down,invuln:target.invuln,stun:target.stun,z:target.z,
+   action:target.action,actionTimer:target.actionTimer,shotImpactKnockdownPending:target.shotImpactKnockdownPending,
+   shotImpactKnockdownTimer:target.shotImpactKnockdownTimer,shotImpactRiseTimer:target.shotImpactRiseTimer};
+  carrier.dribbleHold=1;
+  assert.equal(resolve.call(game,carrier),true,id+', team '+side+', '+label+': cast still resolves');
+  assert.equal(game.events.at(-1).countered,false,id+', team '+side+', '+label+': no counter was staged');
+  assert.deepEqual({down:target.down,invuln:target.invuln,stun:target.stun,z:target.z,
+   action:target.action,actionTimer:target.actionTimer,shotImpactKnockdownPending:target.shotImpactKnockdownPending,
+   shotImpactKnockdownTimer:target.shotImpactKnockdownTimer,shotImpactRiseTimer:target.shotImpactRiseTimer},before,
+   id+', team '+side+', '+label+': unavailable nearest defender is not selected');
+  assert.equal(other.action,'hurt',id+', team '+side+', '+label+': nearest ready teammate receives the pulse');
+  assert.ok(other.stun>0,id+', team '+side+', '+label+': ready teammate receives the existing stun');
+ }
+});
