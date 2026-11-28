@@ -1887,10 +1887,19 @@ class GameEngine{
   const visibleWindup=carrier&&carrier.t!==p.t&&!carrier.keeper&&
    (trick==='spinBump'||trick==='sandTrap')&&Number.isFinite(hold)&&hold>=.35&&hold<1&&
    Number.isFinite(carrier.x)&&Number.isFinite(carrier.y);
+  // Match tryMagicTrick's readyCounterTargets so an unavailable nearest CPU
+  // cannot block a teammate who can still make the existing JUMP counter.
+  const timerClear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+  const ready=q=>q&&q.t!==carrier.t&&!q.keeper&&!q.down&&
+   Number.isFinite(Number(q.stun))&&Number(q.stun)<=0&&timerClear(q.invuln)&&
+   timerClear(q.shotImpactKnockdownPending)&&timerClear(q.shotImpactKnockdownTimer)&&
+   timerClear(q.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(q.action)&&
+   !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+   !(q.action==='jump'&&(Number(q.actionTimer)||0)>0&&Number.isFinite(Number(q.z))&&Number(q.z)<20)&&
+   (q.z==null||(Number.isFinite(Number(q.z))&&Number(q.z)>=0))&&
+   Number.isFinite(q.x)&&Number.isFinite(q.y);
   const rivals=visibleWindup&&Array.isArray(this.players)
-   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&
-    Number.isFinite(q.x)&&Number.isFinite(q.y))
-    .sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
+   ?this.players.filter(ready).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
   const target=rivals[0]||null;
   const selectedHuman=q=>typeof this.inControl==='function'&&this.inControl(q.t)&&
    Number.isInteger(q.i)&&Number.isInteger(this.controlled?.[q.t])&&this.controlled[q.t]===q.i;

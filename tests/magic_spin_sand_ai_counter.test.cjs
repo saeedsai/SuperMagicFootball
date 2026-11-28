@@ -121,6 +121,38 @@ test('Spin Bump/Sand Trap backup never duplicates an effective human or teammate
  }
 });
 
+test('Spin Bump/Sand Trap hands the JUMP read to the nearest ready CPU when the nearer defender is unavailable',()=>{
+ const unavailable=[
+  ['downed',p=>{p.down=true;}],['invulnerable',p=>{p.invuln=.3;}],
+  ['shot-impact pending',p=>{p.shotImpactKnockdownPending=.3;}],
+  ['shot-impact knockdown',p=>{p.shotImpactKnockdownTimer=.3;}],
+  ['shot-impact rise',p=>{p.shotImpactRiseTimer=.3;}],
+  ['shot down',p=>{p.action='shotDown';p.actionTimer=.3;}],
+  ['getting up',p=>{p.action='shotGetUp';p.actionTimer=.3;}],
+  ['hurt recovery',p=>{p.action='hurt';p.actionTimer=.3;}],
+  ['incomplete low jump',p=>{p.action='jump';p.actionTimer=.3;p.z=8;}],
+  ['invalid height',p=>{p.z=NaN;}]
+ ];
+ for(const id of ['spinBump','sandTrap'])for(const side of [0,1])for(const [label,mark] of unavailable){
+  const {game,carrier,target}=fixture(side,id,45),dir=side?-1:1;
+  const backup={t:side,x:carrier.x+dir*70,y:carrier.y,keeper:false,stun:0,down:false,invuln:0,
+   z:0,action:'idle',actionTimer:0,dx:-dir,dy:0,face:-dir,src:{id:'ready-backup',defence:60}};
+  game.players.push(backup);mark(target);
+  let hold=.35,jumpedAt=null;const dt=1/60,reaction=aiData[2].reaction;
+  while(hold<1&&jumpedAt===null){
+   carrier.dribbleHold=hold;react.call(game,backup,dt,reaction);
+   if(game.jumps)jumpedAt=hold;else hold=Math.min(1,hold+dt);
+  }
+  assert.notEqual(jumpedAt,null,`${id}, team ${side}, ${label}: nearest ready teammate must inherit the counter`);
+  assert.ok(jumpedAt<1,`${id}, team ${side}, ${label}: JUMP must start before cast`);
+  assert.equal(backup.action,'jump');
+  carrier.dribbleHold=1;
+  assert.equal(resolve.call(game,carrier),true);
+  assert.equal(game.events.at(-1).countered,true,`${id}, team ${side}, ${label}: live resolver accepts backup JUMP`);
+  assert.equal(game.ball.owner,carrier,'counter does not change possession');
+ }
+});
+
 test('the live AI dispatch preserves its four-button action schema',()=>{
  assert.match(engine,/if\(this\.reactToSpinSandTrick\(p,dt,ai\.reaction\)\|\|p\.aiSpinSandThreat\)return/);
  const input=fs.readFileSync('src/modules/input.js','utf8');
