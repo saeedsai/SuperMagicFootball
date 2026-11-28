@@ -48,7 +48,7 @@ test('Lightning selects the nearest available target instead of an incapacitated
  for(const patch of unavailable){
   const {g,p,q}=setup();
   Object.assign(q,{x:p.x+24,...patch});
-  const ready={...q,x:p.x+72,y:p.y,down:false,invuln:0,stun:0,action:'idle',actionTimer:0,
+  const ready={...q,x:p.x+72,y:p.y,z:0,down:false,invuln:0,stun:0,action:'idle',actionTimer:0,
    shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
    src:{id:'ready-lightning-target',name:'Ready Defender',defence:20}};
   g.players=[p,q,ready];
