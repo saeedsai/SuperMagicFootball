@@ -1779,6 +1779,8 @@ class GameEngine{
   const slide=q.action==='slide'&&q.actionTimer>0&&q.z<20;
   const read=maceSweepDefensiveRead(q,p);
   if(slide||read){
+   // Reuse the existing reduced-flash-safe READ! cue for a successful grounded read.
+   if(read&&!slide)q.magicReadCueTimer=Math.max(Number(q.magicReadCueTimer)||0,.48);
    this.emit('maceSweepResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true,
     counter:slide?'slide':'read'});return false;
   }
@@ -1821,6 +1823,7 @@ class GameEngine{
    p.aiMaceSweepThreat=threat;p.aiMaceSweepReaction=0;return false;
   }
   if(maceSweepDefensiveRead(p,threat)){
+   p.magicReadCueTimer=Math.max(Number(p.magicReadCueTimer)||0,.48);
    p.aiMaceSweepThreat=threat;p.aiMaceSweepReaction=0;return false;
   }
   if(p.aiMaceSweepThreat!==threat){p.aiMaceSweepThreat=threat;p.aiMaceSweepReaction=Math.max(0,Number(reactionSeconds)||0);}
