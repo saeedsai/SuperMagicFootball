@@ -1587,6 +1587,9 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
   const arrival=((receiverX-ball.x)*ball.vx+(receiverY-ball.y)*ball.vy)/speedSquared;
   if(!Number.isFinite(arrival)||arrival<.04||arrival>.68)return null;
   const ballAt={x:ball.x+ball.vx*arrival,y:ball.y+ball.vy*arrival};
+  // A pass may start in bounds but leave the playable lane before its receiver
+  // arrival. Never clamp that impossible interception back onto the pitch.
+  if(ballAt.x<xMin+24||ballAt.x>xMax-24||ballAt.y<yMin+24||ballAt.y>yMax-24)return null;
   if(Math.hypot(receiverX-ballAt.x,receiverY-ballAt.y)>118)return null;
   const attackDir=(1-team)===0?1:-1,interceptTime=arrival*.68;
   const target={

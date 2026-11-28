@@ -414,6 +414,69 @@ with sync_playwright() as pw:
    assert math.hypot(row['pass']['primaryTarget']['x']-row['ballX'],
     row['pass']['primaryTarget']['y']-row['y'])<80,(kind,'primary defender must continue contesting the live ball',row)
    assert row['pass']['ownerRetained'] and row['baseline']['ownerRetained'],(kind,row)
+  projected_edge_result=page.evaluate("""() => {
+   const g=SupermagicFootball.game,field={x:150,y:155,w:2260.8,h:1220};
+   const cases=[
+    {name:'left',ballX:field.x+80,ballY:field.y+field.h/2,receiverX:field.x+50,receiverY:field.y+field.h/2+120,vx:-170,vy:600},
+    {name:'right',ballX:field.x+field.w-80,ballY:field.y+field.h/2,receiverX:field.x+field.w-50,receiverY:field.y+field.h/2+120,vx:170,vy:600},
+    {name:'top',ballX:field.x+field.w/2,ballY:field.y+80,receiverX:field.x+field.w/2+120,receiverY:field.y+50,vx:600,vy:-170},
+    {name:'bottom',ballX:field.x+field.w/2,ballY:field.y+field.h-80,receiverX:field.x+field.w/2+120,receiverY:field.y+field.h-50,vx:600,vy:170}
+   ];
+   const rows=[];
+   for(const defendingTeam of [0,1]){
+    const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+    for(const edge of cases){
+     const speedSquared=edge.vx*edge.vx+edge.vy*edge.vy;
+     const time=((edge.receiverX-edge.ballX)*edge.vx+(edge.receiverY-edge.ballY)*edge.vy)/speedSquared;
+     const ballAtX=edge.ballX+edge.vx*time,ballAtY=edge.ballY+edge.vy*time;
+     const run=isPass=>{
+      g.init({home:0,away:1,mode:'quick',humans:0});
+      const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,2),support=g.player(defendingTeam,4);
+      for(const q of g.players)if(q!==receiver&&q!==primary&&q!==support&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
+      Object.assign(receiver,{x:edge.receiverX,y:edge.receiverY,z:0,stun:0,down:false,
+       action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+      const supportX=Math.max(field.x+22,Math.min(field.x+field.w-22,
+       edge.ballX-(defendingTeam===0?1:-1)*110));
+      const supportY=Math.max(field.y+23,Math.min(field.y+field.h-23,edge.ballY+95));
+      Object.assign(primary,{x:edge.ballX-dir*18,y:edge.ballY,z:0,down:false,stun:0,
+       action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,cd:1});
+      Object.assign(support,{x:supportX,y:supportY,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+       slideTimer:0,moveVX:0,moveVY:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,cd:1});
+      support.src.speedRating=100;support.src.agility=100;support.src.defence=50;
+      Object.assign(g.ball,{owner:null,pass:isPass,passTeam:attackingTeam,
+       passTarget:isPass?receiver.src.id:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,
+       x:edge.ballX,y:edge.ballY,z:8,vx:edge.vx,vy:edge.vy,vz:40,age:.15,
+       shot:null,strike:null,ordinaryShot:false});
+      g.clock=.2;g.driveAI(support,.016);
+      const supportTarget=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
+      g.driveAI(primary,.016);
+      const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
+      return {supportTarget,primaryTarget,ownerRetained:g.ball.owner===null};
+     };
+     rows.push({defendingTeam,edge:edge.name,ballX:edge.ballX,ballY:edge.ballY,ballAtX,ballAtY,
+      pass:run(true),baseline:run(false)});
+    }
+   }
+   return {rows,field,teams:SupermagicFootball.teams.length,
+    buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }""")
+  assert projected_edge_result['teams']>=223,(kind,projected_edge_result)
+  assert projected_edge_result['buttons']==4,(kind,projected_edge_result)
+  edge_bounds=projected_edge_result['field']
+  for row in projected_edge_result['rows']:
+   assert edge_bounds['x']+48<=row['ballX']<=edge_bounds['x']+edge_bounds['w']-48,(kind,row)
+   assert edge_bounds['y']+48<=row['ballY']<=edge_bounds['y']+edge_bounds['h']-48,(kind,row)
+   if row['edge']=='left':assert row['ballAtX']<edge_bounds['x']+48,(kind,row)
+   elif row['edge']=='right':assert row['ballAtX']>edge_bounds['x']+edge_bounds['w']-48,(kind,row)
+   elif row['edge']=='top':assert row['ballAtY']<edge_bounds['y']+48,(kind,row)
+   else:assert row['ballAtY']>edge_bounds['y']+edge_bounds['h']-48,(kind,row)
+   assert row['pass']['supportTarget'] is not None and row['baseline']['supportTarget'] is not None,(kind,row)
+   assert math.hypot(row['pass']['supportTarget']['x']-row['baseline']['supportTarget']['x'],
+    row['pass']['supportTarget']['y']-row['baseline']['supportTarget']['y'])<1,(kind,'projected out-of-play pass must retain ordinary support shape',row)
+   assert row['pass']['primaryTarget'] is not None and row['baseline']['primaryTarget'] is not None,(kind,row)
+   assert math.hypot(row['pass']['primaryTarget']['x']-row['ballX'],
+    row['pass']['primaryTarget']['y']-row['ballY'])<80,(kind,'primary defender must keep contesting the live ball',row)
+   assert row['pass']['ownerRetained'] and row['baseline']['ownerRetained'],(kind,row)
   assert not errors,(kind,errors)
   print('PASS',kind,'targeted out-of-play pass fallback, untargeted lane cover, primary ball pressure, four actions and no JavaScript errors',flush=True)
   ctx.close()

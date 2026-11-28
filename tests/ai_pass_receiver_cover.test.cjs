@@ -27,6 +27,38 @@ test('targeted pass cover rejects a ball already beyond each playable margin',as
   }
  }
 });
+test('targeted pass cover rejects projected receiver arrivals beyond each playable margin',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team),cases=[
+   {name:'left',ballX:80,ballY:300,receiverX:50,receiverY:420,vx:-170,vy:600,axis:'x',side:'min'},
+   {name:'right',ballX:920,ballY:300,receiverX:950,receiverY:420,vx:170,vy:600,axis:'x',side:'max'},
+   {name:'top',ballX:320,ballY:80,receiverX:440,receiverY:50,vx:600,vy:-170,axis:'y',side:'min'},
+   {name:'bottom',ballX:320,ballY:520,receiverX:440,receiverY:550,vx:600,vy:170,axis:'y',side:'max'}
+  ];
+  for(const edge of cases){
+   f.receiver.x=edge.receiverX;f.receiver.y=edge.receiverY;
+   const ball={...f.ball,x:edge.ballX,y:edge.ballY,vx:edge.vx,vy:edge.vy};
+   assert.ok(ball.x>=bounds.xMin+24&&ball.x<=bounds.xMax-24&&
+    ball.y>=bounds.yMin+24&&ball.y<=bounds.yMax-24,'the pass starts inside the playable margin');
+   const speedSquared=ball.vx*ball.vx+ball.vy*ball.vy;
+   const time=((f.receiver.x-ball.x)*ball.vx+(f.receiver.y-ball.y)*ball.vy)/speedSquared;
+   const ballAt={x:ball.x+ball.vx*time,y:ball.y+ball.vy*time};
+   const edgeValue=edge.axis==='x'?ballAt.x:ballAt.y;
+   const limit=edge.axis==='x'?(edge.side==='min'?bounds.xMin+24:bounds.xMax-24):
+    (edge.side==='min'?bounds.yMin+24:bounds.yMax-24);
+   assert.ok(edge.side==='min'?edgeValue<limit:edgeValue>limit,
+    JSON.stringify({team,edge:edge.name,ballAt,limit}));
+   assert.equal(AI.defensivePassReceiverCoverTarget(team,ball,f.players,bounds),null,
+    JSON.stringify({team,edge:edge.name,ballAt,receiver:f.receiver}));
+  }
+  const boundary=fixture(team);
+  boundary.receiver.x=440;boundary.receiver.y=bounds.yMin+24;
+  const exactInside={...boundary.ball,x:260,y:bounds.yMin+24,vx:900,vy:0};
+  assert.ok(AI.defensivePassReceiverCoverTarget(team,exactInside,boundary.players,bounds),
+   'an arrival exactly on the playable margin remains eligible');
+ }
+});
 test('cover ignores unavailable receivers and passes travelling away from their target',async()=>{const {AI}=await loadModules(),f=fixture(0);f.receiver.down=true;assert.equal(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds),null);f.receiver.down=false;f.receiver.stun=.2;assert.equal(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds),null);f.receiver.stun=0;f.receiver.z=28;assert.equal(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds),null);f.receiver.z=0;f.receiver.action='slide';f.receiver.actionTimer=.2;assert.equal(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds),null);f.receiver.action='idle';f.receiver.actionTimer=0;assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,vx:600},f.players,bounds),null);assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,vy:600},f.players,bounds),null);});
 test('engine sends the second defender to the pass lane while the primary keeps chasing the ball',async()=>{
  const {AI,ENGINE}=await loadModules();
