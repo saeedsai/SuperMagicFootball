@@ -111,3 +111,38 @@ test('moving-carrier support selection protects the opposite projected flank and
    'stationary-carrier support selection retains the existing nearest-flank baseline');
  }
 });
+
+
+test('support cover follows a moving carrier through its bounded live Agility turn in both directions',()=>{
+ const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,support=player(team,1000-dir*150,800);
+  const targetFor=agility=>cover(support,player(1-team,1000,700,{
+   moveVX:dir*180,moveVY:0,dx:0,dy:1,src:{agility}
+  }));
+  const expectedFor=agility=>{
+   const turn=Math.min(Math.PI/2,(3+agility*.13)*.12);
+   const leadX=clamp((dir*180+dir*180*Math.cos(turn))*.06,-36,36);
+   const leadY=clamp((180*Math.sin(turn))*.06,-36,36);
+   return {x:1000+leadX-dir*110,y:700+leadY+95};
+  };
+  const near=(actual,expected)=>{assert.ok(Math.abs(actual.x-expected.x)<1e-9,JSON.stringify({actual,expected}));assert.ok(Math.abs(actual.y-expected.y)<1e-9,JSON.stringify({actual,expected}));};
+  const low=targetFor(1),high=targetFor(100);
+  near(low,expectedFor(1));near(high,expectedFor(100));
+  assert.ok(high.y>low.y,'higher Agility should follow more of the live lateral cut');
+  for(const [name,carrier] of [
+   ['aligned',{moveVX:dir*180,moveVY:0,dx:dir,dy:0,src:{agility:100}}],
+   ['neutral',{moveVX:dir*180,moveVY:0,dx:0,dy:0,src:{agility:100}}],
+   ['slow',{moveVX:dir*60,moveVY:0,dx:0,dy:1,src:{agility:100}}],
+   ['invalid',{moveVX:dir*180,moveVY:0,dx:NaN,dy:Infinity,src:{agility:100}}]
+  ]){
+   const result=cover(support,player(1-team,1000,700,carrier));
+   const speed=name==='slow'?60:180;
+   near(result,{x:1000+dir*speed*.12-dir*110,y:795});
+  }
+  const capped=cover(support,player(1-team,1000,700,{
+   moveVX:dir*2000,moveVY:0,dx:0,dy:1,src:{agility:100}
+  }),bounds,.18);
+  near(capped,{x:926,y:831});
+ }
+});

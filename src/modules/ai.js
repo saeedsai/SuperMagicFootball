@@ -109,8 +109,17 @@ function defensiveCarrierSupportCoverTarget(support,carrier,bounds,horizonSecond
   Number.isFinite(carrier.vx)?carrier.vx:0;
  const vy=Number.isFinite(carrier.moveVY)?carrier.moveVY:
   Number.isFinite(carrier.vy)?carrier.vy:0;
- const forwardLead=clampTo(vx*horizon,-36,36);
- const lateralLead=clampTo(vy*horizon,-36,36);
+ let projectedVX=vx,projectedVY=vy;
+ const carrierSpeed=Math.hypot(vx,vy);
+ const inputX=Number.isFinite(carrier.dx)?carrier.dx:0;
+ const inputY=Number.isFinite(carrier.dy)?carrier.dy:0;
+ if(carrierSpeed>=75&&Math.hypot(inputX,inputY)>=.15){
+  const turned=carrierTurnAwareVelocity(carrier,vx,vy,horizon);
+  projectedVX=(vx+turned.x)*.5;
+  projectedVY=(vy+turned.y)*.5;
+ }
+ const forwardLead=clampTo(projectedVX*horizon,-36,36);
+ const lateralLead=clampTo(projectedVY*horizon,-36,36);
  const projectedX=clampTo(carrier.x+forwardLead,xMin+23,xMax-23);
  const projectedY=clampTo(carrier.y+lateralLead,yMin+23,yMax-23);
  // Keep the screen on the support's side of the carrier's projected lane; a lateral cut must not make the cover run through the carrier.

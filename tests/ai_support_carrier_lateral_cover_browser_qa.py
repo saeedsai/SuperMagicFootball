@@ -78,6 +78,46 @@ with sync_playwright() as pw:
                 const projectedY=700+lateral*21.6,side=Math.sign(support.y-projectedY);
                 return {target:support.aiTarget,expectedX:1050-dir*110,expectedY:projectedY+side*95};
             });
+            const turnRows=[0,1].map(team=>{
+                const dir=team===0?1:-1;
+                const targetFor=agility=>game.defensiveCarrierSupportCoverTarget(
+                    player(team,850,800),player(1-team,1000,700,{moveVX:dir*180,moveVY:0,
+                        dx:0,dy:1,src:{agility}}),bounds);
+                const expectedFor=agility=>{
+                    const turn=Math.min(Math.PI/2,(3+agility*.13)*.12);
+                    return {x:1000+Math.max(-36,Math.min(36,(dir*180+dir*180*Math.cos(turn))*.06))-dir*110,
+                        y:700+Math.max(-36,Math.min(36,180*Math.sin(turn)*.06))+95};
+                };
+                const low=targetFor(1),high=targetFor(100);
+                const aligned=game.defensiveCarrierSupportCoverTarget(
+                    player(team,850,800),player(1-team,1000,700,{moveVX:dir*180,moveVY:0,dx:dir,dy:0}),bounds);
+                const neutral=game.defensiveCarrierSupportCoverTarget(
+                    player(team,850,800),player(1-team,1000,700,{moveVX:dir*180,moveVY:0,dx:0,dy:0}),bounds);
+                return {low,high,expectedLow:expectedFor(1),expectedHigh:expectedFor(100),aligned,neutral,
+                    expectedLinear:{x:1000+dir*180*.12-dir*110,y:795}};
+            });
+            const runEngineTurn=(team,agility)=>{
+                const dir=team===0?1:-1;
+                game.init({home:0,away:1,mode:'quick',humans:0});
+                const carrier=game.player(1-team,3),primary=game.player(team,3),support=game.player(team,4);
+                for(const q of game.players)if(q!==carrier&&q!==primary&&q!==support&&!q.keeper){q.down=true;q.stun=1;}
+                Object.assign(carrier,{x:1050,y:700,z:0,down:false,stun:0,invuln:0,action:'idle',
+                    actionTimer:0,moveVX:dir*180,moveVY:0,dx:0,dy:1,firstTouchPressure:0,
+                    firstTouchControlTimer:0,src:{...carrier.src,agility}});
+                Object.assign(primary,{x:1050-dir*70,y:700,z:0,down:false,stun:0,invuln:0,cd:0,
+                    action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+                Object.assign(support,{x:1050-dir*110,y:795,z:0,down:false,stun:0,invuln:0,cd:0,
+                    aiTimer:0,aiTarget:null,aiDetour:null,action:'idle',actionTimer:0,
+                    moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
+                Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,vx:0,vy:0,vz:0,
+                    pass:false,shot:null,strike:null,ordinaryShot:false,attacker:1-team,lastTouchTeam:1-team});
+                game.clock=10;game.driveAI(support,.016);
+                const turn=Math.min(Math.PI/2,(3+agility*.13)*.12);
+                const leadX=Math.max(-36,Math.min(36,(dir*180+dir*180*Math.cos(turn))*.06));
+                const leadY=Math.max(-36,Math.min(36,180*Math.sin(turn)*.06));
+                return {target:support.aiTarget,expectedX:1050+leadX-dir*110,expectedY:700+leadY+95};
+            };
+            const turnEngineRows=[runEngineTurn(0,1),runEngineTurn(1,100)];
             const selectionRows=[0,1].map(team=>{
                 const dir=team===0?1:-1,lateral=team===0?1:-1,goalSide=team===0?-1:1;
                 game.init({home:0,away:1,mode:'quick',humans:0});
@@ -98,7 +138,7 @@ with sync_playwright() as pw:
                 const projectedY=700+lateral*26.4,side=Math.sign(far.y-projectedY);
                 return {target:far.aiTarget,expectedX:1050-dir*110,expectedY:projectedY+side*95};
             });
-            return {down,up,capped,engineRows,forwardRows,crossingRows,selectionRows,
+            return {down,up,capped,engineRows,forwardRows,crossingRows,selectionRows,turnRows,turnEngineRows,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
                 teams:SupermagicFootball.teams.filter(team=>
                     !['concept_demo','crown_royals_reference'].includes(team.group)).length};
@@ -106,9 +146,16 @@ with sync_playwright() as pw:
         assert abs(result['down']['y']-816.6)<1e-9,(kind,result)
         assert abs(result['up']['y']-773.4)<1e-9,(kind,result)
         assert result['capped']['y']==831,(kind,result)
-        for row in result['engineRows']+result['forwardRows']+result['crossingRows']+result['selectionRows']:
+        for row in result['engineRows']+result['forwardRows']+result['crossingRows']+result['selectionRows']+result['turnEngineRows']:
             assert abs(row['target']['x']-row['expectedX'])<1e-9,(kind,row)
             assert abs(row['target']['y']-row['expectedY'])<1e-9,(kind,row)
+        for row in result['turnRows']:
+            assert abs(row['low']['x']-row['expectedLow']['x'])<1e-9,(kind,row)
+            assert abs(row['low']['y']-row['expectedLow']['y'])<1e-9,(kind,row)
+            assert abs(row['high']['x']-row['expectedHigh']['x'])<1e-9,(kind,row)
+            assert abs(row['high']['y']-row['expectedHigh']['y'])<1e-9,(kind,row)
+            assert row['high']['y']>row['low']['y'],(kind,row)
+            assert row['aligned']==row['expectedLinear'] and row['neutral']==row['expectedLinear'],(kind,row)
         assert result['buttons']==4 and result['teams']==223,(kind,result)
         assert not errors,(kind,errors)
         print('PASS',kind,'two-axis projected-flank cover, forward carrier, support selection, 223 teams and four actions',flush=True)
