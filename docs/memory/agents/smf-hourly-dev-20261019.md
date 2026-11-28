@@ -1,35 +1,28 @@
-# SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** `smf-hourly-dev-20261019`
-Updated: 2026-11-28
+# SuperMagicFootball hourly development checkpoint — smf-hourly-dev-20261019
 
 ## Mission
-Prioritize responsive football gameplay, intelligent passing/tackling and counterable tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
+Feature-first development on the existing `dev` branch. Prioritize player-facing gameplay, counterplay, goalkeeper behavior, graphics/animation, Player Studio and Career/Cup. Do not spend runs on repetitive audits or tests for already-covered behavior. Preserve four actions (Pass/Shoot/Dribble/Jump), 223 teams, 2,676 players, roster ordering/ratios, six formations, saves, offline/PWA and ten Career/Cup slots.
 
-## Current checkpoint
-- Candidate 0.12.81.395 adds AI-TARGETED-GROUND-PASS-EDGE-REJECTION-01: targeted low-pass cover rejects a ball already beyond the validated 24-unit playable margin, matching untargeted-pass behavior. The CPU support defender keeps ordinary shape instead of chasing a clamped out-of-play screen; primary ball pressure and valid targeted/untargeted cover remain.
-- Feature commit: `ab4101d11e4960098c872c0a4c74738e57ea8807`.
-- Focused Node coverage mirrors both teams and the attacking-side x plus top/bottom y margins. Desktop and simulated-touch Chromium acceptance compares actual GameEngine support and primary targets against the no-pass fallback.
-- .394 was promoted through the existing QA-gated pipeline: dev Census #46100399605 passed all eight shards, Modular QA #46100399661 passed, Pages #46101128191 succeeded and hosted-pages smoke in main Census #46101134564 passed. The main Census was still running at last observation.
-- .395 exact-head Modular QA and four-Node/four-Chromium Census are pending. No .395 deployment claim.
+## Current candidate
+**0.12.81.396 — 28 November 2026.**
 
-## Next smallest action
-- Inspect exact-head .395 Modular QA and Full Regression Census; repair any confirmed issue without weakening assertions.
-- Continue intelligent pass interception against diagonal/late receiver cuts and second-defender support, then remaining Magic Trick counterplay.
-- Keep existing-player eight-view Studio work, goalkeeper decisions, Player Studio and Career/Cup moving when a bounded acceptance is ready.
+Feature commit: `8f04063965d433a7d0f244e75a732fd5d97a96da`.
 
-## Ownership and exclusions
-Update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
+`MAGIC-TRICK-SECOND-SCREEN-TURN-ARRIVAL-01`: the visible second-defender Magic Trick screen now evaluates the current position and a bounded 120 ms Agility-limited movement projection. A high-Agility defender turning into the pressured first-touch lane can earn the existing probabilistic read from just outside the 64-unit lateral window; low-Agility, stationary and retreating profiles cannot. Current screen geometry, ball-side shielding, 105/132-unit proximity, skill odds, READ! cue, 0.42 s counterpress, costs, cooldowns and possession remain unchanged. No new action, player state or automatic tackle.
 
-## Repository heads
-- .395 feature commit: `ab4101d11e4960098c872c0a4c74738e57ea8807`.
-- Main at feature commit: `e233a6edcd3b0fcfd4bf6d6b588024287248617c`.
-- Final dev head is this checkpoint commit; verify the branch API before reporting.
+The same commit repairs the .395 out-of-play targeted-pass browser-test oracle: it now checks the ordinary support-shape coordinates and primary ball pressure instead of incorrectly comparing a specific support player's target with a no-pass baseline where that player is not selected as support.
 
-## Evidence
-- .394 Modular QA #46100399661: passed.
-- .394 Full Regression Census #46100399605: passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion succeeded.
-- Main Pages deployment #46101128191: success; hosted-pages smoke in #46101134564: success. Main Full Regression Census #46101134564 was still running at last observation.
-- .395 focused regressions are committed with the feature; exact-head CI results pending.
+## Branches and release truth
+- Before this checkpoint update, dev was `8f04063965d433a7d0f244e75a732fd5d97a96da`; this checkpoint update adds one docs-only commit on top.
+- Main last observed: `e233a6edcd3b0fcfd4bf6d6b588024287248617c`, release .394.
+- Main .394 Census, Pages deployment and hosted-byte smoke were previously independently successful. .396 is not promoted or deployed.
+- GitHub branch protection remains unresolved: #87; do not describe main as protected.
 
-## Cleanup
-Keep this checkpoint below 4 KiB. Update only this file for this agent; leave other checkpoints untouched.
+## Validation
+- .395 Modular QA #46102393957 passed 3,053/3,053 Node tests.
+- .395 Full Regression Census #46102393894 failed only the out-of-play targeted-pass browser assertion. The observed support target was the correct generic shape and the primary remained on the live ball; the assertion compared different support-player roles. Diagnosis and correction are recorded in `docs/MASTER_BACKLOG.md`.
+- .396 Modular QA and exact-head eight-shard Census have not yet been observed. Do not claim passing tests until Actions results are inspected.
+- Keep #48 physical two-phone acceptance open; LAN/P2P is out of scope absent a confirmed regression. Monitor #86 Render drift separately. No authenticated online hosting without owner resources.
+
+## Next action
+Inspect Modular QA and the four-Node/four-Chromium Full Regression Census at the exact final .396 dev head. Fix any confirmed failure without weakening assertions. If green, permit only the existing QA-gated main pipeline to promote, then independently verify main Census, Pages deployment and hosted bytes. After the release gate, continue with the smallest meaningful unfinished gameplay/counterplay item in `docs/MASTER_BACKLOG.md`.
