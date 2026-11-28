@@ -960,7 +960,9 @@ function attackingSupportPass(players,team,carrier,supportRun){
   const defenders=[];
   for(const defender of players){
    if(!defender||defender.t===team||!Number.isFinite(defender.x)||!Number.isFinite(defender.y))continue;
+   // A hurt pose can outlast stun; it must not block a pass after recovery has begun.
    if(defender.down||defender.action==='shotDown'||defender.action==='shotGetUp'||
+    (defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)||
     !timerClear(defender.shotImpactKnockdownPending)||
     !timerClear(defender.shotImpactKnockdownTimer)||
     !timerClear(defender.shotImpactRiseTimer)||!grounded(defender))continue;

@@ -568,3 +568,22 @@ test('CPU support and through-ball selection wait for a receiver first-touch set
   }
  }
 });
+
+
+test('through-ball collection safety ignores a lingering hurt pose after stun expires',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=throughBallKeeperFixture(team);
+  const open=AI.attackingThroughBall([f.carrier,f.runner],team,f.carrier,f.supportRun);
+  assert.ok(open,'the receiver starts with a clear through-ball pocket for team '+team);
+  const defender={t:1-team,keeper:false,x:open.target.x-f.dir*20,y:open.target.y+101,
+   down:false,stun:.08,z:0,action:'hurt',actionTimer:.16,slideTimer:0,
+   moveVX:f.dir*300,moveVY:0,dx:0,dy:-1,src:{agility:100}};
+  const players=[f.carrier,f.runner,defender];
+  assert.equal(AI.attackingThroughBall(players,team,f.carrier,f.supportRun)?.runner,f.runner,
+   'a defender whose stun has elapsed but hurt recovery remains must not block team '+team);
+  defender.stun=0;defender.actionTimer=0;
+  assert.equal(AI.attackingThroughBall(players,team,f.carrier,f.supportRun),null,
+   'the same recovered defender must restore collection-pocket pressure for team '+team);
+ }
+});
