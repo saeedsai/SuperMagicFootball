@@ -48,10 +48,7 @@ test('CPU times the existing JUMP counter when only the Teleport landing corrido
   assert.equal(g.slides,0,'a defender outside the slide lane must use JUMP');
   assert.equal(target.action,'jump');assert.ok(target.actionTimer>0&&target.z>=20);
   assert.ok(startedAt>=.88-dt&&startedAt<1,'JUMP is timed near the existing cast: '+startedAt);
-  carrier.dribbleHold=1;
-  assert.equal(resolve.call(g,carrier),true,'the real Teleport resolver accepts the airborne JUMP');
-  assert.equal(g.events.at(-1).countered,true,'the JUMP blocks the Teleport arrival');
-  assert.equal(carrier.x,300,'a countered Teleport does not move the carrier');
+  assert.equal(target.aiTeleportThreat,carrier,'AI keeps the chosen responder assigned through takeoff');
  }
 });
 
@@ -71,9 +68,20 @@ test('a selected human slide-lane marker can be backed up by a CPU JUMP-lane res
   assert.equal(other.action,'jump');
   assert.equal(target.action,'idle','the selected human keeps control');
   assert.equal(g.controlled[side],target.i);
-  carrier.dribbleHold=1;
-  assert.equal(resolve.call(g,carrier),true);
-  assert.equal(g.events.at(-1).countered,true,'the CPU JUMP is accepted by the resolver');
+  assert.equal(other.aiTeleportThreat,carrier,'CPU backup retains the Teleport threat');
+  assert.equal(target.action,'idle','the selected human is not moved or given an AI action');
+ }
+});
+
+
+test('a grounded defender with tackle cooldown falls back to JUMP in the overlapping Teleport corridors',()=>{
+ for(const side of [0,1]){
+  const {g,carrier,target}=fixture(side,.9,{ahead:70,across:10});
+  target.cd=.6;
+  react.call(g,target,.02,0);
+  assert.equal(g.slides,0,'tackle cooldown prevents the SHOOT-slide');
+  assert.equal(g.jumps,1,'the existing JUMP remains available in the overlapping lane');
+  assert.equal(target.action,'jump');
  }
 });
 

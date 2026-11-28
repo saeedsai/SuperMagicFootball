@@ -2136,15 +2136,18 @@ class GameEngine{
   // Preserve the established slide response whenever a ready marker can use it.
   // A grounded defender in the separate JUMP corridor is the fallback, including
   // a CPU backup for a selected human who already owns the nearer slide lane.
+  const slideCandidate=q=>{
+   const z=q.z==null?0:Number(q.z);
+   return slideLane(q)&&Number.isFinite(z)&&z<20&&clear(q.cd);
+  };
+  const jumpCandidate=q=>{
+   const z=q.z==null?0:Number(q.z);
+   return jumpLane(q)&&Number.isFinite(z)&&z<=10;
+  };
   const laneDefenders=rivals.filter(q=>{
    const actionBusy=(q.action==='slide'||q.action==='jump')&&(Number(q.actionTimer)||0)>0;
-   if(actionBusy)return false;
-   const z=q.z==null?0:Number(q.z);
-   const grounded=Number.isFinite(z)&&z<=10;
-   const slide=slideLane(q)&&Number.isFinite(z)&&z<20&&clear(q.cd);
-   const jump=jumpLane(q)&&grounded;
-   return slide||jump;
-  }).map(q=>({player:q,action:slideLane(q)?'slide':'jump'}))
+   return !actionBusy&&(slideCandidate(q)||jumpCandidate(q));
+  }).map(q=>({player:q,action:slideCandidate(q)?'slide':'jump'}))
    .sort((a,b)=>a.action===b.action?
     distance(carrier,a.player)-distance(carrier,b.player):a.action==='slide'?-1:1);
   const selectedHuman=q=>typeof this.inControl==='function'&&this.inControl(q.t)&&
