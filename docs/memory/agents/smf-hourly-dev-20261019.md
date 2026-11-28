@@ -9,6 +9,7 @@ Deliver player-facing football AI, counterable Magic Tricks, existing-player gra
 - Candidate 0.12.81.410: MACE-SWEEP-RECOVERY-TARGET-ELIGIBILITY-01. Mace Sweep skips downed/shot-recovering targets at selection and revalidates them at impact; a ready opponent can inherit selection and a target becoming unavailable during the .24-second tell is protected.
 - The .409.1 preflight failures were test-contract issues: an outdated negative fixture expected JUMP despite live residual movement toward the caster, and this checkpoint lacked its required Evidence heading. The fixture now preserves true retreat/low-Defence negatives; the dedicated live-approach read remains covered. No gameplay assertion was weakened.
 - Added mirrored Node activation/resolver regressions and actual-GameEngine desktop/simulated-touch Chromium coverage for both teams and unavailable-state handoff.
+- First .410 Full Regression Census #46156398332 stopped in preflight: 3,072/3,080 Node tests passed; failures were one stale Mace negative fixture, four telegraph harness helper injections and two service-worker release-header contracts. The new production target-readiness tests passed; the follow-up fixes only the fixture/harness/header.
 
 ## Next smallest action
 Verify exact-head .410 Modular QA and all four Node/four Chromium Full Regression Census shards. Fix only confirmed failures without weakening readiness, valid-hit, read/slide counter, possession or four-action assertions; then continue the next unblocked product backlog item.
@@ -19,6 +20,7 @@ Update only this checkpoint. No new branch, force-push, history rewrite, securit
 ## Evidence
 - Run-start dev: 429351b182f537fbb4870267ce79baed5cbd189c; main: 6b3879a0c951da6ae86c711b323973f1e8a4c6ec.
 - .409.1 Modular QA #46154860318: failed 2 of 3,078 Node tests; stale Mace negative expectation and missing checkpoint Evidence heading. Census #46154860322 stopped in preflight for the same two failures; downstream shards skipped.
+- .410 first Full Regression Census #46156398332: preflight failed 8/3,080 Node tests (3,072 passed); all eight are diagnosed test fixture/release-header failures, not yet certified as repaired.
 - Main .406 SHA 6b3879a0c951da6ae86c711b323973f1e8a4c6ec: Census #46145612859 and Pages deployment #46145607413 succeeded. GitHub reports main.protected=false; #87 remains open.
 
 ## Cleanup

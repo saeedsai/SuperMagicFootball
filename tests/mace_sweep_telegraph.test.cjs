@@ -18,6 +18,10 @@ function method(name,next,globals={}){
  return vm.runInNewContext('({'+engine.slice(a,b)+'})',globals)[name];
 }
 const stat=(p,k)=>p.src?.[k]??55;
+const readyStart=engine.indexOf('function maceSweepTargetReady(');
+const readyEnd=engine.indexOf('\n}',readyStart)+2;
+assert.ok(readyStart>=0&&readyEnd>readyStart,'extract Mace Sweep target readiness helper');
+const maceSweepTargetReady=vm.runInNewContext('('+engine.slice(readyStart,readyEnd)+')');
 const facingStart=engine.indexOf('function defenderFacesCarrier2D(');
 const facingEnd=engine.indexOf('\n}',facingStart)+2;
 assert.ok(facingStart>=0&&facingEnd>facingStart,'extract shared 2D defender-facing helper');
@@ -27,7 +31,7 @@ const helperEnd=engine.indexOf('\n}',helperStart)+2;
 assert.ok(helperStart>=0&&helperEnd>helperStart,'extract Mace Sweep read helper');
 const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\nmaceSweepDefensiveRead',{stat,defenderFacesCarrier2D});
 const globals={fieldAbility:ABILITIES.fieldAbility,abilityReady:(p,m)=>!!(m&&p.stun<=0&&p.abilityCd<=0&&p.fatigue+m.cost<=.98),
- abilityLevel:()=>2,levelModifiers:()=>({stun:1}),distance,norm,clamp,F,stat,maceSweepDefensiveRead,impactStun:()=>.8};
+ abilityLevel:()=>2,levelModifiers:()=>({stun:1}),distance,norm,clamp,F,stat,maceSweepDefensiveRead,maceSweepTargetReady,impactStun:()=>.8};
 const activate=method('activateDefence','activateKeeperSuper',globals);
 const resolve=method('resolveMaceSweep','updateMaceSweep',globals);
 const update=method('updateMaceSweep','dribble',globals);

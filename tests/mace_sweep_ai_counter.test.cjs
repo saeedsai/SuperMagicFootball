@@ -116,7 +116,7 @@ test('retreating movement and insufficient Defence still require the existing JU
  for(const side of [0,1]){
   const face=side===0?1:-1;
   const cases=[
-   {face:face,moveVX:-face*180,src:{id:'cpu',jumping:70,defence:80}},
+   {face:-face,moveVX:face*180,src:{id:'cpu',jumping:70,defence:80}},
    {face:-face,moveVX:-face*180,src:{id:'cpu',jumping:70,defence:30}}
   ];
   for(const patch of cases){
