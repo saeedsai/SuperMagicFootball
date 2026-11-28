@@ -202,9 +202,10 @@ test('keeper cutback marking follows a defenders live turn rather than stale mom
   const markerShade=agility=>{
    const f=fixture(ENGINE,field,keeperTeam);
    const marker=f.game.players.find(p=>p.t===keeperTeam&&!p.keeper&&p.i===4);
-   Object.assign(marker,{x:f.runner.x+74,y:f.runner.y,z:0,down:false,stun:0,
+   Object.assign(f.runner,{moveVX:0,moveVY:0,dx:0,dy:0});
+   Object.assign(marker,{x:f.runner.x+80,y:f.runner.y,z:0,down:false,stun:0,
     slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
-    shotImpactRiseTimer:0,action:'idle',actionTimer:0,moveVX:-180,moveVY:0,dx:0,dy:-1});
+    shotImpactRiseTimer:0,action:'idle',actionTimer:0,moveVX:-180,moveVY:0,dx:1,dy:0});
    marker.src.agility=agility;
    return targetY(f);
   };

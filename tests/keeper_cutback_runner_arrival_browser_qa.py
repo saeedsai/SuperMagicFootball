@@ -30,7 +30,7 @@ with sync_playwright() as pw:
         result=page.evaluate("""() => {
             const game=SupermagicFootball.game;
             const field={x:150,y:155,w:2260.8,h:1220};
-            const targetY=(team,wing,mode,markerMode=null,runnerTurnAgility=null)=>{
+            const targetY=(team,wing,mode,markerMode=null,runnerTurnAgility=null,runnerStationary=false)=>{
                 game.init({home:0,away:1,mode:'quick',humans:0});
                 const keeper=game.players.find(p=>p.t===team&&p.keeper);
                 const attacking=1-team,attackDir=team===0?-1:1;
@@ -55,6 +55,9 @@ with sync_playwright() as pw:
                     Object.assign(runner,{moveVX:attackDir*180,moveVY:0,dx:0,dy:wing});
                     runner.src.agility=runnerTurnAgility;
                 }
+                if(runnerStationary){
+                    Object.assign(runner,{moveVX:0,moveVY:0,dx:0,dy:0});
+                }
                 Object.assign(runner2,{x:runnerX,y:centerY-wing*58,z:0,stun:0,
                     down:mode==='runner-only'||mode==='none',action:'idle',actionTimer:0,slideTimer:0,
                     moveVX:attackDir*70,moveVY:wing*180});
@@ -65,7 +68,7 @@ with sync_playwright() as pw:
                     const markerVelocity=turningAway?{x:-180,y:0}:markerMode==='retreating'?{x:0,y:-runner.moveVY}:
                         markerMode==='closing'?{x:0,y:runner.moveVY-180}:{x:0,y:0};
                     const markerOffset=markerMode==='closing'?{x:0,y:24}:markerMode==='retreating'?{x:0,y:-lead(runner.moveVY)}:{x:0,y:0};
-                    Object.assign(marker,{x:turningAway?runner.x+74:runner.x+lead(runner.moveVX)+markerOffset.x,
+                    Object.assign(marker,{x:turningAway?runner.x+80:runner.x+lead(runner.moveVX)+markerOffset.x,
                         y:turningAway?runner.y:runner.y+lead(runner.moveVY)+markerOffset.y,
                         z:0,down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,
                         shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
@@ -73,7 +76,7 @@ with sync_playwright() as pw:
                         actionTimer:markerMode==='recovering'?.4:0,
                         moveVX:markerVelocity.x,moveVY:markerVelocity.y});
                     if(turningAway){
-                        marker.dx=0;marker.dy=-1;
+                        marker.dx=1;marker.dy=0;
                         marker.src.agility=markerMode==='turning-away-high'?100:1;
                     }
                 }
@@ -103,10 +106,10 @@ with sync_playwright() as pw:
             }
             const turnRows=[];
             for(const team of [0,1])for(const wing of [-1,1]){
-                const noRunner=targetY(team,wing,'none');
-                const openRunner=targetY(team,wing,'runner-only');
-                const highMarker=targetY(team,wing,'runner-only','turning-away-high');
-                const lowMarker=targetY(team,wing,'runner-only','turning-away-low');
+                const noRunner=targetY(team,wing,'none',null,null,true);
+                const openRunner=targetY(team,wing,'runner-only',null,null,true);
+                const highMarker=targetY(team,wing,'runner-only','turning-away-high',null,true);
+                const lowMarker=targetY(team,wing,'runner-only','turning-away-low',null,true);
                 const highRunner=targetY(team,wing,'runner-only',null,100);
                 const lowRunner=targetY(team,wing,'runner-only',null,1);
                 turnRows.push({team,wing,noRunner,openRunner,highMarker,lowMarker,highRunner,lowRunner});
