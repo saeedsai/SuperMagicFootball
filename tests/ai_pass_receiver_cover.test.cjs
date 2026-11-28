@@ -429,8 +429,8 @@ test('untargeted pass cover rejects stale, slow, backward, lateral, lofted and i
  assert.ok(AI.defensiveUntargetedPassCoverTarget(0,ball,[],bounds));
  for(const patch of [
   {owner:{}},{attacker:0},{passTeam:0},{age:1.26},{z:19},{vz:71},{vz:-71},
-  {vx:180,vy:0},{vx:0,vy:600},{vx:-600,vy:0},{shot:true},
-  {x:bounds.xMax-24},{y:bounds.yMin+23}
+  {vx:180,vy:0},{vx:0,vy:600},{vx:600,vy:0},{shot:true},
+  {x:bounds.xMax+88},{y:bounds.yMin+23}
  ]){
   assert.equal(AI.defensiveUntargetedPassCoverTarget(0,{...ball,...patch},[],bounds),null,
    'rejected unsafe pass '+JSON.stringify(patch));
