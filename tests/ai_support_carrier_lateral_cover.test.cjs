@@ -143,6 +143,6 @@ test('support cover follows a moving carrier through its bounded live Agility tu
   const capped=cover(support,player(1-team,1000,700,{
    moveVX:dir*2000,moveVY:0,dx:0,dy:1,src:{agility:100}
   }),bounds,.18);
-  near(capped,{x:926,y:831});
+  near(capped,{x:1000+dir*36-dir*110,y:831});
  }
 });
