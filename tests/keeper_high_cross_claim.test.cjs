@@ -341,3 +341,31 @@ test('grounded high-cross claim follows Agility-limited receiver turns in both d
  }
 });
 
+test('high-cross keeper claim follows a live Agility turn into the landing pocket, not away from it',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(ENGINE,team),dir=f.dir;
+  f.target={x:f.ownGoalX+dir*265,y:f.goalY+35};
+  Object.assign(f.keeper,{x:f.ownGoalX+dir*55,y:f.target.y-103.4,
+   moveVX:0,moveVY:220,dx:dir,dy:0,fatigue:0});
+  Object.assign(f.keeper.src,{agility:100,gkSkill:50,gkDiving:50});
+  Object.assign(f.receiver,{x:f.target.x+dir*215,y:f.target.y+10});
+  Object.assign(f.ball,{x:f.target.x+dir*160,y:f.target.y-40,z:170,
+   vx:-dir*190,vy:48,vz:10});
+  const turningIn=AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds);
+  assert.ok(turningIn,'a high-Agility keeper turning into the landing pocket should claim');
+  assert.ok(Math.abs(turningIn.x-f.target.x)<2&&Math.abs(turningIn.y-f.target.y)<2);
+  f.keeper.dx=-dir;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'the same keeper turning away must not inherit the stale cross-track approach bonus');
+  f.keeper.dx=dir;f.keeper.src.agility=1;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'a low-Agility keeper cannot redirect the same cross-track momentum quickly enough');
+  f.keeper.src.agility=100;f.keeper.dx=0;f.keeper.dy=0;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'neutral steering preserves the previous cross-track reach calculation');
+  f.keeper.dx=NaN;f.keeper.dy=Infinity;
+  assert.equal(AI.keeperHighCrossClaimTarget(f.keeper,f.ball,f.players,f.bounds),null,
+   'invalid steering preserves the previous cross-track reach calculation');
+ }
+});

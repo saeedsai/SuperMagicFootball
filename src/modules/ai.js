@@ -3121,14 +3121,31 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  const keeperVX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
  const keeperVY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
  const targetDx=target.x-keeper.x,targetDy=target.y-keeper.y;
- const momentumToward=(keeperVX*targetDx+keeperVY*targetDy)/Math.max(1,keeperGap);
+ let momentumToward=(keeperVX*targetDx+keeperVY*targetDy)/Math.max(1,keeperGap);
+ let lateralSpeed=Math.abs((keeperVX*targetDy-keeperVY*targetDx)/Math.max(1,keeperGap));
+ // A keeper already turning toward a high-cross landing should not be judged
+ // by stale cross-track momentum. Use the same bounded Agility turn as low
+ // crosses, while keeping neutral/invalid/slow and aligned paths unchanged.
+ const steeringX=Number.isFinite(keeper.dx)?keeper.dx:0;
+ const steeringY=Number.isFinite(keeper.dy)?keeper.dy:0;
+ const steeringLength=Math.hypot(steeringX,steeringY);
+ const movementSpeed=Math.hypot(keeperVX,keeperVY);
+ const turnHorizon=Math.min(.42,flight);
+ if(Number.isFinite(keeper.moveVX)&&Number.isFinite(keeper.moveVY)&&
+  Number.isFinite(movementSpeed)&&movementSpeed>=75&&steeringLength>=.15&&turnHorizon>=.05){
+  const turnLead=keeperOutfielderTurnLead(keeper,turnHorizon,220*turnHorizon);
+  const projectedVX=turnLead.x/turnHorizon,projectedVY=turnLead.y/turnHorizon;
+  if(Number.isFinite(projectedVX)&&Number.isFinite(projectedVY)){
+   momentumToward=(projectedVX*targetDx+projectedVY*targetDy)/Math.max(1,keeperGap);
+   lateralSpeed=Math.abs((projectedVX*targetDy-projectedVY*targetDx)/Math.max(1,keeperGap));
+  }
+ }
  const momentumBonus=clampTo(momentumToward*.05*(1-fatigue*.5),-12,12);
  // Cross-track momentum needs a bounded reorientation before the keeper can
  // reach the high-cross landing. Keep stationary/aligned baselines unchanged.
  const rawAgility=Number(keeper.src?.agility);
  const agility=clampTo(Number.isFinite(rawAgility)?rawAgility:50,0,100);
  const turnRate=clampTo(3+agility*.13+(skill-50)*.025-fatigue*1.1,4.5,16.5);
- const lateralSpeed=Math.abs((keeperVX*targetDy-keeperVY*targetDx)/Math.max(1,keeperGap));
  const lateralTurnCost=Math.min(18,lateralSpeed/turnRate*.45);
  const claimReach=clampTo(235+(skill-50)*.30+(diving-50)*.20-fatigue*28+
   momentumBonus-lateralTurnCost,185,260);

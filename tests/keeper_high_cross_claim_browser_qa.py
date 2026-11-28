@@ -209,7 +209,35 @@ with sync_playwright() as pw:
     g.clock=.2;g.driveAI(keeper,.016);
     recoveryRows.push({team,side,fieldName,claimActive:keeper.aiKeeperClaimTargetActive===true});
    }
-   return {rows,aerialRows,arrivalRows,turnRows,profileRows,recoveryRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+    const keeperTurnRows=[];
+    for(const team of [0,1])for(const profile of [
+     {name:'turn-in-high',agility:100,steering:1,expected:true},
+     {name:'turn-away-high',agility:100,steering:-1,expected:false},
+     {name:'turn-in-low',agility:1,steering:1,expected:false},
+     {name:'neutral-high',agility:100,steering:0,expected:false},
+     {name:'invalid-high',agility:100,steering:0,invalid:true,expected:false}
+    ]){
+     const dir=team===0?1:-1,ownGoalX=dir===1?bounds.xMin:bounds.xMax,goalY=765;
+     const target={x:ownGoalX+dir*265,y:goalY+35};
+     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+     const keeper=g.player(team,0),receiver=g.player(1-team,3);
+     for(const q of g.players)if(q!==keeper&&q!==receiver&&!q.keeper){q.down=true;q.stun=1;}
+     Object.assign(keeper,{x:ownGoalX+dir*55,y:target.y-103.4,z:0,stun:0,down:false,
+      action:'idle',actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,
+      aiKeeperClaimTargetActive:false,aiParryReboundTarget:false,moveVX:0,moveVY:220,
+      dx:profile.invalid?NaN:dir*profile.steering,dy:profile.invalid?Infinity:0,fatigue:0});
+     keeper.src.agility=profile.agility;keeper.src.gkSkill=50;keeper.src.gkDiving=50;
+     Object.assign(receiver,{x:target.x+dir*215,y:target.y+10,z:0,stun:0,down:false,
+      action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0});
+     Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,pass:true,
+      passTarget:receiver.src.id,x:target.x+dir*160,y:target.y-40,z:170,
+      vx:-dir*190,vy:48,vz:10,age:.15,canCollect:0,shot:null,strike:null,ordinaryShot:false});
+     g.clock=.2;g.driveAI(keeper,.016);
+     keeperTurnRows.push({team,name:profile.name,expected:profile.expected,
+      claimActive:keeper.aiKeeperClaimTargetActive===true,
+      target:keeper.aiTarget?{x:keeper.aiTarget.x,y:keeper.aiTarget.y}:null});
+    }
+   return {rows,aerialRows,arrivalRows,turnRows,profileRows,recoveryRows,keeperTurnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -240,6 +268,11 @@ with sync_playwright() as pw:
   assert len(result['recoveryRows'])==12,(kind,result['recoveryRows'])
   for row in result['recoveryRows']:
    assert row['claimActive'] is True,(kind,row)
+  assert len(result['keeperTurnRows'])==10,(kind,result['keeperTurnRows'])
+  for row in result['keeperTurnRows']:
+   assert row['claimActive'] is row['expected'],(kind,row)
+   if row['expected']:
+    assert row['target'] is not None and abs(row['target']['x']-(439 if row['team']==0 else 2121))<2,(kind,row)
   for row in result['profileRows']:
    assert row['claimActive'] is row['expected'],(kind,row)
    if row['expected']:
