@@ -160,7 +160,9 @@ test('keeper ignores a nearby marker running away but retains closing and statio
  for(const keeperTeam of [0,1]){
   const baseline=fixture(ENGINE,field,keeperTeam);baseline.runner.down=true;
   const baselineY=targetY(baseline);
-  const open=fixture(ENGINE,field,keeperTeam),openY=targetY(open);
+  const open=fixture(ENGINE,field,keeperTeam);
+  Object.assign(open.runner,{moveVX:0,moveVY:0,dx:0,dy:0});
+  const openY=targetY(open);
   const retreating=fixture(ENGINE,field,keeperTeam);
   markRunnerWithDefender(retreating,retreating.runner,false,{x:0,y:180});
   assert.equal(targetY(retreating),openY,

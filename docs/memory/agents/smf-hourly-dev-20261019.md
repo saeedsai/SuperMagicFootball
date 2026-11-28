@@ -8,7 +8,7 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 ## Current checkpoint
 - Candidate **0.12.81.402** adds `KEEPER-CUTBACK-LIVE-TURN-MARKING-01`: the goalkeeper evaluates both the central cutback runner and its nearest defender through the same bounded 120 ms Agility-limited turn. A marker turning out of the lane no longer falsely suppresses the keeper shade; a lower-Agility marker retaining enough momentum still counts as cover. The runner's own turn also moves the keeper shade along its projected lateral path. Neutral/slow/aligned steering preserves the previous capped 18-unit linear lead.
 - Production scope: `src/modules/engine.js`; focused Node and actual-GameEngine desktop/simulated-touch regressions in `tests/keeper_cutback_read.test.cjs` and `tests/keeper_cutback_runner_arrival_browser_qa.py`.
-- First exact-head Census #46131833980 exposed three .402 service-worker header contract failures and one marker fixture whose runner movement was not isolated; corrected the header and made the fixture deterministic. No production gameplay failure established from that attempt.
+- First exact-head Census #46131833980 exposed three .402 service-worker header contract failures and one marker fixture whose runner movement was not isolated; commit `6ba01c6dd50e644b00c38161368030718da49711` corrected the header and made the marker comparison deterministic. A final fixture follow-up freezes the unmarked baseline runner too. No production gameplay failure established from the first attempt.
 
 ## Next smallest action
 - Rerun .402 Modular QA and exact-head Full Regression Census; repair any confirmed turn-projection or browser fixture failure without weakening the 64-unit marker and 18-unit lead bounds.
