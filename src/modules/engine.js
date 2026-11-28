@@ -3655,9 +3655,11 @@ class GameEngine{
    defensiveLoftedPassCoverTarget(t,liveBall,this.players,
     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24}):null;
   const defensivePassCover=pressing?.support===p&&!owner&&!concealed&&!passLaneCoveredByPrimary?
-   (defensivePassReceiverCoverTarget(t,liveBall,this.players,
-    {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},p,speed,ai.reaction)||
-    defensiveLoftedPassCover):null;
+   (hasPassTarget?
+    (defensivePassReceiverCoverTarget(t,liveBall,this.players,
+     {xMin:F.x+24,xMax:F.x+F.w-24,yMin:F.y+24,yMax:F.y+F.h-24},p,speed,ai.reaction)||
+     defensiveLoftedPassCover):
+    (defensivePassCoverHint||defensiveLoftedPassCover)):null;
   const defensiveLooseBallCover=pressing?.support===p&&!owner&&!concealed?
    looseBallSupportTarget:null;
   const defensiveFirstTouchContest=owner&&owner.t!==t&&pressing?.support===p&&!concealed&&
