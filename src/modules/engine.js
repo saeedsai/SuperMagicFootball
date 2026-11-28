@@ -64,6 +64,20 @@ function defenderFacesCarrier2D(defender,carrier){
  return headingX*towardX+headingY*towardY>0;
 }
 
+function lightningTargetReady(defender,attackingTeam){
+ if(!defender||defender.t===attackingTeam||defender.keeper||defender.down||
+  !Number.isFinite(Number(defender.stun))||Number(defender.stun)>0)return false;
+ const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ const z=defender.z,activeJump=defender.action==='jump'&&(Number(defender.actionTimer)||0)>0;
+ const incompleteJump=activeJump&&(!Number.isFinite(Number(z))||Number(z)<20);
+ return clear(defender.invuln)&&clear(defender.shotImpactKnockdownPending)&&
+  clear(defender.shotImpactKnockdownTimer)&&clear(defender.shotImpactRiseTimer)&&
+  !['shotDown','shotGetUp'].includes(defender.action)&&
+  !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&!incompleteJump&&
+  (z==null||(Number.isFinite(Number(z))&&Number(z)>=0))&&
+  Number.isFinite(defender.x)&&Number.isFinite(defender.y);
+}
+
 function lightningDefenderCounters(defender,attacker){
  if(!defender||!attacker)return false;
  const inJump=defender.action==='jump'&&Number.isFinite(defender.z)&&defender.z>=20;
@@ -1809,22 +1823,14 @@ class GameEngine{
   const pending=threat.lightningPending,target=pending.target,isBackup=pending.backup===p;
   if((pending.remaining||0)<=1e-9){p.aiLightningThreat=null;p.aiLightningReaction=0;return false;}
   if(isBackup){
-   const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
-   const targetUnavailable=!target||!this.players.includes(target)||target.t!==p.t||target.keeper||
-    target.down===true||!(Number(target.stun)<=0)||!clear(target.invuln)||
-    !clear(target.shotImpactKnockdownPending)||!clear(target.shotImpactKnockdownTimer)||
-    !clear(target.shotImpactRiseTimer)||['shotDown','shotGetUp'].includes(target.action)||
-    (target.action==='hurt'&&(Number(target.actionTimer)||0)>0)||
-    (target.z!=null&&(!Number.isFinite(Number(target.z))||Number(target.z)<0))||
-    !Number.isFinite(target.x)||!Number.isFinite(target.y)||distance(threat,target)>=95;
-   if(targetUnavailable||lightningDefenderCounters(target,threat)||lightningDefenderCounters(p,threat)||
-    p.down===true||!clear(p.invuln)||!clear(p.shotImpactKnockdownPending)||
-    !clear(p.shotImpactKnockdownTimer)||!clear(p.shotImpactRiseTimer)||
-    ['shotDown','shotGetUp'].includes(p.action)||(p.action==='hurt'&&(Number(p.actionTimer)||0)>0)||
-    (p.z!=null&&(!Number.isFinite(Number(p.z))||Number(p.z)<0))||
-    !Number.isFinite(p.x)||!Number.isFinite(p.y)||distance(threat,p)>=95){
+   const targetUnavailable=!target||!this.players.includes(target)||
+    !lightningTargetReady(target,threat.t)||distance(threat,target)>=95;
+   if((!targetUnavailable&&lightningDefenderCounters(target,threat))||
+    lightningDefenderCounters(p,threat)||!lightningTargetReady(p,threat.t)||distance(threat,p)>=95){
     p.aiLightningThreat=null;p.aiLightningReaction=0;return false;
    }
+  }else if(!lightningTargetReady(p,threat.t)||distance(threat,p)>=95){
+   p.aiLightningThreat=null;p.aiLightningReaction=0;return false;
   }
   if(p.keeper||p.z>10||p.stun>0||(p.action==='jump'&&(p.actionTimer||0)>0)||
     (p.action==='slide'&&(p.actionTimer||0)>0)){
@@ -2443,15 +2449,8 @@ class GameEngine{
    .sort((a,b)=>distance(p,a)-distance(p,b));
   // Lightning is delayed and single-target: incapacitated/protected opponents
   // must not soak its lock while a ready defender remains nearby.
-  const lightningTargets=id==='lightning'?rivals.filter(defender=>{
-   const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
-   return defender.down!==true&&clear(defender.invuln)&&
-    clear(defender.shotImpactKnockdownPending)&&clear(defender.shotImpactKnockdownTimer)&&
-    clear(defender.shotImpactRiseTimer)&&
-    !['shotDown','shotGetUp'].includes(defender.action)&&
-    !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0)&&
-    (defender.z==null||(Number.isFinite(Number(defender.z))&&Number(defender.z)>=0));
-  }):rivals;
+  const lightningTargets=id==='lightning'?rivals.filter(defender=>lightningTargetReady(defender,p.t))
+   .sort((a,b)=>distance(p,a)-distance(p,b)):rivals;
   // Fireball, Freeze, Bat, Scream, Hide Ball, Spin Bump and Sand Trap resolve
   // against the same ready defenders that can receive a CPU wind-up reaction.
   // An unavailable nearest opponent must not soak a single-target trick while
@@ -2684,13 +2683,8 @@ class GameEngine{
  resolveLightningTrick(p){
   const pending=p?.lightningPending;if(!pending)return false;p.lightningPending=null;
   const q=pending.target;if(q)q.lightningMark=0;
-  const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
-  const unavailable=q&&(q.down===true||!clear(q.invuln)||
-   !clear(q.shotImpactKnockdownPending)||!clear(q.shotImpactKnockdownTimer)||
-   !clear(q.shotImpactRiseTimer)||['shotDown','shotGetUp'].includes(q.action)||
-   (q.action==='hurt'&&(Number(q.actionTimer)||0)>0)||
-   (q.z!=null&&(!Number.isFinite(Number(q.z))||Number(q.z)<0)));
-  if(!q||!this.players.includes(q)||q.t===p.t||q.keeper||q.stun>0||unavailable||distance(p,q)>=95){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,hit:false,countered:false});return false;}
+  const unavailable=!lightningTargetReady(q,p?.t);
+  if(!q||!this.players.includes(q)||unavailable||distance(p,q)>=95){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,hit:false,countered:false});return false;}
   const inJump=q.action==='jump'&&q.z>=20,inSlide=q.action==='slide'&&q.actionTimer>0&&q.z<20;
   const facing=typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(q,p):(q.face||1)*(p.x-q.x)>0;
   // Match named-Trick counter semantics: current 2D input leads, residual movement
@@ -2703,13 +2697,8 @@ class GameEngine{
   const closing=closingX*(p.x-q.x)+closingY*(p.y-q.y)>0;
   const read=facing&&closing&&stat(q,'defence')>=stat(p,'dribbling');
   const backup=pending.backup;
-  const backupAvailable=backup&&backup!==q&&this.players.includes(backup)&&backup.t===q.t&&!backup.keeper&&
-   !backup.down&&Number(backup.stun)<=0&&clear(backup.invuln)&&
-   clear(backup.shotImpactKnockdownPending)&&clear(backup.shotImpactKnockdownTimer)&&
-   clear(backup.shotImpactRiseTimer)&&!['shotDown','shotGetUp'].includes(backup.action)&&
-   !(backup.action==='hurt'&&(Number(backup.actionTimer)||0)>0)&&
-   (backup.z==null||(Number.isFinite(Number(backup.z))&&Number(backup.z)>=0))&&
-   Number.isFinite(backup.x)&&Number.isFinite(backup.y)&&distance(p,backup)<95;
+  const backupAvailable=backup&&backup!==q&&this.players.includes(backup)&&
+   lightningTargetReady(backup,p.t)&&distance(p,backup)<95;
   const backupCountered=!!(backupAvailable&&lightningDefenderCounters(backup,p));
   if(inJump||inSlide||read||backupCountered){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true});return false;}
   q.stun=Math.max(q.stun,.32);q.action='hurt';q.actionTimer=Math.max(q.actionTimer||0,.32);q.lightningFx=.32;

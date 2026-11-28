@@ -11,6 +11,10 @@ function method(name,next,globals={}){const a=engine.indexOf(`\n ${name}(`),b=en
 const globals={F,clamp,norm,STATS:{verifiedRatingTierForPlayer:p=>p?.statsVerified===true?p.verifiedTier:null},distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??0,placeBananaPeel:()=>[],placeIcePatch:()=>[]};
 const faceStart=engine.indexOf('function defenderFacesCarrier2D('),faceEnd=engine.indexOf('\nfunction lightningDefenderCounters(',faceStart);
 const defenderFacesCarrier2D=vm.runInNewContext('('+engine.slice(faceStart,faceEnd)+')');
+const readyStart=engine.indexOf('function lightningTargetReady('),readyEnd=engine.indexOf('\n}',readyStart)+2;
+assert.ok(readyStart>=0&&readyEnd>readyStart,'Lightning shared target-readiness helper exists');
+const lightningTargetReady=vm.runInNewContext('('+engine.slice(readyStart,readyEnd)+')');
+globals.lightningTargetReady=lightningTargetReady;
 const helperStart=engine.indexOf('function lightningDefenderCounters('),helperEnd=engine.indexOf('\n}',helperStart)+2;
 const lightningDefenderCounters=vm.runInNewContext('('+engine.slice(helperStart,helperEnd)+')',{defenderFacesCarrier2D,stat:(p,k)=>p.src?.[k]??0});
 globals.lightningDefenderCounters=lightningDefenderCounters;
@@ -37,7 +41,8 @@ test('Lightning selects the nearest available target instead of an incapacitated
  const unavailable=[
   {down:true},{invuln:.2},{shotImpactKnockdownPending:.2},
   {shotImpactKnockdownTimer:.2},{shotImpactRiseTimer:.2},
-  {action:'shotDown'},{action:'shotGetUp'},{action:'hurt',actionTimer:.2}
+  {action:'shotDown'},{action:'shotGetUp'},{action:'hurt',actionTimer:.2},
+  {action:'jump',actionTimer:.3,z:8},{x:NaN},{y:NaN},{z:NaN},{z:-1}
  ];
  for(const patch of unavailable){
   const {g,p,q}=setup();
@@ -51,17 +56,20 @@ test('Lightning selects the nearest available target instead of an incapacitated
   assert.equal(q.lightningMark||0,0,'unavailable decoy must not receive the warning mark');
   assert.equal(ready.lightningMark,.32,'nearest ready target receives the warning mark');
  }
- const none=setup();Object.assign(none.q,{down:true});
- assert.equal(trick.call(none.g,none.p),false,'Lightning cannot acquire only unavailable defenders');
- assert.equal(none.p.magicReadyAt,0,'rejected acquisition spends no cooldown');
- assert.equal(none.p.fatigue,.2,'rejected acquisition spends no fatigue');
+ for(const patch of [{down:true},{action:'jump',actionTimer:.3,z:8},{x:NaN},{y:NaN}]){
+  const none=setup();Object.assign(none.q,patch);
+  assert.equal(trick.call(none.g,none.p),false,'Lightning cannot acquire only unavailable defenders: '+JSON.stringify(patch));
+  assert.equal(none.p.magicReadyAt,0,'rejected acquisition spends no cooldown');
+  assert.equal(none.p.fatigue,.2,'rejected acquisition spends no fatigue');
+ }
 });
 
 test('Lightning fizzles without stun if its marked defender becomes unavailable during the warning',()=>{
  const unavailable=[
   {down:true},{invuln:.2},{shotImpactKnockdownPending:.2},
   {shotImpactKnockdownTimer:.2},{shotImpactRiseTimer:.2},
-  {action:'shotDown'},{action:'shotGetUp'},{action:'hurt',actionTimer:.2}
+  {action:'shotDown'},{action:'shotGetUp'},{action:'hurt',actionTimer:.2},
+  {action:'jump',actionTimer:.3,z:8},{x:NaN},{y:NaN},{z:NaN},{z:-1}
  ];
  for(const patch of unavailable){
   const {g,p,q,events}=setup();
@@ -129,7 +137,8 @@ test('Lightning does not duplicate an already-effective selected-human JUMP, sli
 });
 test('Lightning backup must still be ready and within 95 units when the warning resolves',()=>{
  for(const side of [0,1])for(const patch of [
-  {down:true},{invuln:.2},{stun:.1},{xOffset:100}
+  {down:true},{invuln:.2},{stun:.1},{xOffset:100},
+  {action:'jump',actionTimer:.3,z:8},{x:NaN},{y:NaN}
  ]){
   const {g,p,q,events}=setup(side),sign=side===0?1:-1;q.i=3;
   const backup={t:1-side,i:4,x:p.x+sign*70,y:p.y,z:0,stun:0,down:false,invuln:0,

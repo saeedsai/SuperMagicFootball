@@ -20,10 +20,13 @@ const face2d=(d,a)=>{
  if(n<=.1){x=d.face===-1?-1:1;y=0;n=1;}
  return (x/n)*(a.x-d.x)+(y/n)*(a.y-d.y)>0;
 };
+const readyStart=engine.indexOf('function lightningTargetReady('),readyEnd=engine.indexOf('\n}',readyStart)+2;
+assert.ok(readyStart>=0&&readyEnd>readyStart,'Lightning shared target-readiness helper exists');
+const lightningTargetReady=vm.runInNewContext('('+engine.slice(readyStart,readyEnd)+')');
 const helperStart=engine.indexOf('function lightningDefenderCounters('),helperEnd=engine.indexOf('\n}',helperStart)+2;
 assert.ok(helperStart>=0&&helperEnd>helperStart,'Lightning shared counter helper exists');
 const lightningDefenderCounters=vm.runInNewContext('('+engine.slice(helperStart,helperEnd)+')',{defenderFacesCarrier2D:face2d,stat});
-const react=method('reactToLightningTrick',{distance,lightningDefenderCounters});
+const react=method('reactToLightningTrick',{distance,lightningDefenderCounters,lightningTargetReady});
 function setup(side=0,patch={}){
  const caster={t:1-side,keeper:false,lightningPending:null};
  const cpu={t:side,x:1120,y:620,z:0,stun:0,action:'run',actionTimer:0,
@@ -104,4 +107,24 @@ test('DriveAI dispatches the CPU response through the existing difficulty profil
  const input=fs.readFileSync('src/modules/input.js','utf8');
  assert.match(input,/const REMAPPABLE_ACTIONS=\['pass','shoot','dribble','jump'\]/);
  assert.doesNotMatch(engine,/aiLightning(?:Threat|Reaction).*(?:localStorage|save|schema)/i);
+});
+
+test('Lightning CPU backup inherits the warning when the selected human begins an incomplete low jump',()=>{
+ for(const side of [0,1]){
+  const caster={t:1-side,x:100,y:100,src:{dribbling:60},lightningPending:null};
+  const target={t:side,i:3,x:150,y:100,z:8,stun:0,down:false,invuln:0,action:'jump',actionTimer:.3,
+   face:-1,dx:0,dy:0,moveVX:0,moveVY:0,src:{defence:20}};
+  const backup={t:side,i:4,x:170,y:100,z:0,stun:0,down:false,invuln:0,action:'idle',actionTimer:0,
+   face:-1,dx:0,dy:0,moveVX:0,moveVY:0,aiLightningThreat:null,aiLightningReaction:0,src:{defence:20}};
+  caster.lightningPending={remaining:.32,target,backup};
+  let jumps=0;const game={players:[caster,target,backup],jump(p){jumps++;p.z=48;p.action='jump';p.actionTimer=.5;return true;}};
+  let remaining=.32,frames=0;
+  while(remaining>1e-9&&frames<60&&backup.action!=='jump'){
+   const dt=1/60;remaining=Math.max(0,remaining-dt);caster.lightningPending.remaining=remaining;
+   react.call(game,backup,dt,.09);frames++;
+  }
+  assert.equal(backup.action,'jump','ready CPU teammate inherits the warning on side '+side);
+  assert.equal(target.action,'jump','selected human keeps their incomplete jump animation');
+  assert.equal(jumps,1);
+ }
 });
