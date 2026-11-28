@@ -1656,27 +1656,28 @@ function defensiveUntargetedPassCoverTarget(team,ball,bounds,defender=null,defen
   const forward=(target.x-ball.x)*attackDir,travel=Math.hypot(target.x-ball.x,target.y-ball.y);
   if(!Number.isFinite(forward)||!Number.isFinite(travel)||forward<48||forward>190||travel<48||travel>220)continue;
   if(!defender)return target;
-  const dx=target.x-defender.x,dy=target.y-defender.y,moveTime=Math.max(0,seconds-response);
+  const dx=target.x-defender.x,dy=target.y-defender.y,defenderDistance=Math.hypot(dx,dy),
+   moveTime=Math.max(0,seconds-response);
   let approachVX=currentVX,approachVY=currentVY,approachProgress=0,turnSeconds=0;
   const steeringX=Number.isFinite(defender.dx)?defender.dx:0;
   const steeringY=Number.isFinite(defender.dy)?defender.dy:0;
   const steeringLength=Math.hypot(steeringX,steeringY),currentSpeed=Math.hypot(currentVX,currentVY);
-  if(travel>1e-6&&currentSpeed>=75&&steeringLength>=.15&&moveTime>=.05){
+  if(defenderDistance>1e-6&&currentSpeed>=75&&steeringLength>=.15&&moveTime>=.05){
    turnSeconds=Math.min(moveTime,.12);
    const turned=carrierTurnAwareVelocity(defender,currentVX,currentVY,turnSeconds);
    if(Math.hypot(turned.x-currentVX,turned.y-currentVY)>.5){
-    approachProgress=((currentVX+turned.x)*.5*dx+(currentVY+turned.y)*.5*dy)/travel*turnSeconds;
+    approachProgress=((currentVX+turned.x)*.5*dx+(currentVY+turned.y)*.5*dy)/defenderDistance*turnSeconds;
     approachVX=turned.x;approachVY=turned.y;
    }else turnSeconds=0;
   }
   const remainingTime=Math.max(0,moveTime-turnSeconds);
-  const towardSpeed=travel>1e-6?clampTo((approachVX*dx+approachVY*dy)/travel,-maxSpeed,maxSpeed):0;
+  const towardSpeed=defenderDistance>1e-6?clampTo((approachVX*dx+approachVY*dy)/defenderDistance,-maxSpeed,maxSpeed):0;
   const rampArea=(1-Math.exp(-turnRate*remainingTime))/turnRate;
   const reachableDistance=approachProgress+maxSpeed*remainingTime+(towardSpeed-maxSpeed)*rampArea;
-  const crossTrackSpeed=travel>1e-6?Math.abs(approachVX*dy-approachVY*dx)/travel:0;
+  const crossTrackSpeed=defenderDistance>1e-6?Math.abs(approachVX*dy-approachVY*dx)/defenderDistance:0;
   const turnReserve=clampTo(crossTrackSpeed*rampArea*.45,0,16);
   const reachable=Math.max(0,reachableDistance-turnReserve)*.82+12;
-  if(travel<=reachable)return target;
+  if(defenderDistance<=reachable)return target;
  }
  return null;
 }
