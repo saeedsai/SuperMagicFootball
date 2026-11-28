@@ -2848,23 +2848,31 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   // Read the outfield contest over the ball's remaining descent, rather than
   // a fixed 100 ms snapshot. The lead is capped so sprinting players are not
   // extrapolated indefinitely, while a genuine runner can still win the race.
-  const contestHorizon=Math.max(0,Math.min(.34,landingSeconds));
-  // Project a live defender's committed 2D turn through the same Agility
-  // response used by the pass/press reads. Integrate the curved path in short
-  // slices, then retain the existing 110-unit total lead cap for this race.
+  // Project the outfield contest only through the ball's remaining descent
+  // and the parry's remaining collection window; a runner arriving after
+  // expiry must not make the keeper abandon a still-reachable rebound.
+  const contestHorizon=Math.max(0,Math.min(.34,landingSeconds,pursuitSeconds));
   const projected=q=>{
    const lead=keeperOutfielderTurnLead(q,contestHorizon,110);
    return {x:q.x+lead.x,y:q.y+lead.y};
   };
+  // Teammate handoff is an arrival race too. Project the keeper through the
+  // same turn model, bounded by the physical speed used in its reach check,
+  // instead of comparing a future teammate position with the keeper's stale pose.
+  const keeperLead=keeperOutfielderTurnLead(keeper,contestHorizon,
+   Math.min(110,moveSpeed*contestHorizon));
+  const keeperFutureGap=Math.hypot(keeper.x+keeperLead.x-target.x,
+   keeper.y+keeperLead.y-target.y);
   for(const opponent of players){
    if(opponent?.t===keeper.t||!activeOutfielder(opponent))continue;
    const future=projected(opponent),gap=Math.hypot(future.x-target.x,future.y-target.y);
+   // Preserve the established conservative opponent safety margin.
    if(gap<Math.min(118,keeperGap-18))return null;
   }
   for(const teammate of players){
    if(teammate?.t!==keeper.t||!activeOutfielder(teammate))continue;
    const future=projected(teammate),gap=Math.hypot(future.x-target.x,future.y-target.y);
-   if(gap<185&&gap+32<keeperGap)return null;
+   if(gap<185&&gap+32<keeperFutureGap)return null;
   }
   return target;
  }

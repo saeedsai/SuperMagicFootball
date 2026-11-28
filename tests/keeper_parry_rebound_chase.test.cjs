@@ -258,3 +258,25 @@ test('keeper parry rebound credits an Agility-limited turn into the pocket from 
    'invalid steering retains the old conservative estimate');
  }
 });
+
+test('keeper rebound races compare projected keeper arrival with teammate arrival on both goals',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=helperFixture(ENGINE,team);
+  const target=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300);
+  assert.ok(target,'team '+team+': baseline rebound remains reachable');
+  const ally={t:team,keeper:false,x:(target.x+f.keeper.x)/2,y:(target.y+f.keeper.y)/2,
+   z:0,stun:0,down:false,action:'idle',actionTimer:0,moveVX:0,moveVY:0,dx:0,dy:0};
+  f.keeper.moveVX=f.dir*300;f.keeper.moveVY=0;f.keeper.dx=0;f.keeper.dy=0;
+  assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,ally],
+   f.bounds,1,f.rebound,300),
+   'team '+team+': keeper already moving into the pocket must beat a closer stationary teammate');
+  f.keeper.moveVX=0;f.keeper.moveVY=0;
+  const allyGap=Math.hypot(target.x-ally.x,target.y-ally.y);
+  ally.moveVX=(target.x-ally.x)/allyGap*200;
+  ally.moveVY=(target.y-ally.y)/allyGap*200;
+  assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,[...f.players,ally],
+   f.bounds,1,f.rebound,300),null,
+   'team '+team+': a teammate projected to arrive first must receive the rebound handoff');
+ }
+});

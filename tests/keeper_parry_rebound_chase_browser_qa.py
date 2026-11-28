@@ -180,13 +180,61 @@ with sync_playwright() as pw:
      g.driveAI(k,.016);
      turnRows.push({side,role,agility,parried,chase:k.aiParryReboundTarget===true});
     }
-   return {rows,reactionRows,steeringRows,turnRows,teams:SupermagicFootball.teams.length};
+
+   const handoffRows=[];
+   for(const side of [0,1]){
+    const handoff=(keeperMoving,teammateMoving)=>{
+     g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+     g.matchState='paused';g.cooldown=0;g.clock=0;
+     const k=g.player(side,0),b=g.ball,dir=side===0?1:-1,goalY=765;
+     Object.assign(k,{x:side===0?255:2305,y:goalY,stun:0,down:false,z:0,
+      action:'idle',actionTimer:0,diveCooldown:0,diveIntentCooldown:0,
+      diveIntentPending:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false,
+      moveVX:0,moveVY:0,dx:0,dy:0});
+     for(const p of g.players)if(p!==k&&!p.keeper)
+      Object.assign(p,{down:true,stun:1,z:0,action:'idle',actionTimer:0,
+       slideTimer:0,moveVX:0,moveVY:0,dx:0,dy:0});
+     Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,
+      x:k.x+dir*24,y:goalY,z:0,vx:-dir*2500,vy:0,vz:0,power:60,
+      ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[],pass:false});
+     const parried=g.tryKeeperDive(k,false);
+     if(!parried)throw new Error('handoff fixture shot was not parried for side '+side);
+     Object.assign(k,{action:'keeperDive',actionTimer:.4,diveElapsed:.24,
+      diveIntentPending:false,z:12,stun:0,down:false,aiTimer:0,aiTarget:null,
+      aiParryReboundTarget:false});
+     Object.assign(b,{owner:null,attacker:side,lastTouchTeam:side,
+      x:k.x+dir*24,y:goalY+38,z:60,vx:dir*260,vy:30,vz:-110,
+      ordinaryShot:false,shot:null,strike:null,pass:false,age:.6,canCollect:0});
+     g.clock=.2;g.driveAI(k,.016);
+     const target=k.aiTarget?{x:k.aiTarget.x,y:k.aiTarget.y}:null;
+     if(!k.aiParryReboundTarget||!target)throw new Error('handoff baseline target missing for side '+side);
+     const ally=g.player(side,3);
+     Object.assign(ally,{x:(target.x+k.x)/2,y:(target.y+k.y)/2,z:0,
+      down:false,stun:0,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:0,moveVY:0,dx:0,dy:0});
+     Object.assign(k,{moveVX:keeperMoving?dir*300:0,moveVY:0,dx:0,dy:0});
+     if(teammateMoving){
+      const gap=Math.hypot(target.x-ally.x,target.y-ally.y);
+      ally.moveVX=(target.x-ally.x)/gap*200;
+      ally.moveVY=(target.y-ally.y)/gap*200;
+     }
+     k.aiTimer=0;g.driveAI(k,.016);
+     return {parried,chase:k.aiParryReboundTarget===true};
+    };
+    handoffRows.push({side,keeperMomentum:handoff(true,false),
+     teammateMomentum:handoff(false,true)});
+   }
+   return {rows,reactionRows,steeringRows,turnRows,handoffRows,teams:SupermagicFootball.teams.length};
   }""")
   assert not errors,(kind,errors)
   assert result['teams']>=223,(kind,result)
   assert len(result['rows'])==2,(kind,result)
   assert len(result['reactionRows'])==2,(kind,result)
   assert len(result['steeringRows'])==2,(kind,result)
+  assert len(result['handoffRows'])==2,(kind,result)
+  for row in result['handoffRows']:
+   assert row['keeperMomentum']['parried'] and row['keeperMomentum']['chase'],(kind,row)
+   assert row['teammateMomentum']['parried'] and not row['teammateMomentum']['chase'],(kind,row)
   for row in result['steeringRows']:
    assert row['elite']['parried'] and row['elite']['chase'],(kind,row)
    assert row['low']['parried'] and not row['low']['chase'],(kind,row)
