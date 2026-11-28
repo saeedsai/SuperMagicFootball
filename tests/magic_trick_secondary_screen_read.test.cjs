@@ -71,6 +71,29 @@ test('second-defender screen reads require a two-dimensional heading toward the 
 });
 
 
+test('first-touch screen reads follow residual carrier momentum after directional input releases',async()=>{
+ const AI=await loadAI();
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=team===0?700:1300,y=400,length=Math.hypot(160,80);
+  const ux=dir*160/length,uy=80/length,sideX=-uy,sideY=ux;
+  const screenX=x+ux*68+sideX*18,screenY=y+uy*68+sideY*18;
+  const ballX=x+ux*17+sideX*12,ballY=y+uy*17+sideY*12;
+  const p=carrier({t:team,x,y,dx:0,dy:0,moveVX:dir*160,moveVY:80,face:-dir});
+  const screen=defender({t:1-team,x:screenX,y:screenY,face:-dir});
+  const exposed={owner:p,x:ballX,y:ballY};
+  const approach=AI.defensiveMagicTrickReadTarget(p,[screen],true,exposed);
+  assert.equal(approach?.screened,true,JSON.stringify({team,approach}));
+  const retreat={...p,moveVX:-dir*160,moveVY:-80,face:dir};
+  assert.equal(AI.defensiveMagicTrickReadTarget(retreat,[screen],true,{owner:retreat,x:ballX,y:ballY}),null,
+   'retreating residual momentum must override stale forward facing');
+  const stationary={...p,moveVX:0,moveVY:0,face:dir};
+  assert.equal(AI.defensiveMagicTrickReadTarget(stationary,[screen],true,{owner:stationary,x:ballX,y:ballY})?.screened,true,
+   'fully stationary carriers retain the legacy facing fallback');
+  const liveBackward={...p,dx:-dir,dy:0,face:dir};
+  assert.equal(AI.defensiveMagicTrickReadTarget(liveBackward,[screen],true,{owner:liveBackward,x:ballX,y:ballY}),null,
+   'conflicting live input remains authoritative over forward residual momentum');
+ }
+});
 test('second-defender Magic Trick screen reads project an Agility-limited turn into the lane',async()=>{
  const AI=await loadAI();
  for(const team of [0,1]){
@@ -426,6 +449,45 @@ test('direct named Magic Trick counters recognize residual 2D movement after dir
 });
 
 
+test('real named Magic Trick screen reads follow residual carrier momentum after input release',async()=>{
+ const ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
+ for(const team of [0,1]){
+  const dir=team===0?1:-1,x=field.x+field.w*.5,y=field.y+field.h*.5,length=Math.hypot(160,80);
+  const ux=dir*160/length,uy=80/length,sideX=-uy,sideY=ux;
+  const cases=[
+   {mode:'approach',dx:0,dy:0,moveVX:dir*160,moveVY:80,face:-dir,countered:true},
+   {mode:'retreat',dx:0,dy:0,moveVX:-dir*160,moveVY:-80,face:dir,countered:false},
+   {mode:'stationary',dx:0,dy:0,moveVX:0,moveVY:0,face:dir,countered:true},
+   {mode:'live-backward',dx:-dir,dy:0,moveVX:dir*160,moveVY:80,face:dir,countered:false}
+  ];
+  for(const sample of cases){
+   const game=new ENGINE.GameEngine({halfSeconds:120});
+   game.init({home:0,away:1,humans:0,mode:'quick'});game.clock=2;
+   const carrier=game.player(team,3),screen=game.player(1-team,4);
+   for(const other of game.players)if(other!==carrier&&other!==screen&&!other.keeper){other.down=true;other.stun=1;}
+   Object.assign(carrier,{x,y,z:0,down:false,stun:0,keeper:false,action:'idle',actionTimer:0,
+    dx:sample.dx,dy:sample.dy,moveVX:sample.moveVX,moveVY:sample.moveVY,face:sample.face,
+    firstTouchOutletReadTimer:.8,firstTouchControlTimer:0,firstTouchPressure:.6,
+    hideBallTimer:0,magicReadyAt:0,fatigue:0});
+   Object.assign(carrier.src,{magicTrick:'hideBall',dribbling:50});
+   Object.assign(screen,{x:x+ux*68+sideX*18,y:y+uy*68+sideY*18,z:0,down:false,stun:0,
+    invuln:0,keeper:false,action:'idle',actionTimer:0,slideTimer:0,dx:0,dy:0,
+    moveVX:0,moveVY:0,face:-dir,magicReadCueTimer:0,magicReadCounterpressTimer:0});
+   Object.assign(screen.src,{defence:95});
+   Object.assign(game.ball,{owner:carrier,x:x+ux*17+sideX*12,y:y+uy*17+sideY*12,z:0,
+    pass:false,passTarget:null,attacker:team,lastTouchTeam:team,shot:null,strike:null,ordinaryShot:false});
+   const original=Math.random;Math.random=()=>.1;
+   try{assert.equal(game.tryMagicTrick(carrier),true);}finally{Math.random=original;}
+   assert.equal(game.events.at(-1)?.countered,sample.countered,JSON.stringify({team,...sample}));
+   assert.equal(carrier.hideBallTimer||0,sample.countered?0:.65,JSON.stringify({team,...sample}));
+   assert.equal(screen.magicReadCueTimer||0,(sample.countered ? .48 : 0),JSON.stringify({team,...sample}));
+   assert.equal(screen.magicReadCounterpressTimer||0,(sample.countered ? .42 : 0),JSON.stringify({team,...sample}));
+   assert.equal(game.ball.owner,carrier,'the screen read never awards automatic possession');
+   assert.equal(carrier.magicReadyAt,8,'the caster pays the existing cooldown');
+   assert.equal(carrier.fatigue,.035,'the caster pays the existing fatigue cost');
+  }
+ }
+});
 test('direct named Magic Trick reads search past the nearest idle marker for a closing second defender',async()=>{
  const ENGINE=await loadEngine(),field=ENGINE.WORLD.field;
  for(const team of [0,1]){

@@ -2093,9 +2093,16 @@ function defensiveUntargetedPassCoverTarget(team,ball,bounds,defender=null,defen
   const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
   const firstTouchRead=allowCarryScreen&&Number(carrier.firstTouchOutletReadTimer)>0&&
    (Number(carrier.firstTouchControlTimer)||0)<=0&&Number(carrier.firstTouchPressure)>.12&&!(Number(carrier.hideBallTimer)>0);
-  let moveX=Number.isFinite(carrier.dx)?carrier.dx:Number.isFinite(carrier.moveVX)?carrier.moveVX:0;
-  let moveY=Number.isFinite(carrier.dy)?carrier.dy:Number.isFinite(carrier.moveVY)?carrier.moveVY:0;
+  // Live input is authoritative; after release, residual 2D movement keeps
+  // the screen read aligned with the carrier's real lane before facing fallback.
+  let moveX=Number.isFinite(carrier.dx)?carrier.dx:0;
+  let moveY=Number.isFinite(carrier.dy)?carrier.dy:0;
   let moveLength=Math.hypot(moveX,moveY);
+  if(moveLength<.05){
+   moveX=Number.isFinite(carrier.moveVX)?carrier.moveVX:0;
+   moveY=Number.isFinite(carrier.moveVY)?carrier.moveVY:0;
+   moveLength=Math.hypot(moveX,moveY);
+  }
   if(moveLength<.05){moveX=Number(carrier.face)||1;moveY=0;moveLength=1;}
   const ux=moveX/moveLength,uy=moveY/moveLength,attackDir=carrier.t===0?1:carrier.t===1?-1:Math.sign(ux||1);
   const carryForward=attackDir*ux>=.28;let best=null;
