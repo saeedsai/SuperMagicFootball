@@ -11,8 +11,9 @@ function fixture(side,trick,hold=.35){
  const carrier={t:1-side,keeper:false,src:{magicTrick:trick},x:300,y:240,dribbleHold:hold};
  const target={t:side,keeper:false,src:{},x:side===0?350:250,y:240,z:0,face:side===0?-1:1,stun:0,action:'idle',actionTimer:0};
  const backup={t:side,keeper:false,src:{},x:side===0?360:240,y:240,z:0,face:side===0?-1:1,stun:0,action:'idle',actionTimer:0};
- const g={ball:{owner:carrier},players:[carrier,target,backup],jumps:0,jump(p){this.jumps++;p.z=22;p.action='jump';p.actionTimer=.28;return true}};
- return{g,carrier,target,backup};
+ const third={t:side,keeper:false,src:{},x:side===0?370:230,y:240,z:0,face:side===0?-1:1,stun:0,action:'idle',actionTimer:0};
+ const g={ball:{owner:carrier},players:[carrier,target,backup,third],jumps:0,jump(p){this.jumps++;p.z=22;p.action='jump';p.actionTimer=.28;return true}};
+ return{g,carrier,target,backup,third};
 }
 test('CPU counters Wind and Mud holds at difficulty timing for either team and 30/60/120Hz',()=>{
  for(const trick of ['wind','mud'])for(const side of [0,1])for(const fps of [30,60,120])for(const level of [1,2,3,4]){
@@ -35,4 +36,50 @@ test('Rookie, out-of-range, wrong-trick, already-slowed Mud target, and active h
 test('Wind/Mud AI counter runs before ordinary tactics and matches the shared four-button counter rules',()=>{
  assert.match(engine,/this\.reactToWindMudTrick\(p,dt,ai\.reaction\)\|\|p\.aiWindMudThreat/);
  const trick=methodSource('tryMagicTrick');assert.match(trick,/fieldTrickSlid=fieldTrick&&rivals\.some\(q=>distance\(p,q\)<radius&&q\.action==='slide'/);assert.match(trick,/fieldTrickJumped=fieldTrick&&rivals\.some\(q=>distance\(p,q\)<radius&&q\.action==='jump'/);
+});
+
+
+test('Wind/Mud promotes the nearest ready defender who can read the live wind-up',()=>{
+ for(const trick of ['wind','mud'])for(const side of [0,1])for(const mode of ['unavailable','turned-away']){
+  const {g,carrier,target,backup,third}=fixture(side,trick,.7);
+  const dir=side===0?1:-1;
+  Object.assign(third,{down:false,stun:0,z:0,action:'idle',actionTimer:0,face:-dir,dx:0,dy:0,moveVX:0,moveVY:0});
+  if(mode==='unavailable'){
+   target.down=true;
+   backup.action='hurt';backup.actionTimer=.3;
+  }else{
+   target.face=dir;target.dx=0;target.dy=0;
+   backup.face=dir;backup.dx=0;backup.dy=0;
+  }
+  let elapsed=.7,steps=0;const dt=1/60,reaction=aiLevels[3].reaction;
+  while(elapsed<.98&&!g.jumps&&steps<30){
+   carrier.dribbleHold=elapsed;
+   for(const defender of [target,backup,third])react.call(g,defender,dt,reaction);
+   elapsed+=dt;steps++;
+  }
+  assert.equal(g.jumps,1,trick+', team '+side+', '+mode+': the third readable defender should counter');
+  assert.equal(third.action,'jump');
+  assert.notEqual(target.action,'jump');
+  assert.notEqual(backup.action,'jump');
+ }
+});
+
+test('An active nearest SLIDE keeps its existing counter slot while the next readable defender reacts',()=>{
+ for(const trick of ['wind','mud'])for(const side of [0,1]){
+  const {g,carrier,target,backup,third}=fixture(side,trick,.7);
+  const dir=side===0?1:-1;
+  Object.assign(target,{action:'slide',actionTimer:.3,face:dir,dx:0,dy:0});
+  Object.assign(backup,{face:-dir,dx:0,dy:0});
+  Object.assign(third,{face:-dir,dx:0,dy:0});
+  let elapsed=.7,steps=0;const dt=1/60,reaction=aiLevels[3].reaction;
+  while(elapsed<.98&&!g.jumps&&steps<30){
+   carrier.dribbleHold=elapsed;
+   for(const defender of [target,backup,third])react.call(g,defender,dt,reaction);
+   elapsed+=dt;steps++;
+  }
+  assert.equal(g.jumps,1,trick+', team '+side+': the second readable defender should back up the active slide');
+  assert.equal(target.action,'slide');
+  assert.equal(backup.action,'jump');
+  assert.equal(third.action,'idle','the two-defender reaction budget remains bounded');
+ }
 });

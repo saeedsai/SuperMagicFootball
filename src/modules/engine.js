@@ -1699,25 +1699,40 @@ class GameEngine{
  reactToWindMudTrick(p,dt,reactionSeconds){
   const carrier=this.ball?.owner,trick=carrier?.src?.magicTrick;
   const radius=trick==='wind'?120:100;
-  const rivals=carrier&&carrier.t!==p.t&&!carrier.keeper&&(trick==='wind'||trick==='mud')&&
-   Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1
-   ?this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&q.stun<=0&&q.z<20&&
-    (trick!=='mud'||(q.mudSlowTimer||0)<=0)).sort((a,b)=>distance(carrier,a)-distance(carrier,b)):[];
-  // The second closest defender may also time a JUMP against Wind/Mud.
-  // Read the current 2D travel heading so vertical/diagonal rear feints work too;
-  // lateral peripheral threats remain readable, with horizontal facing as a stationary fallback.
-  let headingX=Number.isFinite(p.dx)?p.dx:0,headingY=Number.isFinite(p.dy)?p.dy:0;
-  let headingLength=Math.hypot(headingX,headingY);
-  if(headingLength<=.1){headingX=Number.isFinite(p.moveVX)?p.moveVX:0;headingY=Number.isFinite(p.moveVY)?p.moveVY:0;headingLength=Math.hypot(headingX,headingY);}
-  if(headingLength>.1){headingX/=headingLength;headingY/=headingLength;}
-  else{headingX=p.face===-1?-1:1;headingY=0;}
-  const canReadWindup=carrier&&((carrier.x-p.x)*headingX+(carrier.y-p.y)*headingY>=-24);
-  const threat=rivals.slice(0,2).includes(p)&&distance(carrier,p)<radius&&canReadWindup?carrier:null;
+  const castActive=carrier&&carrier.t!==p.t&&!carrier.keeper&&
+   (trick==='wind'||trick==='mud')&&
+   Number(carrier.dribbleHold)>=.35&&Number(carrier.dribbleHold)<1;
+  if(!castActive){p.aiWindMudThreat=null;p.aiWindMudReaction=0;return false;}
+  // Rank only defenders who can actually read the live 2D wind-up lane.
+  // Existing slides/jumps remain eligible counters even when their heading changes.
+  const canReadWindup=defender=>{
+   let headingX=Number.isFinite(defender?.dx)?defender.dx:0;
+   let headingY=Number.isFinite(defender?.dy)?defender.dy:0;
+   let headingLength=Math.hypot(headingX,headingY);
+   if(headingLength<=.1){
+    headingX=Number.isFinite(defender?.moveVX)?defender.moveVX:0;
+    headingY=Number.isFinite(defender?.moveVY)?defender.moveVY:0;
+    headingLength=Math.hypot(headingX,headingY);
+   }
+   if(headingLength>.1){headingX/=headingLength;headingY/=headingLength;}
+   else{headingX=defender?.face===-1?-1:1;headingY=0;}
+   return (carrier.x-defender.x)*headingX+(carrier.y-defender.y)*headingY>=-24;
+  };
+  const alreadyCountering=defender=>(defender.action==='slide'||defender.action==='jump')&&
+   (Number(defender.actionTimer)||0)>0;
+  const rivals=this.players.filter(q=>q&&q.t!==carrier.t&&!q.keeper&&!q.down&&
+   q.stun<=0&&q.z<20&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&
+   !(q.action==='hurt'&&(Number(q.actionTimer)||0)>0)&&
+   q.action!=='shotDown'&&q.action!=='shotGetUp'&&
+   (trick!=='mud'||(q.mudSlowTimer||0)<=0)&&distance(carrier,q)<radius&&
+   (canReadWindup(q)||alreadyCountering(q)))
+   .sort((a,b)=>distance(carrier,a)-distance(carrier,b));
+  // Keep the same two-defender reaction budget after readiness and visibility checks.
+  const threat=rivals.slice(0,2).includes(p)?carrier:null;
   if(!threat){p.aiWindMudThreat=null;p.aiWindMudReaction=0;return false;}
-  // Wind and Mud are resolved immediately at the end of the existing one
-  // second DRIBBLE hold. Jump or grounded slide already counters either one.
-  if(p.z>=20||(p.action==='jump'&&(p.actionTimer||0)>0)||
-    (p.action==='slide'&&(p.actionTimer||0)>0))return false;
+  // Wind and Mud resolve at the end of the existing one-second DRIBBLE hold.
+  // An active JUMP or grounded SLIDE already counters either trick.
+  if(p.z>=20||alreadyCountering(p))return false;
   if(p.aiWindMudThreat!==threat){p.aiWindMudThreat=threat;p.aiWindMudReaction=Math.max(0,Number(reactionSeconds)||0);}
   p.aiWindMudReaction=Math.max(0,(p.aiWindMudReaction||0)-Math.max(0,dt||0));
   if(p.aiWindMudReaction<=1e-9){p.aiWindMudReaction=Infinity;return this.jump(p);}
