@@ -32,6 +32,17 @@ test('nearest lane CPU times the existing grounded slide to Teleport at 30/60/12
  }
 });
 
+test('vertical-only directional input preserves the zero horizontal axis in Teleport counter lanes',()=>{
+ for(const side of [0,1])for(const dy of [-1,1]){
+  const {g,carrier,target}=fixture(side,.9);
+  carrier.dx=0;carrier.dy=dy;carrier.face=dy>0?-1:1;
+  target.x=carrier.x;target.y=carrier.y+dy*80;
+  assert.equal(react.call(g,target,.2,.02),true,
+   'vertical lane defender must start the existing slide counter for side '+side+' dy '+dy);
+  assert.equal(g.slides,1);
+  assert.equal(target.action,'slide');
+ }
+});
 test('Rookie stays too slow, and rear/wide/distant/wrong-trick or non-nearest defenders do not slide',()=>{
  for(const side of [0,1]){
   const slow=fixture(side),dt=1/60;let elapsed=.35;

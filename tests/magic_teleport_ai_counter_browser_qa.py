@@ -69,13 +69,44 @@ with sync_playwright() as pw:
     humanNoDuplicateOut.push({team,state,response,cpuAction:cpu.action,
      humanSelected:g.controlled[human.t]===human.i,humanAction:human.action,humanZ:human.z,activated,countered:event.countered});
    }
-   return {out,humanBackupOut,humanNoDuplicateOut,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
+   const verticalOut=[];
+   for(const team of [0,1])for(const dy of [-1,1]){
+    g.init({home:0,away:9,humans:0,mode:'quick',difficulty:3});
+    const carrier=g.player(team,4),cpu=g.player(1-team,3);
+    Object.assign(carrier,{x:500,y:300,dx:0,dy,face:dy>0?-1:1,dribbleHold:1,
+     fatigue:0,breath:10,down:false,stun:0,z:0,magicReadyAt:0});
+    carrier.src={...carrier.src,magicTrick:'teleport'};g.ball.owner=carrier;g.clock=10;
+    for(const q of g.players)if(q.t!==team&&q!==cpu&&!q.keeper)q.stun=1;
+    Object.assign(cpu,{x:500,y:300+dy*70,z:0,down:false,stun:0,invuln:0,
+     action:'slide',actionTimer:.4,slideTimer:.4,cd:0});
+    const counterActivated=g.tryMagicTrick(carrier),counterEvent=g.events.at(-1)||{};
+    verticalOut.push({kind:'counter',team,dy,activated:counterActivated,countered:counterEvent.countered,
+     x:carrier.x,y:carrier.y});
+    g.init({home:0,away:9,humans:0,mode:'quick',difficulty:3});
+    const mover=g.player(team,4);
+    Object.assign(mover,{x:500,y:300,dx:0,dy,face:dy>0?-1:1,dribbleHold:1,
+     fatigue:0,breath:10,down:false,stun:0,z:0,magicReadyAt:0});
+    mover.src={...mover.src,magicTrick:'teleport'};g.ball.owner=mover;g.clock=10;
+    for(const q of g.players)if(q.t!==team&&!q.keeper)q.stun=1;
+    const moveActivated=g.tryMagicTrick(mover),moveEvent=g.events.at(-1)||{};
+    verticalOut.push({kind:'move',team,dy,activated:moveActivated,countered:moveEvent.countered,
+     x:mover.x,y:mover.y});
+   }
+   return {out,humanBackupOut,humanNoDuplicateOut,verticalOut,actions:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert result['actions']==4,(label,'action count changed',result)
   for case in result['out']:
    assert case['action']=='slide' and case['slideTimer']>0 and case['slideEvents']==1,(label,'CPU did not start its existing slide counter',case)
    assert .88<=case['holdAtSlide']<1,(label,'slide was not timed near Teleport cast',case)
    assert case['slideTimer']>1-case['holdAtSlide'],(label,'grounded slide expired before the held Teleport cast',case)
+  for case in result['verticalOut']:
+   assert case['activated'],(label,'vertical-only Teleport did not activate',case)
+   if case['kind']=='counter':
+    assert case['countered'] is True,(label,'vertical-lane SHOOT slide did not counter Teleport',case)
+    assert case['x']==500 and case['y']==300,(label,'countered vertical Teleport moved the carrier',case)
+   else:
+    assert case['countered'] is False,(label,'unopposed vertical Teleport was incorrectly countered',case)
+    assert abs(case['x']-500)<1 and abs(case['y']-(300+case['dy']*85))<1,(label,'Teleport did not preserve the pure vertical vector',case)
   assert not errors,(label,errors)
   for case in result['humanBackupOut']:
    assert case['cpuAction']=='slide',(label,'CPU teammate did not back up selected human lane marker',case)

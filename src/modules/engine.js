@@ -2014,7 +2014,8 @@ class GameEngine{
    Number.isFinite(hold)&&hold>=.35&&hold<1&&Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&
    Array.isArray(this.players);
   if(!visible)return reset();
-  const forward=norm(carrier.dx||carrier.face,carrier.dy||0);
+  const inputX=Number.isFinite(carrier.dx)?carrier.dx:0,inputY=Number.isFinite(carrier.dy)?carrier.dy:0;
+  const forward=Math.hypot(inputX,inputY)>1e-6?norm(inputX,inputY):norm(carrier.face||1,0);
   const lane=(q,minAhead,maxAhead,maxAcross)=>{
    const ox=q.x-carrier.x,oy=q.y-carrier.y;
    const ahead=ox*forward.x+oy*forward.y,across=Math.abs(ox*forward.y-oy*forward.x);
@@ -2516,7 +2517,8 @@ class GameEngine{
    distance(p,defender)<radius&&defender.action==='slide'&&
    Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&
    Number.isFinite(defender.z)&&defender.z<20&&(()=>{
-    const forward=norm(p.dx||p.face,p.dy||0);
+    const inputX=Number.isFinite(p.dx)?p.dx:0,inputY=Number.isFinite(p.dy)?p.dy:0;
+    const forward=Math.hypot(inputX,inputY)>1e-6?norm(inputX,inputY):norm(p.face||1,0);
     const offsetX=defender.x-p.x,offsetY=defender.y-p.y;
     const ahead=offsetX*forward.x+offsetY*forward.y;
     const across=Math.abs(offsetX*forward.y-offsetY*forward.x);
@@ -2534,7 +2536,8 @@ class GameEngine{
    distance(p,defender)<radius&&defender.action==='jump'&&
    Number.isFinite(defender.actionTimer)&&defender.actionTimer>0&&
    Number.isFinite(defender.z)&&defender.z>=20&&(()=>{
-    const forward=norm(p.dx||p.face,p.dy||0);
+    const inputX=Number.isFinite(p.dx)?p.dx:0,inputY=Number.isFinite(p.dy)?p.dy:0;
+    const forward=Math.hypot(inputX,inputY)>1e-6?norm(inputX,inputY):norm(p.face||1,0);
     const offsetX=defender.x-p.x,offsetY=defender.y-p.y;
     const ahead=offsetX*forward.x+offsetY*forward.y;
     const across=Math.abs(offsetX*forward.y-offsetY*forward.x);
@@ -2588,7 +2591,8 @@ class GameEngine{
    }else if(id==='ice'){
     this.magicHazards=placeIcePatch(this.magicHazards,p,F);
    }else if(id==='teleport'){
-    const forward=norm(p.dx||p.face,p.dy||0);
+    const inputX=Number.isFinite(p.dx)?p.dx:0,inputY=Number.isFinite(p.dy)?p.dy:0;
+    const forward=Math.hypot(inputX,inputY)>1e-6?norm(inputX,inputY):norm(p.face||1,0);
      const fromX=p.x,fromY=p.y;
      p.x=clamp(p.x+forward.x*85,F.x+23,F.x+F.w-23);
      p.y=clamp(p.y+forward.y*85,F.y+24,F.y+F.h-24);
