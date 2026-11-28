@@ -128,8 +128,10 @@ test('driveAI routes both ordinary and primary press tackles through movement-aw
  assert.ok(engineSource.includes('distance(p,owner)<68'));
  assert.ok(engineSource.includes('carrierDistance<74'));
  assert.ok(engineSource.includes('const slideRoll=Math.random();'));
- assert.ok(engineSource.includes('const mx=Number.isFinite(p.dx)?p.dx:0,my=Number.isFinite(p.dy)?p.dy:0;'),
-  'the helper must preserve the engine contact arc and add momentum as a separate requirement');
+ assert.ok(engineSource.includes('const mx=Number.isFinite(p.dx)?p.dx:0,my=Number.isFinite(p.dy)?p.dy:0,inputLength=Math.hypot(mx,my);')&&
+  engineSource.includes('const movementX=Number.isFinite(p.moveVX)?p.moveVX:0,movementY=Number.isFinite(p.moveVY)?p.moveVY:0,movementLength=Math.hypot(movementX,movementY);')&&
+  engineSource.includes('const inputMoving=inputLength>.15,momentumMoving=!inputMoving&&movementLength>.15;'),
+  'the engine contact arc must prefer live directional input, then use movement momentum only when input is neutral');
  assert.equal((engineSource.match(/this\.cpuTackleSlideChance\(p,ai\.anticipation/g)||[]).length,2,
   'ordinary and primary press slide decisions must both use the player-aware threshold');
 });

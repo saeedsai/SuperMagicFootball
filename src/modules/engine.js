@@ -1525,7 +1525,7 @@ class GameEngine{
   const leadY=target?clamp(leadVY*slideLeadSeconds,-leadLimit,leadLimit):0;
   const aimX=target?(ballTarget?ballTarget.x:target.x):0;
   const aimY=target?(ballTarget?ballTarget.y:target.y):0;
-  const dir=target?norm(aimX+leadX-p.x,aimY+leadY-p.y):norm(headingX,headingY);
+  const dir=target?norm(aimX+leadX-p.x,aimY+leadY-p.y):norm(p.dx||p.face,p.dy||0);
   if(!slide){
    // Keep the punch pose and follow-up counter reads aligned with the actual
    // forward-arc target, not a stale movement vector from the previous step.
