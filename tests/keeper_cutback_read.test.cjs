@@ -176,6 +176,45 @@ test('keeper ignores a nearby marker running away but retains closing and statio
  }
 });
 
+
+test('keeper cutback shade follows a runner live Agility-limited lateral turn',async()=>{
+ const {ENGINE,field}=await loadEngine();
+ for(const keeperTeam of [0,1])for(const wing of [-1,1]){
+  const shade=agility=>{
+   const f=fixture(ENGINE,field,keeperTeam);
+   f.carrier.y=f.centerY+wing*300;f.game.ball.y=f.carrier.y;
+   Object.assign(f.runner,{moveVX:f.attackDir*180,moveVY:0,dx:0,dy:wing});
+   f.runner.src.agility=agility;
+   return targetY(f);
+  };
+  const high=shade(100),low=shade(1);
+  assert.ok((high-low)*wing>1,
+   'team '+keeperTeam+' wing '+wing+': elite runner turn intent should move the keeper shade farther along the actual lateral path');
+ }
+});
+
+test('keeper cutback marking follows a defenders live turn rather than stale momentum',async()=>{
+ const {ENGINE,field}=await loadEngine();
+ for(const keeperTeam of [0,1]){
+  const baseline=fixture(ENGINE,field,keeperTeam);baseline.runner.down=true;
+  const baselineY=targetY(baseline);
+  const open=fixture(ENGINE,field,keeperTeam),openY=targetY(open);
+  const markerShade=agility=>{
+   const f=fixture(ENGINE,field,keeperTeam);
+   const marker=f.game.players.find(p=>p.t===keeperTeam&&!p.keeper&&p.i===4);
+   Object.assign(marker,{x:f.runner.x+74,y:f.runner.y,z:0,down:false,stun:0,
+    slideTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,
+    shotImpactRiseTimer:0,action:'idle',actionTimer:0,moveVX:-180,moveVY:0,dx:0,dy:-1});
+   marker.src.agility=agility;
+   return targetY(f);
+  };
+  assert.equal(markerShade(100),openY,
+   'a high-Agility marker turning out of the lane must not falsely suppress the cutback read');
+  assert.equal(markerShade(1),baselineY,
+   'a low-Agility marker retaining its closing momentum must still count as cover');
+ }
+});
+
 test('keeper selects an open alternative when the best cutback runner is tightly marked',async()=>{
  const {ENGINE,field}=await loadEngine();
  for(const keeperTeam of [0,1])for(const wing of [-1,1]){

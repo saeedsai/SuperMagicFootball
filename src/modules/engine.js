@@ -289,12 +289,20 @@ function keeperCutbackReadLane(keeper,players,ball,baselineY){
  };
  // A runner already within tackling distance of a ready defender is not an
  // uncovered cutback target. Project both players over the same short horizon.
+ const projectPosition=p=>{
+  const vx=velocity(p,'x'),vy=velocity(p,'y');
+  // Use the same live Agility-limited turn read for runners and markers.
+  // Trapezoidal integration preserves the old linear lead when steering is
+  // neutral/aligned or movement is slow, with the original per-axis cap.
+  const turned=carrierTurnAwareVelocity(p,vx,vy,.12);
+  return {x:p.x+clamp((vx+turned.x)*.06,-18,18),
+   y:p.y+clamp((vy+turned.y)*.06,-18,18)};
+ };
  const tightlyMarked=(runner,runnerX,runnerY)=>players.some(defender=>{
   if(!active(defender)||defender.t!==keeper.t||defender.keeper)return false;
   const currentGap=Math.hypot(defender.x-runner.x,defender.y-runner.y);
-  const markerX=defender.x+clamp(velocity(defender,'x')*.12,-18,18);
-  const markerY=defender.y+clamp(velocity(defender,'y')*.12,-18,18);
-  const projectedGap=Math.hypot(markerX-runnerX,markerY-runnerY);
+  const marker=projectPosition(defender);
+  const projectedGap=Math.hypot(marker.x-runnerX,marker.y-runnerY);
   // A defender running away is not reliable cover even while still nearby.
   return projectedGap<64&&projectedGap<=currentGap+6;
  });
@@ -303,8 +311,8 @@ function keeperCutbackReadLane(keeper,players,ball,baselineY){
   if(!active(runner)||runner.t!==carrier.t||runner===carrier||runner.keeper)continue;
   const vx=velocity(runner,'x'),vy=velocity(runner,'y');
   if(vx*attackDir< -100)continue;
-  const projectedX=runner.x+clamp(vx*.12,-18,18);
-  const projectedY=runner.y+clamp(vy*.12,-18,18);
+  const projectedRunner=projectPosition(runner);
+  const projectedX=projectedRunner.x,projectedY=projectedRunner.y;
   const behind=(projectedX-carrier.x)*attackDir;
   const depth=Math.abs(projectedX-ownGoalX);
   if(behind>-45||behind< -300||depth<80||depth>430||

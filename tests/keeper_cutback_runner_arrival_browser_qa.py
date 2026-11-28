@@ -30,7 +30,7 @@ with sync_playwright() as pw:
         result=page.evaluate("""() => {
             const game=SupermagicFootball.game;
             const field={x:150,y:155,w:2260.8,h:1220};
-            const targetY=(team,wing,mode,markerMode=null)=>{
+            const targetY=(team,wing,mode,markerMode=null,runnerTurnAgility=null)=>{
                 game.init({home:0,away:1,mode:'quick',humans:0});
                 const keeper=game.players.find(p=>p.t===team&&p.keeper);
                 const attacking=1-team,attackDir=team===0?-1:1;
@@ -51,22 +51,31 @@ with sync_playwright() as pw:
                 Object.assign(runner,{x:runnerX,y:centerY-wing*40,z:0,stun:0,
                     down:mode==='alternative-only'||mode==='none',action:'idle',actionTimer:0,slideTimer:0,
                     moveVX:attackDir*70,moveVY:-wing*180});
+                if(runnerTurnAgility!==null){
+                    Object.assign(runner,{moveVX:attackDir*180,moveVY:0,dx:0,dy:wing});
+                    runner.src.agility=runnerTurnAgility;
+                }
                 Object.assign(runner2,{x:runnerX,y:centerY-wing*58,z:0,stun:0,
                     down:mode==='runner-only'||mode==='none',action:'idle',actionTimer:0,slideTimer:0,
                     moveVX:attackDir*70,moveVY:wing*180});
                 if(markerMode){
                     const marker=game.players.find(p=>p.t===team&&!p.keeper&&p.i===4);
                     const lead=value=>Math.max(-18,Math.min(18,(Number(value)||0)*.12));
-                    const markerVelocity=markerMode==='retreating'?{x:0,y:-runner.moveVY}:
+                    const turningAway=markerMode==='turning-away-high'||markerMode==='turning-away-low';
+                    const markerVelocity=turningAway?{x:-180,y:0}:markerMode==='retreating'?{x:0,y:-runner.moveVY}:
                         markerMode==='closing'?{x:0,y:runner.moveVY-180}:{x:0,y:0};
                     const markerOffset=markerMode==='closing'?{x:0,y:24}:markerMode==='retreating'?{x:0,y:-lead(runner.moveVY)}:{x:0,y:0};
-                    Object.assign(marker,{x:runner.x+lead(runner.moveVX)+markerOffset.x,
-                        y:runner.y+lead(runner.moveVY)+markerOffset.y,
+                    Object.assign(marker,{x:turningAway?runner.x+74:runner.x+lead(runner.moveVX)+markerOffset.x,
+                        y:turningAway?runner.y:runner.y+lead(runner.moveVY)+markerOffset.y,
                         z:0,down:false,stun:0,slideTimer:0,shotImpactKnockdownPending:0,
                         shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
                         action:markerMode==='recovering'?'hurt':'idle',
                         actionTimer:markerMode==='recovering'?.4:0,
                         moveVX:markerVelocity.x,moveVY:markerVelocity.y});
+                    if(turningAway){
+                        marker.dx=0;marker.dy=-1;
+                        marker.src.agility=markerMode==='turning-away-high'?100:1;
+                    }
                 }
                 Object.assign(game.ball,{owner:carrier,x:carrier.x,y:carrier.y,z:0,
                     vx:0,vy:0,vz:0,attacker:attacking,lastTouchTeam:attacking,
@@ -92,7 +101,17 @@ with sync_playwright() as pw:
                 const closingMarker=targetY(team,wing,'runner-only','closing');
                 markingRows.push({team,wing,noRunner,openRunner,markedRunner,recoveringMarker,retreatingMarker,closingMarker});
             }
-            return {rows,markingRows,originalTeams:SupermagicFootball.teams.filter(team=>!['demo_concept_royals','demo_crown_royals_reference'].includes(team.id)).length,
+            const turnRows=[];
+            for(const team of [0,1])for(const wing of [-1,1]){
+                const noRunner=targetY(team,wing,'none');
+                const openRunner=targetY(team,wing,'runner-only');
+                const highMarker=targetY(team,wing,'runner-only','turning-away-high');
+                const lowMarker=targetY(team,wing,'runner-only','turning-away-low');
+                const highRunner=targetY(team,wing,'runner-only',null,100);
+                const lowRunner=targetY(team,wing,'runner-only',null,1);
+                turnRows.push({team,wing,noRunner,openRunner,highMarker,lowMarker,highRunner,lowRunner});
+            }
+            return {rows,markingRows,turnRows,originalTeams:SupermagicFootball.teams.filter(team=>!['demo_concept_royals','demo_crown_royals_reference'].includes(team.id)).length,
                 totalTeams:SupermagicFootball.teams.length,
                 buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
         }""")
@@ -109,6 +128,11 @@ with sync_playwright() as pw:
             assert abs(row['recoveringMarker']-row['openRunner'])<1e-7,(kind,row)
             assert abs(row['retreatingMarker']-row['openRunner'])<1e-7,(kind,row)
             assert abs(row['closingMarker']-row['noRunner'])<1e-7,(kind,row)
-        print('PASS',kind,'cutback arrival plus retreating/closing marker counterplay; four actions and 223 teams intact',flush=True)
+        assert len(result['turnRows'])==8,(kind,result)
+        for row in result['turnRows']:
+            assert abs(row['highMarker']-row['openRunner'])<1e-7,(kind,row)
+            assert abs(row['lowMarker']-row['noRunner'])<1e-7,(kind,row)
+            assert (row['highRunner']-row['lowRunner'])*row['wing']>1,(kind,row)
+        print('PASS',kind,'turn-aware runner/marker cutback read plus arrival counterplay; four actions and 223 teams intact',flush=True)
         ctx.close()
     browser.close()
