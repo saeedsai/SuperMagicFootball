@@ -48,7 +48,10 @@ test('engine equipment ID is lightning; Studio exposes its named icon and guide 
  assert.match(engine,/const allowed=\['banana','ice','bat','fireball','freeze','scream','hideBall','teleport','shoulderRide','spinBump','sandTrap','lightning','wind','mud'\]/);
  assert.match(engine,/const tierGated=\['spinBump','sandTrap','lightning','wind','mud'\]\.includes\(id\)/);
  assert.match(engine,/p\.lightningPending=\{remaining:\.32,target:rival,backup:lightningBackup\|\|null\}/);
- assert.match(engine,/if\(inJump\|\|inSlide\|\|read\|\|backupCountered\)\{this\.emit\('lightningTrickResolved'/);
+ assert.match(engine,/if\(inJump\|\|inSlide\|\|read\|\|backupCountered\)\{/);
+ assert.match(engine,/if\(read&&!inJump&&!inSlide\)q\.magicReadCueTimer/);
+ assert.match(engine,/if\(backupRead\)backup\.magicReadCueTimer/);
+ assert.match(engine,/this\.emit\('lightningTrickResolved',\{team:p\.t,player:p\.src\.name,target:q\.src\.name,hit:false,countered:true\}\);return false;/);
  assert.match(ui,/const STUDIO_LIGHTNING_TRICK=Object\.freeze\(\{id:'lightning',name:'Lightning'\}\)/);
  assert.match(ui,/lightning:'After a short windup, jolts the nearest rival within 95 units/);
  assert.ok(ui.includes("studioLightningEligible(player)&&(tokenWallet.owns('magicTrick','lightning')||player.magicTrick==='lightning')?'<option value=\"lightning\">Lightning</option>'"));
