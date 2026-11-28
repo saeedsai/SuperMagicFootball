@@ -1,36 +1,33 @@
 # SuperMagicFootball — smf-hourly-dev-20261019
-**Agent ID:** `smf-hourly-dev-20261019`
+Agent ID: smf-hourly-dev-20261019
 Updated: 2026-11-28
 
 ## Mission
 Prioritize responsive gameplay, intelligent passing/tackling and counterable tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.389 delivers a Hide Ball counter integration repair and an independent goalkeeper improvement.
-- `GameEngine.tackle` uses dx/dy first, then normalized moveVX/moveVY when input is neutral, then facing for forward-arc selection. A targeted poke aims at its selected carrier; the no-target fallback stays legacy-compatible for extracted lead callers.
-- `keeperParryReboundTarget` projects Agility-limited steering only with real movement (>=75 units/s) and meaningful dx/dy; high-Agility keepers can turn into a rebound from cross-track momentum. Neutral/invalid input retains the old estimate.
-- Release surfaces and .389 cache identity are updated. No save/schema, roster, formation or action changes.
+- Candidate 0.12.81.390 adds AI-UNTARGETED-GROUND-PASS-LANE-COVER-01: for fresh low forward passes without a receiver id, the second CPU defender shades a bounded point ahead in the live ball corridor while the primary continues pressing.
+- Targeted receiver passes still use their receiver-specific interception model. Lofted, shot, lateral/backward/stale and edge trajectories retain existing behavior.
+- Fixed the .389 Hide Ball browser fixture's random-contact contamination; production gameplay logic was not altered by that correction.
+- No roster, formation, save schema, four-action, LAN/P2P or online-hosting changes.
 
 ## Next smallest action
-- Inspect the final .389 Modular QA and exact-head Full Regression Census; especially Hide Ball actual-engine poke/resolver and keeper turn-intent desktop/simulated-touch scenarios.
-- Repair confirmed failures without weakening assertions. Only a green exact dev head may enter the existing QA-gated main pipeline.
-- Continue intelligent passing/tackling and trick counterplay, then goalkeeper, existing-player eight-view animation/Studio QA, Player Studio usability and Career/Cup depth.
+- Inspect exact .390 Modular QA and Full Regression Census; especially targetless-pass desktop/simulated-touch role assignment and Hide Ball neutral-momentum resolver.
+- Fix any confirmed failure without weakening gameplay assertions. Only a green exact dev head may enter the existing QA-gated main pipeline.
+- Continue intelligent pass interception/attacking runs, remaining trick counterplay, goalkeeper decisions, existing-player Studio animation, Player Studio and Career/Cup.
 
 ## Ownership and exclusions
 Update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Repository heads
-- Candidate .389 parent: `fa09037880285a480f33ea787a83a6d02878b272`.
-- First .389 source commit: `b0f953879cd168c410ced2c61a44aa1e09bdf4ce`.
-- Metadata head before this corrective commit: `0b2f75cec1b6befdee440cbd69d2218a27c9321c`.
-- Main: `ffc4ca5122abfd16849b69c705fa5f341cb52e7a`.
-- Main remains unprotected; repository rulesets were empty.
+- .390 parent: b52e3aa7d731f353cbffabc29f439973c1dbd8df.
+- Main: ffc4ca5122abfd16849b69c705fa5f341cb52e7a.
+- Main and dev remain unprotected according to branch metadata; #87 remains open.
 
 ## Evidence
-- .388 Modular QA #46084117071 passed 3,051/3,051.
-- .388 Full Regression Census #46084117033: preflight, preview, all four Node shards and browser shards 0, 1, 3 passed; browser shard 2 failed the actual-engine Hide Ball neutral-input PASS-poke scenario.
-- .389 source QA #46086701089: 3,051/3,053 passed. Two diagnosed failures are the stale source assertion and extracted no-target fallback described in the master backlog. Corrected without relaxing gameplay checks.
-- Exact final .389 Modular QA and four-Node/four-Chromium Census are required; promotion/deployment remain blocked until green.
+- .389 Modular QA #46086880956 passed 3,053/3,053 Node tests.
+- .389 Full Regression Census #46086880968: preflight, preview, all four Node shards and browser shards 0, 1, 3 passed; browser shard 2 failed only the Hide Ball momentum browser fixture because random body contact could stun the carrier before the trick resolver.
+- .390 targeted Node/Chromium and exact-head Modular QA/Census are pending at commit time; report only observed results.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Update only this file for this agent; leave other checkpoints untouched.

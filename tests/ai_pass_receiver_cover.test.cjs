@@ -381,3 +381,60 @@ test('driveAI assigns an earlier pass interception to a high-Agility support alr
   assert.ok(targets[100]&&targets[1],JSON.stringify({defendingTeam,targets}));
  }
 });
+
+
+test('untargeted low ground passes give the second defender a bounded forward lane screen',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team),ball={...f.ball,passTarget:null};
+  const hint=AI.defensiveUntargetedPassCoverTarget(team,ball,[],bounds);
+  assert.ok(hint,JSON.stringify({team,hint,ball}));
+  const progress=(hint.x-ball.x)*f.dir;
+  assert.ok(progress>=48&&progress<=190,JSON.stringify({team,hint,progress}));
+  assert.ok(Math.abs(hint.y-ball.y)<2,JSON.stringify({team,hint}));
+  assert.equal(AI.defensivePassReceiverCoverTarget(team,ball,f.players,bounds),null,
+   'targeted receiver projection must not pretend an unknown receiver exists');
+  const game=new ENGINE.GameEngine({halfSeconds:120});
+  game.init({home:0,away:1,mode:'quick',humans:0});
+  game.cpuLevel=()=>2;
+  const primary=game.player(team,3),nearBall=game.player(team,4),support=game.player(team,5);
+  const field=ENGINE.WORLD.field,y=field.y+field.h/2,ballX=field.x+field.w/2;
+  for(const q of game.players)if(q!==primary&&q!==nearBall&&q!==support&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
+  Object.assign(primary,{x:ballX-f.dir*18,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+  Object.assign(nearBall,{x:ballX+f.dir*42,y:y+35,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1});
+  Object.assign(support,{x:ballX+f.dir*122,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+   slideTimer:0,moveVX:0,moveVY:0,aiTimer:0,aiTarget:null,aiAssistTarget:null,cd:1,
+   fatigue:0,breath:10,morale:55});
+  game.ball.owner=null;
+  Object.assign(game.ball,{pass:true,passTeam:f.attacking,passTarget:null,attacker:f.attacking,
+   lastTouchTeam:f.attacking,x:ballX,y,z:8,vx:f.dir*600,vy:0,vz:40,age:.15,
+   shot:null,strike:null,ordinaryShot:false});
+  game.clock=.2;
+  const expected=AI.defensiveUntargetedPassCoverTarget(team,game.ball,game.players,
+   {xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24});
+  assert.ok(expected,JSON.stringify({team,expected,ball:game.ball}));
+  game.driveAI(support,.016);
+  assert.ok(support.aiTarget&&Math.hypot(support.aiTarget.x-expected.x,support.aiTarget.y-expected.y)<1,
+   JSON.stringify({team,expected,actual:support.aiTarget}));
+  game.driveAI(primary,.016);
+  assert.ok(primary.aiTarget&&Math.hypot(primary.aiTarget.x-ballX,primary.aiTarget.y-y)<80,
+   JSON.stringify({team,primaryTarget:primary.aiTarget,ballX,y}));
+  assert.equal(game.ball.owner,null,'pass coverage must not change possession');
+ }
+});
+test('untargeted pass cover rejects stale, slow, backward, lateral, lofted and invalid passes',async()=>{
+ const {AI}=await loadModules(),f=fixture(0),ball={...f.ball,passTarget:null};
+ assert.ok(AI.defensiveUntargetedPassCoverTarget(0,ball,[],bounds));
+ for(const patch of [
+  {owner:{}},{attacker:0},{passTeam:0},{age:1.26},{z:19},{vz:71},{vz:-71},
+  {vx:180,vy:0},{vx:0,vy:600},{vx:-600,vy:0},{shot:true},
+  {x:bounds.xMax-24},{y:bounds.yMin+23}
+ ]){
+  assert.equal(AI.defensiveUntargetedPassCoverTarget(0,{...ball,...patch},[],bounds),null,
+   'rejected unsafe pass '+JSON.stringify(patch));
+ }
+ assert.equal(AI.defensiveUntargetedPassCoverTarget(1,ball,[],bounds),null);
+ assert.equal(AI.defensiveUntargetedPassCoverTarget(0,{...ball,passTarget:'known-receiver'},[],bounds),null);
+});

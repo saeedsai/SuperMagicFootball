@@ -1600,6 +1600,35 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
  }
 
 
+
+function defensiveUntargetedPassCoverTarget(team,ball,bounds){
+ if((team!==0&&team!==1)||!ball||ball.owner||ball.pass!==true||
+  ball.attacker!==1-team||ball.passTeam!==1-team||
+  (typeof ball.passTarget==='string'&&ball.passTarget.trim())||
+  ![ball.x,ball.y,ball.vx,ball.vy,ball.vz,ball.z,ball.age].every(Number.isFinite)||
+  ball.age<0||ball.age>1.25||ball.z<0||ball.z>18||
+  ball.vz>70||ball.vz< -70||ball.shot||ball.strike||ball.ordinaryShot)return null;
+ const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),
+  yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
+ if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+ const speed=Math.hypot(ball.vx,ball.vy),attackDir=(1-team)===0?1:-1;
+ if(!Number.isFinite(speed)||speed<260||speed>1450||ball.vx*attackDir<160)return null;
+ // Targetless directional passes still expose a real flight corridor. Shade a
+ // bounded point ahead of the live ball rather than leaving the second marker
+ // in ordinary support shape; the primary defender continues to press the ball.
+ const seconds=Math.max(.10,Math.min(.22,112/speed));
+ const height=ball.z+ball.vz*seconds-250*seconds*seconds;
+ if(!Number.isFinite(height)||height< -4||height>24)return null;
+ const projectedX=ball.x+ball.vx*seconds,projectedY=ball.y+ball.vy*seconds;
+ if(projectedX<xMin+24||projectedX>xMax-24||projectedY<yMin+24||projectedY>yMax-24)return null;
+ const target={x:Math.max(xMin+22,Math.min(xMax-22,projectedX+attackDir*12)),
+  y:Math.max(yMin+23,Math.min(yMax-23,projectedY))};
+ const forward=(target.x-ball.x)*attackDir,travel=Math.hypot(target.x-ball.x,target.y-ball.y);
+ if(!Number.isFinite(forward)||!Number.isFinite(travel)||forward<48||forward>190||travel<48||travel>220)return null;
+ return target;
+}
+
+
   // The primary presser attacks a high loose ball; the second defender protects
   // its predicted landing pocket. This is limited to descending, unowned non-shot
   // balls so ordinary passes, shots and grounded scrambles keep their assignments.
@@ -2949,6 +2978,6 @@ function keeperHighCrossClaimTarget(keeper,ball,players,bounds){
  return target;
 }
 
-return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensiveCarrierTurnVelocity:carrierTurnAwareVelocity,supportRunReceiverLead,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
+return {AI_LEVELS,keeperOutletLane,keeperShotReadY,keeperParryReboundTarget,keeperHighCrossClaimTarget,keeperHighCrossPunchDecision,aiTuning,defensiveCounterpressTrapTarget,defensiveCarrierTurnVelocity:carrierTurnAwareVelocity,supportRunReceiverLead,defensivePressers,defensivePassLaneCoveredByPrimary,defensiveThirdManRunnerTarget,defensiveCarrierLeadTarget,defensiveCarrierSupportCoverTarget,defensiveTackleSlide,defensiveFirstTouchSlide,defensiveCutbackCoverTarget,defensiveGiveAndGoCoverTarget,attackingSupportRun,attackingThirdManRun,attackingSupportPass,attackingThroughBall,attackingCutbackPass,attackingGoalmouthPass,attackingGiveAndGoRun,attackingGiveAndGoReturnPass,attackingFirstTouchEscape,attackingFirstTouchOutlet,attackingCarryEscapeTarget,defensivePassReceiverCoverTarget,defensiveUntargetedPassCoverTarget,defensiveLoftedPassCoverTarget,defensiveLoftedPassJumpWindow,defensiveLooseBallPrimaryTarget,defensiveLooseBallCoverTarget,defensiveGroundSpillPrimaryTarget,defensiveGroundSpillCoverTarget,defensiveFirstTouchContestTarget,defensiveFirstTouchOutletCoverTarget,defensiveFirstTouchCarryContainTarget,defensiveMagicTrickReadTarget,defensiveMagicReadCounterpressTarget};})();
 
 export {AI};

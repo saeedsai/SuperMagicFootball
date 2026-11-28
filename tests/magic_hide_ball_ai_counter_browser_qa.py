@@ -85,25 +85,33 @@ with sync_playwright() as pw:
    }
    const momentumRead=[],momentumAway=[];
    for(const team of [0,1]){
-    const {carrier,human,cpu}=setup(team),dir=team===0?1:-1;
-    Object.assign(cpu,{dx:0,dy:0,moveVX:-dir*180,moveVY:0,face:dir});
-    carrier.dribbleHold=.9;g.clock=10;
-    g.reactToHideBallTrick(cpu,.02,0);
-    const poked=cpu.action==='punch';
-    carrier.dribbleHold=1;carrier.magicReadyAt=0;g.ball.owner=carrier;g.clock=10;
-    const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
+    const {carrier,human,cpu}=setup(team),dir=team===0?1:-1,originalRandom=Math.random;
+    let poked=false,activated=false,event={};
+    try{
+     Math.random=()=>.999;
+     Object.assign(cpu,{dx:0,dy:0,moveVX:-dir*180,moveVY:0,face:dir});
+     carrier.dribbleHold=.9;g.clock=10;
+     g.reactToHideBallTrick(cpu,.02,0);
+     poked=cpu.action==='punch';
+     carrier.dribbleHold=1;carrier.magicReadyAt=0;g.ball.owner=carrier;g.clock=10;
+     activated=g.tryMagicTrick(carrier);event=g.events.at(-1)||{};
+    }finally{Math.random=originalRandom;}
     momentumRead.push({team,cpuAction:cpu.action,poked,humanAction:human.action,
      humanStillSelected:g.controlled[human.t]===human.i,activated,countered:event.countered,
      ownerRetained:g.ball.owner===carrier,hideBallTimer:carrier.hideBallTimer||0});
    }
    for(const team of [0,1]){
-    const {carrier,human,cpu}=setup(team),dir=team===0?1:-1;
-    Object.assign(cpu,{dx:0,dy:0,moveVX:dir*180,moveVY:0,face:-dir});
-    carrier.dribbleHold=.9;g.clock=10;
-    g.reactToHideBallTrick(cpu,.02,0);
-    const poked=cpu.action==='punch';
-    carrier.dribbleHold=1;carrier.magicReadyAt=0;g.ball.owner=carrier;g.clock=10;
-    const activated=g.tryMagicTrick(carrier),event=g.events.at(-1)||{};
+    const {carrier,human,cpu}=setup(team),dir=team===0?1:-1,originalRandom=Math.random;
+    let poked=false,activated=false,event={};
+    try{
+     Math.random=()=>.999;
+     Object.assign(cpu,{dx:0,dy:0,moveVX:dir*180,moveVY:0,face:-dir});
+     carrier.dribbleHold=.9;g.clock=10;
+     g.reactToHideBallTrick(cpu,.02,0);
+     poked=cpu.action==='punch';
+     carrier.dribbleHold=1;carrier.magicReadyAt=0;g.ball.owner=carrier;g.clock=10;
+     activated=g.tryMagicTrick(carrier);event=g.events.at(-1)||{};
+    }finally{Math.random=originalRandom;}
     momentumAway.push({team,cpuAction:cpu.action,poked,humanAction:human.action,activated,
      countered:event.countered,hideBallTimer:carrier.hideBallTimer||0});
    }
