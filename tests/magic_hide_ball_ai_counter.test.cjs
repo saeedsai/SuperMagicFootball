@@ -205,3 +205,30 @@ test('Hide Ball retains facing fallback only when both input and live movement a
   assert.equal(f.game.pokes,1);
  }
 });
+
+test('actual GameEngine aligns a neutral-input Hide Ball PASS poke with closing movement',async()=>{
+ const {loadAssetsFromNode}=await import('../src/assets.js');await loadAssetsFromNode();
+ const {ENGINE}=await import('../src/modules/engine.js');
+ for(const team of [0,1]){
+  const game=new ENGINE.GameEngine({halfSeconds:120});game.init({home:0,away:1,mode:'quick',humans:0});
+  game.matchState='paused';game.clock=10;game.events=[];
+  const field=ENGINE.WORLD.field,dir=team===0?1:-1,x=field.x+field.w/2,y=field.y+field.h/2;
+  const defender=game.player(team,3),carrier=game.player(1-team,3);
+  for(const q of game.players)if(q!==defender&&q!==carrier)Object.assign(q,{down:true,stun:1});
+  carrier.src={...carrier.src,magicTrick:'hideBall',dribbling:90};
+  Object.assign(carrier,{x,y,z:0,keeper:false,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,dribbleHold:.9,magicReadyAt:0,fatigue:0,breath:1});
+  Object.assign(defender,{x:x+dir*56,y,z:0,keeper:false,down:false,stun:0,invuln:0,action:'idle',actionTimer:0,cd:0,dx:0,dy:0,moveVX:-dir*180,moveVY:0,face:dir,src:{...defender.src,defence:80}});
+  Object.assign(game.ball,{owner:carrier,x,y,z:0,vx:0,vy:0,vz:0,pass:false,shot:null,strike:null,ordinaryShot:false});
+  const originalRandom=Math.random;Math.random=()=>.999;
+  try{
+   assert.equal(game.reactToHideBallTrick(defender,.02,0),true);
+   assert.equal(defender.action,'punch');
+   const tx=carrier.x-defender.x,ty=carrier.y-defender.y,hl=Math.hypot(defender.dx,defender.dy);
+   assert.ok(hl>.9&&(tx*defender.dx+ty*defender.dy)/(Math.hypot(tx,ty)*hl)>=.99,
+    'neutral-input PASS poke must aim along live closing movement, not stale facing');
+   carrier.dribbleHold=1;assert.equal(game.tryMagicTrick(carrier),true);
+  }finally{Math.random=originalRandom;}
+  assert.equal(game.events.at(-1).countered,true,'live resolver accepts the correctly aimed poke');
+  assert.equal(game.ball.owner,carrier);assert.equal(carrier.hideBallTimer||0,0);
+ }
+});

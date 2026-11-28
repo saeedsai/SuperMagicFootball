@@ -1470,8 +1470,11 @@ class GameEngine{
   const opponentOwner=this.ball.owner?.t!==p.t?this.ball.owner:null;
   const owner=opponentOwner&&(slide?canSlideTarget(opponentOwner):canPokeTarget(opponentOwner))?opponentOwner:null;
   // Prefer a ball carrier in the tackle's forward arc; never auto-lunge backwards.
-  const mx=Number.isFinite(p.dx)?p.dx:0,my=Number.isFinite(p.dy)?p.dy:0;
-  const moving=Math.hypot(mx,my)>.15,headingX=moving?mx/Math.hypot(mx,my):(p.face===-1?-1:1),headingY=moving?my/Math.hypot(mx,my):0;
+  const mx=Number.isFinite(p.dx)?p.dx:0,my=Number.isFinite(p.dy)?p.dy:0,inputLength=Math.hypot(mx,my);
+  const movementX=Number.isFinite(p.moveVX)?p.moveVX:0,movementY=Number.isFinite(p.moveVY)?p.moveVY:0,movementLength=Math.hypot(movementX,movementY);
+  const inputMoving=inputLength>.15,momentumMoving=!inputMoving&&movementLength>.15;
+  const headingX=inputMoving?mx/inputLength:momentumMoving?movementX/movementLength:(p.face===-1?-1:1);
+  const headingY=inputMoving?my/inputLength:momentumMoving?movementY/movementLength:0;
   const inArc=q=>q&&Number.isFinite(q.x)&&Number.isFinite(q.y)&&distance(p,q)>0&&distance(p,q)<280&&
    ((q.x-p.x)*headingX+(q.y-p.y)*headingY)/distance(p,q)>=.25;
   // Avoid locking a poke onto a far carrier while an opponent is right in front.
@@ -1522,7 +1525,7 @@ class GameEngine{
   const leadY=target?clamp(leadVY*slideLeadSeconds,-leadLimit,leadLimit):0;
   const aimX=target?(ballTarget?ballTarget.x:target.x):0;
   const aimY=target?(ballTarget?ballTarget.y:target.y):0;
-  const dir=target?norm(aimX+leadX-p.x,aimY+leadY-p.y):norm(p.dx||p.face,p.dy||0);
+  const dir=target?norm(aimX+leadX-p.x,aimY+leadY-p.y):norm(headingX,headingY);
   if(!slide){
    // Keep the punch pose and follow-up counter reads aligned with the actual
    // forward-arc target, not a stale movement vector from the previous step.

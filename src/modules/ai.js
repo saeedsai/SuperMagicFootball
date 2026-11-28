@@ -2687,13 +2687,29 @@ function keeperOutletLane(keeper,target,opponents,flightSpeed=480,receiverLeadSe
   const velocityX=Number.isFinite(keeper.moveVX)?keeper.moveVX:Number.isFinite(keeper.vx)?keeper.vx:0;
   const velocityY=Number.isFinite(keeper.moveVY)?keeper.moveVY:Number.isFinite(keeper.vy)?keeper.vy:0;
   const targetDx=target.x-keeper.x,targetDy=target.y-keeper.y;
-  const initialTowardSpeed=clampTo((velocityX*targetDx+velocityY*targetDy)/Math.max(1,keeperGap),-moveSpeed,moveSpeed);
-  const lateralSpeed=Math.abs((velocityX*targetDy-velocityY*targetDx)/Math.max(1,keeperGap));
+  let initialTowardSpeed=clampTo((velocityX*targetDx+velocityY*targetDy)/Math.max(1,keeperGap),-moveSpeed,moveSpeed);
+  let lateralSpeed=Math.abs((velocityX*targetDy-velocityY*targetDx)/Math.max(1,keeperGap));
+  const steeringX=Number.isFinite(keeper.dx)?keeper.dx:0,steeringY=Number.isFinite(keeper.dy)?keeper.dy:0;
+  const steeringLength=Math.hypot(steeringX,steeringY),movementSpeed=Math.hypot(velocityX,velocityY);
+  // A keeper actively turning toward a rebound should not be judged as if its
+  // cross-track velocity will continue unchanged. Reuse the bounded Agility turn
+  // path only when both real movement and a meaningful steering intent exist;
+  // neutral/invalid input retains the exact previous momentum calculation.
+  if(pursuitSeconds>0&&movementSpeed>=75&&steeringLength>=.15){
+   const turnLead=keeperOutfielderTurnLead(keeper,pursuitSeconds,moveSpeed*pursuitSeconds);
+   const duration=Math.max(.001,pursuitSeconds);
+   const projectedToward=(turnLead.x*targetDx+turnLead.y*targetDy)/(Math.max(1,keeperGap)*duration);
+   const projectedLateral=Math.abs((turnLead.x*targetDy-turnLead.y*targetDx)/(Math.max(1,keeperGap)*duration));
+   if(Number.isFinite(projectedToward)&&Number.isFinite(projectedLateral)){
+    initialTowardSpeed=clampTo(projectedToward,-moveSpeed,moveSpeed);
+    lateralSpeed=projectedLateral;
+   }
+  }
   const accelerationWindow=(1-Math.exp(-turnRate*pursuitSeconds))/turnRate;
   const reachableTravel=Math.max(0,moveSpeed*pursuitSeconds+(initialTowardSpeed-moveSpeed)*accelerationWindow);
   // Cross-track momentum must be cancelled before the keeper can settle on the rebound.
-  // Reserve part of the existing collection margin for that turn, without changing
-  // the stationary/aligned baseline or making the 44-unit buffer disappear.
+  // A live Agility-limited turn reduces that penalty only when steering proves it.
+  // Neutral/invalid input retains the prior cross-track margin exactly.
   const lateralTurnCost=Math.min(18,lateralSpeed/turnRate*.45);
   const arrivalBuffer=Math.max(26,44-lateralTurnCost);
   if(keeperGap>reachableTravel+arrivalBuffer)return null;

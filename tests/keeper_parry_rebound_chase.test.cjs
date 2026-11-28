@@ -235,3 +235,26 @@ test('GK Skill improves parry-rebound reorientation while fatigue slows it witho
  const recovered=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300);
  assert.deepEqual(recovered,neutral,'recovery restores the exact neutral target');
 });
+
+test('keeper parry rebound credits an Agility-limited turn into the pocket from cross-track momentum',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const f=helperFixture(ENGINE,team);f.ball.x=f.keeper.x+f.dir*100;
+  const open=AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,300);
+  assert.ok(open,'team '+team+': stationary baseline pocket remains valid');
+  const dx=open.x-f.keeper.x,dy=open.y-f.keeper.y,gap=Math.hypot(dx,dy);
+  const setCross=()=>{f.keeper.moveVX=-dy/gap*200;f.keeper.moveVY=dx/gap*200;f.keeper.dx=dx/gap;f.keeper.dy=dy/gap;};
+  f.keeper.src={agility:100,gkSkill:50};f.keeper.fatigue=0;setCross();
+  assert.ok(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,260),
+   'team '+team+': high-Agility keeper steering into the pocket can continue its rebound chase');
+  f.keeper.src.agility=1;
+  assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,260),null,
+   'team '+team+': low-Agility keeper retains the conservative cross-track decision');
+  f.keeper.dx=0;f.keeper.dy=0;
+  assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,260),null,
+   'neutral steering retains the old cross-track fallback');
+  f.keeper.dx=NaN;f.keeper.dy=Infinity;
+  assert.equal(AI.keeperParryReboundTarget(f.keeper,f.ball,f.players,f.bounds,1,f.rebound,260),null,
+   'invalid steering retains the old conservative estimate');
+ }
+});

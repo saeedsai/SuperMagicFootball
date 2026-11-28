@@ -124,6 +124,29 @@ with sync_playwright() as pw:
     };
     reactionRows.push({side,neutral:run(50,0),low:run(0,0),elite:run(100,0),tired:run(50,1),crossTrack:run(50,0,'cross-track')});
    }
+    const steeringRows=[];
+    for(const side of [0,1]){
+     const run=agility=>{
+      g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
+      g.matchState='paused';g.cooldown=0;g.clock=0;
+      const k=g.player(side,0),b=g.ball,dir=side===0?1:-1,goalY=765;
+      Object.assign(k,{x:side===0?205:2355,y:goalY,stun:0,down:false,z:0,action:'idle',actionTimer:0,
+       diveCooldown:0,diveIntentCooldown:0,diveIntentPending:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false,
+       moveVX:0,moveVY:0,dx:0,dy:0,fatigue:0});
+      for(const p of g.players)if(p!==k&&!p.keeper)Object.assign(p,{down:true,stun:1,z:0,action:'idle',actionTimer:0,slideTimer:0,moveVX:0,moveVY:0,dx:0,dy:0});
+      Object.assign(b,{owner:null,attacker:1-side,lastTouchTeam:1-side,x:k.x+dir*24,y:goalY,z:0,vx:-dir*2500,vy:0,vz:0,power:60,ordinaryShot:true,shot:null,strike:null,age:.2,canCollect:0,trail:[],pass:false});
+      const parried=g.tryKeeperDive(k,false);if(!parried)throw new Error('steering fixture shot was not parried for side '+side);
+      Object.assign(k,{action:'keeperDive',actionTimer:.4,diveElapsed:.24,diveIntentPending:false,z:12,stun:0,down:false,aiTimer:0,aiTarget:null,aiParryReboundTarget:false,fatigue:0});
+      Object.assign(k.src,{agility,gkSkill:50});
+      Object.assign(b,{owner:null,attacker:side,lastTouchTeam:side,x:k.x+dir*100,y:goalY+38,z:60,vx:dir*260,vy:30,vz:-110,ordinaryShot:false,shot:null,strike:null,pass:false,age:.6,canCollect:0});
+      const flight=(b.vz+Math.sqrt(b.vz*b.vz+1000*b.z))/500,targetX=b.x+b.vx*flight*.58,targetY=b.y+b.vy*flight*.58;
+      const dx=targetX-k.x,dy=targetY-k.y,gap=Math.hypot(dx,dy);
+      k.moveVX=-dy/gap*200;k.moveVY=dx/gap*200;k.dx=dx/gap;k.dy=dy/gap;
+      g.clock=.2;g.cpuLevel=()=>2;g.playerSpeed=()=>260/.86;g.driveAI(k,.016);
+      return {parried,chase:k.aiParryReboundTarget===true};
+     };
+     steeringRows.push({side,elite:run(100),low:run(1)});
+    }
     for(const side of [0,1])for(const role of ['opponent','teammate'])for(const agility of [100,1]){
      g.init({home:0,away:9,humans:0,mode:'quick',options:{...g.options,weather:'Clear'}});
      g.matchState='paused';g.cooldown=0;g.clock=0;
@@ -157,12 +180,16 @@ with sync_playwright() as pw:
      g.driveAI(k,.016);
      turnRows.push({side,role,agility,parried,chase:k.aiParryReboundTarget===true});
     }
-   return {rows,reactionRows,turnRows,teams:SupermagicFootball.teams.length};
+   return {rows,reactionRows,steeringRows,turnRows,teams:SupermagicFootball.teams.length};
   }""")
   assert not errors,(kind,errors)
   assert result['teams']>=223,(kind,result)
   assert len(result['rows'])==2,(kind,result)
   assert len(result['reactionRows'])==2,(kind,result)
+  assert len(result['steeringRows'])==2,(kind,result)
+  for row in result['steeringRows']:
+   assert row['elite']['parried'] and row['elite']['chase'],(kind,row)
+   assert row['low']['parried'] and not row['low']['chase'],(kind,row)
   for row in result['reactionRows']:
    assert row['neutral']['parried'] and row['neutral']['chase'],(kind,row)
    assert row['low']['parried'] and not row['low']['chase'],(kind,row)
@@ -179,6 +206,6 @@ with sync_playwright() as pw:
    assert row['parried'] and row['chase'] and row['moving'] and row['yieldedToClosingRunner'] and row['cleared'],(kind,row)
    assert row['target'] is not None,(kind,row)
    assert row['farParried'] and row['farDeclined'] and row['staysGoalSide'],(kind,row)
-  print('PASS',kind,'both mirrored real-engine parry follow-throughs, Agility-aware opponent/teammate rebound turns, recovery-aware second-ball races, bounded keeper movement and possession cleanup',flush=True)
+  print('PASS',kind,'both mirrored real-engine parry follow-throughs, keeper steering/Agility rebound turns, Agility-aware opponent/teammate rebound races, recovery-aware second-ball contests and possession cleanup',flush=True)
   ctx.close()
  browser.close()
