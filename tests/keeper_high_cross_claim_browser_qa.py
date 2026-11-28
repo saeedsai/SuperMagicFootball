@@ -222,7 +222,7 @@ with sync_playwright() as pw:
      g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
      const keeper=g.player(team,0),receiver=g.player(1-team,3);
      for(const q of g.players)if(q!==keeper&&q!==receiver&&!q.keeper){q.down=true;q.stun=1;}
-     Object.assign(keeper,{x:ownGoalX+dir*55,y:target.y-103.4,z:0,stun:0,down:false,
+     Object.assign(keeper,{x:ownGoalX+dir*55,y:target.y-114,z:0,stun:0,down:false,
       action:'idle',actionTimer:0,diveCooldown:0,aiTimer:0,aiTarget:null,
       aiKeeperClaimTargetActive:false,aiParryReboundTarget:false,moveVX:0,moveVY:220,
       dx:profile.invalid?NaN:dir*profile.steering,dy:profile.invalid?Infinity:0,fatigue:0});

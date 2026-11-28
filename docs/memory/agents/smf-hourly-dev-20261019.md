@@ -17,6 +17,7 @@ Inspect .417 Modular QA and Full Regression Census at the exact SHA. Verify both
 Update only this checkpoint. No new branch, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. Keep #87 main protection, #86 Render drift and #48 physical two-phone acceptance open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Evidence
+- Initial .417 Modular QA #46186009545 and Census #46186009751 preflight exposed one low-Agility fixture failure (3,090/3,091 passed). The production movement model was unchanged; the Node and actual-engine fixtures now use a wider keeper-to-landing gap so turn-in high Agility claims while turn-away and low Agility do not. New exact-head CI is pending.
 - Run-start dev: `5ba4790e989da11b30d61dfb3e077240918cf744`; main: `5ba4790e989da11b30d61dfb3e077240918cf744`.
 - .416 Modular QA #46182945892 passed; Full Regression Census #46182945873 passed all four Node and four Chromium shards and its promotion job. Pages deployment #46183800444 passed; main Census #46183806637 has preflight, preview, all four Node shards and browser shards 1/2 passed while browser shards 0/3 remain in progress.
 - GitHub branches REST reports both `dev.protected=false` and `main.protected=false`; #87 remains open. #86, #48, #3, #10 and #12 remain open.

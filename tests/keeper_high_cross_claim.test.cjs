@@ -346,7 +346,7 @@ test('high-cross keeper claim follows a live Agility turn into the landing pocke
  for(const team of [0,1]){
   const f=fixture(ENGINE,team),dir=f.dir;
   f.target={x:f.ownGoalX+dir*265,y:f.goalY+35};
-  Object.assign(f.keeper,{x:f.ownGoalX+dir*55,y:f.target.y-103.4,
+  Object.assign(f.keeper,{x:f.ownGoalX+dir*55,y:f.target.y-114,
    moveVX:0,moveVY:220,dx:dir,dy:0,fatigue:0});
   Object.assign(f.keeper.src,{agility:100,gkSkill:50,gkDiving:50});
   Object.assign(f.receiver,{x:f.target.x+dir*215,y:f.target.y+10});
