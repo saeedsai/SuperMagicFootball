@@ -11,6 +11,10 @@ const abilitySource=fs.readFileSync('src/modules/abilities.js','utf8')
 const ABILITIES=vm.runInNewContext(abilitySource+'\nABILITIES;',{
  GAME_ASSETS:{mechanics},STATS:{verifiedRatingTierForPlayer:p=>p?.verifiedTier||null},SPECIALS:{abilityLevel:()=>2,levelModifiers:()=>({fatigue:1})}
 });
+const readyStart=engine.indexOf('function maceSweepTargetReady(');
+const readyEnd=engine.indexOf('\n}',readyStart)+2;
+assert.ok(readyStart>=0&&readyEnd>readyStart,'extract Mace Sweep target readiness helper');
+const maceSweepTargetReady=vm.runInNewContext('('+engine.slice(readyStart,readyEnd)+')');
 const methodStart=engine.indexOf('\n activateDefence(p){');
 const methodEnd=engine.indexOf('\n activateKeeperSuper(',methodStart);
 assert.ok(methodStart>0&&methodEnd>methodStart,'extract the real field-defense activation method');
@@ -22,7 +26,7 @@ const activate=vm.runInNewContext('({'+engine.slice(methodStart,methodEnd)+'})',
  abilityReady:(p,move)=>!!(move&&p.stun<=0&&p.abilityCd<=0&&p.fatigue+move.cost<=.98),
  abilityLevel:()=>2,levelModifiers:()=>({stun:1}),distance,norm,clamp,
  F:mechanics.world.field,
- stat:(p,key)=>p.src?.[key]??55,
+ stat:(p,key)=>p.src?.[key]??55,maceSweepTargetReady,
  impactStun:()=>.8
 }).activateDefence;
 const stat=(p,key)=>p.src?.[key]??55;
@@ -36,7 +40,7 @@ assert.ok(helperStart>=0&&helperEnd>helperStart,'extract Mace Sweep read helper'
 const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\nmaceSweepDefensiveRead',{stat,defenderFacesCarrier2D});
 const resolveMaceSweep=vm.runInNewContext('({'+engine.slice(engine.indexOf('\n resolveMaceSweep(p){'),engine.indexOf('\n updateMaceSweep(',engine.indexOf('\n resolveMaceSweep(p){')))+'})',{
  fieldAbility:ABILITIES.fieldAbility,abilityLevel:()=>2,levelModifiers:()=>({stun:1}),distance,norm,clamp,
- F:mechanics.world.field,stat,maceSweepDefensiveRead,impactStun:()=>.8
+ F:mechanics.world.field,stat,maceSweepDefensiveRead,maceSweepTargetReady,impactStun:()=>.8
 }).resolveMaceSweep;
 
 function setup(side=0,overrides={}){
@@ -119,4 +123,33 @@ test('SD10 MACE-SWEEP-04: existing four-action grammar and defense event are ret
  assert.match(input,/const REMAPPABLE_ACTIONS=\['pass','shoot','dribble','jump'\]/);
  assert.match(engine,/this\.emit\('defenceSuper',\{team:p\.t,player:p\.src\.name,id:move\.id/);
  assert.match(engine,/p\.action='defenceSuper'/);
+});
+
+test('SD10 MACE-SWEEP-05: unavailable recovery targets are skipped without wasting the move',()=>{
+ const unavailable=[
+  {down:true},
+  {action:'shotDown',actionTimer:.4},
+  {action:'shotGetUp',actionTimer:.4},
+  {action:'hurt',actionTimer:.25},
+  {shotImpactKnockdownPending:.2},
+  {shotImpactKnockdownTimer:.2},
+  {shotImpactRiseTimer:.2}
+ ];
+ for(const patch of unavailable){
+  const {game,p,q,events,effects}=setup(0,patch);
+  assert.equal(activate.call(game,p),false,JSON.stringify(patch));
+  assert.equal(p.abilityCd,0);
+  assert.equal(p.fatigue,0);
+  assert.equal(q.stun,0);
+  assert.equal(game.ball.owner,q);
+  assert.equal(events.length,0);
+  assert.equal(effects.length,0);
+ }
+ const {game,p,q}=setup(0,{down:true});
+ const backup={t:1,x:p.x+120,y:p.y+12,z:0,keeper:false,stun:0,invuln:0,dashTimer:0,
+  src:{id:'ready-backup',name:'Ready Backup',strength:60,defence:60}};
+ game.players.push(backup);
+ assert.equal(activate.call(game,p),true,'a ready teammate may be selected when the nearest opponent is unavailable');
+ assert.equal(p.maceSweepPending.target,backup);
+ assert.equal(q.stun,0);
 });

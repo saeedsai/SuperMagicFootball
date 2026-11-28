@@ -14,6 +14,10 @@ function method(name,globals={}){
 }
 const fieldAbility=src=>src?.superAbility?.type==='defence'?mechanics.defensiveAbilities[src.superAbility.id]:null;
 const stat=(p,key)=>p.src?.[key]??55;
+const readyStart=engine.indexOf('function maceSweepTargetReady(');
+const readyEnd=engine.indexOf('\n}',readyStart)+2;
+assert.ok(readyStart>=0&&readyEnd>readyStart,'extract Mace Sweep target readiness helper');
+const maceSweepTargetReady=vm.runInNewContext('('+engine.slice(readyStart,readyEnd)+')');
 const facingStart=engine.indexOf('function defenderFacesCarrier2D(');
 const facingEnd=engine.indexOf('\n}',facingStart)+2;
 assert.ok(facingStart>=0&&facingEnd>facingStart,'extract shared 2D defender-facing helper');
@@ -26,7 +30,7 @@ const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 const norm=(x,y)=>{const d=Math.hypot(x,y)||1;return{x:x/d,y:y/d};};
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const resolve=method('resolveMaceSweep',{fieldAbility,stat,maceSweepDefensiveRead,clamp,norm,distance,
- F:mechanics.world.field,abilityLevel:()=>2,levelModifiers:()=>({stun:1}),impactStun:()=>.8});
+ F:mechanics.world.field,abilityLevel:()=>2,levelModifiers:()=>({stun:1}),maceSweepTargetReady,impactStun:()=>.8});
 const react=method('reactToMaceSweep',{fieldAbility,maceSweepDefensiveRead});
 function setup(side=0,patch={}){
  const face=side===0?1:-1;
@@ -108,11 +112,10 @@ test('neutral input can still make a grounded Mace Sweep read from live closing 
  }
 });
 
-test('Mace Sweep momentum alone is insufficient when the defender faces away, retreats, or loses the Defence contest',()=>{
+test('retreating movement and insufficient Defence still require the existing JUMP counter',()=>{
  for(const side of [0,1]){
   const face=side===0?1:-1;
   const cases=[
-   {face:-face,moveVX:face*180,src:{id:'cpu',jumping:70,defence:80}},
    {face:face,moveVX:-face*180,src:{id:'cpu',jumping:70,defence:80}},
    {face:-face,moveVX:-face*180,src:{id:'cpu',jumping:70,defence:30}}
   ];
@@ -150,5 +153,29 @@ test('vertical retreat cannot earn a Mace Sweep read from stale horizontal facin
   assert.equal(react.call(state.game,state.cpu,0,0),true,'CPU uses the existing JUMP counter when retreating');
   assert.equal(state.jumps(),1);
   assert.equal(state.cpu.action,'jump');
+ }
+});
+
+test('Mace Sweep revalidates downed and shot-recovering targets at impact',()=>{
+ const unavailable=[
+  {down:true},
+  {action:'shotDown',actionTimer:.4},
+  {action:'shotGetUp',actionTimer:.4},
+  {action:'hurt',actionTimer:.25},
+  {shotImpactKnockdownPending:.2},
+  {shotImpactKnockdownTimer:.2},
+  {shotImpactRiseTimer:.2}
+ ];
+ for(const side of [0,1])for(const patch of unavailable){
+  const state=setup(side);
+  Object.assign(state.cpu,patch);
+  assert.equal(resolve.call(state.game,state.defender),false,JSON.stringify({side,patch}));
+  const outcome=state.events.at(-1);
+  assert.equal(outcome?.type,'maceSweepResolved');
+  assert.equal(outcome.hit,false);
+  assert.equal(outcome.countered,false);
+  assert.equal(state.cpu.stun,0);
+  assert.equal(state.game.ball.owner,state.cpu,'recovery protection preserves possession');
+  assert.equal(state.game.ball.vx,0,'a rejected sweep does not release the ball');
  }
 });

@@ -86,6 +86,38 @@ with sync_playwright() as pw:
    return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
   assert len(turn_result['rows'])==2 and turn_result['buttons']==4,(label,turn_result)
+
+  recovery_result=page.evaluate('''() => {
+   const api=SupermagicFootball,g=api.game,rows=[];
+   const unavailable=[
+    ['down',{down:true}],
+    ['shotDown',{action:'shotDown',actionTimer:.4}],
+    ['shotGetUp',{action:'shotGetUp',actionTimer:.4}],
+    ['hurtRecovery',{action:'hurt',actionTimer:.25}],
+    ['shotImpactPending',{shotImpactKnockdownPending:.2}]
+   ];
+   for(const side of [0,1])for(const [state,patch] of unavailable){
+    g.init({home:0,away:9,humans:0,mode:'quick'});g.matchState='paused';g.events.length=0;
+    const face=side===0?1:-1,caster=g.player(side,2),target=g.player(1-side,2);
+    if(!caster||!target)throw Error('Missing Mace Sweep recovery fixture players');
+    Object.assign(caster,{x:1100,y:620,face,z:0,stun:0,action:'defenceSuper',actionTimer:.24,
+     maceSweepPending:{remaining:.24,target}});
+    caster.src={...caster.src,role:'DF',dribbling:55,superAbility:{type:'defence',id:'maceSweep',level:2}};
+    Object.assign(target,{x:1100+face*92,y:632,z:0,stun:0,invuln:0,dashTimer:0,down:false,
+     action:'run',actionTimer:0,shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0},patch);
+    g.players=[caster,target];g.ball.owner=target;g.ball.x=target.x;g.ball.y=target.y;
+    g.ball.z=0;g.ball.vx=0;g.ball.vy=0;g.ball.vz=0;
+    const resolved=g.resolveMaceSweep(caster);
+    const outcome=g.events.filter(event=>event.type==='maceSweepResolved').at(-1);
+    if(resolved||!outcome||outcome.hit||outcome.countered||g.ball.owner!==target||
+       target.stun!==0||g.ball.vx!==0)
+     throw Error('Mace Sweep hit a downed/recovering target '+JSON.stringify({side,state,resolved,outcome,owner:g.ball.owner===target,stun:target.stun,vx:g.ball.vx}));
+    rows.push({side,state,hit:outcome.hit,countered:outcome.countered,ballRetained:g.ball.owner===target});
+   }
+   return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }''')
+  assert len(recovery_result['rows'])==10 and recovery_result['buttons']==4,(label,recovery_result)
+  print('MACE_SWEEP_RECOVERY_TARGET_BROWSER_PASS',label,recovery_result,flush=True)
   print('MACE_SWEEP_2D_LIVE_APPROACH_BROWSER_PASS',label,turn_result,flush=True)
   print('MACE_SWEEP_MOMENTUM_READ_BROWSER_PASS',label,read_result,flush=True)
   print('MACE_SWEEP_AI_COUNTER_BROWSER_PASS',label,result,flush=True)

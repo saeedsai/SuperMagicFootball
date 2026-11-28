@@ -6,22 +6,20 @@ Updated: 2026-11-28
 Deliver player-facing football AI, counterable Magic Tricks, existing-player graphics, goalkeeper, Player Studio and Career/Cup improvements. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.409: MACE-SWEEP-2D-LIVE-APPROACH-READ-01. The existing Mace Sweep read now uses live two-dimensional steering/residual movement to decide whether a grounded defender faces and closes on the caster; vertical/diagonal turn-in can counter despite stale horizontal facing, while retreat does not.
-- Reused the existing shared 2D facing helper; retained the Defence-versus-Dribbling threshold, closing requirement, .24-second tell, hit/push, cooldown/cost and possession behavior.
-- Added mirrored Node resolver/CPU-response tests and actual-GameEngine desktop/simulated-touch browser coverage for both teams. Updated the three extracting Node harnesses to inject the shared helper dependency.
+- Candidate 0.12.81.410: MACE-SWEEP-RECOVERY-TARGET-ELIGIBILITY-01. Mace Sweep skips downed/shot-recovering targets at selection and revalidates them at impact; a ready opponent can inherit selection and a target becoming unavailable during the .24-second tell is protected.
+- The .409.1 preflight failures were test-contract issues: an outdated negative fixture expected JUMP despite live residual movement toward the caster, and this checkpoint lacked its required Evidence heading. The fixture now preserves true retreat/low-Defence negatives; the dedicated live-approach read remains covered. No gameplay assertion was weakened.
+- Added mirrored Node activation/resolver regressions and actual-GameEngine desktop/simulated-touch Chromium coverage for both teams and unavailable-state handoff.
 
 ## Next smallest action
-Verify exact-head .409 Modular QA and all four Node/four Chromium Full Regression Census shards. Fix only confirmed failures without weakening the read, JUMP/slide counter, possession or four-action assertions; then continue the next unblocked player-facing backlog item.
+Verify exact-head .410 Modular QA and all four Node/four Chromium Full Regression Census shards. Fix only confirmed failures without weakening readiness, valid-hit, read/slide counter, possession or four-action assertions; then continue the next unblocked product backlog item.
 
 ## Ownership and exclusions
 Update only this checkpoint. No new branch, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. Keep #87 main protection, #86 Render drift and #48 physical two-phone acceptance open. No physical LAN certification or authenticated online-hosting claim.
 
-## Repository heads
-- Run start dev: 0750141d44dec1f0ccacd1acb8cc5f94958cd941.
-- Run start main: 6b3879a0c951da6ae86c711b323973f1e8a4c6ec.
-- .408.3 Lightning harness correction: 0baaed4474599bdec79905783bf339173bdf86b5.
-- .408.3 Modular QA #46154180741 passed; Full Regression Census #46154180723 passed preflight and was still running Node/Chromium shards when .409 was prepared. Earlier .408 failures were isolated to extracted-helper/fixture contracts; no production Lightning failure was observed.
-- Main .406 SHA 6b3879a0c951da6ae86c711b323973f1e8a4c6ec: Census #46145612859 and Pages #46145607413 succeeded. Branch protection remains false; #87 is open.
+## Evidence
+- Run-start dev: 429351b182f537fbb4870267ce79baed5cbd189c; main: 6b3879a0c951da6ae86c711b323973f1e8a4c6ec.
+- .409.1 Modular QA #46154860318: failed 2 of 3,078 Node tests; stale Mace negative expectation and missing checkpoint Evidence heading. Census #46154860322 stopped in preflight for the same two failures; downstream shards skipped.
+- Main .406 SHA 6b3879a0c951da6ae86c711b323973f1e8a4c6ec: Census #46145612859 and Pages deployment #46145607413 succeeded. GitHub reports main.protected=false; #87 remains open.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Leave all other agent checkpoints untouched.

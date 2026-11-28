@@ -109,6 +109,18 @@ function maceSweepDefensiveRead(defender,caster){
  return facing&&closing&&stat(defender,'defence')>=stat(caster,'dribbling');
 }
 
+function maceSweepTargetReady(defender,attackingTeam){
+ if(!defender||defender.t===attackingTeam||defender.keeper||defender.down||
+  !Number.isFinite(Number(defender.stun))||Number(defender.stun)>0||
+  !Number.isFinite(Number(defender.invuln))||Number(defender.invuln)>0||
+  !Number.isFinite(defender.x)||!Number.isFinite(defender.y))return false;
+ const clear=value=>value==null||(Number.isFinite(Number(value))&&Number(value)<=0);
+ return clear(defender.shotImpactKnockdownPending)&&
+  clear(defender.shotImpactKnockdownTimer)&&clear(defender.shotImpactRiseTimer)&&
+  !['shotDown','shotGetUp'].includes(defender.action)&&
+  !(defender.action==='hurt'&&(Number(defender.actionTimer)||0)>0);
+}
+
 // A receiving outfielder briefly settles a pressured low ground pass. Faster
 // incoming balls add a little settling time; Dribbling and Agility improve control.
 // Only movement speed is affected; a skilled receiver can steer that first touch
@@ -1649,7 +1661,8 @@ class GameEngine{
   // Explicitly equipped level-3+ defenders only: no changes to existing squad loadouts.
   if(move.id==='spinBumper'&&(p.src.role!=='DF'||abilityLevel(p,'defence')<3))return false;
   if(move.id==='maceSweep'&&p.src.role!=='DF')return false;
-  const opponents=this.players.filter(q=>q.t!==p.t&&q.stun<=0&&q.invuln<=0&&!q.keeper);
+  const opponents=this.players.filter(q=>move.id==='maceSweep'?maceSweepTargetReady(q,p.t):
+    q.t!==p.t&&q.stun<=0&&q.invuln<=0&&!q.keeper);
   const targets=opponents.filter(q=>{
    const dx=q.x-p.x,dy=q.y-p.y,d=Math.hypot(dx,dy);
    const inRange=d<(move.id==='drill'||move.id==='maceSweep'?move.range:move.radius);
@@ -1759,7 +1772,7 @@ class GameEngine{
   if(!move||move.id!=='maceSweep'||p.src.role!=='DF'||p.stun>0){
    p.abilityFx=0;this.emit('maceSweepInterrupted',{team:p.t,player:p.src.name});return false;
   }
-  const valid=q&&this.players.includes(q)&&q.t!==p.t&&!q.keeper&&q.stun<=0&&q.invuln<=0&&
+  const valid=q&&this.players.includes(q)&&maceSweepTargetReady(q,p.t)&&
    q.z<=20&&(q.dashTimer||0)<=0&&distance(p,q)<move.range&&
    (q.x-p.x)*(p.face||1)>0&&Math.abs(q.y-p.y)<=Math.abs((q.x-p.x)*(p.face||1));
   if(!valid){this.emit('maceSweepResolved',{team:p.t,player:p.src.name,target:q?.src?.name,hit:false,countered:false});return false;}
