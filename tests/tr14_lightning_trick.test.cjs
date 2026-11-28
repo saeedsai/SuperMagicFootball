@@ -21,7 +21,7 @@ const lightningDefenderCounters=vm.runInNewContext('('+engine.slice(helperStart,
 globals.lightningDefenderCounters=lightningDefenderCounters;
 const trick=method('tryMagicTrick','updateSpinBumpFx',globals);
 const update=method('updateLightningTrick','resolveLightningTrick',{});
-const resolve=method('resolveLightningTrick','beginRideBall',{distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??0,lightningDefenderCounters});
+const resolve=method('resolveLightningTrick','beginRideBall',{distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??0,lightningDefenderCounters,lightningTargetReady});
 function setup(side=0,tier='Gold',verified=true){
  const p={t:side,x:F.x+F.w/2,y:F.y+F.h/2,face:side===0?1:-1,dx:side===0?1:-1,dy:0,z:0,keeper:false,stun:0,fatigue:.2,magicReadyAt:0,action:'idle',src:{id:'lightning-caster',name:'Caster',role:'FW',magicTrick:'lightning',dribbling:60,statsVerified:verified,verifiedTier:tier}};
  const q={t:1-side,x:p.x+(side===0?50:-50),y:p.y,face:side===0?-1:1,dx:0,dy:0,z:0,keeper:false,stun:0,action:'idle',actionTimer:0,src:{id:'target',name:'Defender',defence:20}};
@@ -48,7 +48,7 @@ test('Lightning selects the nearest available target instead of an incapacitated
  for(const patch of unavailable){
   const {g,p,q}=setup();
   Object.assign(q,{x:p.x+24,...patch});
-  const ready={...q,x:p.x+72,down:false,invuln:0,stun:0,action:'idle',actionTimer:0,
+  const ready={...q,x:p.x+72,y:p.y,down:false,invuln:0,stun:0,action:'idle',actionTimer:0,
    shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
    src:{id:'ready-lightning-target',name:'Ready Defender',defence:20}};
   g.players=[p,q,ready];
