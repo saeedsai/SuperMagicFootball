@@ -128,7 +128,7 @@ test('engine executes untargeted low-pass corridor cover with the second defende
   for(const q of game.players)if(q!==primary&&q!==support&&!q.keeper){q.down=true;q.stun=1;}
   Object.assign(primary,{x:x-dir*12,y,z:0,down:false,stun:0,action:'idle',actionTimer:0,
    slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0,dx:dir,dy:0,face:dir});
-  Object.assign(game.ball,{owner:null,x,y,z:2,vx:dir*620,vy:0,vz:0,pass:true,
+  Object.assign(game.ball,{owner:null,x,y,z:9,vx:dir*620,vy:0,vz:0,pass:true,
    passTeam:attackingTeam,passTarget:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,
    age:.18,canCollect:0,shot:null,strike:null,ordinaryShot:false});
   const area={xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24};
