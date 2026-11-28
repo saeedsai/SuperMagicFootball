@@ -1,28 +1,35 @@
-# SuperMagicFootball development checkpoint
+# SuperMagicFootball — smf-hourly-dev-20261019
 **Agent ID:** `smf-hourly-dev-20261019`
+Updated: 2026-11-28
 
 ## Mission
-Feature-first development on the existing `dev` branch. Prioritize player-facing gameplay, Magic Trick counterplay, goalkeeper behavior, graphics/animation, Player Studio and Career/Cup. Avoid repetitive audits and tests for already-covered behavior. Preserve four actions (Pass/Shoot/Dribble/Jump), 223 teams, 2,676 players, roster ordering/ratios, six formations, saves, offline/PWA and ten Career/Cup slots.
+Prioritize responsive football gameplay, intelligent passing/tackling and counterable tricks, then existing-player graphics, goalkeeper, Player Studio and Career/Cup. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-**Candidate 0.12.81.396 — 28 November 2026.** Feature commit: `8f04063965d433a7d0f244e75a732fd5d97a96da`.
-
-`MAGIC-TRICK-SECOND-SCREEN-TURN-ARRIVAL-01`: the visible second-defender Magic Trick screen now evaluates the current position and a bounded 120 ms Agility-limited movement projection. A high-Agility defender turning into the pressured first-touch lane can earn the existing probabilistic read from just outside the 64-unit lateral window; low-Agility, stationary and retreating profiles cannot. Current screen geometry, ball-side shielding, 105/132-unit proximity, skill odds, READ! cue, 0.42 s counterpress, costs, cooldowns and possession remain unchanged. No new action, player state or automatic tackle.
-
-The feature commit also corrects the .395 out-of-play targeted-pass browser-test oracle: it checks ordinary support-shape coordinates and primary ball pressure instead of comparing different support-player roles.
+- Candidate 0.12.81.395 adds AI-TARGETED-GROUND-PASS-EDGE-REJECTION-01: targeted low-pass cover rejects a ball already beyond the validated 24-unit playable margin, matching untargeted-pass behavior. The CPU support defender keeps ordinary shape instead of chasing a clamped out-of-play screen; primary ball pressure and valid targeted/untargeted cover remain.
+- Feature commit: `ab4101d11e4960098c872c0a4c74738e57ea8807`.
+- Focused Node coverage mirrors both teams and the attacking-side x plus top/bottom y margins. Desktop and simulated-touch Chromium acceptance compares actual GameEngine support and primary targets against the no-pass fallback.
+- .394 was promoted through the existing QA-gated pipeline: dev Census #46100399605 passed all eight shards, Modular QA #46100399661 passed, Pages #46101128191 succeeded and hosted-pages smoke in main Census #46101134564 passed. The main Census was still running at last observation.
+- .395 exact-head Modular QA and four-Node/four-Chromium Census are pending. No .395 deployment claim.
 
 ## Next smallest action
-Inspect exact-head .396 Modular QA and Full Regression Census. Fix every confirmed failure without weakening assertions. Only a green exact dev head may enter the existing QA-gated main pipeline; then independently verify main Census, Pages deployment and hosted bytes. After the gate, select the next unfinished gameplay/counterplay item from `docs/MASTER_BACKLOG.md`.
+- Inspect exact-head .395 Modular QA and Full Regression Census; repair any confirmed issue without weakening assertions.
+- Continue intelligent pass interception against diagonal/late receiver cuts and second-defender support, then remaining Magic Trick counterplay.
+- Keep existing-player eight-view Studio work, goalkeeper decisions, Player Studio and Career/Cup moving when a bounded acceptance is ready.
 
 ## Ownership and exclusions
-Work only on `dev`; no new branches, force-pushes, history rewrites or manual main-security bypasses. Read only this agent's checkpoint among agent checkpoints. Keep #48 physical two-phone acceptance open; avoid routine LAN/P2P work absent a confirmed regression. Monitor #86 Render drift. Authenticated online hosting requires owner resources. Main protection #87 remains unresolved and must not be described as active.
+Update only this checkpoint. No new branches, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. #87 main protection, #86 Render drift and #48 physical two-phone acceptance remain open. No physical LAN certification or authenticated online-hosting claim.
+
+## Repository heads
+- .395 feature commit: `ab4101d11e4960098c872c0a4c74738e57ea8807`.
+- Main at feature commit: `e233a6edcd3b0fcfd4bf6d6b588024287248617c`.
+- Final dev head is this checkpoint commit; verify the branch API before reporting.
 
 ## Evidence
-- Feature commit: `8f04063965d433a7d0f244e75a732fd5d97a96da`.
-- Checkpoint formatting correction: current dev checkpoint commit follows the feature commit; query the branch for its exact SHA.
-- .395 Modular QA #46102393957: 3,053/3,053 passed. .395 Full Census #46102393894: failed only the out-of-play targeted-pass browser assertion; its baseline compared different support roles. The observed pass target was the generic support shape and primary pressure remained on the ball.
-- .396 Modular QA #46106752629: 3,059/3,060 passed; the sole failure was this checkpoint's missing indexed Agent ID/required headings. Full Census #46106752621 stopped at the same preflight failure; browser shards were skipped.
-- Main .394 SHA last observed: `e233a6edcd3b0fcfd4bf6d6b588024287248617c`. Its Census, Pages deployment and hosted-byte smoke had succeeded. .396 is not promoted or deployed.
+- .394 Modular QA #46100399661: passed.
+- .394 Full Regression Census #46100399605: passed preflight, preview, all four Node and all four Chromium shards; QA-gated promotion succeeded.
+- Main Pages deployment #46101128191: success; hosted-pages smoke in #46101134564: success. Main Full Regression Census #46101134564 was still running at last observation.
+- .395 focused regressions are committed with the feature; exact-head CI results pending.
 
 ## Cleanup
-Only this agent's checkpoint is updated; keep it below 4 KiB. No other agent checkpoint is to be read or changed. Record actual test outcomes, never inferred passes.
+Keep this checkpoint below 4 KiB. Update only this file for this agent; leave other checkpoints untouched.

@@ -398,15 +398,16 @@ with sync_playwright() as pw:
     };
     rows.push({defendingTeam,ballX,y,pass:run(true),baseline:run(false)});
    }
-   return {rows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+   return {rows,field,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }""")
   assert out_of_bounds_result['teams']>=223,(kind,out_of_bounds_result)
   assert out_of_bounds_result['buttons']==4,(kind,out_of_bounds_result)
+  bounds=out_of_bounds_result['field']
   for row in out_of_bounds_result['rows']:
    assert row['pass']['supportTarget'] is not None and row['baseline']['supportTarget'] is not None,(kind,row)
-   expected_support_x=max(field['x']+22,min(field['x']+field['w']-22,
+   expected_support_x=max(bounds['x']+22,min(bounds['x']+bounds['w']-22,
     row['ballX']-(1 if row['defendingTeam']==0 else -1)*110))
-   expected_support_y=max(field['y']+23,min(field['y']+field['h']-23,row['y']+95))
+   expected_support_y=max(bounds['y']+23,min(bounds['y']+bounds['h']-23,row['y']+95))
    assert math.hypot(row['pass']['supportTarget']['x']-expected_support_x,
     row['pass']['supportTarget']['y']-expected_support_y)<1,(kind,'out-of-play pass must retain ordinary support shape',row)
    assert row['pass']['primaryTarget'] is not None and row['baseline']['primaryTarget'] is not None,(kind,row)
