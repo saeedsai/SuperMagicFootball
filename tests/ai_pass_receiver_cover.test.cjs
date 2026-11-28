@@ -387,7 +387,7 @@ test('untargeted low ground passes give the second defender a bounded forward la
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){
   const f=fixture(team),ball={...f.ball,passTarget:null};
-  const hint=AI.defensiveUntargetedPassCoverTarget(team,ball,[],bounds);
+  const hint=AI.defensiveUntargetedPassCoverTarget(team,ball,bounds);
   assert.ok(hint,JSON.stringify({team,hint,ball}));
   const progress=(hint.x-ball.x)*f.dir;
   assert.ok(progress>=48&&progress<=190,JSON.stringify({team,hint,progress}));
@@ -412,7 +412,7 @@ test('untargeted low ground passes give the second defender a bounded forward la
    lastTouchTeam:f.attacking,x:ballX,y,z:8,vx:f.dir*600,vy:0,vz:40,age:.15,
    shot:null,strike:null,ordinaryShot:false});
   game.clock=.2;
-  const expected=AI.defensiveUntargetedPassCoverTarget(team,game.ball,game.players,
+  const expected=AI.defensiveUntargetedPassCoverTarget(team,game.ball,
    {xMin:field.x+24,xMax:field.x+field.w-24,yMin:field.y+24,yMax:field.y+field.h-24});
   assert.ok(expected,JSON.stringify({team,expected,ball:game.ball}));
   game.driveAI(support,.016);
@@ -426,15 +426,15 @@ test('untargeted low ground passes give the second defender a bounded forward la
 });
 test('untargeted pass cover rejects stale, slow, backward, lateral, lofted and invalid passes',async()=>{
  const {AI}=await loadModules(),f=fixture(0),ball={...f.ball,passTarget:null};
- assert.ok(AI.defensiveUntargetedPassCoverTarget(0,ball,[],bounds));
+ assert.ok(AI.defensiveUntargetedPassCoverTarget(0,ball,bounds));
  for(const patch of [
   {owner:{}},{attacker:0},{passTeam:0},{age:1.26},{z:19},{vz:71},{vz:-71},
   {vx:180,vy:0},{vx:0,vy:600},{vx:600,vy:0},{shot:true},
   {x:bounds.xMax+88},{y:bounds.yMin+23}
  ]){
-  assert.equal(AI.defensiveUntargetedPassCoverTarget(0,{...ball,...patch},[],bounds),null,
+  assert.equal(AI.defensiveUntargetedPassCoverTarget(0,{...ball,...patch},bounds),null,
    'rejected unsafe pass '+JSON.stringify(patch));
  }
- assert.equal(AI.defensiveUntargetedPassCoverTarget(1,ball,[],bounds),null);
- assert.equal(AI.defensiveUntargetedPassCoverTarget(0,{...ball,passTarget:'known-receiver'},[],bounds),null);
+ assert.equal(AI.defensiveUntargetedPassCoverTarget(1,ball,bounds),null);
+ assert.equal(AI.defensiveUntargetedPassCoverTarget(0,{...ball,passTarget:'known-receiver'},bounds),null);
 });
