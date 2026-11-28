@@ -29,7 +29,7 @@ const stat=(p,key)=>p.src?.[key]??55;
 const facingStart=engine.indexOf('function defenderFacesCarrier2D(');
 const facingEnd=engine.indexOf('\n}',facingStart)+2;
 assert.ok(facingStart>=0&&facingEnd>facingStart,'extract shared 2D defender-facing helper');
-const defenderFacesCarrier2D=vm.runInNewContext(engine.slice(facingStart,facingEnd));
+const defenderFacesCarrier2D=vm.runInNewContext('('+engine.slice(facingStart,facingEnd)+')');
 const helperStart=engine.indexOf('function maceSweepDefensiveRead(');
 const helperEnd=engine.indexOf('\n}',helperStart)+2;
 assert.ok(helperStart>=0&&helperEnd>helperStart,'extract Mace Sweep read helper');
