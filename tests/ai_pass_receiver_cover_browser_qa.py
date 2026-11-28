@@ -372,7 +372,45 @@ with sync_playwright() as pw:
   for row in reachable_untargeted_result['rows']:
    assert row['target'] is not None and 95<=row['progress']<=110,(kind,row)
    assert abs(row['target']['y']-row['y'])<2 and row['ownerRetained'],(kind,row)
+  out_of_bounds_result=page.evaluate("""() => {
+   const g=SupermagicFootball.game,rows=[],field={x:150,y:155,w:2260.8,h:1220};
+   for(const defendingTeam of [0,1]){
+    const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+    const ballX=dir<0?field.x+field.w-47:field.x+47,y=field.y+field.h/2;
+    const receiverX=ballX+dir*180;
+    const run=(isPass)=>{
+     g.init({home:0,away:1,mode:'quick',humans:0});
+     const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,2),support=g.player(defendingTeam,4);
+     for(const q of g.players)if(q!==receiver&&q!==primary&&q!==support&&!q.keeper){q.down=true;q.stun=1;q.z=0;}
+     Object.assign(receiver,{x:receiverX,y,z:0,stun:0,down:false,action:'idle',actionTimer:0,slideTimer:0});
+     Object.assign(primary,{x:ballX-dir*18,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:0,moveVY:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,cd:1});
+     Object.assign(support,{x:ballX+dir*122,y:y+8,down:false,stun:0,z:0,action:'idle',actionTimer:0,slideTimer:0,
+      moveVX:0,moveVY:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,cd:1});
+     Object.assign(g.ball,{owner:null,pass:isPass,passTeam:attackingTeam,
+      passTarget:isPass?receiver.src.id:null,attacker:attackingTeam,lastTouchTeam:attackingTeam,
+      x:ballX,y,z:8,vx:dir*600,vy:0,vz:40,age:.15,shot:null,strike:null,ordinaryShot:false});
+     g.clock=.2;g.driveAI(support,.016);
+     const supportTarget=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
+     g.driveAI(primary,.016);
+     const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
+     return {supportTarget,primaryTarget,ownerRetained:g.ball.owner===null};
+    };
+    rows.push({defendingTeam,ballX,pass:run(true),baseline:run(false)});
+   }
+   return {rows,teams:SupermagicFootball.teams.length,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
+  }""")
+  assert out_of_bounds_result['teams']>=223,(kind,out_of_bounds_result)
+  assert out_of_bounds_result['buttons']==4,(kind,out_of_bounds_result)
+  for row in out_of_bounds_result['rows']:
+   assert row['pass']['supportTarget'] is not None and row['baseline']['supportTarget'] is not None,(kind,row)
+   assert math.hypot(row['pass']['supportTarget']['x']-row['baseline']['supportTarget']['x'],
+    row['pass']['supportTarget']['y']-row['baseline']['supportTarget']['y'])<1,(kind,row)
+   assert row['pass']['primaryTarget'] is not None and row['baseline']['primaryTarget'] is not None,(kind,row)
+   assert math.hypot(row['pass']['primaryTarget']['x']-row['baseline']['primaryTarget']['x'],
+    row['pass']['primaryTarget']['y']-row['baseline']['primaryTarget']['y'])<1,(kind,row)
+   assert row['pass']['ownerRetained'] and row['baseline']['ownerRetained'],(kind,row)
   assert not errors,(kind,errors)
-  print('PASS',kind,'targetless low-pass second-defender lane cover, primary ball pressure, four actions and no JavaScript errors',flush=True)
+  print('PASS',kind,'targeted out-of-play pass fallback, untargeted lane cover, primary ball pressure, four actions and no JavaScript errors',flush=True)
   ctx.close()
  browser.close()

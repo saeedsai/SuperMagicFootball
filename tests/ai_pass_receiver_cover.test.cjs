@@ -7,6 +7,26 @@ function fixture(team){const attacking=1-team,dir=attacking===0?1:-1,receiver=pl
 test('targeted low passes reserve a mirrored final-lane screen for the second defender',async()=>{const {AI}=await loadModules();for(const team of [0,1]){const f=fixture(team),point=AI.defensivePassReceiverCoverTarget(team,f.ball,f.players,bounds);assert.ok(point,JSON.stringify({team,point}));assert.ok(team===0?point.x>f.receiver.x:point.x<f.receiver.x);assert.ok(Math.abs(point.y-f.receiver.y)<2);assert.ok(point.x>=bounds.xMin&&point.x<=bounds.xMax);assert.ok(point.y>=bounds.yMin&&point.y<=bounds.yMax);assert.ok(Math.hypot(point.x-f.ball.x,point.y-f.ball.y)>38);assert.ok(Math.hypot(point.x-f.receiver.x,point.y-f.receiver.y)>34);}});
 test('cover predicts receiver movement with a bounded lead and respects pitch edges',async()=>{const {AI}=await loadModules(),f=fixture(1);f.receiver.moveVX=1800;f.receiver.moveVY=900;const point=AI.defensivePassReceiverCoverTarget(1,f.ball,f.players,bounds);assert.ok(point);assert.ok(point.x>=bounds.xMin+22&&point.x<=bounds.xMax-22);assert.ok(point.y>=bounds.yMin+23&&point.y<=bounds.yMax-23);assert.ok(Math.abs(point.x-f.receiver.x)<120);assert.ok(Math.abs(point.y-f.receiver.y)<120);});
 test('cover rejects high, long, stale, owned, untargeted and wrong-team balls',async()=>{const {AI}=await loadModules(),f=fixture(0);assert.ok(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds));assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,vz:180},f.players,bounds),null);assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,z:90},f.players,bounds),null);assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,age:2.5},f.players,bounds),null);assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,owner:{}},f.players,bounds),null);assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,passTarget:null},f.players,bounds),null);assert.equal(AI.defensivePassReceiverCoverTarget(1,f.ball,f.players,bounds),null);assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,passTeam:0},f.players,bounds),null);});
+test('targeted pass cover rejects a ball already beyond each playable margin',async()=>{
+ const {AI}=await loadModules();
+ for(const team of [0,1]){
+  const f=fixture(team),dir=team===0?-1:1;
+  const cases=[
+   {name:'attacking x edge',x:dir<0?bounds.xMax-23:bounds.xMin+23,y:300,
+    receiverX:(dir<0?bounds.xMax-23:bounds.xMin+23)+dir*180,receiverY:300,vx:dir*600,vy:0},
+   {name:'top edge',x:500,y:bounds.yMin+23,receiverX:500+dir*180,
+    receiverY:bounds.yMin+113,vx:dir*600,vy:0},
+   {name:'bottom edge',x:500,y:bounds.yMax-23,receiverX:500+dir*180,
+    receiverY:bounds.yMax-113,vx:dir*600,vy:0}
+  ];
+  for(const edge of cases){
+   f.receiver.x=edge.receiverX;f.receiver.y=edge.receiverY;
+   const ball={...f.ball,x:edge.x,y:edge.y,vx:edge.vx,vy:edge.vy};
+   assert.equal(AI.defensivePassReceiverCoverTarget(team,ball,f.players,bounds),null,
+    JSON.stringify({team,edge:edge.name,ball,receiver:f.receiver}));
+  }
+ }
+});
 test('cover ignores unavailable receivers and passes travelling away from their target',async()=>{const {AI}=await loadModules(),f=fixture(0);f.receiver.down=true;assert.equal(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds),null);f.receiver.down=false;f.receiver.stun=.2;assert.equal(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds),null);f.receiver.stun=0;f.receiver.z=28;assert.equal(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds),null);f.receiver.z=0;f.receiver.action='slide';f.receiver.actionTimer=.2;assert.equal(AI.defensivePassReceiverCoverTarget(0,f.ball,f.players,bounds),null);f.receiver.action='idle';f.receiver.actionTimer=0;assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,vx:600},f.players,bounds),null);assert.equal(AI.defensivePassReceiverCoverTarget(0,{...f.ball,vy:600},f.players,bounds),null);});
 test('engine sends the second defender to the pass lane while the primary keeps chasing the ball',async()=>{
  const {AI,ENGINE}=await loadModules();

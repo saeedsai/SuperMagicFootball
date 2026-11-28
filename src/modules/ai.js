@@ -1538,6 +1538,8 @@ function defensiveGiveAndGoCoverTarget(team,carrier,players,bounds,now=0){
    ball.vz>112||ball.vz< -130||ball.shot||ball.strike||ball.ordinaryShot)return null;
   const xMin=Number(bounds?.xMin),xMax=Number(bounds?.xMax),yMin=Number(bounds?.yMin),yMax=Number(bounds?.yMax);
   if(![xMin,xMax,yMin,yMax].every(Number.isFinite)||xMin>=xMax||yMin>=yMax)return null;
+  // Match untargeted-pass cover: an already out-of-play ball is not a live lane read.
+  if(ball.x<xMin+24||ball.x>xMax-24||ball.y<yMin+24||ball.y>yMax-24)return null;
   const clampTo=(v,min,max)=>Math.max(min,Math.min(max,v));
   const clear=v=>v==null||(Number.isFinite(Number(v))&&Number(v)<=0);
   const receiver=players.find(p=>p?.src?.id===ball.passTarget);
