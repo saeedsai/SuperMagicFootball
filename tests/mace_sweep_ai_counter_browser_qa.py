@@ -56,9 +56,9 @@ with sync_playwright() as pw:
     const resolved=g.resolveMaceSweep(caster);
     const outcome=g.events.filter(event=>event.type==='maceSweepResolved').at(-1);
     if(reacted||jumped||resolved||!outcome?.countered||outcome.counter!=='read'||
-       g.ball.owner!==target||target.stun!==0)
+       g.ball.owner!==target||target.stun!==0||target.magicReadCueTimer<.48)
      throw Error('Live closing momentum did not preserve the Mace Sweep read '+JSON.stringify({side,reacted,jumped,resolved,outcome}));
-    rows.push({side,reacted,jumped,resolved,counter:outcome.counter,ballRetained:g.ball.owner===target});
+    rows.push({side,reacted,jumped,resolved,counter:outcome.counter,cue:target.magicReadCueTimer,ballRetained:g.ball.owner===target});
    }
    return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
@@ -79,9 +79,9 @@ with sync_playwright() as pw:
     const reacted=g.reactToMaceSweep(target,.016,.18),resolved=g.resolveMaceSweep(caster);
     const outcome=g.events.filter(event=>event.type==='maceSweepResolved').at(-1);
     if(reacted||resolved||target.action==='jump'||!outcome?.countered||outcome.counter!=='read'||
-       g.ball.owner!==target||target.stun!==0)
+       g.ball.owner!==target||target.stun!==0||target.magicReadCueTimer<.48)
      throw Error('Live vertical approach did not preserve the 2D Mace Sweep read '+JSON.stringify({side,reacted,resolved,outcome}));
-    rows.push({side,reacted,resolved,counter:outcome.counter,ballRetained:g.ball.owner===target});
+    rows.push({side,reacted,resolved,counter:outcome.counter,cue:target.magicReadCueTimer,ballRetained:g.ball.owner===target});
    }
    return {rows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length};
   }''')
