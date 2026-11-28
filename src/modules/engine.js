@@ -2081,6 +2081,10 @@ class GameEngine{
    Number.isFinite(hold)&&hold>=.35&&hold<1&&Number.isFinite(carrier.x)&&Number.isFinite(carrier.y)&&
    Array.isArray(this.players);
   if(!visible)return reset();
+  // A CPU JUMP starts with a small lift before becoming an airborne Teleport
+  // blocker. Keep its earned response through those first takeoff frames.
+  if(p.aiTeleportThreat===carrier&&p.action==='jump'&&(Number(p.actionTimer)||0)>0&&
+   Number.isFinite(p.z)&&p.z<20)return false;
   const inputX=Number.isFinite(carrier.dx)?carrier.dx:0,inputY=Number.isFinite(carrier.dy)?carrier.dy:0;
   const forward=Math.hypot(inputX,inputY)>1e-6?norm(inputX,inputY):norm(carrier.face||1,0);
   const lane=(q,minAhead,maxAhead,maxAcross)=>{
@@ -2129,18 +2133,30 @@ class GameEngine{
    if(activeSlide(p)||activeJump(p)||directRead(p)){p.aiTeleportThreat=carrier;return false;}
    return reset();
   }
-  const laneDefenders=rivals.filter(q=>slideLane(q)&&
-   (q.z==null||Number(q.z)<20)&&clear(q.cd)&&
-   !(q.action==='slide'&&(Number(q.actionTimer)||0)>0)&&
-   !(q.action==='jump'&&(Number(q.actionTimer)||0)>0))
-   .sort((a,b)=>distance(carrier,a)-distance(carrier,b));
+  // Preserve the established slide response whenever a ready marker can use it.
+  // A grounded defender in the separate JUMP corridor is the fallback, including
+  // a CPU backup for a selected human who already owns the nearer slide lane.
+  const laneDefenders=rivals.filter(q=>{
+   const actionBusy=(q.action==='slide'||q.action==='jump')&&(Number(q.actionTimer)||0)>0;
+   if(actionBusy)return false;
+   const z=q.z==null?0:Number(q.z);
+   const grounded=Number.isFinite(z)&&z<=10;
+   const slide=slideLane(q)&&Number.isFinite(z)&&z<20&&clear(q.cd);
+   const jump=jumpLane(q)&&grounded;
+   return slide||jump;
+  }).map(q=>({player:q,action:slideLane(q)?'slide':'jump'}))
+   .sort((a,b)=>a.action===b.action?
+    distance(carrier,a.player)-distance(carrier,b.player):a.action==='slide'?-1:1);
   const selectedHuman=q=>typeof this.inControl==='function'&&this.inControl(q.t)&&
    Number.isInteger(q.i)&&Number.isInteger(this.controlled?.[q.t])&&this.controlled[q.t]===q.i;
   const marker=laneDefenders[0]||null;
-  const responder=marker&&selectedHuman(marker)
-   ?laneDefenders.find(q=>q!==marker&&!selectedHuman(q))||null
-   :laneDefenders.find(q=>!selectedHuman(q))||null;
-  const threat=responder===p&&p.cd<=0&&p.stun<=0&&Number.isFinite(p.z)&&p.z<20?carrier:null;
+  const responder=marker&&selectedHuman(marker.player)
+   ?laneDefenders.find(q=>q!==marker&&!selectedHuman(q.player))||null
+   :laneDefenders.find(q=>!selectedHuman(q.player))||null;
+  const responsePlayer=responder?.player;
+  const canRespond=responder?.action==='jump'?
+   (p.z==null||Number.isFinite(p.z)&&p.z<=10):p.cd<=0;
+  const threat=responsePlayer===p&&canRespond&&p.stun<=0&&Number.isFinite(p.z)&&p.z<20?carrier:null;
   if(!threat)return reset();
   if(p.aiTeleportThreat!==threat){
    p.aiTeleportThreat=threat;p.aiTeleportReaction=Math.max(0,Number(reactionSeconds)||0);p.aiTeleportReady=false;
@@ -2149,7 +2165,15 @@ class GameEngine{
    p.aiTeleportReaction=Math.max(0,(p.aiTeleportReaction||0)-Math.max(0,dt||0));
    if(p.aiTeleportReaction<=1e-9)p.aiTeleportReady=true;
   }
-  if(p.aiTeleportReady&&hold>=.88){p.aiTeleportReaction=Infinity;return this.tackle(p,true);}
+  if(p.aiTeleportReady&&hold>=.88){
+   p.aiTeleportReaction=Infinity;
+   if(responder.action==='jump'){
+    const started=this.jump(p);
+    if(!started)return reset();
+    return true;
+   }
+   return this.tackle(p,true);
+  }
   return false;
  }
  reactToSupernova(p,dt,reactionSeconds){
