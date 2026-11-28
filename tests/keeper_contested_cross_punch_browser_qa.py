@@ -93,7 +93,35 @@ with sync_playwright() as pw:
     jumpRows.push({team,jumping:profile.jumping,ballZ:profile.ballZ,expected:profile.expected,
      punches:g.events.filter(event=>event.type==='keeperPunch').length});
    }
-   return {rows,futureRows,jumpRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
+   const turnRows=[];
+   for(const team of [0,1])for(const profile of [
+    {name:'turning-in-high',turn:'in',agility:100,expected:true},
+    {name:'turning-in-low',turn:'in',agility:1,expected:false},
+    {name:'turning-away-high',turn:'away',agility:100,expected:false},
+    {name:'turning-away-low',turn:'away',agility:1,expected:true}
+   ]){
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+    const dir=team===0?1:-1,liveKeeper=g.player(team,0),liveReceiver=g.player(1-team,3);
+    for(const q of g.players)if(q!==liveKeeper&&q!==liveReceiver)Object.assign(q,{down:true,stun:1});
+    const keeperX=dir===1?field.x+66:field.x+field.w-66,keeperY=field.y+field.h/2;
+    Object.assign(liveKeeper,{x:keeperX,y:keeperY,z:0,stun:0,down:false,action:'idle',
+     actionTimer:0,diveCooldown:0,diveIntentCooldown:0,diveIntentPending:false,keeperPunchFx:0,fatigue:.1});
+    Object.assign(liveKeeper.src,{gkSkill:55,gkDiving:65});
+    const ballX=liveKeeper.x-dir*8,ballY=liveKeeper.y+5;
+    const turningIn=profile.turn==='in';
+    Object.assign(liveReceiver,{x:ballX+dir*(turningIn?80:90),y:ballY,z:0,vz:0,
+     jumpCount:0,stun:0,down:false,action:'idle',actionTimer:0,slideTimer:0,
+     moveVX:turningIn?0:-dir*300,moveVY:turningIn?300:0,
+     dx:turningIn?-dir:dir,dy:0});
+    Object.assign(liveReceiver.src,{agility:profile.agility});
+    Object.assign(g.ball,{owner:null,attacker:1-team,lastTouchTeam:1-team,passTeam:1-team,
+     pass:true,passTarget:liveReceiver.src.id,x:ballX,y:ballY,z:70,vx:-dir*30,vy:0,
+     vz:-20,age:.25,canCollect:0,shot:null,strike:null,ordinaryShot:false,power:0,trail:[]});
+    g.updateBall(.016);
+    turnRows.push({team,name:profile.name,expected:profile.expected,
+     punches:g.events.filter(event=>event.type==='keeperPunch').length});
+   }
+   return {rows,futureRows,jumpRows,turnRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,
     teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
@@ -109,6 +137,9 @@ with sync_playwright() as pw:
    assert row['punches']==expected,(kind,row)
   for row in result['jumpRows']:
    assert row['punches']==row['expected'],(kind,row)
+  assert len(result['turnRows'])==8,(kind,result['turnRows'])
+  for row in result['turnRows']:
+   assert row['punches']==(1 if row['expected'] else 0),(kind,row)
   assert not errors,(kind,errors)
   print('PASS',kind,'mirrored contested-cross punch, safe rebound chase, readable keeper response and four actions',flush=True)
   ctx.close()

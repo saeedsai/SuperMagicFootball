@@ -127,6 +127,36 @@ test('grounded high-cross punch pressure requires enough Jumping to reach the pr
  }
 });
 
+test('high-cross punch threat follows an active attacker turning into or away from the cross',async()=>{
+ const {AI,ENGINE}=await loadModules();
+ for(const team of [0,1]){
+  const turnIn=(agility)=>{
+   const f=fixture(ENGINE,team);
+   f.receiver.x=f.ball.x+f.dir*80;f.receiver.moveVX=0;f.receiver.moveVY=300;
+   f.receiver.dx=-f.dir;f.receiver.dy=0;f.receiver.src.agility=agility;
+   return {f,decision:AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players)};
+  };
+  const eliteIn=turnIn(100),lowIn=turnIn(1);
+  assert.ok(eliteIn.decision,JSON.stringify({team,turningInto:'high-agility',decision:eliteIn.decision}));
+  assert.equal(lowIn.decision,null,'low Agility should retain the lateral run instead of turning sharply into the cross');
+  const turnAway=(agility)=>{
+   const f=fixture(ENGINE,team);
+   f.receiver.x=f.ball.x+f.dir*90;f.receiver.moveVX=-f.dir*300;f.receiver.moveVY=0;
+   f.receiver.dx=f.dir;f.receiver.dy=0;f.receiver.src.agility=agility;
+   return {f,decision:AI.keeperHighCrossPunchDecision(f.keeper,f.ball,f.players)};
+  };
+  const eliteAway=turnAway(100),lowAway=turnAway(1);
+  assert.equal(eliteAway.decision,null,'a high-Agility attacker turning away must not force a punch');
+  assert.ok(lowAway.decision,'a low-Agility attacker still carrying momentum toward the cross remains a threat');
+  const neutral=turnIn(100);neutral.f.receiver.dx=0;neutral.f.receiver.dy=0;
+  assert.equal(AI.keeperHighCrossPunchDecision(neutral.f.keeper,neutral.f.ball,neutral.f.players),null,
+   'neutral steering must preserve the previous linear lateral projection');
+  const aligned=turnIn(100);aligned.f.receiver.dx=0;aligned.f.receiver.dy=1;
+  assert.equal(AI.keeperHighCrossPunchDecision(aligned.f.keeper,aligned.f.ball,aligned.f.players),null,
+   'aligned steering must preserve the previous linear projection');
+ }
+});
+
 test('low-altitude live jump pressure follows current vertical momentum instead of a fresh jump estimate',async()=>{
  const {AI,ENGINE}=await loadModules();
  for(const team of [0,1]){

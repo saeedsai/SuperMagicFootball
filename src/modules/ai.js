@@ -2935,15 +2935,26 @@ function keeperHighCrossPunchDecision(keeper,ball,players){
  const futureBallX=ball.x+clampTo(ball.vx*.12,-120,120);
  const futureBallY=ball.y+clampTo(ball.vy*.12,-120,120);
  const arrivals=[];
+ const contestSeconds=.12;
  for(const opponent of players){
   if(!activeOutfielder(opponent))continue;
   const vx=Number.isFinite(opponent.moveVX)?opponent.moveVX:
    Number.isFinite(opponent.vx)?opponent.vx:0;
   const vy=Number.isFinite(opponent.moveVY)?opponent.moveVY:
    Number.isFinite(opponent.vy)?opponent.vy:0;
-  const x=opponent.x+clampTo(vx*.12,-36,36);
-  const y=opponent.y+clampTo(vy*.12,-36,36);
-  arrivals.push(Math.hypot(x-futureBallX,y-futureBallY));
+  let leadX=clampTo(vx*contestSeconds,-36,36);
+  let leadY=clampTo(vy*contestSeconds,-36,36);
+  const steeringX=Number.isFinite(opponent.dx)?opponent.dx:0;
+  const steeringY=Number.isFinite(opponent.dy)?opponent.dy:0;
+  const steeringLength=Math.hypot(steeringX,steeringY);
+  if(Math.hypot(vx,vy)>=75&&steeringLength>=.15){
+   // A live turn can reverse the attacker's arrival lane. Keep the original
+   // per-axis travel cap after integrating the shared Agility-limited path.
+   const turnLead=keeperOutfielderTurnLead(opponent,contestSeconds,Math.hypot(36,36));
+   leadX=clampTo(turnLead.x,-36,36);
+   leadY=clampTo(turnLead.y,-36,36);
+  }
+  arrivals.push(Math.hypot(opponent.x+leadX-futureBallX,opponent.y+leadY-futureBallY));
  }
  arrivals.sort((a,b)=>a-b);
  if(!arrivals.length)return null;
