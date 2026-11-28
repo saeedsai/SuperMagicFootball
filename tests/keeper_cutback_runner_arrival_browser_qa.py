@@ -131,7 +131,7 @@ with sync_playwright() as pw:
             assert abs(row['recoveringMarker']-row['openRunner'])<1e-7,(kind,row)
             assert abs(row['retreatingMarker']-row['openRunner'])<1e-7,(kind,row)
             assert abs(row['closingMarker']-row['noRunner'])<1e-7,(kind,row)
-        assert len(result['turnRows'])==8,(kind,result)
+        assert len(result['turnRows'])==4,(kind,result)
         for row in result['turnRows']:
             assert abs(row['highMarker']-row['openRunner'])<1e-7,(kind,row)
             assert abs(row['lowMarker']-row['noRunner'])<1e-7,(kind,row)

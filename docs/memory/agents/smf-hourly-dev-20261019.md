@@ -11,7 +11,7 @@ Prioritize responsive football gameplay, intelligent passing/tackling and counte
 - First exact-head Census #46131833980 exposed three .402 service-worker header contract failures and one marker fixture whose runner movement was not isolated; commit `6ba01c6dd50e644b00c38161368030718da49711` corrected the header and made the marker comparison deterministic. A final fixture follow-up freezes the unmarked baseline runner too. No production gameplay failure established from the first attempt.
 
 ## Next smallest action
-- Rerun .402 Modular QA and exact-head Full Regression Census; repair any confirmed turn-projection or browser fixture failure without weakening the 64-unit marker and 18-unit lead bounds.
+- Correct .402 browser Census fixture's row-count contract (four rows per desktop/touch context: two teams × two wings); rerun exact-head QA/Census. All gameplay assertions and the 64-unit marker/18-unit lead bounds remain unchanged.
 - Continue responsive ground/through-ball interception and counterable Magic Tricks, then Studio-backed existing-player graphics, goalkeeper dive/catch, Player Studio and Career/Cup.
 
 ## Ownership and exclusions
@@ -25,7 +25,7 @@ Update only this checkpoint. No new branch, force-push, history rewrite, securit
 ## Evidence
 - .401 exact-head Modular QA #46119674797 and Full Regression Census #46119674878 passed; all four Node and all four Chromium Census shards passed.
 - QA-gated promotion advanced main to .401. Main Census #46120402664 passed all eight shards; hosted-pages-smoke passed exact HTML/JS/CSS bytes after two Pages propagation retries. Pages deployment #46120396983 succeeded.
-- .402 Census #46131833980 preflight: 3,064/3,068 passed, four failures described above; downstream shards correctly skipped. .402 Modular QA #46131834008 and Keeper Save Event Integrity #46131833948 were still running at last inspection.
+- .402 Census #46131833980 preflight: 3,064/3,068 passed, four release/header+fixture failures; service-worker header and runner isolation were corrected. Follow-up Census #46132239068 passed preflight, preview, all four Node shards and browser shards 0–2; browser shard 3 had 73/74 scripts pass and failed only because the new test expected eight turn rows although each viewport creates four (2 teams × 2 wings). No gameplay assertion failed; correcting the test count to four.
 - Local tests not run in this connected-source runtime; exact-head GitHub Actions results are the release evidence.
 
 ## Cleanup
