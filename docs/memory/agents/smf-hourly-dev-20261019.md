@@ -6,28 +6,22 @@ Updated: 2026-11-28
 Deliver player-facing football AI, counterable Magic Tricks, existing-player graphics, goalkeeper, Player Studio and Career/Cup improvements. Preserve 223 teams, 2,676 players/order/ratios, six formations, four actions, saves and offline play.
 
 ## Current checkpoint
-- Candidate 0.12.81.408: LIGHTNING-READY-TARGET-ELIGIBILITY-01. Lightning target acquisition, CPU reaction, resolver impact and selected-human backup now share one ready-target predicate; active low jumps and malformed positions cannot absorb the 95-unit single-target warning or receive a hit.
-- Added mirrored Node resolver regressions for both tricks, both teams and ten unavailable states. Extended actual-GameEngine desktop/simulated-touch browser QA for down/invulnerable target handoff.
-- No new buttons, save fields, roster/stat changes, or physics changes.
+- Candidate 0.12.81.409: MACE-SWEEP-2D-LIVE-APPROACH-READ-01. The existing Mace Sweep read now uses live two-dimensional steering/residual movement to decide whether a grounded defender faces and closes on the caster; vertical/diagonal turn-in can counter despite stale horizontal facing, while retreat does not.
+- Reused the existing shared 2D facing helper; retained the Defence-versus-Dribbling threshold, closing requirement, .24-second tell, hit/push, cooldown/cost and possession behavior.
+- Added mirrored Node resolver/CPU-response tests and actual-GameEngine desktop/simulated-touch browser coverage for both teams. Updated the three extracting Node harnesses to inject the shared helper dependency.
 
 ## Next smallest action
-Repair the confirmed .407 stale Fireball source-contract failure, then validate .408 Lightning target acquisition, impact-time revalidation and CPU backup on exact-head Node/Chromium gates without weakening counter, possession or four-action assertions.
+Verify exact-head .409 Modular QA and all four Node/four Chromium Full Regression Census shards. Fix only confirmed failures without weakening the read, JUMP/slide counter, possession or four-action assertions; then continue the next unblocked player-facing backlog item.
 
 ## Ownership and exclusions
 Update only this checkpoint. No new branch, force-push, history rewrite, security bypass, unapproved concept heroes, copied graphics, roster/stat edits, save-schema changes or fifth action. Keep #87 main protection, #86 Render drift and #48 physical two-phone acceptance open. No physical LAN certification or authenticated online-hosting claim.
 
 ## Repository heads
-- Run start dev: 206c3001cdb5c006464622606c2eb9d8cb1a8cd3.
+- Run start dev: 0750141d44dec1f0ccacd1acb8cc5f94958cd941.
 - Run start main: 6b3879a0c951da6ae86c711b323973f1e8a4c6ec.
-- Candidate feature and release metadata are committed together; exact final SHA is recorded in GitHub history and exact-head Actions.
-
-## Evidence
-- .406 Modular QA #46144555615 source/data job passed.
-- .406 Full Regression Census #46144555679 passed preflight, preview, all four Node shards and all four Chromium shards; QA-gated promotion to main succeeded.
-- .406 Pages deployment #46145607413 succeeded; main Census #46145612859 preflight, preview, hosted-byte smoke and Node shards 0/2/3 passed; Node shard 1 and browser shards 0/2/3 were running at checkpoint time.
-- .407 Modular QA #46146720876 and Census #46146720880 both stopped at preflight on one stale assertion in tests/magic_fireball_ai_counter.test.cjs; the source correctly includes Spin Bump/Sand Trap in readyCounterTargets. Concept Hero QA #46146720902 also failed its shared Node suite on the same contract; no Concept Hero work was undertaken.
-- .408 exact-head Modular QA/Census: pending; local execution unavailable in connected-source runtime.
-- GitHub reports dev.protected=false and main.protected=false; #87 remains open.
+- .408.3 Lightning harness correction: 0baaed4474599bdec79905783bf339173bdf86b5.
+- .408.3 Modular QA #46154180741 passed; Full Regression Census #46154180723 passed preflight and was still running Node/Chromium shards when .409 was prepared. Earlier .408 failures were isolated to extracted-helper/fixture contracts; no production Lightning failure was observed.
+- Main .406 SHA 6b3879a0c951da6ae86c711b323973f1e8a4c6ec: Census #46145612859 and Pages #46145607413 succeeded. Branch protection remains false; #87 is open.
 
 ## Cleanup
 Keep this checkpoint below 4 KiB. Leave all other agent checkpoints untouched.

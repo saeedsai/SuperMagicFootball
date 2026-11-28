@@ -26,10 +26,14 @@ const activate=vm.runInNewContext('({'+engine.slice(methodStart,methodEnd)+'})',
  impactStun:()=>.8
 }).activateDefence;
 const stat=(p,key)=>p.src?.[key]??55;
+const facingStart=engine.indexOf('function defenderFacesCarrier2D(');
+const facingEnd=engine.indexOf('\n}',facingStart)+2;
+assert.ok(facingStart>=0&&facingEnd>facingStart,'extract shared 2D defender-facing helper');
+const defenderFacesCarrier2D=vm.runInNewContext(engine.slice(facingStart,facingEnd));
 const helperStart=engine.indexOf('function maceSweepDefensiveRead(');
 const helperEnd=engine.indexOf('\n}',helperStart)+2;
 assert.ok(helperStart>=0&&helperEnd>helperStart,'extract Mace Sweep read helper');
-const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\nmaceSweepDefensiveRead',{stat});
+const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\nmaceSweepDefensiveRead',{stat,defenderFacesCarrier2D});
 const resolveMaceSweep=vm.runInNewContext('({'+engine.slice(engine.indexOf('\n resolveMaceSweep(p){'),engine.indexOf('\n updateMaceSweep(',engine.indexOf('\n resolveMaceSweep(p){')))+'})',{
  fieldAbility:ABILITIES.fieldAbility,abilityLevel:()=>2,levelModifiers:()=>({stun:1}),distance,norm,clamp,
  F:mechanics.world.field,stat,maceSweepDefensiveRead,impactStun:()=>.8

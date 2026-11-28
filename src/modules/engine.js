@@ -98,7 +98,7 @@ function lightningDefenderCounters(defender,attacker){
 function maceSweepDefensiveRead(defender,caster){
  if(!defender||!caster||!Number.isFinite(defender.x)||!Number.isFinite(defender.y)||
   !Number.isFinite(caster.x)||!Number.isFinite(caster.y))return false;
- const facing=(defender.face||1)*(caster.x-defender.x)>0;
+ const facing=defenderFacesCarrier2D(defender,caster);
  let headingX=Number.isFinite(defender.dx)?defender.dx:0;
  let headingY=Number.isFinite(defender.dy)?defender.dy:0;
  if(Math.hypot(headingX,headingY)<=.1){

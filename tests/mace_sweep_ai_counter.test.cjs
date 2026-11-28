@@ -14,10 +14,14 @@ function method(name,globals={}){
 }
 const fieldAbility=src=>src?.superAbility?.type==='defence'?mechanics.defensiveAbilities[src.superAbility.id]:null;
 const stat=(p,key)=>p.src?.[key]??55;
+const facingStart=engine.indexOf('function defenderFacesCarrier2D(');
+const facingEnd=engine.indexOf('\n}',facingStart)+2;
+assert.ok(facingStart>=0&&facingEnd>facingStart,'extract shared 2D defender-facing helper');
+const defenderFacesCarrier2D=vm.runInNewContext(engine.slice(facingStart,facingEnd));
 const helperStart=engine.indexOf('function maceSweepDefensiveRead(');
 const helperEnd=engine.indexOf('\n}',helperStart)+2;
 assert.ok(helperStart>=0&&helperEnd>helperStart,'extract Mace Sweep read helper');
-const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\nmaceSweepDefensiveRead',{stat});
+const maceSweepDefensiveRead=vm.runInNewContext(engine.slice(helperStart,helperEnd)+'\nmaceSweepDefensiveRead',{stat,defenderFacesCarrier2D});
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 const norm=(x,y)=>{const d=Math.hypot(x,y)||1;return{x:x/d,y:y/d};};
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -117,5 +121,34 @@ test('Mace Sweep momentum alone is insufficient when the defender faces away, re
    assert.equal(react.call(state.game,state.cpu,0,0),true);
    assert.equal(state.jumps(),1,'the existing JUMP response remains when no read is valid');
   }
+ }
+});
+
+
+test('live vertical approach can read Mace Sweep despite stale horizontal facing',()=>{
+ for(const side of [0,1]){
+  const face=side===0?1:-1;
+  const state=setup(side,{x:1100+face*60,y:650,face,dx:0,dy:-1,moveVX:0,moveVY:-180,
+   src:{id:'cpu',jumping:70,defence:80}});
+  assert.equal(maceSweepDefensiveRead(state.cpu,state.defender),true,'live vertical heading faces and closes on the caster');
+  assert.equal(react.call(state.game,state.cpu,.016,.18),false,'CPU does not waste JUMP when its 2D read already qualifies');
+  assert.equal(state.jumps(),0);
+  assert.equal(resolve.call(state.game,state.defender),false);
+  assert.equal(state.events.at(-1)?.countered,true);
+  assert.equal(state.events.at(-1)?.counter,'read');
+  assert.equal(state.game.ball.owner,state.cpu,'successful read preserves possession');
+  assert.equal(state.cpu.stun,0);
+ }
+});
+
+test('vertical retreat cannot earn a Mace Sweep read from stale horizontal facing',()=>{
+ for(const side of [0,1]){
+  const face=side===0?1:-1;
+  const state=setup(side,{x:1100+face*60,y:650,face:-face,dx:0,dy:1,moveVX:0,moveVY:180,
+   src:{id:'cpu',jumping:70,defence:80}});
+  assert.equal(maceSweepDefensiveRead(state.cpu,state.defender),false,'live retreat is not a read even if face points toward caster');
+  assert.equal(react.call(state.game,state.cpu,0,0),true,'CPU uses the existing JUMP counter when retreating');
+  assert.equal(state.jumps(),1);
+  assert.equal(state.cpu.action,'jump');
  }
 });
