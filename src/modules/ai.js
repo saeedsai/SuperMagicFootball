@@ -1746,8 +1746,30 @@ function defensiveUntargetedPassCoverTarget(team,ball,bounds,defender=null,defen
    const initialTime=((receiver.x-ball.x)*ball.vx+(receiver.y-ball.y)*ball.vy)/speedSquared;
    if(!Number.isFinite(initialTime)||initialTime<.12||initialTime>1.12)return null;
    const lead=clampTo(initialTime,.12,.78);
-   const receiverX=receiver.x+clampTo(movement(receiver,'x')*lead,-90,90);
-   const receiverY=receiver.y+clampTo(movement(receiver,'y')*lead,-90,90);
+   let receiverTravelX=movement(receiver,'x')*lead;
+   let receiverTravelY=movement(receiver,'y')*lead;
+   const steeringX=Number.isFinite(receiver.dx)?receiver.dx:0;
+   const steeringY=Number.isFinite(receiver.dy)?receiver.dy:0;
+   const steeringLength=Math.hypot(steeringX,steeringY);
+   const currentSpeed=Math.hypot(receiver.moveVX,receiver.moveVY);
+   // Lofted receivers can cut across the flight lane while the ball is airborne.
+   // Project meaningful live turns through the same bounded Agility response used
+   // by ground-pass cover; neutral, slow and legacy movement retain linear travel.
+   if(Number.isFinite(receiver.moveVX)&&Number.isFinite(receiver.moveVY)&&
+    Number.isFinite(currentSpeed)&&currentSpeed>=75&&steeringLength>=.15&&lead>=.05){
+    let vx=receiver.moveVX,vy=receiver.moveVY,travelX=0,travelY=0;
+    const steps=Math.max(1,Math.ceil(lead/.18)),step=lead/steps;
+    for(let index=0;index<steps;index++){
+     const turned=carrierTurnAwareVelocity(receiver,vx,vy,step);
+     travelX+=(vx+turned.x)*.5*step;
+     travelY+=(vy+turned.y)*.5*step;
+     vx=turned.x;vy=turned.y;
+    }
+    receiverTravelX=travelX;
+    receiverTravelY=travelY;
+   }
+   const receiverX=receiver.x+clampTo(receiverTravelX,-90,90);
+   const receiverY=receiver.y+clampTo(receiverTravelY,-90,90);
    const arrival=((receiverX-ball.x)*ball.vx+(receiverY-ball.y)*ball.vy)/speedSquared;
    if(!Number.isFinite(arrival)||arrival<.12||arrival>1.12)return null;
    const ballAt={x:ball.x+ball.vx*arrival,y:ball.y+ball.vy*arrival};

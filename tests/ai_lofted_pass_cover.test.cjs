@@ -189,3 +189,45 @@ test('engine assigns lofted-pass cover to the second defender while the primary 
    'primary must continue pressing the live ball');
  }
 });
+
+test('lofted cover follows a receiver turn with Agility and preserves neutral/slow fallback',async()=>{
+ const {AI}=await loadModules();
+ const linearExpected=(f)=>{
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  const speedSquared=f.ball.vx*f.ball.vx+f.ball.vy*f.ball.vy;
+  const initial=((f.receiver.x-f.ball.x)*f.ball.vx+(f.receiver.y-f.ball.y)*f.ball.vy)/speedSquared;
+  const lead=clamp(initial,.12,.78);
+  const vx=Number.isFinite(f.receiver.moveVX)?f.receiver.moveVX:0;
+  const vy=Number.isFinite(f.receiver.moveVY)?f.receiver.moveVY:0;
+  const rx=f.receiver.x+clamp(vx*lead,-90,90),ry=f.receiver.y+clamp(vy*lead,-90,90);
+  const arrival=((rx-f.ball.x)*f.ball.vx+(ry-f.ball.y)*f.ball.vy)/speedSquared;
+  const ballAt={x:f.ball.x+f.ball.vx*arrival,y:f.ball.y+f.ball.vy*arrival};
+  const attackDir=f.attacking===0?1:-1;
+  return {
+   x:clamp(f.ball.x+f.ball.vx*arrival*.68+attackDir*22,bounds.xMin+22,bounds.xMax-22),
+   y:clamp(f.ball.y+f.ball.vy*arrival*.68+clamp((ry-ballAt.y)*.3,-24,24),bounds.yMin+23,bounds.yMax-23)
+  };
+ };
+ for(const team of [0,1]){
+  const f=fixture(team);
+  Object.assign(f.receiver,{moveVX:f.dir*150,moveVY:0,dx:0,dy:1});
+  f.receiver.src.agility=100;
+  const elite=AI.defensiveLoftedPassCoverTarget(team,f.ball,f.players,bounds);
+  f.receiver.src.agility=1;
+  const low=AI.defensiveLoftedPassCoverTarget(team,f.ball,f.players,bounds);
+  assert.ok(elite&&low,JSON.stringify({team,elite,low}));
+  assert.ok((low.x-elite.x)*f.dir>15,JSON.stringify({team,elite,low}));
+  assert.ok(elite.y>low.y+4,JSON.stringify({team,elite,low}));
+  const fallback=fixture(team);
+  Object.assign(fallback.receiver,{moveVX:fallback.dir*150,moveVY:0,dx:0,dy:0});
+  fallback.receiver.src.agility=100;
+  assert.deepEqual(AI.defensiveLoftedPassCoverTarget(team,fallback.ball,fallback.players,bounds),
+   linearExpected(fallback),'neutral steering retains the exact linear projection');
+  fallback.receiver.dx=NaN;fallback.receiver.dy=Infinity;
+  assert.deepEqual(AI.defensiveLoftedPassCoverTarget(team,fallback.ball,fallback.players,bounds),
+   linearExpected(fallback),'invalid steering retains the exact linear projection');
+  fallback.receiver.moveVX=fallback.dir*60;fallback.receiver.dx=0;fallback.receiver.dy=1;
+  assert.deepEqual(AI.defensiveLoftedPassCoverTarget(team,fallback.ball,fallback.players,bounds),
+   linearExpected(fallback),'sub-threshold movement retains the exact linear projection');
+ }
+});

@@ -15,7 +15,7 @@ with sync_playwright() as pw:
   page.evaluate("""() => {const v=new Map();Object.defineProperty(window,'localStorage',{configurable:true,value:{getItem:k=>v.get(k)||null,setItem:(k,x)=>v.set(k,String(x)),removeItem:k=>v.delete(k),clear:()=>v.clear()}})}""")
   page.add_script_tag(content=js,type='module');page.wait_for_function('!!window.SupermagicFootball?.game')
   result=page.evaluate("""() => {
-   const g=SupermagicFootball.game,rows=[],untargetedRows=[],collectionRows=[];
+   const g=SupermagicFootball.game,rows=[],untargetedRows=[],turnRows=[],collectionRows=[];
    for(const defendingTeam of [0,1]){
     const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
     g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
@@ -58,6 +58,30 @@ with sync_playwright() as pw:
     const primaryTarget=primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null;
     untargetedRows.push({defendingTeam,dir,x,y,expectedX,supportTarget,supportAction,primaryTarget});
    }
+   for(const defendingTeam of [0,1])for(const agility of [100,1]){
+    const attackingTeam=1-defendingTeam,dir=attackingTeam===0?1:-1;
+    g.init({home:0,away:1,mode:'quick',humans:0});g.weather='Clear';
+    const receiver=g.player(attackingTeam,3),primary=g.player(defendingTeam,3),support=g.player(defendingTeam,4);
+    const field=2260.8,y=765,x=150+field*.55+(attackingTeam===0?120:-120),ballX=x-dir*360;
+    for(const q of g.players)if(q!==receiver&&q!==primary&&q!==support&&!q.keeper){q.down=true;q.stun=1;}
+    Object.assign(receiver,{x,y,z:0,down:false,stun:0,action:'run',actionTimer:0,slideTimer:0,
+     shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+     moveVX:dir*150,moveVY:0,dx:0,dy:1,aiAssistTarget:null});
+    receiver.src={...receiver.src,agility};
+    Object.assign(primary,{x:ballX-dir*5,y,down:false,stun:0,z:0,action:'idle',actionTimer:0,
+     slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0});
+    Object.assign(g.ball,{owner:null,pass:true,passTeam:attackingTeam,passTarget:receiver.src.id,
+     attacker:attackingTeam,lastTouchTeam:attackingTeam,x:ballX,y,z:35,vx:dir*600,vy:0,vz:245,
+     age:.15,canCollect:.17,shot:null,strike:null,ordinaryShot:false});
+    Object.assign(support,{x:x-dir*70,y:y+20,z:0,down:false,stun:0,action:'idle',actionTimer:0,
+     slideTimer:0,aiAssistTarget:null,aiTimer:0,aiTarget:null,moveVX:0,moveVY:0});
+    g.clock=.2;g.driveAI(support,.016);
+    const supportTarget=support.aiTarget?{x:support.aiTarget.x,y:support.aiTarget.y}:null;
+    const supportAction=support.action;
+    g.driveAI(primary,.016);
+    turnRows.push({defendingTeam,agility,dir,supportTarget,supportAction,
+     primaryTarget:primary.aiTarget?{x:primary.aiTarget.x,y:primary.aiTarget.y}:null});
+   }
    for(const defendingTeam of [0,1]){
     g.init({home:0,away:1,mode:'quick',humans:0});
     const jumper=g.player(defendingTeam,3);
@@ -73,11 +97,20 @@ with sync_playwright() as pw:
     setBall();g.updateBall(.001);const groundedCollected=g.ball.owner===jumper;
     collectionRows.push({defendingTeam,airborneCollected,groundedCollected});
    }
-   return {rows,untargetedRows,collectionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
+   return {rows,untargetedRows,turnRows,collectionRows,buttons:document.querySelectorAll('#touchButtons button[data-act]').length,teams:SupermagicFootball.teams.length};
   }""")
   assert result['buttons']==4,(kind,result)
   assert result['teams']>=223,(kind,result)
   assert len(result['collectionRows'])==2 and all(r['airborneCollected'] and not r['groundedCollected'] for r in result['collectionRows']),(kind,result['collectionRows'])
+  for team in [0,1]:
+   profiles={row['agility']:row for row in result['turnRows'] if row['defendingTeam']==team}
+   assert set(profiles)=={100,1},(kind,profiles)
+   for row in profiles.values():
+    assert row['supportTarget'] is not None and row['primaryTarget'] is not None,(kind,row)
+    assert row['supportAction']=='jump',(kind,row)
+   elite,low=profiles[100],profiles[1]
+   assert (low['supportTarget']['x']-elite['supportTarget']['x'])*elite['dir']>15,(kind,profiles)
+   assert elite['supportTarget']['y']>low['supportTarget']['y']+4,(kind,profiles)
   for row in result['rows']:
    cover=row['supportTarget'];primary=row['primaryTarget'];ball=row['ball']
    assert cover is not None and primary is not None,(kind,row)
