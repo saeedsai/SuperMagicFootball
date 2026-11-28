@@ -1913,3 +1913,8 @@ Modular QA #45562171349 and Full Regression Census #45562171160 exposed one sour
 ### 2026-11-28 — .391 release-gate diagnosis and correction
 **Diagnosis:** Exact-head Modular QA #46095505771 and Full Regression Census preflight #46095505767 failed on two Node contracts. The targetless-pass edge fixture moved the current ball outside the playable margin while its velocity pointed back into the field; the helper accepted the future projection, contrary to the intended edge rejection. The agent checkpoint identity omitted the required Markdown backticks.
 **Correction:** The helper now rejects current ball positions outside the validated playable margin, and this agent's identity line uses the indexed exact format. The existing assertion remains unchanged. Fresh exact-head Modular QA and all four Node/four Chromium Census shards are required.
+
+
+### 2026-11-28 — .392 focused-test harness correction
+**Observed failure:** Modular QA #46098070689 and Full Regression Census #46098070639 both reached the Node suite; 3,037 tests passed and the targetless-pass test file failed to parse at line 427 with `SyntaxError: Unexpected string`. The insertion offset had been calculated before the surrounding fixture block was lengthened, splitting its final JSON assertion.
+**Correction:** Replaced the complete targetless-pass Node test block with a structurally complete version, preserving the existing actual-engine assertion and adding the mirrored reach-aware helper case. No production assertions or behavior were relaxed. The exact final dev head must pass fresh Modular QA and the full four-Node/four-Chromium Census.

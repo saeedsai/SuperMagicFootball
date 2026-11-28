@@ -424,11 +424,16 @@ test('untargeted low ground passes give the second defender a bounded forward la
    JSON.stringify({team,expected,actual:support.aiTarget}));
   game.driveAI(primary,.016);
   assert.ok(primary.aiTarget&&Math.hypot(primary.aiTarget.x-ballX,primary.aiTarget.y-y)<80,
-   JSON.stringify({team,primaryTarget:primary.aiTarget,balltest('untargeted pass cover selects the earliest corridor point the second defender can reach',async()=>{
+   JSON.stringify({team,primaryTarget:primary.aiTarget,ballX,y}));
+  assert.equal(game.ball.owner,null,'pass coverage must not change possession');
+ }
+});
+test('untargeted pass cover selects the earliest corridor point the second defender can reach',async()=>{
  const {AI}=await loadModules();
  for(const team of [0,1]){
   const f=fixture(team),ball={...f.ball,passTarget:null};
   const base=AI.defensiveUntargetedPassCoverTarget(team,ball,bounds);
+  assert.ok(base);
   const baseProgress=(base.x-ball.x)*f.dir;
   const earlySeconds=Math.max(.10,Math.min(.22,112/Math.hypot(ball.vx,ball.vy))-.04);
   const attackDir=team===0?-1:1;
@@ -436,7 +441,7 @@ test('untargeted low ground passes give the second defender a bounded forward la
   const support=player('reachable-untargeted-'+team,team,earlyX,ball.y,
    {moveVX:0,moveVY:0,dx:0,dy:0,src:{id:'reachable-untargeted-'+team,agility:100,defence:50}});
   const reachable=AI.defensiveUntargetedPassCoverTarget(team,ball,bounds,support,320,.2);
-  assert.ok(base&&reachable,JSON.stringify({team,base,reachable,earlySeconds}));
+  assert.ok(reachable,JSON.stringify({team,base,earlySeconds}));
   const progress=(reachable.x-ball.x)*f.dir;
   assert.ok(progress<baseProgress-15,JSON.stringify({team,baseProgress,progress,reachable}));
   assert.ok(Math.hypot(reachable.x-support.x,reachable.y-support.y)<1,
@@ -444,10 +449,6 @@ test('untargeted low ground passes give the second defender a bounded forward la
   const distant=player('distant-untargeted-'+team,team,ball.x-f.dir*260,ball.y+210);
   assert.equal(AI.defensiveUntargetedPassCoverTarget(team,ball,bounds,distant,320,.2),null,
    'an unreachable support must retain the caller fallback');
- }
-});
-X,y}));
-  assert.equal(game.ball.owner,null,'pass coverage must not change possession');
  }
 });
 test('untargeted pass cover rejects stale, slow, backward, lateral, lofted and invalid passes',async()=>{
