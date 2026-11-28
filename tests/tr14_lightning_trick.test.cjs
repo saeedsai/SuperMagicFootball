@@ -19,9 +19,12 @@ globals.lightningTargetReady=lightningTargetReady;
 const helperStart=engine.indexOf('function lightningDefenderCounters('),helperEnd=engine.indexOf('\n}',helperStart)+2;
 const lightningDefenderCounters=vm.runInNewContext('('+engine.slice(helperStart,helperEnd)+')',{defenderFacesCarrier2D,stat:(p,k)=>p.src?.[k]??0});
 globals.lightningDefenderCounters=lightningDefenderCounters;
+const readStart=engine.indexOf('function lightningDefenderRead('),readEnd=engine.indexOf('\n}',readStart)+2;
+assert.ok(readStart>=0&&readEnd>readStart,'Lightning grounded-read cue helper exists');
+const lightningDefenderRead=vm.runInNewContext('('+engine.slice(readStart,readEnd)+')',{defenderFacesCarrier2D,stat:(p,k)=>p.src?.[k]??0});
 const trick=method('tryMagicTrick','updateSpinBumpFx',globals);
 const update=method('updateLightningTrick','resolveLightningTrick',{});
-const resolve=method('resolveLightningTrick','beginRideBall',{distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??0,lightningDefenderCounters,lightningTargetReady});
+const resolve=method('resolveLightningTrick','beginRideBall',{distance:(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),stat:(p,k)=>p.src?.[k]??0,lightningDefenderCounters,lightningDefenderRead,lightningTargetReady});
 function setup(side=0,tier='Gold',verified=true){
  const p={t:side,x:F.x+F.w/2,y:F.y+F.h/2,face:side===0?1:-1,dx:side===0?1:-1,dy:0,z:0,keeper:false,stun:0,fatigue:.2,magicReadyAt:0,action:'idle',src:{id:'lightning-caster',name:'Caster',role:'FW',magicTrick:'lightning',dribbling:60,statsVerified:verified,verifiedTier:tier}};
  const q={t:1-side,x:p.x+(side===0?50:-50),y:p.y,face:side===0?-1:1,dx:0,dy:0,z:0,keeper:false,stun:0,action:'idle',actionTimer:0,src:{id:'target',name:'Defender',defence:20}};
@@ -103,7 +106,36 @@ test('near defender gets slide, jump and facing+closing reads during the windup;
  const noChain=setup();noChain.q.stun=.3;noChain.g.players=[noChain.p,noChain.q];assert.equal(trick.call(noChain.g,noChain.p),false);assert.equal(noChain.p.fatigue,.2);
 });
 
-test('Lightning selected-human marker receives a CPU backup whose existing JUMP counters the single-target strike',()=>{
+
+test('Lightning grounded reads show READ feedback on the marked target or CPU backup, not on jump/slide counters',()=>{
+ for(const side of [0,1]){
+  const sign=side===0?1:-1,direct=setup(side);
+  assert.equal(trick.call(direct.g,direct.p),true);
+  assert.equal(direct.q.magicReadCueTimer||0,0,'no cue before the live resolver read');
+  Object.assign(direct.q,{face:-sign,dx:-sign,dy:0,z:0});direct.q.src.defence=80;
+  assert.equal(resolve.call(direct.g,direct.p),false);
+  assert.equal(direct.q.stun,0);assert.equal(direct.q.magicReadCueTimer,.48);
+  assert.equal(direct.events.at(-1).countered,true);
+
+  const backed=setup(side),q=backed.q;q.i=3;
+  const backup={t:1-side,i:4,x:backed.p.x+sign*70,y:backed.p.y,z:0,stun:0,down:false,invuln:0,
+   action:'idle',actionTimer:0,face:-sign,dx:-sign,dy:0,moveVX:0,moveVY:0,
+   shotImpactKnockdownPending:0,shotImpactKnockdownTimer:0,shotImpactRiseTimer:0,
+   src:{id:'backup',name:'Backup',defence:80}};
+  backed.g.players=[backed.p,q,backup];backed.g.controlled[1-side]=q.i;backed.g.inControl=t=>t===1-side;
+  assert.equal(trick.call(backed.g,backed.p),true);assert.equal(backed.p.lightningPending.backup,backup);
+  assert.equal(resolve.call(backed.g,backed.p),false);
+  assert.equal(q.magicReadCueTimer||0,0);assert.equal(backup.magicReadCueTimer,.48);
+  assert.equal(backed.events.at(-1).countered,true);
+
+  for(const action of [{action:'jump',actionTimer:.3,z:20},{action:'slide',actionTimer:.2,z:0}]){
+   const animation=setup(side);assert.equal(trick.call(animation.g,animation.p),true);
+   Object.assign(animation.q,action);assert.equal(resolve.call(animation.g,animation.p),false);
+   assert.equal(animation.q.magicReadCueTimer||0,0,'JUMP/slide keeps its existing feedback');
+  }
+ }
+});
+\ntest('Lightning selected-human marker receives a CPU backup whose existing JUMP counters the single-target strike',()=>{
  for(const side of [0,1]){
   const {g,p,q,events}=setup(side),sign=side===0?1:-1;
   q.i=3;const backup={t:1-side,x:p.x+sign*70,y:p.y,z:0,stun:0,down:false,invuln:0,

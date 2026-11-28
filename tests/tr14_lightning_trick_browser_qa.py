@@ -33,6 +33,27 @@ SCRIPT=r"""() => {
   results.push({side,fps,frames,expectedFrames:Math.ceil(.32*fps-1e-9),retainedPossession:true,stun:q.stun,cooldown:6,cost:.045,targetRecovered:true,steadyReduced:true});
  }
 
+ // A grounded live facing/closing read earns the existing READ! cue for both sides.
+ const groundedReadCases=[];
+ for(const [side,sign] of [[0,1],[1,-1]]){
+  g.init({home:0,away:9,humans:2,mode:'quick'});
+  const caster=g.players.find(v=>v.t===side&&!v.keeper),target=g.players.find(v=>v.t!==side&&!v.keeper);
+  Object.assign(caster.src,{role:'FW',magicTrick:'lightning',statsVerified:true});
+  for(const key of ['shootAccuracy','shootPower','dribbling','speedRating','agility','heading'])caster.src[key]=85;
+  Object.assign(caster,{x:640,y:360,dx:sign,dy:0,face:sign,z:0,stun:0,down:false,fatigue:0,magicReadyAt:0});
+  Object.assign(target,{x:640+sign*50,y:360,face:-sign,dx:0,dy:0,z:0,stun:0,down:false,invuln:0,
+   action:'idle',actionTimer:0,magicReadCueTimer:0});
+  Object.assign(target.src,{defence:95});
+  g.players=[caster,target];g.ball.owner=caster;g.ball.x=caster.x;g.ball.y=caster.y;g.ball.z=0;g.clock=4;
+  if(!g.tryMagicTrick(caster))throw Error('Lightning grounded-read setup could not activate');
+  if((target.magicReadCueTimer||0)>0)throw Error('Lightning read cue appeared before resolution');
+  target.dx=-sign;g.resolveLightningTrick(caster);
+  const event=g.events.at(-1);
+  if(target.stun!==0||target.magicReadCueTimer<.48-1e-9||event?.countered!==true||g.ball.owner!==caster)
+   throw Error('Grounded Lightning read did not preserve possession and show READ feedback '+JSON.stringify({side,event,cue:target.magicReadCueTimer,stun:target.stun}));
+  groundedReadCases.push({side,cue:target.magicReadCueTimer,countered:event.countered,retainedPossession:true});
+ }
+
  // An unavailable nearest marker cannot soak Lightning's single-target lock.
  const unavailableTargetCases=[];
  for(const patch of [{down:true},{invuln:.2},{shotImpactKnockdownPending:.2},{action:'shotGetUp'},
@@ -91,7 +112,7 @@ SCRIPT=r"""() => {
   throw new Error('Lightning without an available target must not spend cooldown or fatigue');
 
  const controls=document.querySelectorAll('#touchButtons button[data-act]').length;if(controls!==4)throw Error('Expected four existing actions; got '+controls);
- return{results,unavailableTargetCases,liveInvalidCases,controls,canvas:'960x1920'};
+ return{results,groundedReadCases,unavailableTargetCases,liveInvalidCases,controls,canvas:'960x1920'};
 }"""
 
 with sync_playwright() as pw:
@@ -100,7 +121,7 @@ with sync_playwright() as pw:
   context=browser.new_context(viewport={'width':1280 if not mobile else 844,'height':850 if not mobile else 700},is_mobile=mobile,has_touch=mobile)
   page=context.new_page();errors=[];page.on('pageerror',lambda error:errors.append(str(error)))
   page.set_content(HTML,wait_until='load');page.wait_for_function('!!window.SupermagicFootball?.renderer',timeout=30000)
-  result=page.evaluate(SCRIPT);assert len(result['results'])==6 and len(result['unavailableTargetCases'])==7 and len(result['liveInvalidCases'])==3 and result['controls']==4,result
+  result=page.evaluate(SCRIPT);assert len(result['results'])==6 and len(result['groundedReadCases'])==2 and len(result['unavailableTargetCases'])==7 and len(result['liveInvalidCases'])==3 and result['controls']==4,result
   assert not errors,errors
   if not mobile:page.locator('#tr14-lightning-gallery').screenshot(path=str(ROOT/'tests/.generated/tr14_lightning_gallery.png'))
   print('TR14_LIGHTNING_BROWSER_PASS',kind,result,flush=True);context.close()

@@ -78,6 +78,19 @@ function lightningTargetReady(defender,attackingTeam){
   Number.isFinite(defender.x)&&Number.isFinite(defender.y);
 }
 
+function lightningDefenderRead(defender,attacker){
+ if(!defender||!attacker)return false;
+ const facing=defenderFacesCarrier2D(defender,attacker);
+ let closingX=Number.isFinite(defender.dx)?defender.dx:0;
+ let closingY=Number.isFinite(defender.dy)?defender.dy:0;
+ if(Math.hypot(closingX,closingY)<=.1){
+  closingX=Number.isFinite(defender.moveVX)?defender.moveVX:0;
+  closingY=Number.isFinite(defender.moveVY)?defender.moveVY:0;
+ }
+ const closing=closingX*(attacker.x-defender.x)+closingY*(attacker.y-defender.y)>0;
+ return facing&&closing&&stat(defender,'defence')>=stat(attacker,'dribbling');
+}
+
 function lightningDefenderCounters(defender,attacker){
  if(!defender||!attacker)return false;
  const inJump=defender.action==='jump'&&Number.isFinite(defender.z)&&defender.z>=20;
@@ -2702,21 +2715,20 @@ class GameEngine{
   const unavailable=!lightningTargetReady(q,p?.t);
   if(!q||!this.players.includes(q)||unavailable||distance(p,q)>=95){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,hit:false,countered:false});return false;}
   const inJump=q.action==='jump'&&q.z>=20,inSlide=q.action==='slide'&&q.actionTimer>0&&q.z<20;
-  const facing=typeof defenderFacesCarrier2D==='function'?defenderFacesCarrier2D(q,p):(q.face||1)*(p.x-q.x)>0;
-  // Match named-Trick counter semantics: current 2D input leads, residual movement
-  // may finish the read after release, but stationary facing alone is not closing.
-  let closingX=Number.isFinite(q.dx)?q.dx:0,closingY=Number.isFinite(q.dy)?q.dy:0;
-  if(Math.hypot(closingX,closingY)<=.1){
-   closingX=Number.isFinite(q.moveVX)?q.moveVX:0;
-   closingY=Number.isFinite(q.moveVY)?q.moveVY:0;
-  }
-  const closing=closingX*(p.x-q.x)+closingY*(p.y-q.y)>0;
-  const read=facing&&closing&&stat(q,'defence')>=stat(p,'dribbling');
+  const read=lightningDefenderRead(q,p);
   const backup=pending.backup;
   const backupAvailable=backup&&backup!==q&&this.players.includes(backup)&&
    lightningTargetReady(backup,p.t)&&distance(p,backup)<95;
+  const backupInJump=backupAvailable&&backup.action==='jump'&&Number.isFinite(backup.z)&&backup.z>=20;
+  const backupInSlide=backupAvailable&&backup.action==='slide'&&Number.isFinite(backup.actionTimer)&&backup.actionTimer>0&&
+   Number.isFinite(backup.z)&&backup.z<20;
+  const backupRead=!!(backupAvailable&&!backupInJump&&!backupInSlide&&lightningDefenderRead(backup,p));
   const backupCountered=!!(backupAvailable&&lightningDefenderCounters(backup,p));
-  if(inJump||inSlide||read||backupCountered){this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true});return false;}
+  if(inJump||inSlide||read||backupCountered){
+   if(read&&!inJump&&!inSlide)q.magicReadCueTimer=Math.max(Number(q.magicReadCueTimer)||0,.48);
+   if(backupRead)backup.magicReadCueTimer=Math.max(Number(backup.magicReadCueTimer)||0,.48);
+   this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:false,countered:true});return false;
+  }
   q.stun=Math.max(q.stun,.32);q.action='hurt';q.actionTimer=Math.max(q.actionTimer||0,.32);q.lightningFx=.32;
   this.emit('lightningTrickResolved',{team:p.t,player:p.src.name,target:q.src.name,hit:true,countered:false,stun:.32});return true;
  }
