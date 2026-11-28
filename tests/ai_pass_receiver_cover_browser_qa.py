@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Desktop and simulated-touch Chromium acceptance for pass interception and first-touch outlet readiness."""
+import math
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
